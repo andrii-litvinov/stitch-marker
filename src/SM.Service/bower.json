@@ -1,5 +1,5 @@
 {
-  "name": "asp.net",
+  "name": "stitch-marker",
   "private": true,
   "dependencies": {
     "polymer": "Polymer/polymer#2.0-preview"
