@@ -1,0 +1,7 @@
+{
+  "name": "asp.net",
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#2.0-preview"
+  }
+}
