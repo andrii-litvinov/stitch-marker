@@ -1,5 +1,7 @@
 var gulp = require("gulp");
 
 gulp.task("default", function () {
-    // place code for your default task here
+    gulp
+        .src("./html/*.html")
+        .pipe(gulp.dest("./wwwroot"));
 });
