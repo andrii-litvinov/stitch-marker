@@ -1,0 +1,16 @@
+<link rel="import" href="../lib/polymer/polymer.html">
+
+<dom-module id="stitch-marker-app">
+  <template>
+    <div>Hello!</div>
+    <slot></slot>
+  </template>
+
+  <script>
+    class StitchMarkerApp extends Polymer.Element {
+      static get is() { return "stitch-marker-app"; }
+    }
+
+    customElements.define(StitchMarkerApp.is, StitchMarkerApp);
+  </script>
+</dom-module>
