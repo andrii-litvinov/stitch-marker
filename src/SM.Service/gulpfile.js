@@ -1,3 +1,5 @@
+// ReSharper disable PossiblyUnassignedProperty
+
 var gulp = require("gulp");
 var fs = require("fs");
 var bowerFiles = require("main-bower-files");
@@ -19,3 +21,5 @@ gulp.task("watch",
         gulp.watch("./index.html", ["app"]);
         gulp.watch("./app/*.html", ["app"]);
     });
+
+// ReSharper restore PossiblyUnassignedProperty
