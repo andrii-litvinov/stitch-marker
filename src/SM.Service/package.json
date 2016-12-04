@@ -2,6 +2,7 @@
   "name": "stitch-marker",
   "version": "0.0.1",
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "gulp": "^3.9.1",
+    "main-bower-files": "^2.13.1"
   }
 }

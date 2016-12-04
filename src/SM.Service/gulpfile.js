@@ -1,32 +1,17 @@
 var gulp = require("gulp");
+var fs = require("fs");
+var bowerFiles = require("main-bower-files");
+var bowerrc = JSON.parse(fs.readFileSync("./.bowerrc"));
+var hosting = JSON.parse(fs.readFileSync("./hosting.json"));
 
 gulp.task("app",
     () => {
-        gulp
-            .src("./index.html")
-            .pipe(gulp.dest("./wwwroot"));
-
-        gulp
-            .src("./app/*.html")
-            .pipe(gulp.dest("./wwwroot/app"));
+        gulp.src("./index.html").pipe(gulp.dest(hosting.webroot));
+        gulp.src("./app/*.html").pipe(gulp.dest(`${hosting.webroot}/app`));
     });
 
-gulp.task("polymer",
-    () => {
-        gulp
-            .src("./bower_components/polymer/polymer.html")
-            .pipe(gulp.dest("./wwwroot/lib/polymer"));
-        gulp
-            .src("./bower_components/polymer/polymer-legacy.html")
-            .pipe(gulp.dest("./wwwroot/lib/polymer"));
-        gulp
-            .src("./bower_components/polymer/polymer-element.html")
-            .pipe(gulp.dest("./wwwroot/lib/polymer"));
-
-        gulp
-            .src("./bower_components/polymer/src/**/*.html")
-            .pipe(gulp.dest("./wwwroot/lib/polymer/src"));
-    });
+gulp.task("bower",
+    () => gulp.src(bowerFiles(), { base: bowerrc.directory }).pipe(gulp.dest(`${hosting.webroot}/lib`)));
 
 gulp.task("default", ["app", "watch"]);
 
