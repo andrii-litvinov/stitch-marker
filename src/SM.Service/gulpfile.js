@@ -10,8 +10,7 @@ gulp.task("app",
         gulp.src("./app/*.html").pipe(gulp.dest(`${hosting.webroot}/app`));
     });
 
-gulp.task("bower",
-    () => gulp.src(bowerFiles(), { base: bowerrc.directory }).pipe(gulp.dest(`${hosting.webroot}/lib`)));
+gulp.task("bower", () => gulp.src(bowerFiles(), { base: bowerrc.directory }).pipe(gulp.dest(`${hosting.webroot}/lib`)));
 
 gulp.task("default", ["app", "watch"]);
 
