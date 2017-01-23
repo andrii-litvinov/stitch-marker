@@ -15,11 +15,13 @@ gulp.task("app",
 gulp.task("bower",
     () => {
         const destination = `${hosting.webroot}/lib`;
-        gulp.src(bowerFiles(), { base: bowerrc.directory }).pipe(gulp.dest(destination));
-        
+        const options = { base: bowerrc.directory };
+
+        gulp.src(bowerFiles(), options).pipe(gulp.dest(destination));
+
         // Copy polymer dependecies as they are not included into bower.js main.
-        gulp.src(`${bowerrc.directory}/polymer/polymer-*.html`, { base: bowerrc.directory }).pipe(gulp.dest(destination));
-        gulp.src(`${bowerrc.directory}/polymer/src/**/*.html`, { base: bowerrc.directory }).pipe(gulp.dest(destination));
+        gulp.src(`${bowerrc.directory}/polymer/polymer-*.html`, options).pipe(gulp.dest(destination));
+        gulp.src(`${bowerrc.directory}/polymer/src/**/*.html`, options).pipe(gulp.dest(destination));
     });
 
 gulp.task("default", ["app", "watch"]);

@@ -3,7 +3,8 @@
 <dom-module id="stitch-marker-app">
   <template>
 
-    <app-location route="{{route}}"></app-location>
+    <app-location id="location" route="{{route}}"></app-location>
+    <!--<app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>-->
 
     <div>Hello!</div>
 
@@ -14,6 +15,24 @@
   <script>
     class StitchMarkerApp extends Polymer.Element {
       static get is() { return "stitch-marker-app"; }
+
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+
+        console.log("Connected.");
+
+        var self = this;
+
+        this.shadowRoot.querySelector("div").addEventListener("click",
+          e => {
+            console.log(self);
+            console.log(e);
+          });
+      }
     }
 
     customElements.define(StitchMarkerApp.is, StitchMarkerApp);
