@@ -22,16 +22,6 @@
 
       connectedCallback() {
         super.connectedCallback();
-
-        console.log("Connected.");
-
-        var self = this;
-
-        this.shadowRoot.querySelector("div").addEventListener("click",
-          e => {
-            console.log(self);
-            console.log(e);
-          });
       }
     }
 
