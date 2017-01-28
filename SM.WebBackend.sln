@@ -7,8 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{215A0614-E6C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SM.Service", "src\SM.Service\SM.Service.csproj", "{473D8414-03CA-4BC4-8282-3A2FE0055485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication3", "WebApplication3\WebApplication3.csproj", "{0A355270-5EA6-412B-B0D4-F9607C6901A7}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,24 +29,11 @@ Global
 		{473D8414-03CA-4BC4-8282-3A2FE0055485}.Release|x64.Build.0 = Release|x64
 		{473D8414-03CA-4BC4-8282-3A2FE0055485}.Release|x86.ActiveCfg = Release|x86
 		{473D8414-03CA-4BC4-8282-3A2FE0055485}.Release|x86.Build.0 = Release|x86
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Debug|x64.ActiveCfg = Debug|x64
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Debug|x64.Build.0 = Debug|x64
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Debug|x86.ActiveCfg = Debug|x86
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Debug|x86.Build.0 = Debug|x86
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Release|x64.ActiveCfg = Release|x64
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Release|x64.Build.0 = Release|x64
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Release|x86.ActiveCfg = Release|x86
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{473D8414-03CA-4BC4-8282-3A2FE0055485} = {215A0614-E6C3-4335-8416-0BDB56AA573C}
-		{0A355270-5EA6-412B-B0D4-F9607C6901A7} = {215A0614-E6C3-4335-8416-0BDB56AA573C}
 	EndGlobalSection
 EndGlobal
