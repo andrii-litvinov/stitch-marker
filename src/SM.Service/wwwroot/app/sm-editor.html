@@ -1,0 +1,19 @@
+<dom-module id="sm-editor">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+
+    <div>Hey!</div>
+  </template>
+
+  <script>
+    class Editor extends Polymer.Element {
+      static get is() { return "sm-editor"; }
+    }
+
+    customElements.define(Editor.is, Editor);
+  </script>
+</dom-module>

@@ -1,23 +1,18 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="sm-editor.html">
 
 <dom-module id="sm-app">
   <template>
-
     <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
 
-    <div>Hello!</div>
-    
-    <a href="/link/">Link</a>
-
-    <slot></slot>
-
+    <sm-editor />
   </template>
 
   <script>
-    class StitchMarkerApp extends Polymer.Element {
+    class App extends Polymer.Element {
       static get is() { return "sm-app"; }
 
       constructor() {
@@ -29,6 +24,6 @@
       }
     }
 
-    customElements.define(StitchMarkerApp.is, StitchMarkerApp);
+    customElements.define(App.is, App);
   </script>
 </dom-module>
