@@ -26,10 +26,14 @@ namespace SM.Service
 
             app.Use(async (context, next) =>
             {
-                context.Response.Clear();
+                if (context.Request.Path.Value.EndsWith("/")) {
+                    context.Response.Clear();
 
-                // TODO: Introduce better solution to always return index.html or another default html for route.
-                await context.Response.WriteAsync(File.ReadAllText("wwwroot/index.html"));
+                    // TODO: Introduce better solution to always return index.html or another default html for route.
+                    await context.Response.WriteAsync(File.ReadAllText("wwwroot/index.html"));
+                } else {
+                    await next();
+                }                
             });
         }
     }
