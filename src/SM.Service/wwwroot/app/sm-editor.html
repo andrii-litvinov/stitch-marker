@@ -7,16 +7,25 @@
     </style>
 
     <div>
-      <canvas></canvas>
+      <canvas id="canvas"></canvas>
     </div>
   </template>
 
   <script>
     class Editor extends Polymer.Element {
-      static get is() { return "sm-editor"; }
+      static get is() { return 'sm-editor'; }
 
       connectedCallback() {
         super.connectedCallback();
+        this._render();
+      }
+
+      _render() {
+        const canvas = this.$.canvas;
+        var context = canvas.getContext('2d');
+
+        context.fillStyle = 'green';
+        context.fillRect(10, 10, 100, 100);
       }
     }
 

@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
+<!--<link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -7,45 +7,40 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">-->
 
 <link rel="import" href="sm-editor.html">
 
 <dom-module id="sm-app">
 
   <template>
-
-  <style>
-  </style>
+    <!--<style>
+    </style>
 
     <app-location id="location" route="{{route}}"></app-location>
-    
     <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
-
-<app-toolbar>
-
-  <paper-icon-button icon="search"></paper-icon-button>
-  <div main-title>Stitch Marker</div>
-  <paper-icon-button icon="menu"></paper-icon-button>
-
-</app-toolbar>  
-
-<app-drawer>
-  
-<iron-icon icon="polymer" size="24px"></iron-icon>
-
-</app-drawer>
     
+    <app-toolbar>
+      <paper-icon-button icon="search"></paper-icon-button>
+      <div main-title>Stitch Marker</div>
+      <paper-icon-button icon="menu"></paper-icon-button>
+    </app-toolbar>
 
-<nav>
-  <iron-selector selected="[[routeData.view]]" attr-for-selected="data-page">
-      <a data-page="editor" href="/sm-editor">Editor</a>
-  </iron-selector>
-</nav>
+    <app-drawer>
+      <iron-icon icon="polymer" size="24px"></iron-icon>
+    </app-drawer>
 
-<main>
-  <sm-editor route={{subroute}}></sm-editor>
-</main>
+    <nav>
+      <iron-selector selected="[[routeData.view]]" attr-for-selected="data-page">
+        <a data-page="editor" href="/sm-editor">Editor</a>
+      </iron-selector>
+    </nav>
+
+    <main>
+      <sm-editor route={{subroute}}></sm-editor>
+    </main>-->
+
+    <sm-editor></sm-editor>
 
   </template>
 
