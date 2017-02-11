@@ -29,6 +29,7 @@
         }
 
         window.addEventListener("resize", this._render.bind(this));
+        console.log('connectedCallback');
       }
 
       _render() {
@@ -55,5 +56,5 @@
     }
 
     customElements.define(Editor.is, Editor);
-  </script>
+    </script>
 </dom-module>

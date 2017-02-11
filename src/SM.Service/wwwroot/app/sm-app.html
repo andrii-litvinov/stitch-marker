@@ -16,7 +16,7 @@
   <template>
     <style>
     </style>
-
+    
     <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
     
@@ -25,17 +25,17 @@
       <div main-title>Stitch Marker</div>
       <paper-icon-button icon="menu"></paper-icon-button>
     </app-toolbar>
-
+    
     <app-drawer>
       <iron-icon icon="polymer" size="24px"></iron-icon>
     </app-drawer>
-
+    
     <nav>
       <iron-selector selected="[[routeData.view]]" attr-for-selected="data-page">
         <a data-page="editor" href="/sm-editor/">Editor</a>
       </iron-selector>
     </nav>
-
+    
     <main>
       <sm-editor route={{subroute}}></sm-editor>
     </main>
@@ -44,17 +44,19 @@
 
   <script>
     class App extends Polymer.Element {
-      static get is() { return "sm-app"; }
+        static get is() {
+            return "sm-app";
+        }
 
-      constructor() {
-        super();
-      }
+        constructor() {
+            super();
+        }
 
-      connectedCallback() {
-        super.connectedCallback();
-      }
+        connectedCallback() {
+            super.connectedCallback();
+        }
     }
 
     customElements.define(App.is, App);
-  </script>
+    </script>
 </dom-module>
