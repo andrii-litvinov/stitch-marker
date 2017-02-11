@@ -1,9 +1,13 @@
 <dom-module id="sm-editor">
   <template>
     <style>
-      :host {
-        /*display: none;*/
-      }
+      /*:host {
+        display: none;
+      }*/
+
+      /*div, canvas {
+        overflow: hidden;
+      }*/
     </style>
 
     <div>
@@ -21,11 +25,19 @@
       }
 
       _render() {
+        // TODO: Remember initial overflow and restore on detached.
+        document.body.style.overflow = 'hidden';
+
         const canvas = this.$.canvas;
+        console.log(`window.innerWidth ${window.innerWidth}`)
+        console.log(`window.innerWidth ${window.innerHeight}`)
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
         var context = canvas.getContext('2d');
 
         context.fillStyle = 'green';
-        context.fillRect(10, 10, 100, 100);
+        context.fillRect(0, 0, canvas.width, canvas.height);
       }
     }
 
