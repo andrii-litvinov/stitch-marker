@@ -1,18 +1,15 @@
 <dom-module id="sm-editor">
   <template>
     <style>
-      /*:host {
-        display: none;
-      }*/
-
-      /*div, canvas {
+      :host {
+        display: block;
+        width: 100%;
+        height: 100%;
         overflow: hidden;
-      }*/
+      }
     </style>
 
-    <div>
-      <canvas id="canvas"></canvas>
-    </div>
+    <canvas id="canvas" width="0" height="0"></canvas>
   </template>
 
   <script>
@@ -21,23 +18,39 @@
 
       connectedCallback() {
         super.connectedCallback();
-        this._render();
+
+        // TODO: Conciser to move logic to constructor.
+        if(!this.offsetWidth){
+          console.log('Requesting animation frame.')
+          window.requestAnimationFrame(this._render.bind(this));
+        } else{
+          console.log('Rendering.')
+          this._render();
+        }
+
+        window.addEventListener("resize", this._render.bind(this));
       }
 
       _render() {
-        // TODO: Remember initial overflow and restore on detached.
-        document.body.style.overflow = 'hidden';
+        const width = this.offsetWidth;
+        const height = this.offsetHeight;
+
+        console.log(`width ${width}`)
+        console.log(`height ${height}`)
 
         const canvas = this.$.canvas;
-        console.log(`window.innerWidth ${window.innerWidth}`)
-        console.log(`window.innerWidth ${window.innerHeight}`)
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        
+        canvas.width = width;
+        canvas.height = height;
 
-        var context = canvas.getContext('2d');
+        var ctx = canvas.getContext('2d');
 
-        context.fillStyle = 'green';
-        context.fillRect(0, 0, canvas.width, canvas.height);
+        var grd = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        grd.addColorStop(0, "black");
+        grd.addColorStop(1, "white");
+
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
     }
 
