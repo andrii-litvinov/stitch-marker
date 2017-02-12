@@ -12,26 +12,33 @@
 <dom-module id="sm-app">
   <template>
     <style>
-      /*main {
+      header {
+        position: absolute;
+      }
+      
+      main {
         width: 100%;
         height: 100%;
-      }*/
+      }
     </style>
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
     <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    <app-toolbar>
-      <paper-icon-button icon="search"></paper-icon-button>
-      <div main-title>Stitch Marker</div>
-      <paper-icon-button icon="menu"></paper-icon-button>
-    </app-toolbar>
-    <app-drawer>
-      <iron-icon icon="polymer" size="24px"></iron-icon>
-    </app-drawer>
-    <nav>
-      <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
-        <a name="editor" href="#/sm-editor">Editor</a>
-      </iron-selector>
-    </nav>
+
+    <header>
+      <app-toolbar>
+        <paper-icon-button icon="search"></paper-icon-button>
+        <div main-title>Stitch Marker</div>
+        <paper-icon-button icon="menu"></paper-icon-button>
+      </app-toolbar>
+      <app-drawer>
+        <iron-icon icon="polymer" size="24px"></iron-icon>
+      </app-drawer>
+      <nav>
+        <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
+          <a name="editor" href="#/sm-editor">Editor</a>
+        </iron-selector>
+      </nav>
+    </header>
     <main>
       <sm-editor id="editor" route={{subroute}}></sm-editor>
     </main>
