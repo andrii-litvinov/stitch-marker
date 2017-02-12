@@ -8,55 +8,58 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
-
 <link rel="import" href="sm-editor.html">
-
 <dom-module id="sm-app">
-
   <template>
     <style>
+
     </style>
-    
-    <app-location id="location" route="{{route}}"></app-location>
+    <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
     <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    
     <app-toolbar>
       <paper-icon-button icon="search"></paper-icon-button>
-      <div main-title>Stitch Marker</div>
+        <div main-title>Stitch Marker</div>
       <paper-icon-button icon="menu"></paper-icon-button>
     </app-toolbar>
-    
     <app-drawer>
       <iron-icon icon="polymer" size="24px"></iron-icon>
     </app-drawer>
-    
     <nav>
-      <iron-selector selected="[[routeData.view]]" attr-for-selected="data-page">
-        <a data-page="editor" href="/sm-editor/">Editor</a>
+      <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
+        <a name="editor" href="#/sm-editor">Editor</a>
       </iron-selector>
     </nav>
-    
     <main>
-      <sm-editor route={{subroute}}></sm-editor>
+      <sm-editor id="editor" route={{subroute}}></sm-editor>
     </main>
-
   </template>
-
   <script>
-    class App extends Polymer.Element {
-        static get is() {
-            return "sm-app";
-        }
+  class App extends Polymer.Element {
+    static get is() { return "sm-app"; }
 
-        constructor() {
-            super();
+    static get config() {
+      // properties, observers meta data
+      return {
+        properties: {
+          view: {
+            type: String,
+            observer: '_viewChanged'
+          }
         }
-
-        connectedCallback() {
-            super.connectedCallback();
-        }
+      };
     }
 
-    customElements.define(App.is, App);
-    </script>
+    _viewChanged(value, oldValue){
+      console.log(value);
+      console.log(this.$.editor);
+      this._view = value;
+      // TOOD: Set other views inactive.
+      //this.$.editor.active = true;
+      this.$.editor.setAttribute('active',  '');
+    }
+
+  }
+
+  customElements.define(App.is, App);
+  </script>
 </dom-module>

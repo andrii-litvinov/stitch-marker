@@ -2,13 +2,17 @@
   <template>
     <style>
       :host {
+        display: none;
+      }
+      
+      :host([active]) {
         display: block;
         width: 100%;
         height: 100%;
         overflow: hidden;
       }
     </style>
-
+    <h1>Hello World!</h1>
     <canvas id="canvas" width="0" height="0"></canvas>
   </template>
 
@@ -30,6 +34,18 @@
 
         window.addEventListener("resize", this._render.bind(this));
         console.log('connectedCallback');
+      }
+
+      get active(){
+        return false;
+      }
+
+      set active(value){
+        console.log(value)
+        if (value)
+          this.setAttribute("active", true);
+        else
+          this.removeAttribute("active");
       }
 
       _render() {
