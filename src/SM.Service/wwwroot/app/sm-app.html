@@ -12,13 +12,16 @@
 <dom-module id="sm-app">
   <template>
     <style>
-
+      /*main {
+        width: 100%;
+        height: 100%;
+      }*/
     </style>
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
     <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <app-toolbar>
       <paper-icon-button icon="search"></paper-icon-button>
-        <div main-title>Stitch Marker</div>
+      <div main-title>Stitch Marker</div>
       <paper-icon-button icon="menu"></paper-icon-button>
     </app-toolbar>
     <app-drawer>
@@ -34,32 +37,26 @@
     </main>
   </template>
   <script>
-  class App extends Polymer.Element {
-    static get is() { return "sm-app"; }
+    class App extends Polymer.Element {
+      static get is() { return "sm-app"; }
 
-    static get config() {
-      // properties, observers meta data
-      return {
-        properties: {
-          view: {
-            type: String,
-            observer: '_viewChanged'
+      static get config() {
+        return {
+          properties: {
+            view: {
+              type: String,
+              observer: '_viewChanged'
+            }
           }
-        }
-      };
+        };
+      }
+
+      _viewChanged(value, oldValue) {
+        // TOOD: Set other views inactive.
+        this.$.editor.active = '';
+      }
     }
 
-    _viewChanged(value, oldValue){
-      console.log(value);
-      console.log(this.$.editor);
-      this._view = value;
-      // TOOD: Set other views inactive.
-      //this.$.editor.active = true;
-      this.$.editor.setAttribute('active',  '');
-    }
-
-  }
-
-  customElements.define(App.is, App);
+    customElements.define(App.is, App);
   </script>
 </dom-module>

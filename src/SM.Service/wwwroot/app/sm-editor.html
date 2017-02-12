@@ -3,16 +3,19 @@
     <style>
       :host {
         display: none;
-      }
-      
-      :host([active]) {
-        display: block;
         width: 100%;
         height: 100%;
         overflow: hidden;
       }
+      
+      :host([active]) {
+        display: block;
+      }
+      
+      /*canvas {
+        display: block;
+      }*/
     </style>
-    <h1>Hello World!</h1>
     <canvas id="canvas" width="0" height="0"></canvas>
   </template>
 
@@ -20,32 +23,33 @@
     class Editor extends Polymer.Element {
       static get is() { return 'sm-editor'; }
 
-      connectedCallback() {
-        super.connectedCallback();
+      static get config() {
+        return {
+          properties: {
+            active: {
+              type: Object,
+              reflectToAttribute: true,
+              observer: '_activeChanged'
+            }
+          }
+        };
+      }
 
-        // TODO: Conciser to move logic to constructor.
-        if(!this.offsetWidth){
-          console.log('Requesting animation frame.')
-          window.requestAnimationFrame(this._render.bind(this));
-        } else{
-          console.log('Rendering.')
-          this._render();
+      _activeChanged(value, old) {
+        if (value !== null && value !== undefined) {
+          if (!this.offsetWidth) {
+            console.log('Requesting animation frame.')
+            window.requestAnimationFrame(this._render.bind(this));
+          } else {
+            console.log('Rendering.')
+            this._render();
+          }
+
+          this._resizeListener = this._render.bind(this);
+          window.addEventListener("resize", this._resizeListener);
+        } else {
+          window.removeEventListener('resize', this._resizeListener);
         }
-
-        window.addEventListener("resize", this._render.bind(this));
-        console.log('connectedCallback');
-      }
-
-      get active(){
-        return false;
-      }
-
-      set active(value){
-        console.log(value)
-        if (value)
-          this.setAttribute("active", true);
-        else
-          this.removeAttribute("active");
       }
 
       _render() {
@@ -56,7 +60,7 @@
         console.log(`height ${height}`)
 
         const canvas = this.$.canvas;
-        
+
         canvas.width = width;
         canvas.height = height;
 
@@ -72,5 +76,5 @@
     }
 
     customElements.define(Editor.is, Editor);
-    </script>
+  </script>
 </dom-module>
