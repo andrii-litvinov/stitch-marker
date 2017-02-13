@@ -68,6 +68,10 @@
 
         var ctx = canvas.getContext('2d');
 
+        this._drawGrid(canvas, ctx);
+      }
+
+      _drawGrid(canvas, ctx) {
         ctx.strokeStyle = '#e0e0e0';
 
         for (let i = 0; i < canvas.width; i += 20) {
