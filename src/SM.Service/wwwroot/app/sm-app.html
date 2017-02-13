@@ -22,7 +22,7 @@
       }
     </style>
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
-    <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
 
     <header>
       <app-toolbar>
@@ -35,12 +35,12 @@
       </app-drawer>
       <nav>
         <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
-          <a name="editor" href="#/sm-editor">Editor</a>
+          <a name="editor" href="#/editor">Editor</a>
         </iron-selector>
       </nav>
     </header>
     <main>
-      <sm-editor id="editor" route={{subroute}}></sm-editor>
+      <sm-editor id="editor"></sm-editor>
     </main>
   </template>
   <script>
@@ -58,9 +58,18 @@
         };
       }
 
+      connectedCallback() {
+        super.connectedCallback();
+        if (this.routeData.page) {
+          this.$[this.routeData.page].active = '';
+        }
+      }
+
       _viewChanged(value, oldValue) {
         // TOOD: Set other views inactive.
-        this.$.editor.active = '';
+        if (value) {
+          this.$[value].active = '';
+        }
       }
     }
 
