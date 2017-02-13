@@ -20,6 +20,8 @@
   </template>
 
   <script>
+    'use strict';
+
     class Editor extends Polymer.Element {
       static get is() { return 'sm-editor'; }
 
@@ -39,20 +41,20 @@
         if (value !== null && value !== undefined) {
           if (!this.offsetWidth) {
             console.log('Requesting animation frame.')
-            window.requestAnimationFrame(this._render.bind(this));
+            window.requestAnimationFrame(this._draw.bind(this));
           } else {
             console.log('Rendering.')
-            this._render();
+            this._draw();
           }
 
-          this._resizeListener = this._render.bind(this);
+          this._resizeListener = this._draw.bind(this);
           window.addEventListener("resize", this._resizeListener);
         } else {
           window.removeEventListener('resize', this._resizeListener);
         }
       }
 
-      _render() {
+      _draw() {
         const width = this.offsetWidth;
         const height = this.offsetHeight;
 
@@ -66,12 +68,21 @@
 
         var ctx = canvas.getContext('2d');
 
-        var grd = ctx.createLinearGradient(0, 0, canvas.width, 0);
-        grd.addColorStop(0, "white");
-        grd.addColorStop(1, "black");
+        ctx.strokeStyle = '#e0e0e0';
 
-        ctx.fillStyle = grd;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        for (let i = 0; i < canvas.width; i += 20) {
+          ctx.beginPath();
+          ctx.moveTo(i, 0);
+          ctx.lineTo(i, canvas.height);
+          ctx.stroke();
+        }
+
+        for (let i = 0; i < canvas.height; i += 20) {
+          ctx.beginPath();
+          ctx.moveTo(0, i);
+          ctx.lineTo(canvas.width, i);
+          ctx.stroke();
+        }
       }
     }
 
