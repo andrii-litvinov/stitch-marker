@@ -74,14 +74,16 @@
       _drawGrid(canvas, ctx) {
         ctx.strokeStyle = '#e0e0e0';
 
-        for (let i = 0; i < canvas.width; i += 20) {
+        const stitchSize = 30;
+
+        for (let i = 0; i < canvas.width; i += stitchSize) {
           ctx.beginPath();
           ctx.moveTo(i, 0);
           ctx.lineTo(i, canvas.height);
           ctx.stroke();
         }
 
-        for (let i = 0; i < canvas.height; i += 20) {
+        for (let i = 0; i < canvas.height; i += stitchSize) {
           ctx.beginPath();
           ctx.moveTo(0, i);
           ctx.lineTo(canvas.width, i);
