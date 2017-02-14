@@ -78,15 +78,15 @@
 
         for (let i = 0; i < canvas.width; i += stitchSize) {
           ctx.beginPath();
-          ctx.moveTo(i, 0);
-          ctx.lineTo(i, canvas.height);
+          ctx.moveTo(i + .5, 0);
+          ctx.lineTo(i + 0.5, canvas.height);
           ctx.stroke();
         }
 
         for (let i = 0; i < canvas.height; i += stitchSize) {
           ctx.beginPath();
-          ctx.moveTo(0, i);
-          ctx.lineTo(canvas.width, i);
+          ctx.moveTo(0, i + 0.5);
+          ctx.lineTo(canvas.width, i + 0.5);
           ctx.stroke();
         }
       }
