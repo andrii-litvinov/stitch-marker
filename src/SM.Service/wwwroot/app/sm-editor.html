@@ -1,3 +1,5 @@
+<link rel="import" href="sm-canvas.html">
+
 <dom-module id="sm-editor">
   <template>
     <style>
@@ -5,18 +7,13 @@
         display: none;
         width: 100%;
         height: 100%;
-        overflow: hidden;
       }
       
       :host([active]) {
         display: block;
       }
-      
-      canvas {
-        display: block;
-      }
     </style>
-    <canvas id="canvas" width="0" height="0"></canvas>
+    <sm-canvas id="canvas" enabled={{active}}></sm-canvas>
   </template>
 
   <script>
@@ -29,85 +26,12 @@
         return {
           properties: {
             active: {
-              type: Object,
-              reflectToAttribute: true,
-              observer: '_activeChanged'
+              type: Boolean,
+              reflectToAttribute: true
             }
           }
         };
-      }
-
-      _activeChanged(value, old) {
-        if (value !== null && value !== undefined) {
-          if (!this.offsetWidth) {
-            console.log('Requesting animation frame.')
-            window.requestAnimationFrame(this._draw.bind(this));
-          } else {
-            console.log('Rendering.')
-            this._draw();
-          }
-
-          this.$.canvas.addEventListener("mousedown", (e) => {});
-          this.$.canvas.addEventListener("mouseup", (e) => {
-            let canvas = this.$.canvas;
-            let ctx = this.$.canvas.getContext('2d');
-
-            // TODO: Make sure we calculate stitch position correctly.
-
-            let x = e.offsetX;
-            let y = e.offsetY;
-
-            const stitchSize = 30;
-            let stitchX = Math.floor(x / stitchSize) * stitchSize;
-            let stitchY = Math.floor(y / stitchSize) * stitchSize;
-
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(stitchX + 1, stitchY + 1, stitchSize - 1, stitchSize - 1)
-          });
-
-          this._resizeListener = this._draw.bind(this);
-          window.addEventListener("resize", this._resizeListener);
-        } else {
-          window.removeEventListener('resize', this._resizeListener);
-        }
-      }
-
-      _draw() {
-        const width = this.offsetWidth;
-        const height = this.offsetHeight;
-
-        console.log(`width ${width}`)
-        console.log(`height ${height}`)
-
-        const canvas = this.$.canvas;
-
-        canvas.width = width;
-        canvas.height = height;
-
-        var ctx = canvas.getContext('2d');
-
-        this._drawGrid(canvas, ctx);
-      }
-
-      _drawGrid(canvas, ctx) {
-        ctx.strokeStyle = '#e0e0e0';
-
-        const stitchSize = 30;
-
-        for (let i = 0.5; i < canvas.width; i += stitchSize) {
-          ctx.beginPath();
-          ctx.moveTo(i, 0);
-          ctx.lineTo(i, canvas.height);
-          ctx.stroke();
-        }
-
-        for (let i = 0.5; i < canvas.height; i += stitchSize) {
-          ctx.beginPath();
-          ctx.moveTo(0, i);
-          ctx.lineTo(canvas.width, i);
-          ctx.stroke();
-        }
-      }
+      }      
     }
 
     customElements.define(Editor.is, Editor);

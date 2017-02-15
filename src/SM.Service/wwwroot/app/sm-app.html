@@ -61,14 +61,14 @@
       connectedCallback() {
         super.connectedCallback();
         if (this.routeData.page) {
-          this.$[this.routeData.page].active = '';
+          this.$[this.routeData.page].active = true;
         }
       }
 
       _viewChanged(value, oldValue) {
         // TOOD: Set other views inactive.
         if (value) {
-          this.$[value].active = '';
+          this.$[value].active = true;
         }
       }
     }
