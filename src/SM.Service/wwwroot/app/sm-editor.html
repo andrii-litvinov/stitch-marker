@@ -47,6 +47,24 @@
             this._draw();
           }
 
+          this.$.canvas.addEventListener("mousedown", (e) => {});
+          this.$.canvas.addEventListener("mouseup", (e) => {
+            let canvas = this.$.canvas;
+            let ctx = this.$.canvas.getContext('2d');
+
+            // TODO: Make sure we calculate stitch position correctly.
+
+            let x = e.offsetX;
+            let y = e.offsetY;
+
+            const stitchSize = 30;
+            let stitchX = Math.floor(x / stitchSize) * stitchSize;
+            let stitchY = Math.floor(y / stitchSize) * stitchSize;
+
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(stitchX + 1, stitchY + 1, stitchSize - 1, stitchSize - 1)
+          });
+
           this._resizeListener = this._draw.bind(this);
           window.addEventListener("resize", this._resizeListener);
         } else {
@@ -76,17 +94,17 @@
 
         const stitchSize = 30;
 
-        for (let i = 0; i < canvas.width; i += stitchSize) {
+        for (let i = 0.5; i < canvas.width; i += stitchSize) {
           ctx.beginPath();
-          ctx.moveTo(i + .5, 0);
-          ctx.lineTo(i + 0.5, canvas.height);
+          ctx.moveTo(i, 0);
+          ctx.lineTo(i, canvas.height);
           ctx.stroke();
         }
 
-        for (let i = 0; i < canvas.height; i += stitchSize) {
+        for (let i = 0.5; i < canvas.height; i += stitchSize) {
           ctx.beginPath();
-          ctx.moveTo(0, i + 0.5);
-          ctx.lineTo(canvas.width, i + 0.5);
+          ctx.moveTo(0, i);
+          ctx.lineTo(canvas.width, i);
           ctx.stroke();
         }
       }
