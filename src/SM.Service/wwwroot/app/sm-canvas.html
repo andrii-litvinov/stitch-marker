@@ -49,8 +49,23 @@
             this._draw();
           }
 
-          this.$.canvas.addEventListener("mousedown", (e) => { });
+          let onMove = (e) => {
+            this._offsetX += e.offsetX - this._mouseEvent.offsetX;
+            this._offsetY += e.offsetY - this._mouseEvent.offsetY;
+            this._mouseEvent = e;
+
+            this._draw();
+          };
+
+          this.$.canvas.addEventListener("mousedown", (e) => {
+            this._mouseEvent = e;
+            this.$.canvas.addEventListener("mousemove", onMove);
+          });
+
           this.$.canvas.addEventListener("mouseup", (e) => {
+            this.$.canvas.removeEventListener("mousemove", onMove);
+            this._mouseEvent = null;
+
             let canvas = this.$.canvas;
             let ctx = this.$.canvas.getContext('2d');
 
