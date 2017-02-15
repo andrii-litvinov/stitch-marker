@@ -56,12 +56,12 @@
 
             // TODO: Make sure we calculate stitch position correctly.
 
-            let x = e.offsetX;
-            let y = e.offsetY;
+            let relativeX = e.offsetX - this._offsetX;
+            let relativeY = e.offsetY - this._offsetY;
 
             const stitchSize = 30;
-            let stitchX = Math.floor(x / stitchSize) * stitchSize;
-            let stitchY = Math.floor(y / stitchSize) * stitchSize;
+            let stitchX = this._offsetX + Math.floor(relativeX / stitchSize) * stitchSize;
+            let stitchY = this._offsetY + Math.floor(relativeY / stitchSize) * stitchSize;
 
             ctx.fillStyle = 'blue';
             ctx.fillRect(stitchX + 1, stitchY + 1, stitchSize - 1, stitchSize - 1)
@@ -77,9 +77,6 @@
       _draw() {
         const width = this.offsetWidth;
         const height = this.offsetHeight;
-
-        console.log(`width ${width}`)
-        console.log(`height ${height}`)
 
         const canvas = this.$.canvas;
 
