@@ -49,22 +49,32 @@
             this._draw();
           }
 
+          // TOOD: Move to a better place.
+          this._mouseEvent = {};
           let onMove = (e) => {
-            this._offsetX += e.offsetX - this._mouseEvent.offsetX;
-            this._offsetY += e.offsetY - this._mouseEvent.offsetY;
-            this._mouseEvent = e;
+            // TODO: Check that the button is pressed. Mouse up even could occure outside of canvas boundaries.
 
-            this._draw();
+            console.log(this._mouseEvent);
+
+            if (this._mouseEvent[1] && this._mouseEvent[3]) {
+
+              this._offsetX += e.movementX;
+              this._offsetY += e.movementY;
+
+              this._draw();
+            }
           };
 
           this.$.canvas.addEventListener("mousedown", (e) => {
-            this._mouseEvent = e;
+            this._mouseEvent[e.which] = e;
+
+            // TODO: Do not subscribe twice in case of two buttons movement.
             this.$.canvas.addEventListener("mousemove", onMove);
           });
 
           this.$.canvas.addEventListener("mouseup", (e) => {
             this.$.canvas.removeEventListener("mousemove", onMove);
-            this._mouseEvent = null;
+            this._mouseEvent[e.which] = null;
 
             let canvas = this.$.canvas;
             let ctx = this.$.canvas.getContext('2d');
@@ -74,12 +84,16 @@
             let relativeX = e.offsetX - this._offsetX;
             let relativeY = e.offsetY - this._offsetY;
 
-            const stitchSize = 30;
-            let stitchX = this._offsetX + Math.floor(relativeX / stitchSize) * stitchSize;
-            let stitchY = this._offsetY + Math.floor(relativeY / stitchSize) * stitchSize;
+            // TODO: Check for canvas boundaries.
+            if (relativeX > 0 && relativeY > 0) {
 
-            ctx.fillStyle = 'blue';
-            ctx.fillRect(stitchX + 1, stitchY + 1, stitchSize - 1, stitchSize - 1)
+              const stitchSize = 30;
+              let stitchX = this._offsetX + Math.floor(relativeX / stitchSize) * stitchSize;
+              let stitchY = this._offsetY + Math.floor(relativeY / stitchSize) * stitchSize;
+
+              ctx.fillStyle = 'blue';
+              ctx.fillRect(stitchX + 1, stitchY + 1, stitchSize - 1, stitchSize - 1)
+            }
           });
 
           this._resizeListener = this._draw.bind(this);
