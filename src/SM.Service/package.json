@@ -2,7 +2,5 @@
   "name": "stitch-marker",
   "version": "0.0.1",
   "dependencies": {},
-  "devDependencies": {
-    "lr-http-server": "^0.1.5"
-  }
+  "devDependencies": {}
 }
