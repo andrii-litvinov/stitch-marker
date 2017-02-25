@@ -7,7 +7,7 @@
         height: 100%;
         overflow: hidden;
       }
-      
+
       canvas {
         display: block;
       }
@@ -17,6 +17,25 @@
 
   <script>
     'use strict';
+    var toRelativeUnit = (n, ratio) => Math.floor(n / ratio);
+    var toPixel = (n, ratio) => n * ratio;
+
+    class Point {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+      }
+      toRelativeUnit(ratio) {
+        return {
+          x: Math.floor(this.x / ratio),
+          y: Math.floor(this.y / ratio)
+        };
+      }
+      add(p) {
+        this.x = this.x + p.x;
+        this.y = this.y + p.y;
+      }
+    }
 
     class Canvas extends Polymer.Element {
       static get is() { return 'sm-canvas'; }
@@ -35,107 +54,197 @@
 
       constructor() {
         super();
-        this._offsetX = 10;
-        this._offsetY = 10;
       }
 
       _enabledChanged() {
         if (this.enabled) {
-          if (!this.offsetWidth) {
-            console.log('Requesting animation frame.')
-            window.requestAnimationFrame(this._draw.bind(this));
-          } else {
-            console.log('Rendering.')
-            this._draw();
-          }
-
-          // TOOD: Move to a better place.
-          this._mouseEvent = {};
-          let onMove = (e) => {
-            // TODO: Check that the button is pressed. Mouse up even could occure outside of canvas boundaries.
-
-            console.log(this._mouseEvent);
-
-            if (this._mouseEvent[1] && this._mouseEvent[3]) {
-
-              this._offsetX += e.movementX;
-              this._offsetY += e.movementY;
-
-              this._draw();
-            }
-          };
-
-          this.$.canvas.addEventListener("mousedown", (e) => {
-            this._mouseEvent[e.which] = e;
-
-            // TODO: Do not subscribe twice in case of two buttons movement.
-            this.$.canvas.addEventListener("mousemove", onMove);
-          });
-
-          this.$.canvas.addEventListener("mouseup", (e) => {
-            this.$.canvas.removeEventListener("mousemove", onMove);
-            this._mouseEvent[e.which] = null;
-
-            let canvas = this.$.canvas;
-            let ctx = this.$.canvas.getContext('2d');
-
-            // TODO: Make sure we calculate stitch position correctly.
-
-            let relativeX = e.offsetX - this._offsetX;
-            let relativeY = e.offsetY - this._offsetY;
-
-            // TODO: Check for canvas boundaries.
-            if (relativeX > 0 && relativeY > 0) {
-
-              const stitchSize = 30;
-              let stitchX = this._offsetX + Math.floor(relativeX / stitchSize) * stitchSize;
-              let stitchY = this._offsetY + Math.floor(relativeY / stitchSize) * stitchSize;
-
-              ctx.fillStyle = 'blue';
-              ctx.fillRect(stitchX + 1, stitchY + 1, stitchSize - 1, stitchSize - 1)
-            }
-          });
-
-          this._resizeListener = this._draw.bind(this);
-          window.addEventListener("resize", this._resizeListener);
-        } else {
-          window.removeEventListener('resize', this._resizeListener);
+          console.log('Rendering.');
+          this._init();
+          this._draw();
         }
+      }
+      _init() {
+        this._offsetX = 10;
+        this._offsetY = 10;
+        this.canvas   = this.$.canvas;
+        this.ctx      = this.canvas.getContext('2d');
+        this.scale    = 3;
+        this.scaleOpt = {};
+        this.cellSize = Math.round(this.scale * 5);
+        this.wCells   = 50;
+        this.hCells   = 50;
+        this.zp       = new Point(0, 0);   // zero point - begin of ctx
+        this.mode     = 'move';
+        this.cells    = new Array(this.wCells * this.hCells);
+        this.events   = {
+          mouseup    : (e) => this._handleMouseUp(e),
+          mousedown  : (e) => this._handleMouseDown(e),
+          mousemove  : (e) => this._handleMouseMove(e),
+          // touchstart : (e) => this.handleTouchStart(e),
+          // touchend   : (e) => this.handleTouchEnd(e),
+          // touchmove  : (e) => this.handleTouchMove(e),
+          // mousewheel : (e) => this.handleZoom(e),
+          // wheel      : (e) => this.handleZoom(e),
+          // scroll     : (e) => this.handleZoom(e),
+        }
+
+
+        // setup events
+        for (let e in this.events) {
+          this.canvas.addEventListener(e, this.events[e]);
+        }
+
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
       }
 
       _draw() {
-        const width = this.offsetWidth;
-        const height = this.offsetHeight;
-
-        const canvas = this.$.canvas;
-
-        canvas.width = width;
-        canvas.height = height;
-
-        var ctx = canvas.getContext('2d');
-
-        this._drawGrid(canvas, ctx);
+        this._drawGrid();
       }
 
-      _drawGrid(canvas, ctx) {
-        const stitchSize = 30;
+      _drawGrid() {
+        let size       = this.cellSize,
+            gridWidth  = toPixel(this.wCells, size),
+            gridHeight = toPixel(this.hCells, size),
+            zp         = this.zp,
+            ctx        = this.ctx,
+            begin      = new Point(
+                            Math.max(0, zp.x % size - zp.x - size),
+                            Math.max(0, zp.y % size - zp.y - size)
+                          ),
+            end        = new Point(
+                            Math.min(this.canvas.width - zp.x, gridWidth),
+                            Math.min(this.canvas.height - zp.y, gridHeight)
+                          ),
+            _begin     = begin.toRelativeUnit(size),
+            _end       = end.toRelativeUnit(size);
 
-        ctx.strokeStyle = '#e0e0e0';
+        ctx.strokeStyle = 'lightgray';
+        ctx.lineWidth = 1;
         ctx.beginPath();
 
-        for (let i = this._offsetX + 0.5; i < canvas.width; i += stitchSize) {
-
-          ctx.moveTo(i, this._offsetY);
-          ctx.lineTo(i, canvas.height);
+        for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, end.y);
         }
 
-        for (let i = this._offsetY + 0.5; i < canvas.height; i += stitchSize) {
-          ctx.moveTo(this._offsetX, i);
-          ctx.lineTo(canvas.width, i);
-
+        for (let y = begin.y + 0.5; y <= end.y + 1; y += size) {
+          ctx.moveTo(0, y);
+          ctx.lineTo(end.x, y);
         }
-
         ctx.stroke();
+
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        for (let x = begin.x; x <= end.x + 1; x += size) {
+          if (!(x % (10 * size))) {
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, end.y);
+          }
+        }
+
+        for (let y = begin.y; y <= end.y + 1; y += size) {
+          if (!(y % (10 * size))) {
+            ctx.moveTo(0, y);
+            ctx.lineTo(end.x, y);
+          }
+        }
+        ctx.stroke();
+
+        for (let x = _begin.x, cell; x <= _end.x; x++) {
+          for (let y = _begin.y; y <= _end.y; y++) {
+            cell = this.cells[x + this.wCells * y];
+
+            if (cell) cell.draw();
+          }
+        }
+        // const stitchSize = 30;
+
+        // ctx.strokeStyle = '#e0e0e0';
+        // ctx.beginPath();
+
+        // for (let i = this._offsetX + 0.5; i < canvas.width; i += stitchSize) {
+
+        //   ctx.moveTo(i, this._offsetY);
+        //   ctx.lineTo(i, canvas.height);
+        // }
+
+        // for (let i = this._offsetY + 0.5; i < canvas.height; i += stitchSize) {
+        //   ctx.moveTo(this._offsetX, i);
+        //   ctx.lineTo(canvas.width, i);
+
+        // }
+
+        // ctx.stroke();
+      }
+
+      _moveTo(x, y) {
+        this.zp.x += x;
+        this.zp.y += y;
+        this.ctx.translate(x, y);
+        this._redraw();
+      }
+
+      _clearGrid() {
+        let begin = new Point(0 - this.zp.x, 0 - this.zp.y),
+            end   = new Point(this.canvas.width, this.canvas.height);
+
+        this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
+      }
+      _redraw() {
+        this._clearGrid();
+        this._draw();
+      }
+
+      // events handlers
+
+      _handleMouseUp(e) {
+        e.preventDefault();
+        // if (this.mode === 'draw') {
+        //   let pt = new Point(
+        //     e.clientX - this.zp.x,
+        //     e.clientY - this.zp.y
+        //   ).toRelativeUnit(this.cellSize);
+
+        //   if (this.inGrid(pt)) {
+        //       this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
+        //   }
+        // }
+        this.moveStart = null;
+      }
+      _handleMouseDown(e) {
+        e.preventDefault();
+        this.moveStart = { x: e.clientX, y: e.clientY };
+
+        let moveEnd    = { x: e.clientX, y: e.clientY },
+            move       = () => {
+          if (this.moveStart) {
+            let deltaX = this.moveStart.x - moveEnd.x,
+                deltaY = this.moveStart.y - moveEnd.y;
+
+            if ( deltaX || deltaY ) this._moveTo( deltaX, deltaY );
+
+            moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
+            requestAnimationFrame(move);
+          }
+        }
+        move();
+      }
+      _handleMouseMove(e) {
+        e.preventDefault();
+        if (this.moveStart) {
+          let pt = new Point(
+            e.clientX - this.zp.x,
+            e.clientY - this.zp.y
+          ).toRelativeUnit(this.cellSize);
+
+          if (this.mode === 'draw' && this.inGrid(pt)) {
+            this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
+          } else if (this.mode === 'move') {
+            this.moveStart = { x: e.clientX, y: e.clientY };
+          }
+        }
       }
     }
 
