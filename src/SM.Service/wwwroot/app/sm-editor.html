@@ -8,12 +8,23 @@
         width: 100%;
         height: 100%;
       }
-      
+
       :host([active]) {
         display: block;
       }
+      .controls {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      }
     </style>
-    <sm-canvas id="canvas" enabled={{active}}></sm-canvas>
+
+      <div class="controls">
+        <paper-icon-button icon="zoom-in" on-click="handleClickZoom"></paper-icon-button>
+        <paper-icon-button icon="zoom-out" on-click="handleClickZoom"></paper-icon-button>
+      </div>
+
+    <sm-canvas id="canvas" enabled={{active}} config={{canvasConfig}}></sm-canvas>
   </template>
 
   <script>
@@ -28,10 +39,30 @@
             active: {
               type: Boolean,
               reflectToAttribute: true
+            },
+            canvasConfig: {
+              type: Object,
+              reflectToAttribute: true
             }
           }
         };
-      }      
+      }
+      constructor () {
+        super();
+        this.canvasConfig = {
+          ratio: [ 100, 100 ],
+          scale: 2
+        }
+      }
+      handleClickZoom(e) {
+        if (e.target.icon === 'zoom-in') {
+          this.set('canvasConfig.scale', Math.min(this.canvasConfig.scale * 1.2, 10));
+        }
+
+        if (e.target.icon === 'zoom-out') {
+          this.set('canvasConfig.scale', Math.max(this.canvasConfig.scale / 1.2, 1));
+        }
+      }
     }
 
     customElements.define(Editor.is, Editor);
