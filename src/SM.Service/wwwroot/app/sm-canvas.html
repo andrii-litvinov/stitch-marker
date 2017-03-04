@@ -38,6 +38,45 @@
       }
     }
 
+
+    class Cell {
+      constructor(x, y, color, shape, grid) {
+          this.x     = x;
+          this.y     = y;
+          this.color = color;
+          this.grid  = grid;
+          this.shape = shape;
+
+          this.draw();
+      }
+      draw() {
+          let ctx  = this.grid.ctx,
+              size = this.grid.cellSize,
+              x    = toPixel(this.x, size) + 1,
+              y    = toPixel(this.y, size) + 1;
+
+          ctx.fillStyle = this.color;
+
+          switch (this.shape) {
+            case 'rect':
+              ctx.fillRect(x, y, size - 1, size - 1);
+              break;
+            case 'circle':
+              ctx.beginPath();
+              ctx.arc(x +  (size - 1) / 2, y +  (size - 1) / 2, (size - 1) / 2, 0, Math.PI*2, true);
+              ctx.closePath();
+              ctx.fill();
+              break;
+          }
+
+
+      }
+      setColor(color) {
+          this.color = color;
+          this.draw();
+      }
+    }
+
     class Canvas extends Polymer.Element {
       static get is() { return 'sm-canvas'; }
 
@@ -97,6 +136,7 @@
         this.hCells   = this.config ? this.config.ratio[1] : 50;
         this.zp       = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode     = 'move';
+        this.color    = 'blue';
         this.cells    = new Array(this.wCells * this.hCells);
         this.events   = {
           mouseup    : (e) => this._handleMouseUp(e),
@@ -244,6 +284,23 @@
         this._redraw();
       }
 
+      _setCell(pt, color) {
+        let i = pt.x + this.wCells * pt.y;
+
+        if (!this.cells[i]) {
+            this.cells[i] = new Cell(pt.x, pt.y, color, 'circle', this);
+        } else {
+            this.cells[i].setColor(color)
+        }
+      }
+
+      _isInGrid(pt) {
+        return pt.x >= 0 &&
+               pt.x < this.wCells &&
+               pt.y >= 0 &&
+               pt.y < this.hCells;
+      }
+
       // events handlers
 
       _handleMouseUp(e) {
@@ -258,6 +315,15 @@
         //       this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
         //   }
         // }
+        let pt = new Point(
+          e.clientX - this.zp.x,
+          e.clientY - this.zp.y
+        ).toRelativeUnit(this.cellSize);
+
+        if (this._isInGrid(pt)) {
+          this._setCell(pt, this.color);
+        }
+
         this.moveStart = null;
       }
 
@@ -288,10 +354,10 @@
             e.clientY - this.zp.y
           ).toRelativeUnit(this.cellSize);
 
-          if (this.mode === 'draw' && this.inGrid(pt)) {
-            this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
-          } else if (this.mode === 'move') {
-            this.moveStart = { x: e.clientX, y: e.clientY };
+          if (this._isInGrid(pt)) {
+            this._setCell(pt, this.color);
+          // } else if (this.mode === 'move') {
+          //   this.moveStart = { x: e.clientX, y: e.clientY };
           }
         } else {
           this.moveStart = null;
