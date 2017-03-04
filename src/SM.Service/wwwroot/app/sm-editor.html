@@ -20,11 +20,11 @@
     </style>
 
       <div class="controls">
-        <paper-icon-button icon="zoom-in" on-click="handleClickZoom"></paper-icon-button>
-        <paper-icon-button icon="zoom-out" on-click="handleClickZoom"></paper-icon-button>
+        <paper-icon-button icon="zoom-in" on-click="handleClickZoomIn"></paper-icon-button>
+        <paper-icon-button icon="zoom-out" on-click="handleClickZoomOut"></paper-icon-button>
       </div>
 
-    <sm-canvas id="canvas" enabled={{active}} config={{canvasConfig}}></sm-canvas>
+    <sm-canvas id="canvas" enabled={{active}} config={{canvasConfig}} scale={{zoom}}></sm-canvas>
   </template>
 
   <script>
@@ -50,18 +50,16 @@
       constructor () {
         super();
         this.canvasConfig = {
-          ratio: [ 100, 100 ],
-          scale: 2
-        }
-      }
-      handleClickZoom(e) {
-        if (e.target.icon === 'zoom-in') {
-          this.set('canvasConfig.scale', Math.min(this.canvasConfig.scale * 1.2, 10));
-        }
+          ratio: [ 100, 100 ]
+        };
 
-        if (e.target.icon === 'zoom-out') {
-          this.set('canvasConfig.scale', Math.max(this.canvasConfig.scale / 1.2, 1));
-        }
+        this.zoom = 2;
+      }
+      handleClickZoomIn(e) {
+        this.set('zoom', Math.min(this.zoom * 1.2, 10));
+      }
+      handleClickZoomOut(e) {
+        this.set('zoom', Math.max(this.zoom / 1.2, 1));
       }
     }
 
