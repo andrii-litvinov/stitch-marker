@@ -9,6 +9,7 @@
       }
 
       canvas {
+        background: #f0f0f0;
         display: block;
       }
     </style>
@@ -52,7 +53,7 @@
           },
           observers: [
             '_enabledChanged(enabled)',
-            '_configChangedScale(config.scale)'
+            '_configChangedScale(scale)'
           ]
         };
       }
@@ -89,7 +90,7 @@
         this._offsetY = 10;
         this.canvas   = this.$.canvas;
         this.ctx      = this.canvas.getContext('2d');
-        this.scale    = this.config ? this.config.scale : 3;
+        this.scale    = this.scale || 3;
         this.scaleOpt = {};
         this.cellSize = Math.round(this.scale * 5);
         this.wCells   = this.config ? this.config.ratio[0] : 50;
@@ -109,8 +110,10 @@
           // scroll     : (e) => this.handleZoom(e),
         }
 
-        console.log(this.config);
 
+
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
 
 
         // setup events
@@ -118,8 +121,13 @@
           this.canvas.addEventListener(e, this.events[e]);
         }
 
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
+        let timer;
+        window.addEventListener('resize', (e) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+              this._resize(window.innerWidth, window.innerHeight);
+          }, 250);
+        });
       }
 
       _draw() {
@@ -144,10 +152,16 @@
             _begin     = begin.toRelativeUnit(size),
             _end       = end.toRelativeUnit(size);
 
+        // background of grid
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, gridWidth, gridHeight);
+
+        // color of grid
         ctx.strokeStyle = 'lightgray';
         ctx.lineWidth = 1;
         ctx.beginPath();
 
+        let x, y;
         for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
           ctx.moveTo(x, 0);
           ctx.lineTo(x, end.y);
@@ -196,7 +210,7 @@
       _zoom(focus, scale) {
         let oldSize   = this.cellSize;
 
-        this.scale    = scale.toFixed(2);
+        this.scale    = +scale.toFixed(2);
         this.cellSize = Math.round(this.scale * 5);
 
         if (this.scale >= 1) {
@@ -215,9 +229,19 @@
 
         this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
       }
+
       _redraw() {
         this._clearGrid();
         this._draw();
+      }
+
+      _resize(width, height) {
+        this.ctx.translate(-this.zp.x, -this.zp.y);
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.ctx.translate(this.zp.x, this.zp.y);
+
+        this._redraw();
       }
 
       // events handlers
@@ -256,7 +280,7 @@
       }
       _handleMouseMove(e) {
         e.preventDefault();
-        if (this.moveStart) {
+        if (e.which === 1 && this.moveStart) {
           let pt = new Point(
             e.clientX - this.zp.x,
             e.clientY - this.zp.y
@@ -267,6 +291,8 @@
           } else if (this.mode === 'move') {
             this.moveStart = { x: e.clientX, y: e.clientY };
           }
+        } else {
+          this.moveStart = null;
         }
       }
     }
