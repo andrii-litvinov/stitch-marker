@@ -50,10 +50,11 @@
       constructor () {
         super();
         this.canvasConfig = {
-          ratio: [ 100, 100 ]
+          ratio: [ 200, 200 ]
         };
 
         this.zoom = 2;
+        this.shape = 'cross';
       }
       handleClickZoomIn(e) {
         this.set('zoom', Math.min(this.zoom * 1.2, 10));
