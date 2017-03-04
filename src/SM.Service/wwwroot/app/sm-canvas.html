@@ -102,12 +102,12 @@
           mouseup    : (e) => this._handleMouseUp(e),
           mousedown  : (e) => this._handleMouseDown(e),
           mousemove  : (e) => this._handleMouseMove(e),
-          // touchstart : (e) => this.handleTouchStart(e),
+          // touchstart : (e) => this._handleTouchStart(e),
           // touchend   : (e) => this.handleTouchEnd(e),
           // touchmove  : (e) => this.handleTouchMove(e),
-          // mousewheel : (e) => this.handleZoom(e),
-          // wheel      : (e) => this.handleZoom(e),
-          // scroll     : (e) => this.handleZoom(e),
+          mousewheel : (e) => this._handleWheel(e),
+          // wheel      : (e) => this._handleTouchStart(e),
+          // scroll     : (e) => this._handleTouchStart(e),
         }
 
 
@@ -260,24 +260,26 @@
         // }
         this.moveStart = null;
       }
+
       _handleMouseDown(e) {
         e.preventDefault();
         this.moveStart = { x: e.clientX, y: e.clientY };
 
-        let moveEnd    = { x: e.clientX, y: e.clientY },
-            move       = () => {
-          if (this.moveStart) {
-            let deltaX = this.moveStart.x - moveEnd.x,
-                deltaY = this.moveStart.y - moveEnd.y;
+        let moveEnd = { x: e.clientX, y: e.clientY },
+            move    = () => {
+              if (this.moveStart) {
+                let deltaX = this.moveStart.x - moveEnd.x,
+                    deltaY = this.moveStart.y - moveEnd.y;
 
-            if ( deltaX || deltaY ) this._moveTo( deltaX, deltaY );
+                if ( deltaX || deltaY ) this._moveTo( deltaX, deltaY );
 
-            moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
-            requestAnimationFrame(move);
-          }
-        }
+                moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
+                requestAnimationFrame(move);
+              }
+            }
         move();
       }
+
       _handleMouseMove(e) {
         e.preventDefault();
         if (e.which === 1 && this.moveStart) {
@@ -294,6 +296,16 @@
         } else {
           this.moveStart = null;
         }
+      }
+      _handleWheel(e) {
+        e.preventDefault();
+
+        this._moveTo( -e.deltaX, -e.deltaY );
+        // this.moveStart = { x: e.clientX, y: e.clientY };
+      }
+      _handleTouchMove(e) {}
+      _handleTouchEnd(e) {
+        this.moveStart = null;
       }
     }
 
