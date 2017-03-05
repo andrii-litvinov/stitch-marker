@@ -20,6 +20,7 @@
     'use strict';
     var toRelativeUnit = (n, ratio) => Math.floor(n / ratio);
     var toPixel = (n, ratio) => n * ratio;
+    var getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
 
     class Point {
       constructor(x, y) {
@@ -41,56 +42,62 @@
 
     class Cell {
       constructor(x, y, color, shape, grid) {
-          this.x     = x;
-          this.y     = y;
-          this.color = color;
-          this.grid  = grid;
-          this.shape = shape;
-
-          this.draw();
+        this.x     = x;
+        this.y     = y;
+        this.color = color;
+        this.grid  = grid;
+        this.shape = shape;
+        this.abc   = "abcdefghijklmnopqrstuvwxyz";
+        this.draw();
       }
       draw() {
-          let ctx  = this.grid.ctx,
-              size = this.grid.cellSize,
-              x    = toPixel(this.x, size) + 1,
-              y    = toPixel(this.y, size) + 1,
-              innerSize = size - 1,
-              half = innerSize / 2;
+        let ctx  = this.grid.ctx,
+            size = this.grid.cellSize,
+            x    = toPixel(this.x, size) + 1,
+            y    = toPixel(this.y, size) + 1,
+            innerSize = size - 1,
+            half = innerSize / 2;
 
-          ctx.fillStyle = this.color;
-          ctx.strokeStyle = this.color;
-          ctx.lineWidth = this.grid.scale;
-
-
-          switch (this.shape) {
-            case 'rect':
-              ctx.fillRect(x, y, innerSize, innerSize);
-              break;
-            case 'circle':
-              ctx.beginPath();
-              ctx.arc(x +  half, y + half, half, 0, Math.PI*2, true);
-              ctx.closePath();
-              ctx.fill();
-              break;
-            case 'circuit':
-            case 'plus':
-              ctx.beginPath();
-              ctx.moveTo(x, y + half);
-              ctx.lineTo(x + innerSize, y +  half);
-              ctx.moveTo(x + half, y);
-              ctx.lineTo(x + half, y +  innerSize);
-              ctx.stroke();
-              break;
-            case 'cross':
-              ctx.beginPath();
-              ctx.moveTo(x, y);
-              ctx.lineTo(x + innerSize, y +  innerSize);
-              ctx.moveTo(x + innerSize, y);
-              ctx.lineTo(x, y +  innerSize);
-              ctx.stroke();
-          }
+        ctx.fillStyle = this.color;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.grid.scale;
 
 
+        switch (this.shape) {
+          case 'rect':
+            ctx.fillRect(x, y, innerSize, innerSize);
+            break;
+          case 'circle':
+            ctx.beginPath();
+            ctx.arc(x +  half, y + half, half, 0, Math.PI*2, false);
+            ctx.closePath();
+            ctx.fill();
+            break;
+          case 'circuit':
+            ctx.beginPath();
+            ctx.arc(x +  half, y + half, half - this.grid.scale, 0, Math.PI*2, true);
+            ctx.stroke();
+            break;
+          case 'plus':
+            ctx.beginPath();
+            ctx.moveTo(x, y + half);
+            ctx.lineTo(x + innerSize, y +  half);
+            ctx.moveTo(x + half, y);
+            ctx.lineTo(x + half, y +  innerSize);
+            ctx.stroke();
+            break;
+          case 'char':
+            ctx.font= innerSize * 1.7 + "px Monospace";
+            ctx.fillText('Y', x, y + innerSize);
+            break;
+          case 'cross':
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + innerSize, y +  innerSize);
+            ctx.moveTo(x + innerSize, y);
+            ctx.lineTo(x, y +  innerSize);
+            ctx.stroke();
+        }
       }
       setColor(color) {
           this.color = color;
@@ -310,7 +317,7 @@
 
         if (!this.cells[i]) {
             this.cells[i] = new Cell(pt.x, pt.y, color, this.shape, this);
-        } else {
+        // } else {
             this.cells[i].setColor(color)
         }
       }
