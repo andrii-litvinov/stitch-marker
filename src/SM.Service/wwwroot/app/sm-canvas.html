@@ -109,25 +109,19 @@
     class Canvas extends Polymer.Element {
       static get is() { return 'sm-canvas'; }
 
-      static get config() {
+      static get properties() {
         return {
-          properties: {
             enabled: {
+              type: Boolean,
+              reflectToAttribute: true,
+              observer: '_enabledChanged'
+            },
+            config: {
               type: Object,
-              reflectToAttribute: true
+              reflectToAttribute: true,
+              observer: '_configChangedScale'
             }
-
-          },
-          observers: [
-            '_enabledChanged(enabled)',
-            '_configChangedScale(scale)'
-          ]
         };
-      }
-
-      constructor() {
-        super();
-
       }
 
       _enabledChanged() {

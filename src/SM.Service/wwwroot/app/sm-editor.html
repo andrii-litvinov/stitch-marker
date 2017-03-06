@@ -47,18 +47,16 @@
     class Editor extends Polymer.Element {
       static get is() { return 'sm-editor'; }
 
-      static get config() {
+      static get properties() {
         return {
-          properties: {
             active: {
               type: Boolean,
               reflectToAttribute: true
-            }//,
-            // canvasConfig: {
-            //   type: Object,
-            //   reflectToAttribute: true
-            // }
-          }
+            },
+            canvasConfig: {
+              type: Object,
+              reflectToAttribute: true
+            }
         };
       }
       constructor() {
