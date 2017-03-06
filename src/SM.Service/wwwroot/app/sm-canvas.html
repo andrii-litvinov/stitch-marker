@@ -112,16 +112,22 @@
       static get properties() {
         return {
             enabled: {
-              type: Boolean,
+              type: Object,
               reflectToAttribute: true,
               observer: '_enabledChanged'
             },
-            config: {
-              type: Object,
+
+            // TODO: Rename to zoom.
+            scale: {
+              type: Number,
               reflectToAttribute: true,
-              observer: '_configChangedScale'
+              observer: '_scaleChanged'
             }
         };
+      }
+
+      static get observers() {
+        [ '_configChangedScale(scale)' ]
       }
 
       _enabledChanged() {
@@ -131,14 +137,8 @@
           this._draw();
         }
       }
-      _configChangedScale(newVal) {
-        if (this.enabled) {
-          this._updateScale(newVal);
-          // console.log(config);
-        }
-        // console.log('Canvas config changed.');
-      }
-      _updateScale(scale) {
+      
+      _scaleChanged(scale) {
         // this.scale  = scale;
         // this.cellSize = Math.round(this.scale * 5);
         this._zoom({
