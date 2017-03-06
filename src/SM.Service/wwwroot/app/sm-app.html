@@ -3,10 +3,8 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-
 <link rel="import" href="sm-editor.html">
+
 <dom-module id="sm-app">
   <template>
     <style>
@@ -56,6 +54,7 @@
 
       _viewChanged(value, oldValue) {
         // TOOD: Set other views inactive.
+        debugger;
         if (value) {
           this.$[value].active = true;
         }
