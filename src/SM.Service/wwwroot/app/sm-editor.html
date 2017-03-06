@@ -17,11 +17,14 @@
         display: block;
       }
 
-
       .controls {
         position: absolute;
         right: 10px;
         top: 10px;
+      }
+      paper-radio-group {
+        display: flex;
+        flex-direction: column;
       }
     </style>
 
@@ -29,6 +32,7 @@
       <paper-icon-button icon="zoom-in" on-click="handleClickZoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" on-click="handleClickZoomOut"></paper-icon-button>
       <paper-radio-group selected="{{shape}}">
+        <paper-radio-button name="rect" value="rect">rect</paper-radio-button>
         <paper-radio-button name="char" value="char">char</paper-radio-button>
         <paper-radio-button name="circuit" value="circuit">circuit</paper-radio-button>
         <paper-radio-button name="circle" value="circle">circle</paper-radio-button>
@@ -38,7 +42,7 @@
       </paper-radio-group>
     </div>
 
-    <sm-canvas id="canvas" enabled={{active}} config={{canvasConfig}} scale={{zoom}} shape="{{shape}}"></sm-canvas>
+    <sm-canvas id="canvas" enabled="[[active]]" config={{canvasConfig}} zoom={{zoom}} shape="{{shape}}"></sm-canvas>
   </template>
 
   <script>
@@ -49,14 +53,14 @@
 
       static get properties() {
         return {
-            active: {
-              type: Boolean,
-              reflectToAttribute: true
-            },
-            canvasConfig: {
-              type: Object,
-              reflectToAttribute: true
-            }
+          active: {
+            type: Boolean,
+            reflectToAttribute: true
+          },
+          canvasConfig: {
+            type: Object,
+            reflectToAttribute: true
+          }
         };
       }
       constructor() {
@@ -65,7 +69,7 @@
           ratio: [200, 200]
         };
 
-        this.zoom = 2;
+        this.zoom = 4;
         this.shape = 'char';
       }
       handleClickZoomIn(e) {

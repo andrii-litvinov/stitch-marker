@@ -1,0 +1,23 @@
+<dom-module id="sm-home">
+  <template>
+    <style>
+      :host {
+        width: 100%;
+        height: 100%;
+        padding: 70px 30px;
+        display: block;
+      }
+      h1 {
+        margin: 0;
+      }
+    </style>
+    <h1>Stitch marker</h1>
+  </template>
+  <script>
+    class Home extends Polymer.Element {
+      static get is() { return "sm-home"; }
+    }
+    customElements.define(Home.is, Home);
+  </script>
+
+</dom-module>

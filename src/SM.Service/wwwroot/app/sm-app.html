@@ -1,34 +1,41 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 
 <link rel="import" href="sm-editor.html">
+<link rel="import" href="sm-home.html">
 
 <dom-module id="sm-app">
   <template>
     <style>
       nav {
+        padding: 30px;
         position: absolute;
       }
-
-
-      main {
+      iron-pages {
         width: 100%;
         height: 100%;
       }
     </style>
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
-    <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
+    <app-route
+      id="route"
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"></app-route>
 
     <nav>
       <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
+        <a name="home" href="#">Home</a>
         <a name="editor" href="#/editor">Editor</a>
       </iron-selector>
     </nav>
-    <main>
-      <sm-editor id="editor"></sm-editor>
-    </main>
+    <iron-pages role="main" selected="[[routeData.page]]" attr-for-selected="name">
+      <sm-editor name="editor" id="editor"></sm-editor>
+      <sm-home name="home" id="home"></sm-home>
+    </iron-pages>
   </template>
   <script>
     class App extends Polymer.Element {
@@ -36,11 +43,17 @@
 
       static get properties() {
         return {
-            view: {
-              type: String,
-              observer: '_viewChanged'
-            }
+          view: {
+            type: String,
+            observer: '_viewChanged'
+          }
         };
+      }
+
+      static get observers() {
+        return [
+          '_routeChanged(route.*)'
+        ]
       }
 
       connectedCallback() {
@@ -49,7 +62,13 @@
           this.$[this.routeData.page].active = true;
         }
       }
-
+      _routeChanged(changeRecord) {
+        if (changeRecord.path === 'route') {
+          if (!changeRecord.value.path) {
+            this.set('routeData.page', 'home');
+          }
+        }
+      }
       _viewChanged(value, oldValue) {
         // TOOD: Set other views inactive.
         if (value) {

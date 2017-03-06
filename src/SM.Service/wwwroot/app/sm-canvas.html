@@ -7,9 +7,6 @@
         height: 100%;
         overflow: hidden;
       }
-
-
-
       canvas {
         background: #f0f0f0;
         display: block;
@@ -62,7 +59,7 @@
 
         ctx.fillStyle = this.color;
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = this.grid.scale;
+        ctx.lineWidth = this.grid.zoom;
 
 
         switch (this.shape) {
@@ -77,7 +74,7 @@
             break;
           case 'circuit':
             ctx.beginPath();
-            ctx.arc(x + half, y + half, half - this.grid.scale, 0, Math.PI * 2, true);
+            ctx.arc(x + half, y + half, half - this.grid.zoom, 0, Math.PI * 2, true);
             ctx.stroke();
             break;
           case 'plus':
@@ -114,21 +111,21 @@
         return {
           enabled: {
             type: Object,
-            reflectToAttribute: true,
-            observer: '_enabledChanged'
+            reflectToAttribute: true
           },
 
-          // TODO: Rename to zoom.
-          scale: {
+          zoom: {
             type: Number,
-            reflectToAttribute: true,
-            observer: '_scaleChanged'
+            reflectToAttribute: true
           }
         };
       }
 
       static get observers() {
-        ['_configChangedScale(scale)']
+        return [
+          '_enabledChanged(enabled)',
+          '_zoomChanged(zoom)'
+        ]
       }
 
       _enabledChanged() {
@@ -139,28 +136,37 @@
         }
       }
 
-      _scaleChanged(scale) {
-        // this.scale  = scale;
-        // this.cellSize = Math.round(this.scale * 5);
+      _zoomChanged(zoom) {
         if (this.enabled) {
           this._zoom({
             x: this.canvas.width / 2,
             y: this.canvas.height / 2
-          }, scale);
+          }, zoom);
         }
       }
-      _init() {
-        // TODO: Make initial size of a cell larger. Something like 20-30 pixels.
 
-        this._offsetX = 10;
-        this._offsetY = 10;
-
-        // TODO: Do not set such reference because this.canvas can be called befor init and cause issue.
+      constructor() {
+        super();
         this.canvas = this.$.canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.scale = this.scale || 3;
-        this.scaleOpt = {};
-        this.cellSize = Math.round(this.scale * 5);
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+
+        let timer;
+        window.addEventListener('resize', (e) => {
+          // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
+
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            this._resize(window.innerWidth, window.innerHeight);
+          }, 250);
+        });
+      }
+
+      _init() {
+        this.zoom = this.zoom || 4;
+        this.cellSize = Math.round(this.zoom * 5);
+
         this.wCells = this.config ? this.config.ratio[0] : 50;
         this.hCells = this.config ? this.config.ratio[1] : 50;
         this.zp = new Point(0, 0);   // relative zero point - begin of ctx
@@ -180,25 +186,10 @@
         }
 
 
-
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-
-
         // setup events
         for (let e in this.events) {
           this.canvas.addEventListener(e, this.events[e]);
         }
-
-        let timer;
-        window.addEventListener('resize', (e) => {
-          // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
-
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            this._resize(window.innerWidth, window.innerHeight);
-          }, 250);
-        });
       }
 
       _draw() {
@@ -278,13 +269,13 @@
         this._redraw();
       }
 
-      _zoom(focus, scale) {
+      _zoom(focus, zoom) {
         let oldSize = this.cellSize;
 
-        this.scale = +scale.toFixed(2);
-        this.cellSize = Math.round(this.scale * 5);
+        this.zoom = +zoom.toFixed(2);
+        this.cellSize = Math.round(this.zoom * 5);
 
-        if (this.scale >= 1) {
+        if (this.zoom >= 1) {
           let k = 1 - this.cellSize / oldSize;
 
           this._moveTo(
