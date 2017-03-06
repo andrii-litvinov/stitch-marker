@@ -9,6 +9,7 @@
       }
 
 
+
       canvas {
         background: #f0f0f0;
         display: block;
@@ -111,23 +112,23 @@
 
       static get properties() {
         return {
-            enabled: {
-              type: Object,
-              reflectToAttribute: true,
-              observer: '_enabledChanged'
-            },
+          enabled: {
+            type: Object,
+            reflectToAttribute: true,
+            observer: '_enabledChanged'
+          },
 
-            // TODO: Rename to zoom.
-            scale: {
-              type: Number,
-              reflectToAttribute: true,
-              observer: '_scaleChanged'
-            }
+          // TODO: Rename to zoom.
+          scale: {
+            type: Number,
+            reflectToAttribute: true,
+            observer: '_scaleChanged'
+          }
         };
       }
 
       static get observers() {
-        [ '_configChangedScale(scale)' ]
+        ['_configChangedScale(scale)']
       }
 
       _enabledChanged() {
@@ -137,20 +138,24 @@
           this._draw();
         }
       }
-      
+
       _scaleChanged(scale) {
         // this.scale  = scale;
         // this.cellSize = Math.round(this.scale * 5);
-        this._zoom({
-          x: this.canvas.width / 2,
-          y: this.canvas.height / 2
-        }, scale);
+        if (this.enabled) {
+          this._zoom({
+            x: this.canvas.width / 2,
+            y: this.canvas.height / 2
+          }, scale);
+        }
       }
       _init() {
         // TODO: Make initial size of a cell larger. Something like 20-30 pixels.
 
         this._offsetX = 10;
         this._offsetY = 10;
+
+        // TODO: Do not set such reference because this.canvas can be called befor init and cause issue.
         this.canvas = this.$.canvas;
         this.ctx = this.canvas.getContext('2d');
         this.scale = this.scale || 3;
