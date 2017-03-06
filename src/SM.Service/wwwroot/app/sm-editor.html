@@ -1,17 +1,23 @@
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+
 <link rel="import" href="sm-canvas.html">
 
 <dom-module id="sm-editor">
   <template>
     <style>
-      :host {
+       :host {
         display: none;
         width: 100%;
         height: 100%;
       }
 
-      :host([active]) {
+       :host([active]) {
         display: block;
       }
+
+
       .controls {
         position: absolute;
         right: 10px;
@@ -19,18 +25,18 @@
       }
     </style>
 
-      <div class="controls">
-        <paper-icon-button icon="zoom-in" on-click="handleClickZoomIn"></paper-icon-button>
-        <paper-icon-button icon="zoom-out" on-click="handleClickZoomOut"></paper-icon-button>
-        <paper-radio-group selected="{{shape}}">
-          <paper-radio-button name="char" value="char">char</paper-radio-button>
-          <paper-radio-button name="circuit" value="circuit">circuit</paper-radio-button>
-          <paper-radio-button name="circle" value="circle">circle</paper-radio-button>
-          <paper-radio-button name="cross" value="cross">cross</paper-radio-button>
-          <paper-radio-button name="plus" value="plus">plus</paper-radio-button>
-          <!-- <paper-swatch-picker color="#E91E63"></paper-swatch-picker> -->
-        </paper-radio-group>
-      </div>
+    <div class="controls">
+      <paper-icon-button icon="zoom-in" on-click="handleClickZoomIn"></paper-icon-button>
+      <paper-icon-button icon="zoom-out" on-click="handleClickZoomOut"></paper-icon-button>
+      <paper-radio-group selected="{{shape}}">
+        <paper-radio-button name="char" value="char">char</paper-radio-button>
+        <paper-radio-button name="circuit" value="circuit">circuit</paper-radio-button>
+        <paper-radio-button name="circle" value="circle">circle</paper-radio-button>
+        <paper-radio-button name="cross" value="cross">cross</paper-radio-button>
+        <paper-radio-button name="plus" value="plus">plus</paper-radio-button>
+        <!-- <paper-swatch-picker color="#E91E63"></paper-swatch-picker> -->
+      </paper-radio-group>
+    </div>
 
     <sm-canvas id="canvas" enabled={{active}} config={{canvasConfig}} scale={{zoom}} shape="{{shape}}"></sm-canvas>
   </template>
@@ -55,10 +61,10 @@
           }
         };
       }
-      constructor () {
+      constructor() {
         super();
         this.canvasConfig = {
-          ratio: [ 200, 200 ]
+          ratio: [200, 200]
         };
 
         this.zoom = 2;

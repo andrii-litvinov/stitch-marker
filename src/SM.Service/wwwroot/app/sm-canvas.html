@@ -1,12 +1,13 @@
 <dom-module id="sm-canvas">
   <template>
     <style>
-      :host {
+       :host {
         display: block;
         width: 100%;
         height: 100%;
         overflow: hidden;
       }
+
 
       canvas {
         background: #f0f0f0;
@@ -42,21 +43,21 @@
 
     class Cell {
       constructor(x, y, color, shape, grid) {
-        this.x     = x;
-        this.y     = y;
+        this.x = x;
+        this.y = y;
         this.color = color;
-        this.grid  = grid;
+        this.grid = grid;
         this.shape = shape;
-        this.abc   = "abcdefghijklmnopqrstuvwxyz";
+        this.abc = "abcdefghijklmnopqrstuvwxyz";
         this.draw();
       }
       draw() {
-        let ctx  = this.grid.ctx,
-            size = this.grid.cellSize,
-            x    = toPixel(this.x, size) + 1,
-            y    = toPixel(this.y, size) + 1,
-            innerSize = size - 1,
-            half = innerSize / 2;
+        let ctx = this.grid.ctx,
+          size = this.grid.cellSize,
+          x = toPixel(this.x, size) + 1,
+          y = toPixel(this.y, size) + 1,
+          innerSize = size - 1,
+          half = innerSize / 2;
 
         ctx.fillStyle = this.color;
         ctx.strokeStyle = this.color;
@@ -69,39 +70,39 @@
             break;
           case 'circle':
             ctx.beginPath();
-            ctx.arc(x +  half, y + half, half, 0, Math.PI*2, false);
+            ctx.arc(x + half, y + half, half, 0, Math.PI * 2, false);
             ctx.closePath();
             ctx.fill();
             break;
           case 'circuit':
             ctx.beginPath();
-            ctx.arc(x +  half, y + half, half - this.grid.scale, 0, Math.PI*2, true);
+            ctx.arc(x + half, y + half, half - this.grid.scale, 0, Math.PI * 2, true);
             ctx.stroke();
             break;
           case 'plus':
             ctx.beginPath();
             ctx.moveTo(x, y + half);
-            ctx.lineTo(x + innerSize, y +  half);
+            ctx.lineTo(x + innerSize, y + half);
             ctx.moveTo(x + half, y);
-            ctx.lineTo(x + half, y +  innerSize);
+            ctx.lineTo(x + half, y + innerSize);
             ctx.stroke();
             break;
           case 'char':
-            ctx.font= innerSize * 1.7 + "px Monospace";
+            ctx.font = innerSize * 1.7 + "px Monospace";
             ctx.fillText('Y', x, y + innerSize);
             break;
           case 'cross':
             ctx.beginPath();
             ctx.moveTo(x, y);
-            ctx.lineTo(x + innerSize, y +  innerSize);
+            ctx.lineTo(x + innerSize, y + innerSize);
             ctx.moveTo(x + innerSize, y);
-            ctx.lineTo(x, y +  innerSize);
+            ctx.lineTo(x, y + innerSize);
             ctx.stroke();
         }
       }
       setColor(color) {
-          this.color = color;
-          this.draw();
+        this.color = color;
+        this.draw();
       }
     }
 
@@ -113,8 +114,7 @@
           properties: {
             enabled: {
               type: Object,
-              reflectToAttribute: true,
-              // observer: '_enabledChanged'
+              reflectToAttribute: true
             }
 
           },
@@ -140,7 +140,7 @@
       _configChangedScale(newVal) {
         if (this.enabled) {
           this._updateScale(newVal);
-        // console.log(config);
+          // console.log(config);
         }
         // console.log('Canvas config changed.');
       }
@@ -153,27 +153,29 @@
         }, scale);
       }
       _init() {
+        // TODO: Make initial size of a cell larger. Something like 20-30 pixels.
+
         this._offsetX = 10;
         this._offsetY = 10;
-        this.canvas   = this.$.canvas;
-        this.ctx      = this.canvas.getContext('2d');
-        this.scale    = this.scale || 3;
+        this.canvas = this.$.canvas;
+        this.ctx = this.canvas.getContext('2d');
+        this.scale = this.scale || 3;
         this.scaleOpt = {};
         this.cellSize = Math.round(this.scale * 5);
-        this.wCells   = this.config ? this.config.ratio[0] : 50;
-        this.hCells   = this.config ? this.config.ratio[1] : 50;
-        this.zp       = new Point(0, 0);   // relative zero point - begin of ctx
-        this.mode     = 'move';
-        this.color    = 'blue';
-        this.cells    = new Array(this.wCells * this.hCells);
-        this.events   = {
-          mouseup    : (e) => this._handleMouseUp(e),
-          mousedown  : (e) => this._handleMouseDown(e),
-          mousemove  : (e) => this._handleMouseMove(e),
+        this.wCells = this.config ? this.config.ratio[0] : 50;
+        this.hCells = this.config ? this.config.ratio[1] : 50;
+        this.zp = new Point(0, 0);   // relative zero point - begin of ctx
+        this.mode = 'move';
+        this.color = 'blue';
+        this.cells = new Array(this.wCells * this.hCells);
+        this.events = {
+          mouseup: (e) => this._handleMouseUp(e),
+          mousedown: (e) => this._handleMouseDown(e),
+          mousemove: (e) => this._handleMouseMove(e),
           // touchstart : (e) => this._handleTouchStart(e),
           // touchend   : (e) => this.handleTouchEnd(e),
           // touchmove  : (e) => this.handleTouchMove(e),
-          mousewheel : (e) => this._handleWheel(e),
+          mousewheel: (e) => this._handleWheel(e),
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
@@ -191,9 +193,11 @@
 
         let timer;
         window.addEventListener('resize', (e) => {
+          // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
+
           clearTimeout(timer);
           timer = setTimeout(() => {
-              this._resize(window.innerWidth, window.innerHeight);
+            this._resize(window.innerWidth, window.innerHeight);
           }, 250);
         });
       }
@@ -203,22 +207,22 @@
       }
 
       _drawGrid() {
-        let size       = this.cellSize,
-            gridWidth  = toPixel(this.wCells, size),
-            gridHeight = toPixel(this.hCells, size),
-            zp         = this.zp,
-            ctx        = this.ctx,
-            // draw grid only in window
-            begin      = new Point(
-                          Math.max(0, zp.x % size - zp.x - size),
-                          Math.max(0, zp.y % size - zp.y - size)
-                        ),
-            end        = new Point(
-                          Math.min(this.canvas.width - zp.x, gridWidth),
-                          Math.min(this.canvas.height - zp.y, gridHeight)
-                        ),
-            _begin     = begin.toRelativeUnit(size),
-            _end       = end.toRelativeUnit(size);
+        let size = this.cellSize,
+          gridWidth = toPixel(this.wCells, size),
+          gridHeight = toPixel(this.hCells, size),
+          zp = this.zp,
+          ctx = this.ctx,
+          // draw grid only in window
+          begin = new Point(
+            Math.max(0, zp.x % size - zp.x - size),
+            Math.max(0, zp.y % size - zp.y - size)
+          ),
+          end = new Point(
+            Math.min(this.canvas.width - zp.x, gridWidth),
+            Math.min(this.canvas.height - zp.y, gridHeight)
+          ),
+          _begin = begin.toRelativeUnit(size),
+          _end = end.toRelativeUnit(size);
 
         // background of grid
         ctx.fillStyle = 'white';
@@ -276,9 +280,9 @@
       }
 
       _zoom(focus, scale) {
-        let oldSize   = this.cellSize;
+        let oldSize = this.cellSize;
 
-        this.scale    = +scale.toFixed(2);
+        this.scale = +scale.toFixed(2);
         this.cellSize = Math.round(this.scale * 5);
 
         if (this.scale >= 1) {
@@ -293,7 +297,7 @@
 
       _clearGrid() {
         let begin = new Point(0 - this.zp.x, 0 - this.zp.y),
-            end   = new Point(this.canvas.width, this.canvas.height);
+          end = new Point(this.canvas.width, this.canvas.height);
 
         this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
       }
@@ -316,17 +320,17 @@
         let i = pt.x + this.wCells * pt.y;
 
         if (!this.cells[i]) {
-            this.cells[i] = new Cell(pt.x, pt.y, color, this.shape, this);
-        // } else {
-            this.cells[i].setColor(color)
+          this.cells[i] = new Cell(pt.x, pt.y, color, this.shape, this);
+          // } else {
+          this.cells[i].setColor(color)
         }
       }
 
       _isInGrid(pt) {
         return pt.x >= 0 &&
-               pt.x < this.wCells &&
-               pt.y >= 0 &&
-               pt.y < this.hCells;
+          pt.x < this.wCells &&
+          pt.y >= 0 &&
+          pt.y < this.hCells;
       }
 
       // events handlers
@@ -360,17 +364,17 @@
         this.moveStart = { x: e.clientX, y: e.clientY };
 
         let moveEnd = { x: e.clientX, y: e.clientY },
-            move    = () => {
-              if (this.moveStart) {
-                let deltaX = this.moveStart.x - moveEnd.x,
-                    deltaY = this.moveStart.y - moveEnd.y;
+          move = () => {
+            if (this.moveStart) {
+              let deltaX = this.moveStart.x - moveEnd.x,
+                deltaY = this.moveStart.y - moveEnd.y;
 
-                if ( deltaX || deltaY ) this._moveTo( deltaX, deltaY );
+              if (deltaX || deltaY) this._moveTo(deltaX, deltaY);
 
-                moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
-                requestAnimationFrame(move);
-              }
+              moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
+              requestAnimationFrame(move);
             }
+          }
         move();
       }
 
@@ -384,8 +388,8 @@
 
           if (this._isInGrid(pt)) {
             this._setCell(pt, this.color);
-          // } else if (this.mode === 'move') {
-          //   this.moveStart = { x: e.clientX, y: e.clientY };
+            // } else if (this.mode === 'move') {
+            //   this.moveStart = { x: e.clientX, y: e.clientY };
           }
         } else {
           this.moveStart = null;
@@ -394,10 +398,10 @@
       _handleWheel(e) {
         e.preventDefault();
 
-        this._moveTo( -e.deltaX, -e.deltaY );
+        this._moveTo(-e.deltaX, -e.deltaY);
         // this.moveStart = { x: e.clientX, y: e.clientY };
       }
-      _handleTouchMove(e) {}
+      _handleTouchMove(e) { }
       _handleTouchEnd(e) {
         this.moveStart = null;
       }

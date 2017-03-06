@@ -2,21 +2,18 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<!-- <link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html"> -->
-<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+
 <link rel="import" href="sm-editor.html">
 <dom-module id="sm-app">
   <template>
     <style>
-      header {
+      nav {
         position: absolute;
       }
+
 
       main {
         width: 100%;
@@ -26,21 +23,11 @@
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
     <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
 
-    <header>
-      <app-toolbar>
-        <paper-icon-button icon="search"></paper-icon-button>
-        <div main-title>Stitch Marker</div>
-        <paper-icon-button icon="menu"></paper-icon-button>
-      </app-toolbar>
-      <app-drawer>
-        <iron-icon icon="polymer" size="24px"></iron-icon>
-      </app-drawer>
-      <nav>
-        <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
-          <a name="editor" href="#/editor">Editor</a>
-        </iron-selector>
-      </nav>
-    </header>
+    <nav>
+      <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
+        <a name="editor" href="#/editor">Editor</a>
+      </iron-selector>
+    </nav>
     <main>
       <sm-editor id="editor"></sm-editor>
     </main>
