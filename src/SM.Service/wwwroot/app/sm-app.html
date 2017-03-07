@@ -20,6 +20,7 @@
         height: 100%;
       }
     </style>
+
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
     <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
 
@@ -29,9 +30,10 @@
         <a name="editor" href="#/editor">Editor</a>
       </iron-selector>
     </nav>
-    <iron-pages role="main" selected="[[routeData.page]]" attr-for-selected="name">
-      <sm-editor name="editor" id="editor"></sm-editor>
+
+    <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
       <sm-home name="home" id="home"></sm-home>
+      <sm-editor name="editor" id="editor"></sm-editor>      
     </iron-pages>
   </template>
   <script>
@@ -42,36 +44,16 @@
         return {
           view: {
             type: String,
-            observer: '_viewChanged'
+            value: 'home'
           }
         };
       }
 
-      static get observers() {
-        return [
-          '_routeChanged(route.*)'
-        ]
-      }
-
       connectedCallback() {
         super.connectedCallback();
+
         if (this.routeData.page) {
-          this.$[this.routeData.page].active = true;
-        }
-      }
-
-      _routeChanged(changeRecord) {
-        if (changeRecord.path === 'route') {
-          if (!changeRecord.value.path) {
-            this.set('routeData.page', 'home');
-          }
-        }
-      }
-
-      _viewChanged(value, oldValue) {
-        // TOOD: Set other views inactive.
-        if (value) {
-          this.$[value].active = true;
+          this.view = this.routeData.page;
         }
       }
     }
