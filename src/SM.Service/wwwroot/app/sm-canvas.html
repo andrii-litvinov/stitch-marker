@@ -20,6 +20,8 @@
     var toRelativeUnit = (n, ratio) => Math.floor(n / ratio);
     var toPixel = (n, ratio) => n * ratio;
     var getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+    const BACKGROUND_COLOR = 'white';
+    const GRID_COLOR = 'lightgray';
 
     class Point {
       constructor(x, y) {
@@ -96,6 +98,7 @@
             ctx.moveTo(x + innerSize, y);
             ctx.lineTo(x, y + innerSize);
             ctx.stroke();
+            break;
         }
       }
       setColor(color) {
@@ -215,11 +218,11 @@
           _end = end.toRelativeUnit(size);
 
         // background of grid
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = BACKGROUND_COLOR;
         ctx.fillRect(0, 0, gridWidth, gridHeight);
 
         // color of grid
-        ctx.strokeStyle = 'lightgray';
+        ctx.strokeStyle = GRID_COLOR;
         ctx.lineWidth = 1;
         ctx.beginPath();
 
@@ -308,11 +311,11 @@
 
       _setCell(pt, color) {
         let i = pt.x + this.wCells * pt.y;
-
-        if (!this.cells[i]) {
+        if (this.shape === 'eraser') {
+          delete this.cells[i];
+          this._redraw();
+        } else if (!this.cells[i] && this.shape !== 'eraser') {
           this.cells[i] = new Cell(pt.x, pt.y, color, this.shape, this);
-          // } else {
-          this.cells[i].setColor(color)
         }
       }
 
