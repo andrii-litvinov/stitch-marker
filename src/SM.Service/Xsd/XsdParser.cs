@@ -1,15 +1,19 @@
-public class XsdPatternParser : IPatternParser
+namespace SM.Service.Xsd
 {
-    public Pattern Parse(byte[] content)
+    public class XsdPatternParser : IPatternParser
     {
-        return new Pattern();
+        public Pattern Parse(byte[] content)
+        {
+            return new Pattern();
+        }
     }
-}
 
-public class Pattern
-{
-}
+    public class Pattern
+    {
+    }
 
-public interface IPatternParser
-{
+    public interface IPatternParser
+    {
+    }
+
 }
