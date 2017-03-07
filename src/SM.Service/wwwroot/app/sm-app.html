@@ -14,17 +14,14 @@
         padding: 30px;
         position: absolute;
       }
+
       iron-pages {
         width: 100%;
         height: 100%;
       }
     </style>
     <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
-    <app-route
-      id="route"
-      route="{{route}}"
-      pattern="/:page"
-      data="{{routeData}}"></app-route>
+    <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
 
     <nav>
       <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
@@ -62,6 +59,7 @@
           this.$[this.routeData.page].active = true;
         }
       }
+
       _routeChanged(changeRecord) {
         if (changeRecord.path === 'route') {
           if (!changeRecord.value.path) {
@@ -69,6 +67,7 @@
           }
         }
       }
+
       _viewChanged(value, oldValue) {
         // TOOD: Set other views inactive.
         if (value) {

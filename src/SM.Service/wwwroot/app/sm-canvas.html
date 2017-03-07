@@ -7,6 +7,7 @@
         height: 100%;
         overflow: hidden;
       }
+
       canvas {
         background: #f0f0f0;
         display: block;
@@ -17,6 +18,7 @@
 
   <script>
     'use strict';
+
     var toRelativeUnit = (n, ratio) => Math.floor(n / ratio);
     var toPixel = (n, ratio) => n * ratio;
     var getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
@@ -28,20 +30,23 @@
         this.x = x;
         this.y = y;
       }
+
       toRelativeUnit(ratio) {
         return {
           x: Math.floor(this.x / ratio),
           y: Math.floor(this.y / ratio)
         };
       }
+
       add(p) {
         this.x = this.x + p.x;
         this.y = this.y + p.y;
       }
     }
 
-
     class Cell {
+      // TODO: Rename Cell to Stitch.
+
       constructor(x, y, color, shape, grid) {
         this.x = x;
         this.y = y;
@@ -49,9 +54,14 @@
         this.grid = grid;
         this.shape = shape;
         this.abc = "abcdefghijklmnopqrstuvwxyz";
+
+        // TODO: Drawing cell in ctor does not sound like a good design.
         this.draw();
       }
+
       draw() {
+        // TODO: Should probably consider to pass context to draw method.
+
         let ctx = this.grid.ctx,
           size = this.grid.cellSize,
           x = toPixel(this.x, size) + 1,
@@ -101,6 +111,7 @@
             break;
         }
       }
+
       setColor(color) {
         this.color = color;
         this.draw();
@@ -187,7 +198,6 @@
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
-
 
         // setup events
         for (let e in this.events) {
