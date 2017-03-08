@@ -37,6 +37,9 @@
     </iron-pages>
   </template>
   <script>
+    const toLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+          fromLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
+
     class App extends Polymer.Element {
       static get is() { return "sm-app"; }
 

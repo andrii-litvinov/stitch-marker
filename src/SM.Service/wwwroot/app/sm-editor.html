@@ -8,13 +8,13 @@
 <dom-module id="sm-editor">
   <template>
     <style>
-       :host {
+      :host {
         display: none;
         width: 100%;
         height: 100%;
       }
 
-       :host([active]) {
+      :host([active]) {
         display: block;
       }
 
@@ -50,6 +50,7 @@
 
   <script>
     'use strict';
+    const LS_EDITOR_KEY = "sm_editor";
 
     class Editor extends Polymer.Element {
       static get is() { return 'sm-editor'; }
@@ -72,9 +73,23 @@
           ratio: [200, 200]
         };
 
-        this.zoom = 4;
-        this.shape = 'char';
-        this.color = '#ef9a9a';
+        const storedEditor = fromLocalStorage(LS_EDITOR_KEY);
+
+        this.zoom = storedEditor && storedEditor.zoom || 4;
+        this.shape = storedEditor && storedEditor.shape || 'char';
+        this.color = storedEditor && storedEditor.color || '#ef9a9a';
+
+        window.addEventListener('beforeunload', () => {
+          toLocalStorage(LS_EDITOR_KEY, this);
+        });
+      }
+
+      toJSON() {
+        return {
+          zoom: this.zoom,
+          shape: this.shape,
+          color: this.color
+        };
       }
       handleClickZoomIn(e) {
         this.set('zoom', Math.min(this.zoom * 1.2, 10));

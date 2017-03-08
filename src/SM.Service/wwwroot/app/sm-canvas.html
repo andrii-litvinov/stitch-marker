@@ -17,11 +17,14 @@
 
   <script>
     'use strict';
-    var toRelativeUnit = (n, ratio) => Math.floor(n / ratio);
-    var toPixel = (n, ratio) => n * ratio;
-    var getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
     const BACKGROUND_COLOR = 'white';
     const GRID_COLOR = 'lightgray';
+    const LS_GRID_KEY = 'sm_grid';
+
+    const toRelativeUnit = (n, ratio) => Math.floor(n / ratio),
+          toPixel = (n, ratio) => n * ratio,
+          getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
 
     class Point {
       constructor(x, y) {
@@ -48,7 +51,6 @@
         this.color = color;
         this.grid = grid;
         this.shape = shape;
-        this.abc = "abcdefghijklmnopqrstuvwxyz";
         this.draw();
       }
       draw() {
@@ -105,6 +107,17 @@
         this.color = color;
         this.draw();
       }
+      toJSON() {
+        let result = {};
+        const tempAttrs = ['grid'];
+
+        for (let x in this) {
+          if (~tempAttrs.indexOf(x)) continue;
+
+          result[x] = this[x];
+        }
+        return result;
+      }
     }
 
     class Canvas extends Polymer.Element {
@@ -131,6 +144,35 @@
         ]
       }
 
+      constructor() {
+        super();
+        this.canvas = this.$.canvas;
+        this.ctx = this.canvas.getContext('2d');
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+
+
+        window.addEventListener('beforeunload', () => {
+          toLocalStorage(LS_GRID_KEY, this);
+        });
+
+        let timer;
+        window.addEventListener('resize', (e) => {
+          // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
+
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            this._resize(window.innerWidth, window.innerHeight);
+          }, 250);
+        });
+      }
+
+      toJSON() {
+        let result = {};
+        result.cells = this.cells.filter(c => c);
+        return result;
+      }
+
       _enabledChanged() {
         if (this.enabled) {
           console.log('Rendering.');
@@ -148,33 +190,12 @@
         }
       }
 
-      constructor() {
-        super();
-        this.canvas = this.$.canvas;
-        this.ctx = this.canvas.getContext('2d');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-
-        let timer;
-        window.addEventListener('resize', (e) => {
-          // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
-
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            this._resize(window.innerWidth, window.innerHeight);
-          }, 250);
-        });
-      }
-
       _init() {
-        this.zoom = this.zoom || 4;
-        this.cellSize = Math.round(this.zoom * 5);
-
         this.wCells = this.config ? this.config.ratio[0] : 50;
         this.hCells = this.config ? this.config.ratio[1] : 50;
+        this.cells = new Array(this.wCells * this.hCells);
         this.zp = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode = 'move';
-        this.cells = new Array(this.wCells * this.hCells);
         this.events = {
           mouseup: (e) => this._handleMouseUp(e),
           mousedown: (e) => this._handleMouseDown(e),
@@ -186,7 +207,17 @@
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
+        const storedGrid = fromLocalStorage(LS_GRID_KEY);
 
+        if (storedGrid) {
+          console.log(storedGrid);
+          storedGrid.cells.forEach(c => {
+            this.cells[c.x + this.wCells * c.y] = new Cell(c.x, c.y, c.color, c.shape, this);
+          });
+        }
+
+        this.zoom = this.zoom || 4;
+        this.cellSize = Math.round(this.zoom * 5);
 
         // setup events
         for (let e in this.events) {
