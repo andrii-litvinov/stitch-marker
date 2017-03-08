@@ -40,12 +40,12 @@
         <paper-radio-button name="cross" value="cross">cross</paper-radio-button>
         <paper-radio-button name="plus" value="plus">plus</paper-radio-button>
         <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
-        <paper-swatch-picker color="#E91E63"></paper-swatch-picker>
       </paper-radio-group>
+      <sm-swatch-picker color="{{color}}"></sm-swatch-picker>
     </div>
 
 
-    <sm-canvas id="canvas" enabled="[[active]]" config={{canvasConfig}} zoom={{zoom}} shape="{{shape}}"></sm-canvas>
+    <sm-canvas id="canvas" enabled="[[active]]" config={{canvasConfig}} color="{{color}}" zoom={{zoom}} shape="{{shape}}"></sm-canvas>
   </template>
 
   <script>
@@ -74,6 +74,7 @@
 
         this.zoom = 4;
         this.shape = 'char';
+        this.color = '#ef9a9a';
       }
       handleClickZoomIn(e) {
         this.set('zoom', Math.min(this.zoom * 1.2, 10));

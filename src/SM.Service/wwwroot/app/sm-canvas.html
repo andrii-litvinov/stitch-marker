@@ -174,7 +174,6 @@
         this.hCells = this.config ? this.config.ratio[1] : 50;
         this.zp = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode = 'move';
-        this.color = 'blue';
         this.cells = new Array(this.wCells * this.hCells);
         this.events = {
           mouseup: (e) => this._handleMouseUp(e),
