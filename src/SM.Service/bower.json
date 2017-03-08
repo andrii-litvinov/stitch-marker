@@ -11,6 +11,10 @@
     "iron-pages": "PolymerElements/iron-pages#2.0-preview"
   },
   "resolutions": {
-    "polymer": "^2.0.0-rc.1"
+    "polymer": "^2.0.0-rc.1",
+    "iron-pages": "2.0-preview",
+    "paper-listbox": "2.0-preview",
+    "paper-item": "2.0-preview",
+    "paper-menu-button": "2.0-preview"
   }
 }

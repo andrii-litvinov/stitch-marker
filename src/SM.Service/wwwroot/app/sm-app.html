@@ -3,7 +3,6 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-
 <link rel="import" href="sm-editor.html">
 <link rel="import" href="sm-home.html">
 
@@ -37,6 +36,9 @@
     </iron-pages>
   </template>
   <script>
+    const toLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+          fromLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
+
     class App extends Polymer.Element {
       static get is() { return "sm-app"; }
 
