@@ -23,6 +23,12 @@
         position: absolute;
         right: 10px;
         top: 10px;
+        display: flex;
+        flex-direction: column;
+
+      }
+      paper-button.pink {
+          background-color: var(--paper-pink-a200);
       }
       paper-radio-group {
         display: flex;
@@ -44,6 +50,7 @@
       </paper-radio-group>
       <sm-swatch-picker color="{{color}}"></sm-swatch-picker>
       <sm-char-picker char="{{char}}" color="{{color}}"></sm-char-picker>
+     <paper-button on-tap="handleClearCanvas" class="pink" raised>Clear</paper-button>
     </div>
 
 
@@ -114,6 +121,11 @@
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.max(this.zoom / 1.2, 1));
       }
+
+      handleClearCanvas() {
+        this.$.canvas.reset();
+      }
+
     }
 
     customElements.define(Editor.is, Editor);

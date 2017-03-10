@@ -175,6 +175,12 @@
         });
       }
 
+      reset() {
+        this.cells = new Array(this.wCells * this.hCells);
+        this._draw();
+      }
+
+
       toJSON() {
         let result = {};
         result.cells = this.cells.filter(c => c);
