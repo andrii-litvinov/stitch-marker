@@ -4,6 +4,7 @@
 
 <link rel="import" href="sm-canvas.html">
 <link rel="import" href="swatch-picker/sm-swatch-picker.html">
+<link rel="import" href="char-picker/sm-char-picker.html">
 
 <dom-module id="sm-editor">
   <template>
@@ -42,10 +43,19 @@
         <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
       </paper-radio-group>
       <sm-swatch-picker color="{{color}}"></sm-swatch-picker>
+      <sm-char-picker char="{{char}}" color="{{color}}"></sm-char-picker>
     </div>
 
 
-    <sm-canvas id="canvas" enabled="[[active]]" config={{canvasConfig}} color="{{color}}" zoom={{zoom}} shape="{{shape}}"></sm-canvas>
+    <sm-canvas
+      id="canvas"
+      enabled="[[active]]"
+      config={{canvasConfig}}
+      color="{{color}}"
+      zoom={{zoom}}
+      shape="{{shape}}"
+      char="{{char}}">
+    </sm-canvas>
   </template>
 
   <script>
@@ -79,6 +89,7 @@
         this.zoom = storedEditor && storedEditor.zoom || 4;
         this.shape = storedEditor && storedEditor.shape || 'char';
         this.color = storedEditor && storedEditor.color || '#ef9a9a';
+        this.char = storedEditor && storedEditor.char || 'A';
 
         window.addEventListener('beforeunload', () => {
           toLocalStorage(LS_EDITOR_KEY, this);
@@ -89,7 +100,8 @@
         return {
           zoom: this.zoom,
           shape: this.shape,
-          color: this.color
+          color: this.color,
+          char: this.char
         };
       }
 
@@ -97,7 +109,7 @@
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.min(this.zoom * 1.2, 10));
       }
-      
+
       handleClickZoomOut(e) {
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.max(this.zoom / 1.2, 1));
