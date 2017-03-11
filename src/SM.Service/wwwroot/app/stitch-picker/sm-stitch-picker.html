@@ -5,18 +5,16 @@
 <link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 
-<!-- <link rel="import" href="../../bower_components/iron-icons/editor-icons.html"> -->
-
 
 <!--
 
 Example:
 
-    <sm-char-picker></sm-char-picker>
+    <sm-stitch-picker></sm-stitch-picker>
 
-    <sm-char-picker char="{{selectedChar}}"></sm-char-picker>
+    <sm-stitch-picker stitch="{{selectedstitch}}"></sm-stitch-picker>
 
-    <sm-char-picker column-count=5 char-list='["a", "b"]'></sm-char-picker>
+    <sm-stitch-picker column-count=5 stitch-list='["a", "b"]'></sm-stitch-picker>
 
 ### Styling
 
@@ -24,28 +22,29 @@ The following custom properties and mixins are available for styling:
 
 Custom property | Description | Default
 ----------------|-------------|----------
-`--paper-swatch-picker-color-size` | The size of each of the color boxes | `20px`
-`--paper-swatch-picker-icon-size` | The size of the color picker icon | `24px`
-`--paper-swatch-picker-icon` | Mixin applied to the color picker icon | `{}`
+`--paper-stitch-picker-color-size` | The size of each of the color boxes | `20px`
+`--paper-stitch-picker-icon-size` | The size of the color picker icon | `24px`
+`--paper-stitch-picker-icon` | Mixin applied to the color picker icon | `{}`
 
 -->
 
-<dom-module id="sm-char-picker">
+<dom-module id="sm-stitch-picker">
   <template>
     <style>
       :host {
         display: inline-block;
         position: relative;
+
       }
 
       :host(:focus) {
         outline: none;
       }
 
-      .char {
+      .stitch {
         box-sizing: border-box;
-        width: var(--paper-swatch-picker-color-size, 20px);
-        height: var(--paper-swatch-picker-color-size, 20px);
+        width: var(--paper-stitch-picker-color-size, 24px);
+        height: var(--paper-stitch-picker-color-size, 24px);
         display: inline-block;
         padding: 0;
         margin: 0;
@@ -55,7 +54,7 @@ Custom property | Description | Default
         text-align: center;
       }
 
-      .char:hover, .char:focus {
+      .stitch:hover, .stitch:focus {
         -webkit-transform: scale(1.3, 1.3);
         transform: scale(1.3, 1.3);
         outline: none;
@@ -63,8 +62,11 @@ Custom property | Description | Default
       }
 
       paper-button {
-        min-width: 3em;
-        color: white;
+        --paper-button: {
+          min-width: 2em;
+          height: 2em;
+          font-size: 2em;
+        }
       }
 
       paper-item {
@@ -80,64 +82,70 @@ Custom property | Description | Default
       }
 
       paper-listbox {
-        padding: 5px 10px;
+        @apply --layout-horisontal;
         font-size: 0;
         overflow: hidden;
-        @apply --layout-horisontal;
         @apply --layout-wrap;
+        padding: 0;
       }
     </style>
 
     <paper-menu-button vertical-align="[[verticalAlign]]" horizontal-align="[[horizontalAlign]]">
       <paper-button
         id="iconButton"
-        slot="dropdown-trigger" alt="char picker"
+        slot="dropdown-trigger" alt="stitch picker"
         raised
         noink$="[[noink]]">
-        {{char}}
+        {{stitch.symbol}}
       </paper-button>
       <paper-listbox class="dropdown-content" id="container">
-        <template is="dom-repeat" items="{{charList}}">
-          <paper-item class="char">{{item}}</paper-item>
+        <template is="dom-repeat" items="{{stitchList}}">
+          <paper-item class="stitch" data="{{item}}">{{item.symbol}}</paper-item>
         </template>
       </paper-listbox>
     </paper-menu-button>
   </template>
   <script>
     Polymer({
-      is: 'sm-char-picker',
+      is: 'sm-stitch-picker',
       hostAttributes: {
         'tabindex': 0
       },
       listeners: {
-        'iron-select': '_onCharTap'
+        'paper-dropdown-open': '_onOpen',
+        'iron-select': '_onStitchTap'
       },
       /**
        * Fired when a color has been selected
        *
-       * @event char-picker-selected
+       * @event stitch-picker-selected
        */
       properties: {
 
-        char: {
-          type: String,
-          notify: true
-        },
-        color: {
+        stitch: {
           type: String,
           notify: true,
-          observer: '_colorChanged'
+          observer: '_stitchChanged'
         },
 
-        charList: {
+        stitchList: {
           type: Array,
           value: function() {
-            return "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890#@$%?!*".split('');
+            return [
+              {
+                color: 'green',
+                symbol: String.fromCharCode('0x2764')
+              },
+              {
+                color: 'red',
+                symbol: String.fromCharCode('0x25BC')
+              },
+            ];
           }
         },
         /* The number of columns to display in the picker. This corresponds to
          * the number of generic colors (i.e. not counting the light/dark) variants
-         * of a specific color) you are using in your `colorList`. For example,
+         * of a specific color) you are using in your `stitchList`. For example,
          * the Material Design palette has 18 colors */
         columnCount: {
           type: Number,
@@ -162,7 +170,7 @@ Custom property | Description | Default
           reflectToAttribute: true
         },
         /**
-         * If true, the color picker button will not produce a ripple effect when interacted
+         * If true, the stitch picker button will not produce a ripple effect when interacted
          * with via the pointer.
          */
         noink: {
@@ -180,11 +188,11 @@ Custom property | Description | Default
         // width to fit all the columns.
         var sizeOfAColorDiv = this.getComputedStyleValue('--paper-swatch-picker-color-size');
         if (!sizeOfAColorDiv || sizeOfAColorDiv == '') {  // Default value case
-          sizeOfAColorDiv = 20;
+          sizeOfAColorDiv = 24;
         } else {
           sizeOfAColorDiv = sizeOfAColorDiv.replace('px', '');
         }
-        var rowCount = Math.ceil(this.charList.length / this.columnCount);
+        var rowCount = Math.ceil(this.stitchList.length / this.columnCount);
         this.$.container.style.height = rowCount * sizeOfAColorDiv + 'px';
         this.$.container.style.width = this.columnCount * sizeOfAColorDiv + 'px';
       },
@@ -194,15 +202,24 @@ Custom property | Description | Default
       _removeOverflowClass: function() {
         this.$.container.toggleClass('opened', false);
       },
-      _onCharTap: function(event) {
-        var item = event.detail.item;
-        var char = item.innerHTML;
-        // If it's in rgb format, convert it first.
-        this.char = item.innerHTML;
-        this.fire('char-picker-selected', {char: this.char});
+      _onOpen: function() {
+        // Fill in the colors if we haven't already.
+        if (this._renderedColors)
+          return;
+        var colorBoxes = this.$.container.querySelectorAll('.stitch');
+        for (var i = 0; i < colorBoxes.length; i++) {
+          colorBoxes[i].style.background = colorBoxes[i].data.color;
+          colorBoxes[i].innerHTML = colorBoxes[i].data.symbol;
+        }
+        this._renderedColors = true;
       },
-      _colorChanged: function() {
-        this.$.iconButton.style.background = this.color;
+      _onStitchTap: function(event) {
+        var item = event.detail.item;
+        this.stitch = item.data;
+        this.fire('stitch-picker-selected', {stitch: this.stitch});
+      },
+      _stitchChanged: function() {
+        this.$.iconButton.style.background = this.stitch.color;
       }
     });
   </script>

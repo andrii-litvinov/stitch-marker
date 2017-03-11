@@ -4,7 +4,7 @@
 
 <link rel="import" href="sm-canvas.html">
 <link rel="import" href="swatch-picker/sm-swatch-picker.html">
-<link rel="import" href="char-picker/sm-char-picker.html">
+<link rel="import" href="stitch-picker/sm-stitch-picker.html">
 
 <dom-module id="sm-editor">
   <template>
@@ -27,9 +27,11 @@
         flex-direction: column;
 
       }
-      paper-button.pink {
-          background-color: var(--paper-pink-a200);
+      paper-button.warning {
+        background-color: var(--paper-deep-orange-a400);
+        color: white;
       }
+
       paper-radio-group {
         display: flex;
         flex-direction: column;
@@ -40,17 +42,11 @@
       <paper-icon-button icon="zoom-in" on-click="handleClickZoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" on-click="handleClickZoomOut"></paper-icon-button>
       <paper-radio-group selected="{{shape}}">
-        <paper-radio-button name="rect" value="rect">rect</paper-radio-button>
-        <paper-radio-button name="char" value="char">char</paper-radio-button>
-        <paper-radio-button name="circuit" value="circuit">circuit</paper-radio-button>
-        <paper-radio-button name="circle" value="circle">circle</paper-radio-button>
-        <paper-radio-button name="cross" value="cross">cross</paper-radio-button>
-        <paper-radio-button name="plus" value="plus">plus</paper-radio-button>
+        <paper-radio-button name="stitch" value="stitch">stitch</paper-radio-button>
         <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
       </paper-radio-group>
-      <sm-swatch-picker color="{{color}}"></sm-swatch-picker>
-      <sm-char-picker char="{{char}}" color="{{color}}"></sm-char-picker>
-     <paper-button on-tap="handleClearCanvas" class="pink" raised>Clear</paper-button>
+      <sm-stitch-picker stitch="{{stitch}}" column-count="10" stitch-list={{stitchList}}></sm-stitch-picker>
+     <paper-button on-tap="handleClearCanvas" class="warning" raised>Clear</paper-button>
     </div>
 
 
@@ -58,10 +54,9 @@
       id="canvas"
       enabled="[[active]]"
       config={{canvasConfig}}
-      color="{{color}}"
       zoom={{zoom}}
       shape="{{shape}}"
-      char="{{char}}">
+      stitch="{{stitch}}">
     </sm-canvas>
   </template>
 
@@ -95,8 +90,18 @@
 
         this.zoom = storedEditor && storedEditor.zoom || 4;
         this.shape = storedEditor && storedEditor.shape || 'char';
-        this.color = storedEditor && storedEditor.color || '#ef9a9a';
-        this.char = storedEditor && storedEditor.char || 'A';
+
+        fetch('./fixtures/stitch-collection.json')
+          .then(res => res.json())
+          .then(stitchList => {
+            this.stitchList = stitchList.map(stitch => {
+              stitch.symbol = String.fromCharCode(stitch.symbol);
+              return stitch;
+            });
+
+            this.stitch = this.stitchList[0];
+          });
+
 
         window.addEventListener('beforeunload', () => {
           toLocalStorage(LS_EDITOR_KEY, this);
@@ -107,8 +112,7 @@
         return {
           zoom: this.zoom,
           shape: this.shape,
-          color: this.color,
-          char: this.char
+          stitch: this.stitch
         };
       }
 
