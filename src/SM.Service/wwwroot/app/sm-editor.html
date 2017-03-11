@@ -32,6 +32,11 @@
         color: white;
       }
 
+      paper-button.primary {
+        background-color: var(--paper-blue-700);
+        color: white;
+      }
+
       paper-radio-group {
         display: flex;
         flex-direction: column;
@@ -46,7 +51,8 @@
         <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
       </paper-radio-group>
       <sm-stitch-picker stitch="{{stitch}}" column-count="10" stitch-list={{stitchList}}></sm-stitch-picker>
-     <paper-button on-tap="handleClearCanvas" class="warning" raised>Clear</paper-button>
+     <paper-button on-tap="_clearCanvas" class="warning" raised>Clear</paper-button>
+     <paper-button on-tap="_saveCanvas" class="primary" raised>Save</paper-button>
     </div>
 
 
@@ -94,14 +100,9 @@
         fetch('./fixtures/stitch-collection.json')
           .then(res => res.json())
           .then(stitchList => {
-            this.stitchList = stitchList.map(stitch => {
-              stitch.symbol = String.fromCharCode(stitch.symbol);
-              return stitch;
-            });
-
+            this.stitchList = stitchList;
             this.stitch = this.stitchList[0];
           });
-
 
         window.addEventListener('beforeunload', () => {
           toLocalStorage(LS_EDITOR_KEY, this);
@@ -126,8 +127,12 @@
         this.set('zoom', Math.max(this.zoom / 1.2, 1));
       }
 
-      handleClearCanvas() {
+      _clearCanvas() {
         this.$.canvas.reset();
+      }
+
+      _saveCanvas() {
+        this.$.canvas.save();
       }
 
     }

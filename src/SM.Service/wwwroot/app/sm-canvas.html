@@ -45,42 +45,39 @@
       }
     }
 
-    class Cell {
-      // TODO: Rename Cell to Stitch.
-
+    class Stitch {
       constructor(x, y, stitch, grid) {
         this.x = x;
         this.y = y;
-        this.grid = grid;
-        this.stitch = stitch;
+        this._grid = grid;
+
+        Object.assign(this, stitch);
+        // this.stitch = stitch;
       }
 
-      draw() {
-        // TODO: Should probably consider to pass context to draw method.
-
-        let ctx = this.grid.ctx,
-          size = this.grid.cellSize,
+      draw(ctx) {
+        let size = this._grid.stitchSize,
           x = toPixel(this.x, size) + 1,
           y = toPixel(this.y, size) + 1,
           innerSize = size - 1,
           half = innerSize / 2;
 
-        const symbolWidth = ctx.measureText(this.stitch.symbol).width;
+        const symbolWidth = ctx.measureText(this.symbol).width;
 
         // draw background
-        ctx.fillStyle = this.stitch.color;
+        ctx.fillStyle = this.color;
         ctx.fillRect(x, y, innerSize, innerSize);
 
         // draw symbol
         ctx.fillStyle = 'black';
         ctx.font = innerSize * .9 + "px Arial";
 
-        ctx.fillText(this.stitch.symbol, x + (innerSize - symbolWidth) / 2, y + innerSize * .9);
+        ctx.fillText(this.symbol, x + (innerSize - symbolWidth) / 2, y + innerSize * .9);
       }
 
       toJSON() {
         let result = {};
-        const tempAttrs = ['grid'];
+        const tempAttrs = ['_grid'];
 
         for (let x in this) {
           if (~tempAttrs.indexOf(x)) continue;
@@ -123,10 +120,6 @@
         this.canvas.height = window.innerHeight;
 
 
-        window.addEventListener('beforeunload', () => {
-          toLocalStorage(LS_GRID_KEY, this);
-        });
-
         let timer;
         window.addEventListener('resize', (e) => {
           // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
@@ -143,10 +136,15 @@
         this._draw();
       }
 
+      save() {
+        toLocalStorage(LS_GRID_KEY, this);
+      }
+
 
       toJSON() {
         let result = {};
         result.cells = this.cells.filter(c => c);
+        console.log(result.cells);
         return result;
       }
 
@@ -169,7 +167,7 @@
 
       _init() {
         this.zoom = this.zoom || 4;
-        this.cellSize = Math.round(this.zoom * 5);
+        this.stitchSize = Math.round(this.zoom * 5);
         this.wCells = this.config ? this.config.ratio[0] : 50;
         this.hCells = this.config ? this.config.ratio[1] : 50;
         this.cells = new Array(this.wCells * this.hCells);
@@ -191,7 +189,7 @@
         if (storedGrid) {
           console.log(storedGrid);
           storedGrid.cells.forEach(c => {
-            this.cells[c.x + this.wCells * c.y] = new Cell(c.x, c.y, c.stitch, this);
+            this.cells[c.x + this.wCells * c.y] = new Stitch(c.x, c.y, {color: c.color, symbol: c.symbol}, this);
           });
         }
 
@@ -206,7 +204,7 @@
       }
 
       _drawGrid() {
-        let size = this.cellSize,
+        let size = this.stitchSize,
           gridWidth = toPixel(this.wCells, size),
           gridHeight = toPixel(this.hCells, size),
           zp = this.zp,
@@ -266,7 +264,7 @@
           for (let y = _begin.y; y <= _end.y; y++) {
             cell = this.cells[x + this.wCells * y];
 
-            if (cell) cell.draw();
+            if (cell) cell.draw(this.ctx);
           }
         }
       }
@@ -279,13 +277,13 @@
       }
 
       _zoom(focus, zoom) {
-        let oldSize = this.cellSize;
+        let oldSize = this.stitchSize;
 
         this.zoom = +zoom.toFixed(2);
-        this.cellSize = Math.round(this.zoom * 5);
+        this.stitchSize = Math.round(this.zoom * 5);
 
         if (this.zoom >= 1) {
-          let k = 1 - this.cellSize / oldSize;
+          let k = 1 - this.stitchSize / oldSize;
 
           this._moveTo(
             Math.round((focus.x - this.zp.x) * k),
@@ -321,8 +319,8 @@
           delete this.cells[i];
           this._redraw();
         } else if (!this.cells[i] && this.shape !== 'eraser') {
-          this.cells[i] = new Cell(pt.x, pt.y, this.stitch, this);
-          this.cells[i].draw();
+          this.cells[i] = new Stitch(pt.x, pt.y, this.stitch, this);
+          this.cells[i].draw(this.ctx);
         }
       }
 
@@ -341,7 +339,7 @@
         //   let pt = new Point(
         //     e.clientX - this.zp.x,
         //     e.clientY - this.zp.y
-        //   ).toRelativeUnit(this.cellSize);
+        //   ).toRelativeUnit(this.stitchSize);
 
         //   if (this.inGrid(pt)) {
         //       this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
@@ -350,7 +348,7 @@
         let pt = new Point(
           e.clientX - this.zp.x,
           e.clientY - this.zp.y
-        ).toRelativeUnit(this.cellSize);
+        ).toRelativeUnit(this.stitchSize);
 
         if (this._isInGrid(pt)) {
           this._setCell(pt, this.color);
@@ -384,7 +382,7 @@
           let pt = new Point(
             e.clientX - this.zp.x,
             e.clientY - this.zp.y
-          ).toRelativeUnit(this.cellSize);
+          ).toRelativeUnit(this.stitchSize);
 
           if (this._isInGrid(pt)) {
             this._setCell(pt, this.color);
