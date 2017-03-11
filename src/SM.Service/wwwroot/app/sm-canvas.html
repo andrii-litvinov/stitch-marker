@@ -48,13 +48,11 @@
     class Cell {
       // TODO: Rename Cell to Stitch.
 
-      constructor(x, y, color, shape, grid) {
+      constructor(x, y, stitch, grid) {
         this.x = x;
         this.y = y;
-        this.color = color;
         this.grid = grid;
-        this.shape = shape;
-        // this.draw();
+        this.stitch = stitch;
       }
 
       draw() {
@@ -67,53 +65,19 @@
           innerSize = size - 1,
           half = innerSize / 2;
 
-        ctx.fillStyle = this.color;
-        ctx.strokeStyle = this.color;
-        ctx.lineWidth = this.grid.zoom;
+        const symbolWidth = ctx.measureText(this.stitch.symbol).width;
 
+        // draw background
+        ctx.fillStyle = this.stitch.color;
+        ctx.fillRect(x, y, innerSize, innerSize);
 
-        switch (this.shape) {
-          case 'rect':
-            ctx.fillRect(x, y, innerSize, innerSize);
-            break;
-          case 'circle':
-            ctx.beginPath();
-            ctx.arc(x + half, y + half, half, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.fill();
-            break;
-          case 'circuit':
-            ctx.beginPath();
-            ctx.arc(x + half, y + half, half - this.grid.zoom, 0, Math.PI * 2, true);
-            ctx.stroke();
-            break;
-          case 'plus':
-            ctx.beginPath();
-            ctx.moveTo(x, y + half);
-            ctx.lineTo(x + innerSize, y + half);
-            ctx.moveTo(x + half, y);
-            ctx.lineTo(x + half, y + innerSize);
-            ctx.stroke();
-            break;
-          case 'char':
-            ctx.font = innerSize * 1.7 + "px Monospace";
-            ctx.fillText('Y', x, y + innerSize);
-            break;
-          case 'cross':
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + innerSize, y + innerSize);
-            ctx.moveTo(x + innerSize, y);
-            ctx.lineTo(x, y + innerSize);
-            ctx.stroke();
-            break;
-        }
+        // draw symbol
+        ctx.fillStyle = 'black';
+        ctx.font = innerSize * .9 + "px Arial";
+
+        ctx.fillText(this.stitch.symbol, x + (innerSize - symbolWidth) / 2, y + innerSize * .9);
       }
 
-      setColor(color) {
-        this.color = color;
-        this.draw();
-      }
       toJSON() {
         let result = {};
         const tempAttrs = ['grid'];
@@ -174,6 +138,12 @@
         });
       }
 
+      reset() {
+        this.cells = new Array(this.wCells * this.hCells);
+        this._draw();
+      }
+
+
       toJSON() {
         let result = {};
         result.cells = this.cells.filter(c => c);
@@ -221,7 +191,7 @@
         if (storedGrid) {
           console.log(storedGrid);
           storedGrid.cells.forEach(c => {
-            this.cells[c.x + this.wCells * c.y] = new Cell(c.x, c.y, c.color, c.shape, this);
+            this.cells[c.x + this.wCells * c.y] = new Cell(c.x, c.y, c.stitch, this);
           });
         }
 
@@ -351,7 +321,7 @@
           delete this.cells[i];
           this._redraw();
         } else if (!this.cells[i] && this.shape !== 'eraser') {
-          this.cells[i] = new Cell(pt.x, pt.y, color, this.shape, this);
+          this.cells[i] = new Cell(pt.x, pt.y, this.stitch, this);
           this.cells[i].draw();
         }
       }
