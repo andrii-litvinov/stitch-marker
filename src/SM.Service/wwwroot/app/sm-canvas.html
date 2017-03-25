@@ -23,7 +23,21 @@
     const LS_GRID_KEY = 'sm_grid';
 
     const toRelativeUnit = (n, ratio) => Math.floor(n / ratio),
-          toPixel = (n, ratio) => n * ratio;
+          toPixel = (n, ratio) => n * ratio,
+          debounce = (func, wait, immediate) => {
+            var timeout;
+            return function() {
+              var context = this, args = arguments;
+              var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+              };
+              var callNow = immediate && !timeout;
+              clearTimeout(timeout);
+              timeout = setTimeout(later, wait);
+              if (callNow) func.apply(context, args);
+            };
+          };
 
 
 
@@ -51,29 +65,26 @@
         Object.assign(this, data);
       }
 
-      draw(canvas) {
-        let size = canvas.stitchSize,
-          ctx = canvas.ctx,
-          x = toPixel(this.x, size),
+      draw(ctx, size) {
+        let x = toPixel(this.x, size),
           y = toPixel(this.y, size),
-          innerSize = size,
-          half = innerSize / 2;
+          half = size / 2;
 
 
         // draw color
         ctx.fillStyle = this.color || 'white';
-        ctx.fillRect(x, y, innerSize, innerSize);
+        ctx.fillRect(x, y, size, size);
 
         // draw symbol
         if (this.symbol) {
           const symbolWidth = ctx.measureText(this.symbol).width;
           ctx.fillStyle = 'black';
-          ctx.font = innerSize * .9 + "px Arial";
+          ctx.font = size * .9 + "px Arial";
 
           ctx.fillText(
             this.symbol,
-            x + (innerSize - symbolWidth) / 2,
-            y + innerSize * .9
+            x + (size - symbolWidth) / 2,
+            y + size * .9
           );
         }
       }
@@ -109,10 +120,10 @@
         this.canvas = this.$.canvas;
         this._canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
+        this._ctx = this._canvas.getContext('2d');
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
-        this.initialization = true;
-
+        this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
 
         let timer;
         window.addEventListener('resize', (e) => {
@@ -146,10 +157,11 @@
       }
 
       _enabledChanged() {
-        if (this.enabled && this.initialization) {
+        if (this.enabled) {
           console.log('Rendering.');
-          this._init().then(this._draw.bind(this));
-          // this._draw();
+          this._init();
+          this._draw();
+          this._drawCache();
         }
       }
 
@@ -164,9 +176,10 @@
 
       _init() {
         this.zoom = this.zoom || 4;
-        this.wCells = this.data ? this.data.ratio[0] : 50;
-        this.hCells = this.data ? this.data.ratio[1] : 50;
-        this.cells = new Array(this.wCells * this.hCells);
+        this.wCells = this.data ? this.data.width : 50;
+        this.hCells = this.data ? this.data.height : 50;
+        this.cells = this.data.cells;
+        this.oldStitchSize = this.stitchSize;
         this.zp = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode = 'move';
         this.events = {
@@ -180,6 +193,7 @@
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
+
         // const storedGrid = fromLocalStorage(LS_GRID_KEY);
 
         // if (storedGrid) {
@@ -193,33 +207,26 @@
         for (let e in this.events) {
           this.canvas.addEventListener(e, this.events[e]);
         }
-        // TODO: move to sm-editor component
-        return new Promise((resolve, reject) => {
-          fetch('./fixtures/pattern.json')
-            .then(res => res.json())
-            .then(pattern => {
-              let result = {
-                wCells: pattern.width,
-                hCells: pattern.height,
-                cells: []
-              };
-              pattern.stitches.forEach(s => {
-                let data = {
-                  x: s.point.x,
-                  y: s.point.y,
-                  symbol: pattern.configurations[s.configurationIndex].symbol,
-                  color: pattern.configurations[s.configurationIndex].hexColor
-                };
-                result.cells[data.x + result.wCells * data.y] = new Stitch(data);
-              });
-              this.initialization = false;
-              resolve(result);
-            });
-        });
-
       }
 
-      _draw(config) {
+      _drawCache() {
+        let size = this.stitchSize,
+          // draw grid only in window bounds
+          gridWidth = toPixel(this.wCells, size),
+          gridHeight = toPixel(this.hCells, size),
+          begin = new Point(0, 0),
+          end = new Point(gridWidth, gridHeight),
+          _begin = begin.toRelativeUnit(size),
+          _end = end.toRelativeUnit(size);
+
+        this._canvas.width = gridWidth + 1;
+        this._canvas.height = gridHeight + 1;
+        this._drawWorkspace(this._ctx, gridWidth, gridHeight);
+        this._drawStitches(this._ctx, _begin, _end, size);
+        this._drawGrid(this._ctx, begin, end, size);
+      }
+
+      _draw() {
         let zp = this.zp,
           size = this.stitchSize,
           // draw grid only in window bounds
@@ -236,10 +243,9 @@
           _begin = begin.toRelativeUnit(size),
           _end = end.toRelativeUnit(size);
 
-        Object.assign(this, config);
 
         this._drawWorkspace(this.ctx, gridWidth, gridHeight);
-        this._drawStitches(_begin, _end);
+        this._drawStitches(this.ctx, _begin, _end, size);
         this._drawGrid(this.ctx, begin, end, size);
       }
 
@@ -287,12 +293,12 @@
         ctx.stroke();
       }
 
-      _drawStitches(begin, end) {
+      _drawStitches(ctx, begin, end, size) {
         for (let x = begin.x, cell; x <= end.x; x++) {
           for (let y = begin.y; y <= end.y; y++) {
             cell = this.cells[x + this.wCells * y];
 
-            if (cell) cell.draw(this);
+            if (cell) cell.draw(ctx, size);
           }
         }
       }
@@ -302,21 +308,25 @@
         this.zp.y += y;
         this.ctx.translate(x, y);
         this._redraw();
+
       }
 
       _zoom(focus, zoom) {
-        let oldSize = this.stitchSize;
-
         this.zoom = +zoom.toFixed(2);
-        // this.stitchSize = Math.round(this.zoom * 5);
 
         if (this.zoom >= 1) {
-          let k = 1 - this.stitchSize / oldSize;
+          let k = 1 - this.stitchSize / this.oldStitchSize;
 
           this._moveTo(
             Math.round((focus.x - this.zp.x) * k),
             Math.round((focus.y - this.zp.y) * k)
           );
+          this.oldStitchSize = this.stitchSize;
+
+          // caching after render
+          this._debouncedDrawCache();
+          // setTimeout(this._drawCache.bind(this), 0);
+
         }
       }
 
@@ -353,7 +363,7 @@
             symbol: this.stitch.symbol,
             color: this.stitch.color
           });
-          this.cells[i].draw(this);
+          this.cells[i].draw(this.ctx, this.stitchSize);
         }
       }
 
@@ -419,6 +429,7 @@
 
           if (this._isInGrid(pt)) {
             this._setCell(pt, this.color);
+            this._debouncedDrawCache();
             // } else if (this.mode === 'move') {
             //   this.moveStart = { x: e.clientX, y: e.clientY };
           }
@@ -429,7 +440,13 @@
       _handleWheel(e) {
         e.preventDefault();
 
-        this._moveTo(-e.deltaX, -e.deltaY);
+        // this._moveTo(-e.deltaX, -e.deltaY);
+
+        this.zp.x -= e.deltaX;
+        this.zp.y -= e.deltaY;
+        this.ctx.translate(-e.deltaX, -e.deltaY);
+        this._clearGrid();
+        this.ctx.drawImage(this._canvas, 0, 0, this._canvas.width, this._canvas.height);
         // this.moveStart = { x: e.clientX, y: e.clientY };
       }
       _handleTouchMove(e) { }

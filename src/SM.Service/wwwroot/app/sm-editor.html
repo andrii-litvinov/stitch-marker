@@ -65,7 +65,7 @@
 
     <sm-canvas
       id="canvas"
-      enabled="[[active]]"
+      enabled="[[canvasEnabled]]"
       data={{canvasData}}
       zoom={{zoom}}
       shape="{{shape}}"
@@ -84,7 +84,8 @@
         return {
           active: {
             type: Boolean,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: '_fetchData'
           },
           canvasData: {
             type: Object,
@@ -95,9 +96,6 @@
 
       constructor() {
         super();
-        this.canvasData = {
-          ratio: [200, 200]
-        };
 
         const storedEditor = fromLocalStorage(LS_EDITOR_KEY);
 
@@ -124,6 +122,31 @@
           shape: this.shape,
           stitch: this.stitch
         };
+      }
+
+      _fetchData() {
+        if (this.active) {
+          fetch('./fixtures/pattern.json')
+            .then(res => res.json())
+            .then(pattern => {
+              let result = {
+                width: pattern.width,
+                height: pattern.height,
+                cells: []
+              };
+              pattern.stitches.forEach(s => {
+                let data = {
+                  x: s.point.x,
+                  y: s.point.y,
+                  symbol: pattern.configurations[s.configurationIndex].symbol,
+                  color: pattern.configurations[s.configurationIndex].hexColor
+                };
+                result.cells[data.x + result.width * data.y] = new Stitch(data);
+              });
+              this.canvasData = result;
+              this.canvasEnabled = true;
+            });
+        }
       }
 
       _zoomIn(e) {
