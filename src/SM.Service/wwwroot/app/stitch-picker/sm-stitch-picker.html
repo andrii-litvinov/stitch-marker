@@ -63,9 +63,9 @@ Custom property | Description | Default
 
       paper-button {
         --paper-button: {
-          min-width: 2em;
-          height: 2em;
-          font-size: 2em;
+          min-width: 1em;
+          height: 1em;
+          font-size: 1.5em;
         }
       }
 
@@ -121,6 +121,11 @@ Custom property | Description | Default
        * @event stitch-picker-selected
        */
       properties: {
+        enabled: {
+          type: Object,
+          reflectToAttribute: true,
+          observer: '_enabledChanged'
+        },
 
         stitch: {
           type: String,
@@ -182,19 +187,21 @@ Custom property | Description | Default
         // actually tapped.
         this._renderedColors = false;
       },
-      attached: function() {
+      _enabledChanged: function() {
         // Fit the color boxes in columns. We first need to get the width of
         // a color box (which is customizable), and then change the box's
         // width to fit all the columns.
-        var sizeOfAColorDiv = this.getComputedStyleValue('--paper-swatch-picker-color-size');
-        if (!sizeOfAColorDiv || sizeOfAColorDiv == '') {  // Default value case
-          sizeOfAColorDiv = 24;
-        } else {
-          sizeOfAColorDiv = sizeOfAColorDiv.replace('px', '');
+        if (this.enabled) {
+          var sizeOfAColorDiv = this.getComputedStyleValue('--paper-swatch-picker-color-size');
+          if (!sizeOfAColorDiv || sizeOfAColorDiv == '') {  // Default value case
+            sizeOfAColorDiv = 24;
+          } else {
+            sizeOfAColorDiv = sizeOfAColorDiv.replace('px', '');
+          }
+          var rowCount = Math.ceil(this.stitchList.length / this.columnCount);
+          this.$.container.style.height = rowCount * sizeOfAColorDiv + 'px';
+          this.$.container.style.width = this.columnCount * sizeOfAColorDiv + 'px';
         }
-        var rowCount = Math.ceil(this.stitchList.length / this.columnCount);
-        this.$.container.style.height = rowCount * sizeOfAColorDiv + 'px';
-        this.$.container.style.width = this.columnCount * sizeOfAColorDiv + 'px';
       },
       _addOverflowClass: function() {
         this.$.container.toggleClass('opened', true);
@@ -209,7 +216,7 @@ Custom property | Description | Default
         var colorBoxes = this.$.container.querySelectorAll('.stitch');
         for (var i = 0; i < colorBoxes.length; i++) {
           colorBoxes[i].style.background = colorBoxes[i].data.color;
-          colorBoxes[i].innerHTML = colorBoxes[i].data.symbol;
+          colorBoxes[i].innerHTML = colorBoxes[i].data.symbol || '';
         }
         this._renderedColors = true;
       },

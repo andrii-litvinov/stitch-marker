@@ -44,22 +44,29 @@
     </style>
 
     <div class="controls">
-      <paper-icon-button icon="zoom-in" on-click="handleClickZoomIn"></paper-icon-button>
-      <paper-icon-button icon="zoom-out" on-click="handleClickZoomOut"></paper-icon-button>
+      <paper-icon-button icon="zoom-in" on-tap="_zoomIn"></paper-icon-button>
+      <paper-icon-button icon="zoom-out" on-tap="_zoomOut"></paper-icon-button>
       <paper-radio-group selected="{{shape}}">
         <paper-radio-button name="stitch" value="stitch">stitch</paper-radio-button>
         <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
       </paper-radio-group>
-      <sm-stitch-picker stitch="{{stitch}}" column-count="10" stitch-list={{stitchList}}></sm-stitch-picker>
-     <paper-button on-tap="_clearCanvas" class="warning" raised>Clear</paper-button>
-     <paper-button on-tap="_saveCanvas" class="primary" raised>Save</paper-button>
+      <sm-stitch-picker
+        stitch="{{stitch}}"
+        column-count="20"
+        enabled="[[stitchListIsLoaded]]"
+        stitch-list=[[stitchList]]>
+      </sm-stitch-picker>
+     <paper-button on-tap="_saveCanvas" class="primary" title="save" raised icon="save">
+        <iron-icon icon="save"></iron-icon>
+      </paper-button>
+     <paper-button on-tap="_clearCanvas" class="warning" title="clear" raised>Clear</paper-button>
     </div>
 
 
     <sm-canvas
       id="canvas"
       enabled="[[active]]"
-      config={{canvasConfig}}
+      data={{canvasData}}
       zoom={{zoom}}
       shape="{{shape}}"
       stitch="{{stitch}}">
@@ -79,7 +86,7 @@
             type: Boolean,
             reflectToAttribute: true
           },
-          canvasConfig: {
+          canvasData: {
             type: Object,
             reflectToAttribute: true
           }
@@ -88,7 +95,7 @@
 
       constructor() {
         super();
-        this.canvasConfig = {
+        this.canvasData = {
           ratio: [200, 200]
         };
 
@@ -97,11 +104,13 @@
         this.zoom = storedEditor && storedEditor.zoom || 4;
         this.shape = storedEditor && storedEditor.shape || 'char';
 
+        this.stitchListIsLoaded = false;
         fetch('./fixtures/stitch-collection.json')
           .then(res => res.json())
           .then(stitchList => {
             this.stitchList = stitchList;
             this.stitch = this.stitchList[0];
+            this.stitchListIsLoaded = true;
           });
 
         window.addEventListener('beforeunload', () => {
@@ -117,12 +126,12 @@
         };
       }
 
-      handleClickZoomIn(e) {
+      _zoomIn(e) {
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.min(this.zoom * 1.2, 10));
       }
 
-      handleClickZoomOut(e) {
+      _zoomOut(e) {
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.max(this.zoom / 1.2, 1));
       }

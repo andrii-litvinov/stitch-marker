@@ -26,6 +26,7 @@
           toPixel = (n, ratio) => n * ratio;
 
 
+
     class Point {
       constructor(x, y) {
         this.x = x;
@@ -46,46 +47,37 @@
     }
 
     class Stitch {
-      constructor(x, y, stitch, grid) {
-        this.x = x;
-        this.y = y;
-        this._grid = grid;
-
-        Object.assign(this, stitch);
-        // this.stitch = stitch;
+      constructor(data) {
+        Object.assign(this, data);
       }
 
-      draw(ctx) {
-        let size = this._grid.stitchSize,
-          x = toPixel(this.x, size) + 1,
-          y = toPixel(this.y, size) + 1,
-          innerSize = size - 1,
+      draw(canvas) {
+        let size = canvas.stitchSize,
+          ctx = canvas.ctx,
+          x = toPixel(this.x, size),
+          y = toPixel(this.y, size),
+          innerSize = size,
           half = innerSize / 2;
 
-        const symbolWidth = ctx.measureText(this.symbol).width;
 
-        // draw background
-        ctx.fillStyle = this.color;
+        // draw color
+        ctx.fillStyle = this.color || 'white';
         ctx.fillRect(x, y, innerSize, innerSize);
 
         // draw symbol
-        ctx.fillStyle = 'black';
-        ctx.font = innerSize * .9 + "px Arial";
+        if (this.symbol) {
+          const symbolWidth = ctx.measureText(this.symbol).width;
+          ctx.fillStyle = 'black';
+          ctx.font = innerSize * .9 + "px Arial";
 
-        ctx.fillText(this.symbol, x + (innerSize - symbolWidth) / 2, y + innerSize * .9);
-      }
-
-      toJSON() {
-        let result = {};
-        const tempAttrs = ['_grid'];
-
-        for (let x in this) {
-          if (~tempAttrs.indexOf(x)) continue;
-
-          result[x] = this[x];
+          ctx.fillText(
+            this.symbol,
+            x + (innerSize - symbolWidth) / 2,
+            y + innerSize * .9
+          );
         }
-        return result;
       }
+
     }
 
     class Canvas extends Polymer.Element {
@@ -115,9 +107,11 @@
       constructor() {
         super();
         this.canvas = this.$.canvas;
+        this._canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
+        this.initialization = true;
 
 
         let timer;
@@ -131,6 +125,10 @@
         });
       }
 
+      get stitchSize() {
+        return Math.round(this.zoom * 5);
+      }
+
       reset() {
         this.cells = new Array(this.wCells * this.hCells);
         this._draw();
@@ -142,17 +140,16 @@
 
 
       toJSON() {
-        let result = {};
-        result.cells = this.cells.filter(c => c);
-        console.log(result.cells);
-        return result;
+        return {
+          cells: this.cells.filter(c => c)
+        };
       }
 
       _enabledChanged() {
-        if (this.enabled) {
+        if (this.enabled && this.initialization) {
           console.log('Rendering.');
-          this._init();
-          this._draw();
+          this._init().then(this._draw.bind(this));
+          // this._draw();
         }
       }
 
@@ -167,9 +164,8 @@
 
       _init() {
         this.zoom = this.zoom || 4;
-        this.stitchSize = Math.round(this.zoom * 5);
-        this.wCells = this.config ? this.config.ratio[0] : 50;
-        this.hCells = this.config ? this.config.ratio[1] : 50;
+        this.wCells = this.data ? this.data.ratio[0] : 50;
+        this.hCells = this.data ? this.data.ratio[1] : 50;
         this.cells = new Array(this.wCells * this.hCells);
         this.zp = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode = 'move';
@@ -184,32 +180,51 @@
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
-        const storedGrid = fromLocalStorage(LS_GRID_KEY);
+        // const storedGrid = fromLocalStorage(LS_GRID_KEY);
 
-        if (storedGrid) {
-          console.log(storedGrid);
-          storedGrid.cells.forEach(c => {
-            this.cells[c.x + this.wCells * c.y] = new Stitch(c.x, c.y, {color: c.color, symbol: c.symbol}, this);
-          });
-        }
+        // if (storedGrid) {
+        //   console.log(storedGrid);
+        //   storedGrid.cells.forEach(c => {
+        //     this.cells[c.x + this.wCells * c.y] = new Stitch(c.x, c.y, {color: c.color, symbol: c.symbol});
+        //   });
+        // }
 
         // setup events
         for (let e in this.events) {
           this.canvas.addEventListener(e, this.events[e]);
         }
+        // TODO: move to sm-editor component
+        return new Promise((resolve, reject) => {
+          fetch('./fixtures/pattern.json')
+            .then(res => res.json())
+            .then(pattern => {
+              let result = {
+                wCells: pattern.width,
+                hCells: pattern.height,
+                cells: []
+              };
+              pattern.stitches.forEach(s => {
+                let data = {
+                  x: s.point.x,
+                  y: s.point.y,
+                  symbol: pattern.configurations[s.configurationIndex].symbol,
+                  color: pattern.configurations[s.configurationIndex].hexColor
+                };
+                result.cells[data.x + result.wCells * data.y] = new Stitch(data);
+              });
+              this.initialization = false;
+              resolve(result);
+            });
+        });
+
       }
 
-      _draw() {
-        this._drawGrid();
-      }
-
-      _drawGrid() {
-        let size = this.stitchSize,
+      _draw(config) {
+        let zp = this.zp,
+          size = this.stitchSize,
+          // draw grid only in window bounds
           gridWidth = toPixel(this.wCells, size),
           gridHeight = toPixel(this.hCells, size),
-          zp = this.zp,
-          ctx = this.ctx,
-          // draw grid only in window
           begin = new Point(
             Math.max(0, zp.x % size - zp.x - size),
             Math.max(0, zp.y % size - zp.y - size)
@@ -221,10 +236,21 @@
           _begin = begin.toRelativeUnit(size),
           _end = end.toRelativeUnit(size);
 
+        Object.assign(this, config);
+
+        this._drawWorkspace(this.ctx, gridWidth, gridHeight);
+        this._drawStitches(_begin, _end);
+        this._drawGrid(this.ctx, begin, end, size);
+      }
+
+      _drawWorkspace(ctx, gridWidth, gridHeight) {
         // background of grid
         ctx.fillStyle = BACKGROUND_COLOR;
         ctx.fillRect(0, 0, gridWidth, gridHeight);
 
+      }
+
+      _drawGrid(ctx, begin, end, size) {
         // color of grid
         ctx.strokeStyle = GRID_COLOR;
         ctx.lineWidth = 1;
@@ -259,12 +285,14 @@
           }
         }
         ctx.stroke();
+      }
 
-        for (let x = _begin.x, cell; x <= _end.x; x++) {
-          for (let y = _begin.y; y <= _end.y; y++) {
+      _drawStitches(begin, end) {
+        for (let x = begin.x, cell; x <= end.x; x++) {
+          for (let y = begin.y; y <= end.y; y++) {
             cell = this.cells[x + this.wCells * y];
 
-            if (cell) cell.draw(this.ctx);
+            if (cell) cell.draw(this);
           }
         }
       }
@@ -280,7 +308,7 @@
         let oldSize = this.stitchSize;
 
         this.zoom = +zoom.toFixed(2);
-        this.stitchSize = Math.round(this.zoom * 5);
+        // this.stitchSize = Math.round(this.zoom * 5);
 
         if (this.zoom >= 1) {
           let k = 1 - this.stitchSize / oldSize;
@@ -319,8 +347,13 @@
           delete this.cells[i];
           this._redraw();
         } else if (!this.cells[i] && this.shape !== 'eraser') {
-          this.cells[i] = new Stitch(pt.x, pt.y, this.stitch, this);
-          this.cells[i].draw(this.ctx);
+          this.cells[i] = new Stitch({
+            x: pt.x,
+            y: pt.y,
+            symbol: this.stitch.symbol,
+            color: this.stitch.color
+          });
+          this.cells[i].draw(this);
         }
       }
 
