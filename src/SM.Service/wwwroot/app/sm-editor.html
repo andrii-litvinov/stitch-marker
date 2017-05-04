@@ -125,8 +125,8 @@
       }
 
       _fetchData() {
-        if (this.active) {
-          fetch('./fixtures/pattern.json')
+          if (this.active) {
+            fetch('/api/patterns/727cc7e7-5ac3-4e13-92a0-db67c1416260')
             .then(res => res.json())
             .then(pattern => {
               let result = {

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SM.Core;
+using SM.Xsd;
 
 namespace SM.Service
 {
@@ -12,12 +14,15 @@ namespace SM.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+
+            services.AddSingleton<IPatternReader, XsdPatternReader>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+            app.UseDefaultFiles().UseStaticFiles();
             app.UseMvc();
         }
     }
