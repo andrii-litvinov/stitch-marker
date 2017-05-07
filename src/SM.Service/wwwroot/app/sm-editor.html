@@ -124,28 +124,26 @@
         };
       }
 
-      _fetchData() {
-        if (this.active) {
-          fetch('./fixtures/pattern.json')
-            .then(res => res.json())
-            .then(pattern => {
-              let result = {
-                width: pattern.width,
-                height: pattern.height,
-                cells: []
+      async _fetchData() {
+          if (this.active) {
+              const response = await fetch('/api/patterns/727cc7e7-5ac3-4e13-92a0-db67c1416260');
+              const pattern = await response.json();
+              const result = {
+                  width: pattern.width,
+                  height: pattern.height,
+                  cells: []
               };
               pattern.stitches.forEach(s => {
-                let data = {
-                  x: s.point.x,
-                  y: s.point.y,
-                  symbol: pattern.configurations[s.configurationIndex].symbol,
-                  color: pattern.configurations[s.configurationIndex].hexColor
-                };
-                result.cells[data.x + result.width * data.y] = new Stitch(data);
+                  let data = {
+                      x: s.point.x,
+                      y: s.point.y,
+                      symbol: pattern.configurations[s.configurationIndex].symbol,
+                      color: pattern.configurations[s.configurationIndex].hexColor
+                  };
+                  result.cells[data.x + result.width * data.y] = new Stitch(data);
               });
               this.canvasData = result;
               this.canvasEnabled = true;
-            });
         }
       }
 
