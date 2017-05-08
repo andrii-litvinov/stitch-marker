@@ -10,11 +10,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CD55D5FA-2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Service.Tests", "test\SM.Service.Tests\SM.Service.Tests.csproj", "{1A7E4EDF-06D4-4E94-A897-FC79F3C3BAE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Xsd", "SM.Xsd\SM.Xsd.csproj", "{333285B4-CCAD-4E0B-ACDD-E516B79DF2E4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Xsd", "src\SM.Xsd\SM.Xsd.csproj", "{333285B4-CCAD-4E0B-ACDD-E516B79DF2E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Xsd.Tests.Unit", "SM.Xsd.Tests.Unit\SM.Xsd.Tests.Unit.csproj", "{546BDB54-9DF1-4D2D-B931-FA1200784EC9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Xsd.Tests.Unit", "test\SM.Xsd.Tests.Unit\SM.Xsd.Tests.Unit.csproj", "{546BDB54-9DF1-4D2D-B931-FA1200784EC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Core", "SM.Core\SM.Core.csproj", "{56ABE305-4C4B-4C4D-8544-273C039803D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SM.Core", "src\SM.Core\SM.Core.csproj", "{56ABE305-4C4B-4C4D-8544-273C039803D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

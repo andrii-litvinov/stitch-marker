@@ -16,13 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SM.Xsd\SM.Xsd.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="FluentAssertions">
-      <HintPath>..\..\..\..\.nuget\packages\fluentassertions\4.19.0\lib\netstandard1.3\FluentAssertions.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\src\SM.Xsd\SM.Xsd.csproj" />
   </ItemGroup>
 
   <ItemGroup>

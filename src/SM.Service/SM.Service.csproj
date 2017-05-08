@@ -15,7 +15,7 @@
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SM.Core\SM.Core.csproj" />
-    <ProjectReference Include="..\..\SM.Xsd\SM.Xsd.csproj" />
+    <ProjectReference Include="..\SM.Core\SM.Core.csproj" />
+    <ProjectReference Include="..\SM.Xsd\SM.Xsd.csproj" />
   </ItemGroup>
 </Project>
