@@ -112,18 +112,11 @@
         return [
           '_enabledChanged(enabled)',
           '_zoomChanged(zoom)'
-        ]
+        ];
       }
 
       constructor() {
         super();
-        this.canvas = this.$.canvas;
-        this._canvas = document.createElement('canvas');
-        this.ctx = this.canvas.getContext('2d');
-        this._ctx = this._canvas.getContext('2d');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-        this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
 
         let timer;
         window.addEventListener('resize', (e) => {
@@ -134,6 +127,18 @@
             this._resize(window.innerWidth, window.innerHeight);
           }, 250);
         });
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+
+        this.canvas = this.$.canvas;
+        this._canvas = document.createElement('canvas');
+        this.ctx = this.canvas.getContext('2d');
+        this._ctx = this._canvas.getContext('2d');
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
       }
 
       get stitchSize() {
