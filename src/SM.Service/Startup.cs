@@ -14,7 +14,7 @@ namespace SM.Service
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
+            services.AddCors();
             services.AddSingleton<IPatternReader, XsdPatternReader>();
         }
 
@@ -22,6 +22,9 @@ namespace SM.Service
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
+
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
             app.UseDefaultFiles().UseStaticFiles();
             app.UseMvc();
         }

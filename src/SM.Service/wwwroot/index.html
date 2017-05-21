@@ -20,7 +20,21 @@
 </head>
 
 <body>
-  <sm-app></sm-app>
+<sm-app></sm-app>
+<script>
+    (function () {
+        if (typeof fetch === 'undefined') {
+            [
+                'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js',
+                'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.js'
+            ].forEach(src => {
+                const script = document.createElement('script');
+                script.src = src;
+                document.write(script.outerHTML);
+            });
+        }
+    })();
+</script>
   <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 </body>
 
