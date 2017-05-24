@@ -9,13 +9,13 @@
 <dom-module id="sm-editor">
   <template>
     <style>
-      :host {
+       :host {
         display: none;
         width: 100%;
         height: 100%;
       }
 
-      :host([active]) {
+       :host([active]) {
         display: block;
       }
 
@@ -25,8 +25,8 @@
         top: 10px;
         display: flex;
         flex-direction: column;
-
       }
+
       paper-button.warning {
         background-color: var(--paper-deep-orange-a400);
         color: white;
@@ -50,26 +50,16 @@
         <paper-radio-button name="stitch" value="stitch">stitch</paper-radio-button>
         <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
       </paper-radio-group>
-      <sm-stitch-picker
-        stitch="{{stitch}}"
-        column-count="20"
-        enabled="[[stitchListIsLoaded]]"
-        stitch-list=[[stitchList]]>
+      <sm-stitch-picker stitch="{{stitch}}" column-count="20" enabled="[[stitchListIsLoaded]]" stitch-list=[[stitchList]]>
       </sm-stitch-picker>
-     <paper-button on-tap="_saveCanvas" class="primary" title="save" raised icon="save">
+      <paper-button on-tap="_saveCanvas" class="primary" title="save" raised icon="save">
         <iron-icon icon="save"></iron-icon>
       </paper-button>
-     <paper-button on-tap="_clearCanvas" class="warning" title="clear" raised>Clear</paper-button>
+      <paper-button on-tap="_clearCanvas" class="warning" title="clear" raised>Clear</paper-button>
     </div>
 
 
-    <sm-canvas
-      id="canvas"
-      enabled="[[canvasEnabled]]"
-      data={{canvasData}}
-      zoom={{zoom}}
-      shape="{{shape}}"
-      stitch="{{stitch}}">
+    <sm-canvas id="canvas" enabled="[[canvasEnabled]]" data={{canvasData}} zoom={{zoom}} shape="{{shape}}" stitch="{{stitch}}">
     </sm-canvas>
   </template>
 
@@ -103,7 +93,7 @@
         this.shape = storedEditor && storedEditor.shape || 'char';
 
         this.stitchListIsLoaded = false;
-        fetch('./fixtures/stitch-collection.json')
+        fetch('fixtures/stitch-collection.json')
           .then(res => res.json())
           .then(stitchList => {
             this.stitchList = stitchList;
@@ -125,25 +115,25 @@
       }
 
       async _fetchData() {
-          if (this.active) {
-              const response = await fetch('http://localhost:5000/api/patterns/727cc7e7-5ac3-4e13-92a0-db67c1416260');
-              const pattern = await response.json();
-              const result = {
-                  width: pattern.width,
-                  height: pattern.height,
-                  cells: []
-              };
-              pattern.stitches.forEach(s => {
-                  let data = {
-                      x: s.point.x,
-                      y: s.point.y,
-                      symbol: pattern.configurations[s.configurationIndex].symbol,
-                      color: pattern.configurations[s.configurationIndex].hexColor
-                  };
-                  result.cells[data.x + result.width * data.y] = new Stitch(data);
-              });
-              this.canvasData = result;
-              this.canvasEnabled = true;
+        if (this.active) {
+          const response = await fetch(`${window.SM.apiUrl}api/patterns/727cc7e7-5ac3-4e13-92a0-db67c1416260`);
+          const pattern = await response.json();
+          const result = {
+            width: pattern.width,
+            height: pattern.height,
+            cells: []
+          };
+          pattern.stitches.forEach(s => {
+            let data = {
+              x: s.point.x,
+              y: s.point.y,
+              symbol: pattern.configurations[s.configurationIndex].symbol,
+              color: pattern.configurations[s.configurationIndex].hexColor
+            };
+            result.cells[data.x + result.width * data.y] = new Stitch(data);
+          });
+          this.canvasData = result;
+          this.canvasEnabled = true;
         }
       }
 

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Stitch marker</title>
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <link rel="import" href="bower_components/polymer/polymer.html">
   <link rel="import" href="app/sm-app.html">
   <style>
     html,
@@ -20,21 +21,28 @@
 </head>
 
 <body>
-<sm-app></sm-app>
-<script>
+  <script>
+    var SM = {
+      apiUrl: 'http://localhost:5000/'
+    };
+  </script>
+
+  <sm-app></sm-app>
+  
+  <script>
     (function () {
-        if (typeof fetch === 'undefined') {
-            [
-                'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js',
-                'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.js'
-            ].forEach(src => {
-                const script = document.createElement('script');
-                script.src = src;
-                document.write(script.outerHTML);
-            });
-        }
+      if (typeof fetch === 'undefined') {
+        [
+          'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js',
+          'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.js'
+        ].forEach(src => {
+          const script = document.createElement('script');
+          script.src = src;
+          document.write(script.outerHTML);
+        });
+      }
     })();
-</script>
+  </script>
   <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 </body>
 
