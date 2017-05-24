@@ -22,10 +22,7 @@ namespace SM.Service
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole();
-
             app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-            app.UseDefaultFiles().UseStaticFiles();
             app.UseMvc();
         }
     }
