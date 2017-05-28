@@ -27,8 +27,8 @@
 
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-home name="home"></stitch-home>
-      <stitch-editor name="editor"></stitch-editor>
       <stitch-upload name="upload"></stitch-upload>
+      <stitch-editor name="editor"></stitch-editor>
     </iron-pages>
   </template>
   <script>
@@ -37,15 +37,6 @@
 
     class App extends Polymer.Element {
       static get is() { return "stitch-app"; }
-
-      static get properties() {
-        return {
-          view: {
-            type: String,
-            value: 'home'
-          }
-        };
-      }
     }
 
     customElements.define(App.is, App);
