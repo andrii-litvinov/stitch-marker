@@ -5,21 +5,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Stitch marker</title>
-  <link rel="import" href="bower_components/polymer/polymer.html">
-  <link rel="import" href="app/sm-app.html">
-  <style>
-  </style>
-</head>
-
-<body>
   <script>
     var SM = {
       apiUrl: 'http://localhost:5000/api/'
     };
   </script>
+  <link rel="import" href="bower_components/polymer/polymer.html">
+  <link rel="import" href="app/sm-app.html">
+  <style>
 
+  </style>
+</head>
+
+<body>
   <sm-app></sm-app>
-
   <script>
     (function () {
       if (typeof fetch === 'undefined') {

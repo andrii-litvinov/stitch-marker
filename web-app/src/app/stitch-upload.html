@@ -2,11 +2,25 @@
 
 <dom-module id="stitch-upload">
   <template>
-    <vaadin-upload></vaadin-upload>
+    <style>
+      :host{
+        display: block;
+      }
+    </style>
+    <vaadin-upload target="[[uploadUrl]]"></vaadin-upload>
   </template>
   <script>
     class Upload extends Polymer.Element {
       static get is() { return "stitch-upload"; }
+
+      static get properties() {
+        return {
+          uploadUrl: {
+            type: String,
+            value: `${SM.apiUrl}upload`
+          }
+        }
+      }
     }
 
     customElements.define(Upload.is, Upload);
