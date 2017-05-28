@@ -1,3 +1,4 @@
+<link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 
 <dom-module id="stitch-upload">
@@ -7,7 +8,7 @@
         display: block;
       }
     </style>
-    <app-location id="location" route="{{route}}"></app-location>
+    <app-location id="location" path="[[path]]" query-params="[[queryParams]]"></app-location>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="onUploadResponse" nodrop></vaadin-upload>
   </template>
   <script>
@@ -30,7 +31,8 @@
         const xhr = event.detail.xhr;
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
-          this.set('route.path', `/editor/${location}`);
+          this.path = '/editor';
+          this.queryParams = {schemeId: location};
         }
       }
     }
