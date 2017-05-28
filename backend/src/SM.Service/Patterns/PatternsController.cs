@@ -28,5 +28,13 @@ namespace SM.Service.Patterns
                 return Ok(pattern);
             }
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Post()
+        {
+            Response.Headers.Add("Access-Control-Expose-Headers", "Location");
+            var createdResult = Created(Guid.NewGuid().ToString(), null);
+            return createdResult;
+        }
     }
 }

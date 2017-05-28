@@ -3,22 +3,35 @@
 <dom-module id="stitch-upload">
   <template>
     <style>
-      :host{
+       :host {
         display: block;
       }
     </style>
-    <vaadin-upload target="[[uploadUrl]]"></vaadin-upload>
+    <app-location id="location" route="{{route}}"></app-location>
+    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="onUploadResponse"></vaadin-upload>
   </template>
   <script>
     class Upload extends Polymer.Element {
-      static get is() { return "stitch-upload"; }
+      static get is() { return 'stitch-upload'; }
 
       static get properties() {
         return {
           uploadUrl: {
             type: String,
-            value: `${SM.apiUrl}upload`
+            value: `${SM.apiUrl}patterns`
+          },
+          route: {
+            type: Object
           }
+        }
+      }
+
+      onUploadResponse(event) {
+        const xhr = event.detail.xhr;
+        if (xhr.status === 201) {
+          const location = xhr.getResponseHeader('Location');
+          console.log(`${this.uploadUrl}/${location}`);
+          this.set('route.path', '/editor');
         }
       }
     }

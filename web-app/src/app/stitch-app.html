@@ -15,17 +15,17 @@
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
-    <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
+    <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
 
     <nav>
-      <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
+      <iron-selector id="viewSelector" selected="{{routeData.view}}" attr-for-selected="name">
         <a name="home" href="/">Home</a>
         <a name="upload" href="/upload">Upload</a>
         <a name="editor" href="/editor">Editor</a>
       </iron-selector>
     </nav>
 
-    <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
+    <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-home name="home"></stitch-home>
       <stitch-editor name="editor"></stitch-editor>
       <stitch-upload name="upload"></stitch-upload>
@@ -45,14 +45,6 @@
             value: 'home'
           }
         };
-      }
-
-      connectedCallback() {
-        super.connectedCallback();
-
-        if (this.routeData.page) {
-          this.view = this.routeData.page;
-        }
       }
     }
 
