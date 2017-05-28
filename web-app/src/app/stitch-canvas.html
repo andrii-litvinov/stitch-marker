@@ -150,11 +150,6 @@
         this._draw();
       }
 
-      save() {
-        toLocalStorage(LS_GRID_KEY, this);
-      }
-
-
       toJSON() {
         return {
           cells: this.cells.filter(c => c)
@@ -186,7 +181,7 @@
         this.cells = this.data.cells;
         this.oldStitchSize = this.stitchSize;
         this.zp = new Point(0, 0);   // relative zero point - begin of ctx
-        this.mode = 'move';
+        this.mode = 'view';
         this.events = {
           mouseup: (e) => this._handleMouseUp(e),
           mousedown: (e) => this._handleMouseDown(e),
@@ -198,15 +193,6 @@
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
-
-        // const storedGrid = fromLocalStorage(LS_GRID_KEY);
-
-        // if (storedGrid) {
-        //   console.log(storedGrid);
-        //   storedGrid.cells.forEach(c => {
-        //     this.cells[c.x + this.wCells * c.y] = new Stitch(c.x, c.y, {color: c.color, symbol: c.symbol});
-        //   });
-        // }
 
         // setup events
         for (let e in this.events) {
@@ -252,6 +238,10 @@
         this._drawWorkspace(this.ctx, gridWidth, gridHeight);
         this._drawStitches(this.ctx, _begin, _end, size);
         this._drawGrid(this.ctx, begin, end, size);
+      }
+
+      _drawFromCache() {
+        this.ctx.drawImage(this._canvas, 0, 0, this._canvas.width, this._canvas.height);        
       }
 
       _drawWorkspace(ctx, gridWidth, gridHeight) {
@@ -308,12 +298,12 @@
         }
       }
 
-      _moveTo(x, y) {
+      _moveTo(x, y, cached) {
         this.zp.x += x;
         this.zp.y += y;
         this.ctx.translate(x, y);
-        this._redraw();
-
+        this._redraw(cached);
+        // this._debouncedDrawCache();
       }
 
       _zoom(focus, zoom) {
@@ -330,8 +320,6 @@
 
           // caching after render
           this._debouncedDrawCache();
-          // setTimeout(this._drawCache.bind(this), 0);
-
         }
       }
 
@@ -342,9 +330,13 @@
         this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
       }
 
-      _redraw() {
+      _redraw(cached) {
         this._clearGrid();
-        this._draw();
+        if (cached && this.zoom <= 6) {
+          this._drawFromCache();
+        } else {
+          this._draw();
+        }
       }
 
       _resize(width, height) {
@@ -357,6 +349,8 @@
       }
 
       _setCell(pt, color) {
+        if (this.mode === 'view') return;
+
         let i = pt.x + this.wCells * pt.y;
         if (this.shape === 'eraser') {
           delete this.cells[i];
@@ -398,7 +392,7 @@
           e.clientY - this.zp.y
         ).toRelativeUnit(this.stitchSize);
 
-        if (this._isInGrid(pt)) {
+        if (this.mode === 'edit' && this._isInGrid(pt)) {
           this._setCell(pt, this.color);
         }
 
@@ -415,7 +409,7 @@
               let deltaX = this.moveStart.x - moveEnd.x,
                 deltaY = this.moveStart.y - moveEnd.y;
 
-              if (deltaX || deltaY) this._moveTo(deltaX, deltaY);
+              if (deltaX || deltaY) this._moveTo(deltaX, deltaY, true);
 
               moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
               requestAnimationFrame(move);
@@ -432,26 +426,21 @@
             e.clientY - this.zp.y
           ).toRelativeUnit(this.stitchSize);
 
-          if (this._isInGrid(pt)) {
+          if (this.mode === 'edit' && this._isInGrid(pt)) {
             this._setCell(pt, this.color);
             this._debouncedDrawCache();
-            // } else if (this.mode === 'move') {
-            //   this.moveStart = { x: e.clientX, y: e.clientY };
+          } else {
+            this.moveStart = { x: e.clientX, y: e.clientY };
           }
         } else {
-          this.moveStart = null;
+          // this.moveStart = null;
         }
       }
       _handleWheel(e) {
         e.preventDefault();
 
-        // this._moveTo(-e.deltaX, -e.deltaY);
+        this._moveTo(-e.deltaX, -e.deltaY, true);
 
-        this.zp.x -= e.deltaX;
-        this.zp.y -= e.deltaY;
-        this.ctx.translate(-e.deltaX, -e.deltaY);
-        this._clearGrid();
-        this.ctx.drawImage(this._canvas, 0, 0, this._canvas.width, this._canvas.height);
         // this.moveStart = { x: e.clientX, y: e.clientY };
       }
       _handleTouchMove(e) { }
