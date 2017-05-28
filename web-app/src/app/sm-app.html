@@ -9,37 +9,31 @@
 <dom-module id="sm-app">
   <template>
     <style>
-      nav {
-        padding: 30px;
-        position: absolute;
-      }
-
-      iron-pages {
-        width: 100%;
-        height: 100%;
+       :host {
+        display: block;
       }
     </style>
 
-    <app-location id="location" route="{{route}}" use-hash-as-path></app-location>
+    <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" pattern="/:page" data="{{routeData}}"></app-route>
-
-    <stitch-upload></stitch-upload>
 
     <nav>
       <iron-selector id="viewSelector" selected="{{view}}" attr-for-selected="name">
-        <a name="home" href="#">Home</a>
-        <a name="editor" href="#/editor">Editor</a>
+        <a name="home" href="/">Home</a>
+        <a name="upload" href="/upload">Upload</a>
+        <a name="editor" href="/editor">Editor</a>
       </iron-selector>
     </nav>
 
     <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
       <sm-home name="home"></sm-home>
       <sm-editor name="editor"></sm-editor>
+      <stitch-upload name="upload"></stitch-upload>
     </iron-pages>
   </template>
   <script>
     const toLocalStorage = (key, value) => localStorage.setItem(key, JSON.stringify(value)),
-          fromLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
+      fromLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
 
     class App extends Polymer.Element {
       static get is() { return "sm-app"; }
