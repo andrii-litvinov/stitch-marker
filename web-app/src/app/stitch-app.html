@@ -2,11 +2,11 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="sm-editor.html">
-<link rel="import" href="sm-home.html">
+<link rel="import" href="stitch-editor.html">
+<link rel="import" href="stitch-home.html">
 <link rel="import" href="stitch-upload.html">
 
-<dom-module id="sm-app">
+<dom-module id="stitch-app">
   <template>
     <style>
        :host {
@@ -26,8 +26,8 @@
     </nav>
 
     <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
-      <sm-home name="home"></sm-home>
-      <sm-editor name="editor"></sm-editor>
+      <stitch-home name="home"></stitch-home>
+      <stitch-editor name="editor"></stitch-editor>
       <stitch-upload name="upload"></stitch-upload>
     </iron-pages>
   </template>
@@ -36,7 +36,7 @@
       fromLocalStorage = (key) => JSON.parse(localStorage.getItem(key));
 
     class App extends Polymer.Element {
-      static get is() { return "sm-app"; }
+      static get is() { return "stitch-app"; }
 
       static get properties() {
         return {
