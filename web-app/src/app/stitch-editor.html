@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="stitch-canvas.html">
 
@@ -19,10 +20,9 @@
 
       .controls {
         position: absolute;
-        right: 10px;
-        top: 10px;
+        right: 15px;
+        top: 30px;
         display: flex;
-        flex-direction: column;
       }
 
       paper-button.warning {
@@ -35,25 +35,23 @@
         color: white;
       }
 
-      paper-radio-group {
-        display: flex;
-        flex-direction: column;
+      paper-spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      [icon*="zoom"]{
+        background-color: white;
+        border-radius: 50%;
+        margin: 5px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
     </style>
 
     <div class="controls">
       <paper-icon-button icon="zoom-in" on-tap="_zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" on-tap="_zoomOut"></paper-icon-button>
-      <paper-radio-group selected="{{shape}}">
-        <paper-radio-button name="stitch" value="stitch">stitch</paper-radio-button>
-        <paper-radio-button name="eraser" value="eraser">eraser</paper-radio-button>
-      </paper-radio-group>
-      <stitch-stitch-picker stitch="{{stitch}}" column-count="20" enabled="[[stitchListIsLoaded]]" stitch-list=[[stitchList]]>
-      </stitch-stitch-picker>
-      <paper-button on-tap="_saveCanvas" class="primary" title="save" raised icon="save">
-        <iron-icon icon="save"></iron-icon>
-      </paper-button>
-      <paper-button on-tap="_clearCanvas" class="warning" title="clear" raised>Clear</paper-button>
     </div>
 
 
@@ -84,9 +82,10 @@
 
       constructor() {
         super();
-
+  
         const storedEditor = fromLocalStorage(LS_EDITOR_KEY);
 
+        this.loading = true;
         this.zoom = storedEditor && storedEditor.zoom || 4;
         this.shape = storedEditor && storedEditor.shape || 'char';
 
@@ -106,9 +105,7 @@
 
       toJSON() {
         return {
-          zoom: this.zoom,
-          shape: this.shape,
-          stitch: this.stitch
+          zoom: this.zoom
         };
       }
 
@@ -132,6 +129,7 @@
           });
           this.canvasData = result;
           this.canvasEnabled = true;
+          this.loading = false;
         }
       }
 
@@ -143,14 +141,6 @@
       _zoomOut(e) {
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.max(this.zoom / 1.2, 1));
-      }
-
-      _clearCanvas() {
-        this.$.canvas.reset();
-      }
-
-      _saveCanvas() {
-        this.$.canvas.save();
       }
 
     }
