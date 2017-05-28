@@ -8,7 +8,7 @@
       }
     </style>
     <app-location id="location" route="{{route}}"></app-location>
-    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="onUploadResponse"></vaadin-upload>
+    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="onUploadResponse" nodrop></vaadin-upload>
   </template>
   <script>
     class Upload extends Polymer.Element {
@@ -30,8 +30,7 @@
         const xhr = event.detail.xhr;
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
-          console.log(`${this.uploadUrl}/${location}`);
-          this.set('route.path', '/editor');
+          this.set('route.path', `/editor/${location}`);
         }
       }
     }
