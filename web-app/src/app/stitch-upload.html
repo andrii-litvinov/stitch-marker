@@ -1,0 +1,14 @@
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
+
+<dom-module id="stitch-upload">
+  <template>
+    <vaadin-upload></vaadin-upload>
+  </template>
+  <script>
+     class Upload extends Polymer.Element {
+      static get is() { return "stitch-upload"; }
+     }
+
+     customElements.define(Upload.is, Upload);
+  </script>
+</dom-module>
