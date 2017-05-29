@@ -3,7 +3,7 @@
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
-<link rel="import" href="stitch-canvas.html">
+<link rel="import" href="canvas/stitch-canvas.html">
 
 <dom-module id="stitch-editor">
   <template>
@@ -25,16 +25,6 @@
         display: flex;
       }
 
-      paper-button.warning {
-        background-color: var(--paper-deep-orange-a400);
-        color: white;
-      }
-
-      paper-button.primary {
-        background-color: var(--paper-blue-700);
-        color: white;
-      }
-
       paper-spinner {
         position: absolute;
         top: 50%;
@@ -47,13 +37,44 @@
         margin: 5px;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
+      /*#canvas {
+        display: inline-block;
+        width: calc(100% - 26px);
+      }
+      .ruler-x, .ruler-y {
+        border: 1px solid gray;
+        position: relative;
+        overflow: auto;
+      }
+      .ruler-x {
+        width: calc(100% - 26px);
+        height: 20px;
+        margin-left: 25px;
+      }
+      .ruler-y {
+        display: inline-block;
+        width: 20px;
+        height: 100%;
+      }
+
+      #zero-x, #zero-y {
+        display: block;
+        position: absolute;
+      }
+      #zero-x {
+        transform: translateX(-50%); 
+      }
+      #zero-y {
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(90deg);        
+      }*/
     </style>
 
     <div class="controls">
       <paper-icon-button icon="zoom-in" on-tap="_zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" on-tap="_zoomOut"></paper-icon-button>
     </div>
-
+    <paper-spinner active={{loading}}></paper-spinner>
 
     <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" data={{canvasData}} zoom={{zoom}} shape="{{shape}}" stitch="{{stitch}}">
     </stitch-canvas>
@@ -87,16 +108,6 @@
 
         this.loading = true;
         this.zoom = storedEditor && storedEditor.zoom || 4;
-        this.shape = storedEditor && storedEditor.shape || 'char';
-
-        this.stitchListIsLoaded = false;
-        fetch('fixtures/stitch-collection.json')
-          .then(res => res.json())
-          .then(stitchList => {
-            this.stitchList = stitchList;
-            this.stitch = this.stitchList[0];
-            this.stitchListIsLoaded = true;
-          });
 
         window.addEventListener('beforeunload', () => {
           toLocalStorage(LS_EDITOR_KEY, this);

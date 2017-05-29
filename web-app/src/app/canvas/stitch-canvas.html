@@ -4,18 +4,21 @@
        :host {
         display: block;
         width: 100%;
-        height: 100%;
+        height: 700px;
         overflow: hidden;
       }
 
       canvas {
         background: #f0f0f0;
-        display: block;
+        display: inline-block;
+        box-sizing: content-box;
       }
     </style>
     <canvas id="canvas" width="0" height="0"></canvas>
   </template>
-
+  <script src="../helpers/debounce.js"></script>
+  <script src="point.model.js"></script>
+  <script src="stitch.model.js"></script>
   <script>
     'use strict';
     const BACKGROUND_COLOR = 'white';
@@ -23,73 +26,7 @@
     const LS_GRID_KEY = 'sm_grid';
 
     const toRelativeUnit = (n, ratio) => Math.floor(n / ratio),
-          toPixel = (n, ratio) => n * ratio,
-          debounce = (func, wait, immediate) => {
-            var timeout;
-            return function() {
-              var context = this, args = arguments;
-              var later = function() {
-                timeout = null;
-                if (!immediate) func.apply(context, args);
-              };
-              var callNow = immediate && !timeout;
-              clearTimeout(timeout);
-              timeout = setTimeout(later, wait);
-              if (callNow) func.apply(context, args);
-            };
-          };
-
-
-
-    class Point {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-      }
-
-      toRelativeUnit(ratio) {
-        return {
-          x: Math.floor(this.x / ratio),
-          y: Math.floor(this.y / ratio)
-        };
-      }
-
-      add(p) {
-        this.x = this.x + p.x;
-        this.y = this.y + p.y;
-      }
-    }
-
-    class Stitch {
-      constructor(data) {
-        Object.assign(this, data);
-      }
-
-      draw(ctx, size) {
-        let x = toPixel(this.x, size),
-          y = toPixel(this.y, size),
-          half = size / 2;
-
-
-        // draw color
-        ctx.fillStyle = this.color || 'white';
-        ctx.fillRect(x, y, size, size);
-
-        // draw symbol
-        if (this.symbol) {
-          const symbolWidth = ctx.measureText(this.symbol).width;
-          ctx.fillStyle = 'black';
-          ctx.font = size * .9 + "px Arial";
-
-          ctx.fillText(
-            this.symbol,
-            x + (size - symbolWidth) / 2,
-            y + size * .9
-          );
-        }
-      }
-
-    }
+          toPixel = (n, ratio) => n * ratio;
 
     class Canvas extends Polymer.Element {
       static get is() { return 'stitch-canvas'; }
@@ -131,13 +68,10 @@
 
       connectedCallback() {
         super.connectedCallback();
-
         this.canvas = this.$.canvas;
         this._canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this._ctx = this._canvas.getContext('2d');
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
         this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
       }
 
@@ -179,8 +113,10 @@
         this.wCells = this.data ? this.data.width : 50;
         this.hCells = this.data ? this.data.height : 50;
         this.cells = this.data.cells;
+        this.canvas.width =  this.offsetWidth;
+        this.canvas.height = this.offsetHeight;
         this.oldStitchSize = this.stitchSize;
-        this.zp = new Point(0, 0);   // relative zero point - begin of ctx
+        this.offset = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode = 'view';
         this.events = {
           mouseup: (e) => this._handleMouseUp(e),
@@ -218,18 +154,18 @@
       }
 
       _draw() {
-        let zp = this.zp,
+        let offset = this.offset,
           size = this.stitchSize,
           // draw grid only in window bounds
           gridWidth = toPixel(this.wCells, size),
           gridHeight = toPixel(this.hCells, size),
           begin = new Point(
-            Math.max(0, zp.x % size - zp.x - size),
-            Math.max(0, zp.y % size - zp.y - size)
+            Math.max(0, offset.x % size - offset.x - size),
+            Math.max(0, offset.y % size - offset.y - size)
           ),
           end = new Point(
-            Math.min(this.canvas.width - zp.x, gridWidth),
-            Math.min(this.canvas.height - zp.y, gridHeight)
+            Math.min(this.canvas.width - offset.x, gridWidth),
+            Math.min(this.canvas.height - offset.y, gridHeight)
           ),
           _begin = begin.toRelativeUnit(size),
           _end = end.toRelativeUnit(size);
@@ -299,10 +235,11 @@
       }
 
       _moveTo(x, y, cached) {
-        this.zp.x += x;
-        this.zp.y += y;
+        this.offset.x += x;
+        this.offset.y += y;
         this.ctx.translate(x, y);
         this._redraw(cached);
+        this.dispatchEvent(new CustomEvent('move', {detail: {offset: this.offset}}));
         // this._debouncedDrawCache();
       }
 
@@ -313,8 +250,8 @@
           let k = 1 - this.stitchSize / this.oldStitchSize;
 
           this._moveTo(
-            Math.round((focus.x - this.zp.x) * k),
-            Math.round((focus.y - this.zp.y) * k)
+            Math.round((focus.x - this.offset.x) * k),
+            Math.round((focus.y - this.offset.y) * k)
           );
           this.oldStitchSize = this.stitchSize;
 
@@ -324,7 +261,7 @@
       }
 
       _clearGrid() {
-        let begin = new Point(0 - this.zp.x, 0 - this.zp.y),
+        let begin = new Point(0 - this.offset.x, 0 - this.offset.y),
           end = new Point(this.canvas.width, this.canvas.height);
 
         this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
@@ -340,10 +277,10 @@
       }
 
       _resize(width, height) {
-        this.ctx.translate(-this.zp.x, -this.zp.y);
+        this.ctx.translate(-this.offset.x, -this.offset.y);
         this.canvas.width = width;
         this.canvas.height = height;
-        this.ctx.translate(this.zp.x, this.zp.y);
+        this.ctx.translate(this.offset.x, this.offset.y);
 
         this._redraw();
       }
@@ -379,8 +316,8 @@
         e.preventDefault();
         // if (this.mode === 'draw') {
         //   let pt = new Point(
-        //     e.clientX - this.zp.x,
-        //     e.clientY - this.zp.y
+        //     e.clientX - this.offset.x,
+        //     e.clientY - this.offset.y
         //   ).toRelativeUnit(this.stitchSize);
 
         //   if (this.inGrid(pt)) {
@@ -388,8 +325,8 @@
         //   }
         // }
         let pt = new Point(
-          e.clientX - this.zp.x,
-          e.clientY - this.zp.y
+          e.clientX - this.offset.x,
+          e.clientY - this.offset.y
         ).toRelativeUnit(this.stitchSize);
 
         if (this.mode === 'edit' && this._isInGrid(pt)) {
@@ -422,8 +359,8 @@
         e.preventDefault();
         if (e.which === 1 && this.moveStart) {
           let pt = new Point(
-            e.clientX - this.zp.x,
-            e.clientY - this.zp.y
+            e.clientX - this.offset.x,
+            e.clientY - this.offset.y
           ).toRelativeUnit(this.stitchSize);
 
           if (this.mode === 'edit' && this._isInGrid(pt)) {
