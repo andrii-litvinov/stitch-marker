@@ -17,6 +17,7 @@
     <canvas id="canvas" width="0" height="0"></canvas>
   </template>
   <script src="../helpers/debounce.js"></script>
+  <script src="../helpers/round-rect.js"></script>
   <script src="point.model.js"></script>
   <script src="stitch.model.js"></script>
   <script>
@@ -52,6 +53,20 @@
         ];
       }
 
+      static drawText(ctx, text, x, y, bg) {
+        const symbolWidth = ctx.measureText(text).width,
+          _x = x - symbolWidth / 2;
+        
+        if (bg) {
+          ctx.fillStyle = '#444';
+          roundRect(ctx, _x - 5, y - 15, symbolWidth + 10, 20, 10, true, false);
+        }
+
+        ctx.fillStyle = '#eee';
+
+        ctx.fillText(text, _x, y);
+      }
+
       constructor() {
         super();
 
@@ -73,6 +88,9 @@
         this.ctx = this.canvas.getContext('2d');
         this._ctx = this._canvas.getContext('2d');
         this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
+        this.showGrid = true;
+        this.showSymbols = true;
+        this.showRulers = false;
       }
 
       get stitchSize() {
@@ -125,7 +143,7 @@
           // touchstart : (e) => this._handleTouchStart(e),
           // touchend   : (e) => this.handleTouchEnd(e),
           // touchmove  : (e) => this.handleTouchMove(e),
-          mousewheel: (e) => this._handleWheel(e),
+          mousewheel: (e) => this._handleWheel(e)
           // wheel      : (e) => this._handleTouchStart(e),
           // scroll     : (e) => this._handleTouchStart(e),
         }
@@ -134,6 +152,8 @@
         for (let e in this.events) {
           this.canvas.addEventListener(e, this.events[e]);
         }
+
+        document.addEventListener('keyup', this._handleKeyUp.bind(this));
       }
 
       _drawCache() {
@@ -150,10 +170,12 @@
         this._canvas.height = gridHeight + 1;
         this._drawWorkspace(this._ctx, gridWidth, gridHeight);
         this._drawStitches(this._ctx, _begin, _end, size);
-        this._drawGrid(this._ctx, begin, end, size);
+        this.showGrid && this._drawGrid(this._ctx, begin, end, size);
       }
 
-      _draw() {
+      _draw(cached) {
+        this._clearGrid();
+
         let offset = this.offset,
           size = this.stitchSize,
           // draw grid only in window bounds
@@ -170,10 +192,15 @@
           _begin = begin.toRelativeUnit(size),
           _end = end.toRelativeUnit(size);
 
+        if (cached && this.zoom <= 6) {
+          this._drawFromCache();
+        } else {
+          this._drawWorkspace(this.ctx, gridWidth, gridHeight);
+          this._drawStitches(this.ctx, _begin, _end, size);
+          this.showGrid && this._drawGrid(this.ctx, begin, end, size);
+        }
 
-        this._drawWorkspace(this.ctx, gridWidth, gridHeight);
-        this._drawStitches(this.ctx, _begin, _end, size);
-        this._drawGrid(this.ctx, begin, end, size);
+        this.showRulers && this._drawRulers(this.ctx, offset, size);
       }
 
       _drawFromCache() {
@@ -184,7 +211,6 @@
         // background of grid
         ctx.fillStyle = BACKGROUND_COLOR;
         ctx.fillRect(0, 0, gridWidth, gridHeight);
-
       }
 
       _drawGrid(ctx, begin, end, size) {
@@ -194,12 +220,12 @@
         ctx.beginPath();
 
         let x, y;
-        for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
+        for (x = begin.x + 0.5; x <= end.x + 1; x += size) {
           ctx.moveTo(x, 0);
           ctx.lineTo(x, end.y);
         }
 
-        for (let y = begin.y + 0.5; y <= end.y + 1; y += size) {
+        for (y = begin.y + 0.5; y <= end.y + 1; y += size) {
           ctx.moveTo(0, y);
           ctx.lineTo(end.x, y);
         }
@@ -229,8 +255,33 @@
           for (let y = begin.y; y <= end.y; y++) {
             cell = this.cells[x + this.wCells * y];
 
-            if (cell) cell.draw(ctx, size);
+            if (cell) cell.draw(ctx, size, this.showSymbols);
           }
+        }
+      }
+
+      _drawRulers(ctx, offset, size) {
+        let x, y,
+          begin = new Point(
+            offset.x % (size * 10) - offset.x,
+            offset.y % (size * 10) - offset.y
+          ),
+          end = new Point(
+            -offset.x + this.canvas.width,
+            -offset.y + this.canvas.height
+          );
+        ctx
+        ctx.font = "14px Arial";
+
+        // ctx.fillStyle = 'white';
+        // ctx.fillRect(-offset.x, -offset.y, this.canvas.width, 30);
+
+        for (x = begin.x; x <= end.x; x += size * 10) {
+          Canvas.drawText(ctx, toRelativeUnit(x, size), x, 20 - offset.y, true);
+        }
+
+        for (y = begin.y; y <= end.y; y += size * 10) {
+          Canvas.drawText(ctx, toRelativeUnit(y, size), 20 - offset.x, y + 5, true);
         }
       }
 
@@ -238,7 +289,7 @@
         this.offset.x += x;
         this.offset.y += y;
         this.ctx.translate(x, y);
-        this._redraw(cached);
+        this._draw(cached);
         this.dispatchEvent(new CustomEvent('move', {detail: {offset: this.offset}}));
         // this._debouncedDrawCache();
       }
@@ -267,22 +318,13 @@
         this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
       }
 
-      _redraw(cached) {
-        this._clearGrid();
-        if (cached && this.zoom <= 6) {
-          this._drawFromCache();
-        } else {
-          this._draw();
-        }
-      }
-
       _resize(width, height) {
         this.ctx.translate(-this.offset.x, -this.offset.y);
         this.canvas.width = width;
         this.canvas.height = height;
         this.ctx.translate(this.offset.x, this.offset.y);
 
-        this._redraw();
+        this._draw();
       }
 
       _setCell(pt, color) {
@@ -291,7 +333,7 @@
         let i = pt.x + this.wCells * pt.y;
         if (this.shape === 'eraser') {
           delete this.cells[i];
-          this._redraw();
+          this._draw();
         } else if (!this.cells[i] && this.shape !== 'eraser') {
           this.cells[i] = new Stitch({
             x: pt.x,
@@ -383,6 +425,25 @@
       _handleTouchMove(e) { }
       _handleTouchEnd(e) {
         this.moveStart = null;
+      }
+      _handleKeyUp(e) {
+        // toggle rulers (alt+r)
+        if (e.altKey && e.which === 82) {
+          this.showRulers = !this.showRulers;
+          this._draw(true);
+        }
+        // toggle grid (alt+g)
+        if (e.altKey && e.which === 71) {
+          this.showGrid = !this.showGrid;
+          this._draw();
+          this._drawCache();
+        }
+        // toggle symbols (alt+s)
+        if (e.altKey && e.which === 83) {
+          this.showSymbols = !this.showSymbols;
+          this._draw();
+          this._drawCache();
+        }
       }
     }
 

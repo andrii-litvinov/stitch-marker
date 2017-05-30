@@ -3,7 +3,7 @@ class Stitch {
     Object.assign(this, data);
   }
 
-  draw(ctx, size) {
+  draw(ctx, size, showSymbol=true) {
     let x = toPixel(this.x, size),
       y = toPixel(this.y, size),
       half = size / 2;
@@ -14,7 +14,7 @@ class Stitch {
     ctx.fillRect(x, y, size, size);
 
     // draw symbol
-    if (this.symbol) {
+    if (showSymbol && this.symbol) {
       const symbolWidth = ctx.measureText(this.symbol).width;
       ctx.fillStyle = 'black';
       ctx.font = size * .9 + "px Arial";
