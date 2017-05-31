@@ -49,21 +49,24 @@
       static get observers() {
         return [
           '_enabledChanged(enabled)',
-          '_zoomChanged(zoom)'
+          '_zoomChanged(zoom)',
+          '_displayChanged(display.*)'
         ];
       }
 
       static drawText(ctx, text, x, y, bg) {
         const symbolWidth = ctx.measureText(text).width,
-          _x = x - symbolWidth / 2;
+          _x = Math.round(x - symbolWidth / 2);
+        
+        ctx.font = "12px Arial";
         
         if (bg) {
-          ctx.fillStyle = '#444';
-          roundRect(ctx, _x - 5, y - 15, symbolWidth + 10, 20, 10, true, false);
+          ctx.strokeStyle = '#5f5f5f';
+          ctx.lineWidth = 2;
+          ctx.fillStyle = '#dfdfdf';
+          roundRect(ctx, _x - 5, y - 15, symbolWidth + 11, 20, 5, true, true);
         }
-
-        ctx.fillStyle = '#eee';
-
+        ctx.fillStyle = '#000';
         ctx.fillText(text, _x, y);
       }
 
@@ -88,9 +91,6 @@
         this.ctx = this.canvas.getContext('2d');
         this._ctx = this._canvas.getContext('2d');
         this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
-        this.showGrid = true;
-        this.showSymbols = true;
-        this.showRulers = false;
       }
 
       get stitchSize() {
@@ -126,6 +126,16 @@
         }
       }
 
+      _displayChanged(e) {
+        if (!this.enabled) return;
+        if (e.path === 'display.ruler') {
+          this._draw(true);
+        } else {
+          this._draw();
+          this._drawCache();
+        }
+      }
+
       _init() {
         this.zoom = this.zoom || 4;
         this.wCells = this.data ? this.data.width : 50;
@@ -153,7 +163,6 @@
           this.canvas.addEventListener(e, this.events[e]);
         }
 
-        document.addEventListener('keyup', this._handleKeyUp.bind(this));
       }
 
       _drawCache() {
@@ -170,7 +179,7 @@
         this._canvas.height = gridHeight + 1;
         this._drawWorkspace(this._ctx, gridWidth, gridHeight);
         this._drawStitches(this._ctx, _begin, _end, size);
-        this.showGrid && this._drawGrid(this._ctx, begin, end, size);
+        this.display.grid && this._drawGrid(this._ctx, begin, end, size);
       }
 
       _draw(cached) {
@@ -197,10 +206,10 @@
         } else {
           this._drawWorkspace(this.ctx, gridWidth, gridHeight);
           this._drawStitches(this.ctx, _begin, _end, size);
-          this.showGrid && this._drawGrid(this.ctx, begin, end, size);
+          this.display.grid && this._drawGrid(this.ctx, begin, end, size);
         }
 
-        this.showRulers && this._drawRulers(this.ctx, offset, size);
+        this.display.ruler && this._drawRulers(this.ctx, offset, size);
       }
 
       _drawFromCache() {
@@ -255,7 +264,7 @@
           for (let y = begin.y; y <= end.y; y++) {
             cell = this.cells[x + this.wCells * y];
 
-            if (cell) cell.draw(ctx, size, this.showSymbols);
+            if (cell) cell.draw(ctx, size, this.display.symbol, this.display.color);
           }
         }
       }
@@ -270,8 +279,6 @@
             -offset.x + this.canvas.width,
             -offset.y + this.canvas.height
           );
-        ctx
-        ctx.font = "14px Arial";
 
         // ctx.fillStyle = 'white';
         // ctx.fillRect(-offset.x, -offset.y, this.canvas.width, 30);
@@ -426,25 +433,7 @@
       _handleTouchEnd(e) {
         this.moveStart = null;
       }
-      _handleKeyUp(e) {
-        // toggle rulers (alt+r)
-        if (e.altKey && e.which === 82) {
-          this.showRulers = !this.showRulers;
-          this._draw(true);
-        }
-        // toggle grid (alt+g)
-        if (e.altKey && e.which === 71) {
-          this.showGrid = !this.showGrid;
-          this._draw();
-          this._drawCache();
-        }
-        // toggle symbols (alt+s)
-        if (e.altKey && e.which === 83) {
-          this.showSymbols = !this.showSymbols;
-          this._draw();
-          this._drawCache();
-        }
-      }
+      
     }
 
     customElements.define(Canvas.is, Canvas);

@@ -20,11 +20,27 @@
 
       .controls {
         position: absolute;
-        right: 15px;
-        top: 30px;
         display: flex;
       }
-
+        .controls.right {
+          right: 15px;
+        }
+        .controls.top {
+          top: 50px;
+        }
+        .controls.bottom {
+          bottom: 100px;
+        }
+        .controls.column {
+          flex-direction: column;
+        }
+        .controls.row {
+          flex-direction: row;
+        }
+      
+      paper-button {
+        background-color: white;
+      }
       paper-spinner {
         position: absolute;
         top: 50%;
@@ -39,19 +55,39 @@
       }
     </style>
 
-    <div class="controls">
+    <div class="controls top right column">
       <paper-icon-button icon="zoom-in" on-tap="_zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" on-tap="_zoomOut"></paper-icon-button>
+
+    </div>
+
+    <div class="controls bottom right row">
+      <paper-button toggles raised active={{display.ruler}}>Rulers</paper-button>
+      <paper-button toggles raised active={{display.grid}}>Grid</paper-button>
+      <paper-button toggles raised active={{display.symbol}}>Symbols</paper-button>
+      <paper-button toggles raised active={{display.color}}>Color</paper-button>
     </div>
     <paper-spinner active={{loading}}></paper-spinner>
 
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" data={{canvasData}} zoom={{zoom}} shape="{{shape}}" stitch="{{stitch}}">
+    <stitch-canvas 
+      id="canvas"
+      enabled="[[canvasEnabled]]"
+      data={{canvasData}}
+      zoom={{zoom}}
+      display={{display}}>
     </stitch-canvas>
   </template>
 
   <script>
     'use strict';
     const LS_EDITOR_KEY = "sm_editor";
+    const keyMap = {
+      82: 'ruler',  // r
+      71: 'grid',   // g
+      83: 'symbol', // s
+      67: 'color'   // c
+    };
+
 
     class Editor extends Polymer.Element {
       static get is() { return 'stitch-editor'; }
@@ -78,9 +114,18 @@
         this.loading = true;
         this.zoom = storedEditor && storedEditor.zoom || 4;
 
+        this.display = {
+          grid: true,
+          ruler: true,
+          symbol: true,
+          color: true
+        }
+
         window.addEventListener('beforeunload', () => {
           toLocalStorage(LS_EDITOR_KEY, this);
         });
+
+        document.addEventListener('keyup', this._handleKeyUp.bind(this));
       }
 
       toJSON() {
@@ -121,6 +166,13 @@
       _zoomOut(e) {
         // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
         this.set('zoom', Math.max(this.zoom / 1.2, 1));
+      }
+
+      _handleKeyUp(e) {
+        // toggle display of canvas elements
+        if (e.altKey) {
+          this.set('display.' + keyMap[ e.which ] , !this.display[ keyMap[ e.which ] ] )
+        }
       }
 
     }
