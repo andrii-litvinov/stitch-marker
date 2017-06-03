@@ -22,12 +22,13 @@
   <script src="./stitch.model.js"></script>
   <script>
     'use strict';
-    const BACKGROUND_COLOR = 'white';
-    const GRID_COLOR = 'lightgray';
-    const LS_GRID_KEY = 'sm_grid';
 
-    const toRelativeUnit = (n, ratio) => Math.floor(n / ratio),
+    // Consider better way to handle this functions. Not sure how good the idea is not have them in global scope.
+    const
+      toRelativeUnit = (n, ratio) => Math.floor(n / ratio),
       toPixel = (n, ratio) => n * ratio;
+
+    // TODO: Define objects to draw grid, ruler, pattern, etc. becasue it is hard to follow what is goin on in this file.
 
     class Canvas extends Polymer.Element {
       static get is() { return 'stitch-canvas'; }
@@ -226,14 +227,14 @@
       }
 
       _drawWorkspace(ctx, gridWidth, gridHeight) {
-        // background of grid
-        ctx.fillStyle = BACKGROUND_COLOR;
+        ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, gridWidth, gridHeight);
       }
 
       _drawGrid(ctx, begin, end, size) {
-        // color of grid
-        ctx.strokeStyle = GRID_COLOR;
+        // TODO: Draw sharp lines when zoom is small.
+
+        ctx.strokeStyle = 'lightgray';
         ctx.lineWidth = 1;
         ctx.beginPath();
 
@@ -247,6 +248,7 @@
           ctx.moveTo(0, y);
           ctx.lineTo(end.x, y);
         }
+
         ctx.stroke();
 
         ctx.lineWidth = 2;
@@ -265,6 +267,7 @@
             ctx.lineTo(end.x, y);
           }
         }
+
         ctx.stroke();
       }
 

@@ -80,18 +80,20 @@
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
 
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom=[[zoom]] display=[[display]]></stitch-canvas>
+    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas>
   </template>
 
   <script>
     'use strict';
-    const keyMap = {
+
+    const hotKey = {
       82: 'ruler',  // r
       71: 'grid',   // g
       83: 'symbol', // s
       67: 'color'   // c
     };
 
+    const zoomLevels = [.25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
 
     class Editor extends Polymer.Element {
       static get is() { return 'stitch-editor'; }
@@ -121,10 +123,6 @@
         };
       }
 
-      static get zoomLevels() {
-        return [.25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
-      }
-
       constructor() {
         super();
 
@@ -135,6 +133,7 @@
           color: true
         }
 
+        // TODO: Remove event listener when element is inactive.
         document.addEventListener('keyup', this._onKeyUp.bind(this));
       }
 
@@ -167,6 +166,7 @@
             };
             result.cells[data.x + result.width * data.y] = new Stitch(data);
           });
+
           this.pattern = result;
           this.canvasEnabled = true;
           this.loading = false;
@@ -174,19 +174,23 @@
       }
 
       zoomIn() {
-        let zoomIndex = Math.min(Editor.zoomLevels.indexOf(this.zoom) + 1, Editor.zoomLevels.length - 1);
-        this.zoom = Editor.zoomLevels[zoomIndex];
+        // TODO: Handle zoom on swipe whne value is not predefined.
+        let zoomIndex = Math.min(zoomLevels.indexOf(this.zoom) + 1, zoomLevels.length - 1);
+        this.zoom = zoomLevels[zoomIndex];
       }
 
       zoomOut() {
-        let zoomIndex = Math.max(Editor.zoomLevels.indexOf(this.zoom) - 1, 0);
-        this.zoom = Editor.zoomLevels[zoomIndex];
+        // TODO: Handle zoom on swipe whne value is not predefined.
+        let zoomIndex = Math.max(zoomLevels.indexOf(this.zoom) - 1, 0);
+        this.zoom = zoomLevels[zoomIndex];
       }
 
       _onKeyUp(event) {
-        // toggle display of canvas elements
         if (event.altKey) {
-          this.set('display.' + keyMap[event.which], !this.display[keyMap[event.which]])
+          const element = hotKey[event.which];
+          if (element) {
+            this.set(`display.${element}`, !this.display[element])
+          }
         }
       }
     }
