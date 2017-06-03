@@ -211,7 +211,7 @@
           _begin = begin.toRelativeUnit(size),
           _end = end.toRelativeUnit(size);
 
-        if (cached && this.zoom <= 6) {
+        if (cached && this.zoom <= 2) {
           this._drawFromCache();
         } else {
           this._drawWorkspace(this.ctx, gridWidth, gridHeight);
