@@ -27,7 +27,7 @@
     const LS_GRID_KEY = 'sm_grid';
 
     const toRelativeUnit = (n, ratio) => Math.floor(n / ratio),
-          toPixel = (n, ratio) => n * ratio;
+      toPixel = (n, ratio) => n * ratio;
 
     class Canvas extends Polymer.Element {
       static get is() { return 'stitch-canvas'; }
@@ -41,7 +41,8 @@
 
           zoom: {
             type: Number,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: '_zoomChanged'
           },
 
           pattern: {
@@ -55,7 +56,6 @@
       static get observers() {
         return [
           '_enabledChanged(enabled)',
-          '_zoomChanged(zoom)',
           '_displayChanged(display.*)'
         ];
       }
@@ -63,9 +63,9 @@
       static drawText(ctx, text, x, y, bg) {
         const symbolWidth = ctx.measureText(text).width,
           _x = Math.round(x - symbolWidth / 2);
-        
+
         ctx.font = "12px Arial";
-        
+
         if (bg) {
           ctx.strokeStyle = '#5f5f5f';
           ctx.lineWidth = 2;
@@ -82,7 +82,6 @@
         let timer;
         window.addEventListener('resize', (e) => {
           // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
-
           clearTimeout(timer);
           timer = setTimeout(() => {
             this._resize(window.innerWidth, window.innerHeight);
@@ -100,7 +99,7 @@
       }
 
       get stitchSize() {
-        return Math.round(this.zoom * 5);
+        return this.zoom * 30;
       }
 
       reset() {
@@ -108,28 +107,33 @@
         this._draw();
       }
 
-      toJSON() {
-        return {
-          cells: this.cells.filter(c => c)
-        };
-      }
-
       _enabledChanged() {
         if (this.enabled) {
-          console.log('Rendering.');
           this._init();
           this._draw();
           this._drawCache();
         }
       }
 
-      _zoomChanged(zoom) {
+      _zoomChanged() {
         if (this.enabled) {
           this._zoom({
             x: this.canvas.width / 2,
             y: this.canvas.height / 2
-          }, zoom);
+          });
         }
+      }
+
+      _zoom(focus) {
+        let k = 1 - this.stitchSize / this.oldStitchSize;
+
+        this._moveTo(
+          Math.round((focus.x - this.offset.x) * k),
+          Math.round((focus.y - this.offset.y) * k)
+        );
+
+        this.oldStitchSize = this.stitchSize;
+        this._debouncedDrawCache();
       }
 
       _displayChanged(e) {
@@ -143,11 +147,10 @@
       }
 
       _init() {
-        this.zoom = this.zoom || 4;
         this.wCells = this.pattern ? this.pattern.width : 50;
         this.hCells = this.pattern ? this.pattern.height : 50;
         this.cells = this.pattern.cells;
-        this.canvas.width =  this.offsetWidth;
+        this.canvas.width = this.offsetWidth;
         this.canvas.height = this.offsetHeight;
         this.oldStitchSize = this.stitchSize;
         this.offset = new Point(0, 0);   // relative zero point - begin of ctx
@@ -219,7 +222,7 @@
       }
 
       _drawFromCache() {
-        this.ctx.drawImage(this._canvas, 0, 0, this._canvas.width, this._canvas.height);        
+        this.ctx.drawImage(this._canvas, 0, 0, this._canvas.width, this._canvas.height);
       }
 
       _drawWorkspace(ctx, gridWidth, gridHeight) {
@@ -303,25 +306,8 @@
         this.offset.y += y;
         this.ctx.translate(x, y);
         this._draw(cached);
-        this.dispatchEvent(new CustomEvent('move', {detail: {offset: this.offset}}));
+        this.dispatchEvent(new CustomEvent('move', { detail: { offset: this.offset } }));
         // this._debouncedDrawCache();
-      }
-
-      _zoom(focus, zoom) {
-        this.zoom = +zoom.toFixed(2);
-
-        if (this.zoom >= 1) {
-          let k = 1 - this.stitchSize / this.oldStitchSize;
-
-          this._moveTo(
-            Math.round((focus.x - this.offset.x) * k),
-            Math.round((focus.y - this.offset.y) * k)
-          );
-          this.oldStitchSize = this.stitchSize;
-
-          // caching after render
-          this._debouncedDrawCache();
-        }
       }
 
       _clearGrid() {
@@ -364,8 +350,6 @@
           pt.y >= 0 &&
           pt.y < this.hCells;
       }
-
-      // events handlers
 
       _handleMouseUp(e) {
         e.preventDefault();
@@ -428,6 +412,7 @@
           // this.moveStart = null;
         }
       }
+
       _handleWheel(e) {
         e.preventDefault();
 
@@ -435,15 +420,16 @@
 
         // this.moveStart = { x: e.clientX, y: e.clientY };
       }
+
       _handleTouchMove(e) { }
+
       _handleTouchEnd(e) {
         this.moveStart = null;
       }
 
-      _patternChanged(){
+      _patternChanged() {
         this._enabledChanged();
       }
-      
     }
 
     customElements.define(Canvas.is, Canvas);

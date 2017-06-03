@@ -121,6 +121,10 @@
         };
       }
 
+      static get zoomLevels() {
+        return [.25, .5, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
+      }
+
       constructor() {
         super();
 
@@ -170,15 +174,13 @@
       }
 
       zoomIn() {
-        let zoomLevels = [.25, .5, .75, .8, .9, .95, 1, 1.05, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
-        let zoomIndex = Math.min(zoomLevels.indexOf(this.zoom) + 1, zoomLevels.length - 1);
-        this.zoom = zoomLevels[zoomIndex];
+        let zoomIndex = Math.min(Editor.zoomLevels.indexOf(this.zoom) + 1, Editor.zoomLevels.length - 1);
+        this.zoom = Editor.zoomLevels[zoomIndex];
       }
 
       zoomOut() {
-        let zoomLevels = [.25, .5, .75, .8, .9, .95, 1, 1.05, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
-        let zoomIndex = Math.max(zoomLevels.indexOf(this.zoom) - 1, 0);
-        this.zoom = zoomLevels[zoomIndex];
+        let zoomIndex = Math.max(Editor.zoomLevels.indexOf(this.zoom) - 1, 0);
+        this.zoom = Editor.zoomLevels[zoomIndex];
       }
 
       _onKeyUp(event) {
