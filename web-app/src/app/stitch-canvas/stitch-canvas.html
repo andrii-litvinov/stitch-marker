@@ -42,6 +42,11 @@
           zoom: {
             type: Number,
             reflectToAttribute: true
+          },
+
+          pattern: {
+            type: Object,
+            reflectToAttribute: false
           }
         };
       }
@@ -138,9 +143,9 @@
 
       _init() {
         this.zoom = this.zoom || 4;
-        this.wCells = this.data ? this.data.width : 50;
-        this.hCells = this.data ? this.data.height : 50;
-        this.cells = this.data.cells;
+        this.wCells = this.pattern ? this.pattern.width : 50;
+        this.hCells = this.pattern ? this.pattern.height : 50;
+        this.cells = this.pattern.cells;
         this.canvas.width =  this.offsetWidth;
         this.canvas.height = this.offsetHeight;
         this.oldStitchSize = this.stitchSize;

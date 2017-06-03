@@ -1,6 +1,6 @@
 const debounce = (func, wait, immediate) => {
   var timeout;
-  return () => {
+  return (...arguments) => {
     var context = this, args = arguments;
     var later = () => {
       timeout = null;

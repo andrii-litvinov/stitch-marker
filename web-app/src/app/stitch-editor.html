@@ -63,8 +63,8 @@
     </style>
 
     <div class="controls top right column">
-      <paper-icon-button icon="zoom-in" on-tap="_zoomIn"></paper-icon-button>
-      <paper-icon-button icon="zoom-out" on-tap="_zoomOut"></paper-icon-button>
+      <paper-icon-button icon="zoom-in" on-tap="zoomIn"></paper-icon-button>
+      <paper-icon-button icon="zoom-out" on-tap="zoomOut"></paper-icon-button>
 
     </div>
 
@@ -74,9 +74,9 @@
       <paper-button toggles raised active={{display.symbol}}>Symbols</paper-button>
       <paper-button toggles raised active={{display.color}}>Color</paper-button>
     </div>
-    <paper-spinner active={{loading}}></paper-spinner>
+    <paper-spinner active=[[loading]]></paper-spinner>
 
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" data={{canvasData}} zoom={{zoom}} display={{display}}>
+    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display={{display}}>
     </stitch-canvas>
   </template>
 
@@ -101,9 +101,9 @@
             reflectToAttribute: true,
             observer: '_fetchData'
           },
-          canvasData: {
+          pattern: {
             type: Object,
-            reflectToAttribute: true
+            reflectToAttribute: false
           }
         };
       }
@@ -127,7 +127,7 @@
           toLocalStorage(LS_EDITOR_KEY, this);
         });
 
-        document.addEventListener('keyup', this._handleKeyUp.bind(this));
+        document.addEventListener('keyup', this._onKeyUp.bind(this));
       }
 
       toJSON() {
@@ -137,6 +137,8 @@
       }
 
       async _fetchData() {
+        // TODO: Check if data was already fetched.
+
         if (this.active) {
           const response = await fetch(`${window.SM.apiUrl}patterns/727cc7e7-5ac3-4e13-92a0-db67c1416260`);
           const pattern = await response.json();
@@ -145,6 +147,8 @@
             height: pattern.height,
             cells: []
           };
+
+          // TODO: Consider to move this logic to canvas.
           pattern.stitches.forEach(s => {
             let data = {
               x: s.point.x,
@@ -154,29 +158,26 @@
             };
             result.cells[data.x + result.width * data.y] = new Stitch(data);
           });
-          this.canvasData = result;
+          this.pattern = result;
           this.canvasEnabled = true;
           this.loading = false;
         }
       }
 
-      _zoomIn(e) {
-        // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
-        this.set('zoom', Math.min(this.zoom * 1.2, 10));
+      zoomIn() {
+        this.zoom = Math.min(this.zoom * 1.2, 10);
       }
 
-      _zoomOut(e) {
-        // TODO: Move logic of max and min zoom to zoom property of canvas, maybe?
-        this.set('zoom', Math.max(this.zoom / 1.2, 1));
+      zoomOut() {
+        this.zoom = Math.max(this.zoom / 1.2, 1);
       }
 
-      _handleKeyUp(e) {
+      _onKeyUp(event) {
         // toggle display of canvas elements
-        if (e.altKey) {
-          this.set('display.' + keyMap[e.which], !this.display[keyMap[e.which]])
+        if (event.altKey) {
+          this.set('display.' + keyMap[event.which], !this.display[keyMap[eevent.which]])
         }
       }
-
     }
 
     customElements.define(Editor.is, Editor);
