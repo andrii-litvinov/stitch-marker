@@ -31,8 +31,8 @@
         const xhr = event.detail.xhr;
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
-          this.path = '/editor';
-          this.queryParams = {schemeId: location};
+          this.path = '/editor/' + location;
+          //this.queryParams = {schemeId: location};
         }
       }
     }
