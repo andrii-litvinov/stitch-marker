@@ -46,7 +46,8 @@
 
           pattern: {
             type: Object,
-            reflectToAttribute: false
+            reflectToAttribute: false,
+            observer: "_patternChanged"
           }
         };
       }
@@ -437,6 +438,10 @@
       _handleTouchMove(e) { }
       _handleTouchEnd(e) {
         this.moveStart = null;
+      }
+
+      _patternChanged(){
+        this._enabledChanged();
       }
       
     }
