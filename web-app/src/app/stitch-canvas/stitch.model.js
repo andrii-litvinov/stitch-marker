@@ -3,11 +3,10 @@ class Stitch {
     Object.assign(this, data);
   }
 
-  draw(ctx, size, drawSymbol=true, drawColor=true) {
-    let x = toPixel(this.x, size),
-      y = toPixel(this.y, size),
-      half = size / 2;
-
+  draw(ctx, size, drawSymbol = true, drawColor = true) {
+    let
+      x = toPixel(this.x, size),
+      y = toPixel(this.y, size);
 
     // draw color
     if (drawColor) {
@@ -28,5 +27,4 @@ class Stitch {
       );
     }
   }
-
 }

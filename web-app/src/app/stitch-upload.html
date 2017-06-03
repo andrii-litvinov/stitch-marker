@@ -32,7 +32,6 @@
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
           this.path = '/editor/' + location;
-          //this.queryParams = {schemeId: location};
         }
       }
     }
