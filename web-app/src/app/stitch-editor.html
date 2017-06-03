@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
 <link rel="import" href="./stitch-canvas/stitch-canvas.html">
 
@@ -62,10 +63,11 @@
       }
     </style>
 
+    <app-route id="route" route="{{route}}" pattern="/:patternId" data="{{routeData}}"></app-route>
+
     <div class="controls top right column">
       <paper-icon-button icon="zoom-in" on-tap="zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" on-tap="zoomOut"></paper-icon-button>
-
     </div>
 
     <div class="controls bottom right row">
@@ -74,10 +76,11 @@
       <paper-button toggles raised active={{display.symbol}}>Symbols</paper-button>
       <paper-button toggles raised active={{display.color}}>Color</paper-button>
     </div>
+    
     <paper-spinner active=[[loading]]></paper-spinner>
-
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display={{display}}>
-    </stitch-canvas>
+    <paper-toast id="toast"></paper-toast>
+    
+    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display={{display}}></stitch-canvas>
   </template>
 
   <script>
@@ -104,6 +107,9 @@
           pattern: {
             type: Object,
             reflectToAttribute: false
+          },
+          routeData: {
+            type: Object
           }
         };
       }
@@ -111,7 +117,7 @@
       constructor() {
         super();
 
-        const storedEditor = fromLocalStorage(LS_EDITOR_KEY);
+        const storedEditor = null;// fromLocalStorage(LS_EDITOR_KEY);
 
         this.loading = true;
         this.zoom = storedEditor && storedEditor.zoom || 4;
@@ -124,7 +130,7 @@
         }
 
         window.addEventListener('beforeunload', () => {
-          toLocalStorage(LS_EDITOR_KEY, this);
+          //toLocalStorage(LS_EDITOR_KEY, this);
         });
 
         document.addEventListener('keyup', this._onKeyUp.bind(this));
@@ -140,8 +146,17 @@
         // TODO: Check if data was already fetched.
 
         if (this.active) {
-          const response = await fetch(`${window.SM.apiUrl}patterns/727cc7e7-5ac3-4e13-92a0-db67c1416260`);
-          const pattern = await response.json();
+          let pattern;
+          try {
+            const response = await fetch(`${window.SM.apiUrl}patterns/${this.routeData.patternId}`);
+            pattern = await response.json();
+          } catch (error) {
+            this.loading = false;
+            this.$.toast.text = error;
+            this.$.toast.open();
+            return;
+          }          
+          
           const result = {
             width: pattern.width,
             height: pattern.height,

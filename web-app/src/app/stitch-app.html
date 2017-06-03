@@ -15,7 +15,7 @@
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
-    <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
+    <app-route id="route" route="{{route}}" tail="{{subroute}}" pattern="/:view" data="{{routeData}}"></app-route>
 
     <nav>
       <iron-selector id="viewSelector" selected="{{routeData.view}}" attr-for-selected="name">
@@ -28,7 +28,7 @@
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-home name="home"></stitch-home>
       <stitch-upload name="upload"></stitch-upload>
-      <stitch-editor name="editor"></stitch-editor>
+      <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
     </iron-pages>
   </template>
   <script>

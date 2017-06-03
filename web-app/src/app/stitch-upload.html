@@ -8,8 +8,8 @@
         display: block;
       }
     </style>
-    <app-location id="location" path="[[path]]" query-params="[[queryParams]]"></app-location>
-    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="onUploadResponse" nodrop></vaadin-upload>
+    <app-location id="location" path="[[path]]"></app-location>
+    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="_onUploadResponse" nodrop></vaadin-upload>
   </template>
   <script>
     class Upload extends Polymer.Element {
@@ -27,7 +27,7 @@
         }
       }
 
-      onUploadResponse(event) {
+      _onUploadResponse(event) {
         const xhr = event.detail.xhr;
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
