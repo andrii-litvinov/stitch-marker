@@ -76,16 +76,15 @@
       <paper-button toggles raised active={{display.symbol}}>Symbols</paper-button>
       <paper-button toggles raised active={{display.color}}>Color</paper-button>
     </div>
-    
+
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
-    
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display={{display}}></stitch-canvas>
+
+    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom=[[zoom]] display=[[display]]></stitch-canvas>
   </template>
 
   <script>
     'use strict';
-    const LS_EDITOR_KEY = "sm_editor";
     const keyMap = {
       82: 'ruler',  // r
       71: 'grid',   // g
@@ -110,17 +109,20 @@
           },
           routeData: {
             type: Object
+          },
+          zoom: {
+            type: Number,
+            value: 1
+          },
+          loading: {
+            type: Boolean,
+            value: true
           }
         };
       }
 
       constructor() {
         super();
-
-        const storedEditor = null;// fromLocalStorage(LS_EDITOR_KEY);
-
-        this.loading = true;
-        this.zoom = storedEditor && storedEditor.zoom || 4;
 
         this.display = {
           grid: true,
@@ -129,22 +131,10 @@
           color: true
         }
 
-        window.addEventListener('beforeunload', () => {
-          //toLocalStorage(LS_EDITOR_KEY, this);
-        });
-
         document.addEventListener('keyup', this._onKeyUp.bind(this));
       }
 
-      toJSON() {
-        return {
-          zoom: this.zoom
-        };
-      }
-
       async _fetchData() {
-        // TODO: Check if data was already fetched.
-
         if (this.active) {
           let pattern;
           try {
@@ -155,8 +145,8 @@
             this.$.toast.text = error;
             this.$.toast.open();
             return;
-          }          
-          
+          }
+
           const result = {
             width: pattern.width,
             height: pattern.height,
@@ -180,17 +170,21 @@
       }
 
       zoomIn() {
-        this.zoom = Math.min(this.zoom * 1.2, 10);
+        let zoomLevels = [.25, .5, .75, .8, .9, .95, 1, 1.05, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
+        let zoomIndex = Math.min(zoomLevels.indexOf(this.zoom) + 1, zoomLevels.length - 1);
+        this.zoom = zoomLevels[zoomIndex];
       }
 
       zoomOut() {
-        this.zoom = Math.max(this.zoom / 1.2, 1);
+        let zoomLevels = [.25, .5, .75, .8, .9, .95, 1, 1.05, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
+        let zoomIndex = Math.max(zoomLevels.indexOf(this.zoom) - 1, 0);
+        this.zoom = zoomLevels[zoomIndex];
       }
 
       _onKeyUp(event) {
         // toggle display of canvas elements
         if (event.altKey) {
-          this.set('display.' + keyMap[event.which], !this.display[keyMap[eevent.which]])
+          this.set('display.' + keyMap[event.which], !this.display[keyMap[event.which]])
         }
       }
     }
