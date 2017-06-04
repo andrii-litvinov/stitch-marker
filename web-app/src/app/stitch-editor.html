@@ -33,7 +33,7 @@
       }
 
       .controls.bottom {
-        bottom: 100px;
+        bottom: 40px;
       }
 
       .controls.column {
@@ -45,8 +45,14 @@
       }
 
       paper-button {
-        background-color: white;
+        background-color: var(--google-red-500);
+        color: white;
       }
+
+        paper-button[active] {
+          background-color: var(--google-green-500);
+          color: white;
+        }
 
       paper-spinner {
         position: absolute;
@@ -103,7 +109,7 @@
           active: {
             type: Boolean,
             reflectToAttribute: true,
-            observer: '_fetchData'
+            observer: '_activeChanged'
           },
           pattern: {
             type: Object,
@@ -128,49 +134,66 @@
 
         this.display = {
           grid: true,
-          ruler: true,
+          ruler: false,
           symbol: true,
           color: true
         }
 
-        // TODO: Remove event listener when element is inactive.
-        document.addEventListener('keyup', this._onKeyUp.bind(this));
+        this.events = {
+          keyup: (e) => this._handleKeyUp(e),
+        }
+      }
+
+      _setUpEvents() {
+        document.addEventListener('keyup', this.events.keyup);
+      }
+
+      _removeEvents() {
+        document.removeEventListener('keyup', this.events.keyup);
+      }
+
+      _activeChanged() {
+        if (this.active) {
+          this._fetchData();
+          this._setUpEvents();
+        } else {
+          this._removeEvents();
+        }
       }
 
       async _fetchData() {
-        if (this.active) {
-          let pattern;
-          try {
-            const response = await fetch(`${window.SM.apiUrl}patterns/${this.routeData.patternId}`);
-            pattern = await response.json();
-          } catch (error) {
-            this.loading = false;
-            this.$.toast.text = error;
-            this.$.toast.open();
-            return;
-          }
-
-          const result = {
-            width: pattern.width,
-            height: pattern.height,
-            cells: []
-          };
-
-          // TODO: Consider to move this logic to canvas.
-          pattern.stitches.forEach(s => {
-            let data = {
-              x: s.point.x,
-              y: s.point.y,
-              symbol: pattern.configurations[s.configurationIndex].symbol,
-              color: pattern.configurations[s.configurationIndex].hexColor
-            };
-            result.cells[data.x + result.width * data.y] = new Stitch(data);
-          });
-
-          this.pattern = result;
-          this.canvasEnabled = true;
+        let pattern;
+        
+        try {
+          const response = await fetch(`${window.SM.apiUrl}patterns/${this.routeData.patternId}`);
+          pattern = await response.json();
+        } catch (error) {
           this.loading = false;
+          this.$.toast.text = error;
+          this.$.toast.open();
+          return;
         }
+
+        const result = {
+          width: pattern.width,
+          height: pattern.height,
+          cells: []
+        };
+
+        // TODO: Consider to move this logic to canvas.
+        pattern.stitches.forEach(s => {
+          let data = {
+            x: s.point.x,
+            y: s.point.y,
+            symbol: pattern.configurations[s.configurationIndex].symbol,
+            color: pattern.configurations[s.configurationIndex].hexColor
+          };
+          result.cells[data.x + result.width * data.y] = new Stitch(data);
+        });
+
+        this.pattern = result;
+        this.canvasEnabled = true;
+        this.loading = false;
       }
 
       zoomIn() {
@@ -185,9 +208,10 @@
         this.zoom = zoomLevels[zoomIndex];
       }
 
-      _onKeyUp(event) {
+      _handleKeyUp(event) {
         if (event.altKey) {
           const element = hotKey[event.which];
+
           if (element) {
             this.set(`display.${element}`, !this.display[element])
           }
