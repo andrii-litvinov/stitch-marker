@@ -100,7 +100,7 @@
       }
 
       get stitchSize() {
-        return this.zoom * 30;
+        return Math.round(this.zoom * 30);
       }
 
       reset() {
@@ -233,6 +233,7 @@
 
       _drawGrid(ctx, begin, end, size) {
         // TODO: Draw sharp lines when zoom is small.
+        // TODO: Draw sharp lines on scroll. Consider to make scroll fixed or rounded or something.
 
         ctx.strokeStyle = 'lightgray';
         ctx.lineWidth = 1;
@@ -251,18 +252,19 @@
 
         ctx.stroke();
 
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 1;
         ctx.beginPath();
 
-        for (let x = begin.x; x <= end.x + 1; x += size) {
-          if (!(x % (10 * size))) {
+        for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
+          if (x % (10 * size) === 0.5) {
             ctx.moveTo(x, 0);
             ctx.lineTo(x, end.y);
           }
         }
 
-        for (let y = begin.y; y <= end.y + 1; y += size) {
-          if (!(y % (10 * size))) {
+        for (let y = begin.y + 0.5; y <= end.y + 1; y += size) {
+          if (y % (10 * size) === 0.5) {
             ctx.moveTo(0, y);
             ctx.lineTo(end.x, y);
           }
