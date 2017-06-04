@@ -1,8 +1,8 @@
-const debounce = (func, wait, immediate) => {
+const debounce = function (func, wait, immediate) {
   var timeout;
-  return (...arguments) => {
+  return function () {
     var context = this, args = arguments;
-    var later = () => {
+    var later = function () {
       timeout = null;
       if (!immediate) func.apply(context, args);
     };
