@@ -7,14 +7,19 @@
         height: 700px;
         overflow: hidden;
       }
-
+      #container {
+        overflow: auto;
+        height: 100%;
+      }
       canvas {
         background: #f0f0f0;
         display: inline-block;
         box-sizing: content-box;
       }
     </style>
-    <canvas id="canvas" width="0" height="0"></canvas>
+    <div id="container">
+      <canvas id="canvas" width="0" height="0"></canvas>
+    </div>
   </template>
   <script src="../helpers/debounce.js"></script>
   <script src="../helpers/round-rect.js"></script>
@@ -79,24 +84,16 @@
 
       constructor() {
         super();
-
-        let timer;
-        window.addEventListener('resize', (e) => {
-          // TODO: Discuss why this implementation is better than what was before. In my understanding canvas should fit into container it is rendered in.
-          clearTimeout(timer);
-          timer = setTimeout(() => {
-            this._resize(window.innerWidth, window.innerHeight);
-          }, 250);
-        });
       }
 
       connectedCallback() {
         super.connectedCallback();
         this.canvas = this.$.canvas;
+        this.container = this.$.container;
         this._canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this._ctx = this._canvas.getContext('2d');
-        this._debouncedDrawCache = debounce(this._drawCache.bind(this), 250);
+        this._debouncedDraw = debounce(this._draw.bind(this), 250);
       }
 
       get stitchSize() {
@@ -112,15 +109,14 @@
         if (this.enabled) {
           this._init();
           this._draw();
-          this._drawCache();
         }
       }
 
       _zoomChanged() {
         if (this.enabled) {
           this._zoom({
-            x: this.canvas.width / 2,
-            y: this.canvas.height / 2
+            x: this.container.offsetWidth / 2,
+            y: this.container.offsetHeight / 2
           });
         }
       }
@@ -133,26 +129,23 @@
           Math.round((focus.y - this.offset.y) * k)
         );
 
+        this.canvas.width = this.wCells * this.stitchSize;
+        this.canvas.height = this.hCells * this.stitchSize;
+        this._draw();
         this.oldStitchSize = this.stitchSize;
-        this._debouncedDrawCache();
       }
 
       _displayChanged(e) {
         if (!this.enabled) return;
-        if (e.path === 'display.ruler') {
-          this._draw(true);
-        } else {
-          this._draw();
-          this._drawCache();
-        }
+        this._draw(); 
       }
 
       _init() {
         this.wCells = this.pattern ? this.pattern.width : 50;
         this.hCells = this.pattern ? this.pattern.height : 50;
         this.cells = this.pattern.cells;
-        this.canvas.width = this.offsetWidth;
-        this.canvas.height = this.offsetHeight;
+        this.canvas.width = this.wCells * this.stitchSize;
+        this.canvas.height = this.hCells * this.stitchSize;
         this.oldStitchSize = this.stitchSize;
         this.offset = new Point(0, 0);   // relative zero point - begin of ctx
         this.mode = 'view';
@@ -160,12 +153,8 @@
           mouseup: (e) => this._handleMouseUp(e),
           mousedown: (e) => this._handleMouseDown(e),
           mousemove: (e) => this._handleMouseMove(e),
-          // touchstart : (e) => this._handleTouchStart(e),
-          // touchend   : (e) => this.handleTouchEnd(e),
-          // touchmove  : (e) => this.handleTouchMove(e),
           mousewheel: (e) => this._handleWheel(e)
-          // wheel      : (e) => this._handleTouchStart(e),
-          // scroll     : (e) => this._handleTouchStart(e),
+
         }
 
         // setup events
@@ -175,55 +164,31 @@
 
       }
 
-      _drawCache() {
-        let size = this.stitchSize,
-          // draw grid only in window bounds
-          gridWidth = toPixel(this.wCells, size),
-          gridHeight = toPixel(this.hCells, size),
-          begin = new Point(0, 0),
-          end = new Point(gridWidth, gridHeight),
-          _begin = begin.toRelativeUnit(size),
-          _end = end.toRelativeUnit(size);
-
-        this._canvas.width = gridWidth + 1;
-        this._canvas.height = gridHeight + 1;
-        this._drawWorkspace(this._ctx, gridWidth, gridHeight);
-        this._drawStitches(this._ctx, _begin, _end, size);
-        this.display.grid && this._drawGrid(this._ctx, begin, end, size);
-      }
-
       _draw(cached) {
         this._clearGrid();
 
-        let offset = this.offset,
+        let 
+          offset = this.offset,
           size = this.stitchSize,
-          // draw grid only in window bounds
-          gridWidth = toPixel(this.wCells, size),
-          gridHeight = toPixel(this.hCells, size),
+
           begin = new Point(
             Math.max(0, offset.x % size - offset.x - size),
             Math.max(0, offset.y % size - offset.y - size)
           ),
           end = new Point(
-            Math.min(this.canvas.width - offset.x, gridWidth),
-            Math.min(this.canvas.height - offset.y, gridHeight)
+            Math.min(this.container.offsetWidth - offset.x, this.canvas.width),
+            Math.min(this.container.offsetHeight - offset.y, this.canvas.height)
           ),
           _begin = begin.toRelativeUnit(size),
           _end = end.toRelativeUnit(size);
 
-        if (cached && this.zoom <= 2) {
-          this._drawFromCache();
-        } else {
-          this._drawWorkspace(this.ctx, gridWidth, gridHeight);
-          this._drawStitches(this.ctx, _begin, _end, size);
-          this.display.grid && this._drawGrid(this.ctx, begin, end, size);
-        }
+
+        this._drawWorkspace(this.ctx, this.canvas.width, this.canvas.height);
+        this._drawStitches(this.ctx, _begin, _end, size);
+        
+        this.display.grid && this._drawGrid(this.ctx, begin, end, size);
 
         this.display.ruler && this._drawRulers(this.ctx, offset, size);
-      }
-
-      _drawFromCache() {
-        this.ctx.drawImage(this._canvas, 0, 0, this._canvas.width, this._canvas.height);
       }
 
       _drawWorkspace(ctx, gridWidth, gridHeight) {
@@ -234,19 +199,18 @@
       _drawGrid(ctx, begin, end, size) {
         // TODO: Draw sharp lines when zoom is small.
         // TODO: Draw sharp lines on scroll. Consider to make scroll fixed or rounded or something.
-
         ctx.strokeStyle = 'lightgray';
         ctx.lineWidth = 1;
         ctx.beginPath();
 
         let x, y;
         for (x = begin.x + 0.5; x <= end.x + 1; x += size) {
-          ctx.moveTo(x, 0);
+          ctx.moveTo(x, begin.y);
           ctx.lineTo(x, end.y);
         }
 
         for (y = begin.y + 0.5; y <= end.y + 1; y += size) {
-          ctx.moveTo(0, y);
+          ctx.moveTo(begin.x, y);
           ctx.lineTo(end.x, y);
         }
 
@@ -258,14 +222,14 @@
 
         for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
           if (x % (10 * size) === 0.5) {
-            ctx.moveTo(x, 0);
+            ctx.moveTo(x, begin.y);
             ctx.lineTo(x, end.y);
           }
         }
 
         for (let y = begin.y + 0.5; y <= end.y + 1; y += size) {
           if (y % (10 * size) === 0.5) {
-            ctx.moveTo(0, y);
+            ctx.moveTo(begin.x, y);
             ctx.lineTo(end.x, y);
           }
         }
@@ -307,12 +271,12 @@
       }
 
       _moveTo(x, y, cached) {
-        this.offset.x += x;
-        this.offset.y += y;
-        this.ctx.translate(x, y);
-        this._draw(cached);
-        this.dispatchEvent(new CustomEvent('move', { detail: { offset: this.offset } }));
-        // this._debouncedDrawCache();
+        this.container.scrollLeft -= x;
+        this.container.scrollTop -= y;
+
+        this.offset.x = -this.container.scrollLeft;
+        this.offset.y = -this.container.scrollTop;
+        this._debouncedDraw();
       }
 
       _clearGrid() {
@@ -320,15 +284,6 @@
           end = new Point(this.canvas.width, this.canvas.height);
 
         this.ctx.clearRect(begin.x, begin.y, end.x, end.y);
-      }
-
-      _resize(width, height) {
-        this.ctx.translate(-this.offset.x, -this.offset.y);
-        this.canvas.width = width;
-        this.canvas.height = height;
-        this.ctx.translate(this.offset.x, this.offset.y);
-
-        this._draw();
       }
 
       _setCell(pt, color) {
@@ -358,78 +313,35 @@
 
       _handleMouseUp(e) {
         e.preventDefault();
-        // if (this.mode === 'draw') {
-        //   let pt = new Point(
-        //     e.clientX - this.offset.x,
-        //     e.clientY - this.offset.y
-        //   ).toRelativeUnit(this.stitchSize);
-
-        //   if (this.inGrid(pt)) {
-        //       this.setCell(pt, $colorpicker && $colorpicker.value || 'black');
-        //   }
-        // }
-        let pt = new Point(
-          e.clientX - this.offset.x,
-          e.clientY - this.offset.y
-        ).toRelativeUnit(this.stitchSize);
-
-        if (this.mode === 'edit' && this._isInGrid(pt)) {
-          this._setCell(pt, this.color);
-        }
 
         this.moveStart = null;
+        this.moveEnd = null;
       }
 
       _handleMouseDown(e) {
         e.preventDefault();
         this.moveStart = { x: e.clientX, y: e.clientY };
-
-        let moveEnd = { x: e.clientX, y: e.clientY },
-          move = () => {
-            if (this.moveStart) {
-              let deltaX = this.moveStart.x - moveEnd.x,
-                deltaY = this.moveStart.y - moveEnd.y;
-
-              if (deltaX || deltaY) this._moveTo(deltaX, deltaY, true);
-
-              moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
-              requestAnimationFrame(move);
-            }
-          }
-        move();
+        this.moveEnd = { x: e.clientX, y: e.clientY };
       }
 
       _handleMouseMove(e) {
         e.preventDefault();
-        if (e.which === 1 && this.moveStart) {
-          let pt = new Point(
-            e.clientX - this.offset.x,
-            e.clientY - this.offset.y
-          ).toRelativeUnit(this.stitchSize);
 
-          if (this.mode === 'edit' && this._isInGrid(pt)) {
-            this._setCell(pt, this.color);
-            this._debouncedDrawCache();
-          } else {
-            this.moveStart = { x: e.clientX, y: e.clientY };
-          }
-        } else {
-          // this.moveStart = null;
-        }
+        if (this.moveStart) {
+          let 
+            deltaX = this.moveStart.x - this.moveEnd.x,
+            deltaY = this.moveStart.y - this.moveEnd.y;
+
+          if (deltaX || deltaY) this._moveTo(deltaX, deltaY, true);
+
+          this.moveEnd = { x: this.moveStart.x, y: this.moveStart.y };
+          this.moveStart = { x: e.clientX, y: e.clientY };  
+        };
       }
 
       _handleWheel(e) {
         e.preventDefault();
-
         this._moveTo(-e.deltaX, -e.deltaY, true);
-
-        // this.moveStart = { x: e.clientX, y: e.clientY };
-      }
-
-      _handleTouchMove(e) { }
-
-      _handleTouchEnd(e) {
-        this.moveStart = null;
       }
 
       _patternChanged() {

@@ -78,7 +78,6 @@
     </div>
 
     <div class="controls bottom right row">
-      <paper-button toggles raised active={{display.ruler}}>Rulers</paper-button>
       <paper-button toggles raised active={{display.grid}}>Grid</paper-button>
       <paper-button toggles raised active={{display.symbol}}>Symbols</paper-button>
       <paper-button toggles raised active={{display.color}}>Color</paper-button>
@@ -136,7 +135,7 @@
         this.display = {
           grid: true,
           ruler: false,
-          symbol: true,
+          symbol: false,
           color: true
         }
 
