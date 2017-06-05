@@ -21,10 +21,10 @@
       <canvas id="canvas" width="0" height="0"></canvas>
     </div>
   </template>
-  <script src="../helpers/debounce.js"></script>
   <script src="../helpers/round-rect.js"></script>
-  <script src="./point.model.js"></script>
-  <script src="./stitch.model.js"></script>
+  <script src="./point.js"></script>
+  <script src="./stitch.js"></script>
+  <script src="./grid.js"></script>
   <script>
     'use strict';
 
@@ -90,9 +90,8 @@
         super.connectedCallback();
         this.canvas = this.$.canvas;
         this.container = this.$.container;
-        this._canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
-        this._ctx = this._canvas.getContext('2d');
+        this.grid = new Grid(this.ctx);
         this._debouncedDraw = this._draw.debounce(250);
       }
 
@@ -186,7 +185,7 @@
         this._drawWorkspace(this.ctx, this.canvas.width, this.canvas.height);
         this._drawStitches(this.ctx, _begin, _end, size);
         
-        this.display.grid && this._drawGrid(this.ctx, begin, end, size);
+        this.display.grid && this.grid.draw(this.ctx, begin, end, size);
 
         this.display.ruler && this._drawRulers(this.ctx, offset, size);
       }
@@ -194,47 +193,6 @@
       _drawWorkspace(ctx, gridWidth, gridHeight) {
         ctx.fillStyle = 'white';
         ctx.fillRect(0, 0, gridWidth, gridHeight);
-      }
-
-      _drawGrid(ctx, begin, end, size) {
-        // TODO: Draw sharp lines when zoom is small.
-        // TODO: Draw sharp lines on scroll. Consider to make scroll fixed or rounded or something.
-        ctx.strokeStyle = 'lightgray';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-
-        let x, y;
-        for (x = begin.x + 0.5; x <= end.x + 1; x += size) {
-          ctx.moveTo(x, begin.y);
-          ctx.lineTo(x, end.y);
-        }
-
-        for (y = begin.y + 0.5; y <= end.y + 1; y += size) {
-          ctx.moveTo(begin.x, y);
-          ctx.lineTo(end.x, y);
-        }
-
-        ctx.stroke();
-
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-
-        for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
-          if (x % (10 * size) === 0.5) {
-            ctx.moveTo(x, begin.y);
-            ctx.lineTo(x, end.y);
-          }
-        }
-
-        for (let y = begin.y + 0.5; y <= end.y + 1; y += size) {
-          if (y % (10 * size) === 0.5) {
-            ctx.moveTo(begin.x, y);
-            ctx.lineTo(end.x, y);
-          }
-        }
-
-        ctx.stroke();
       }
 
       _drawStitches(ctx, begin, end, size) {
