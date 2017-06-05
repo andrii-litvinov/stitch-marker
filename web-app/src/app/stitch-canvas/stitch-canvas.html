@@ -93,7 +93,7 @@
         this._canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
         this._ctx = this._canvas.getContext('2d');
-        this._debouncedDraw = debounce(this._draw.bind(this), 250);
+        this._debouncedDraw = this._draw.debounce(250);
       }
 
       get stitchSize() {
