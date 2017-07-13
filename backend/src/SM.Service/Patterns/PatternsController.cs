@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SM.Core;
@@ -13,16 +14,19 @@ namespace SM.Service.Patterns
     public class PatternsController : Controller
     {
         private readonly IPatternReader patternReader;
+        private readonly ILogger logger;
 
-        public PatternsController(IPatternReader patternReader)
+        public PatternsController(IPatternReader patternReader, ILoggerFactory loggerFactory)
         {
             this.patternReader = patternReader;
+            this.logger = loggerFactory.CreateLogger("My");
         }
 
         [HttpGet("{patternId}")]
         public IActionResult Get(Guid patternId)
         {
             var path = $"Patterns/{patternId}/pattern.json";
+            logger.LogInformation(path);
             if (!System.IO.File.Exists(path)) return NotFound();
 
             var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None, 4096, FileOptions.Asynchronous);
