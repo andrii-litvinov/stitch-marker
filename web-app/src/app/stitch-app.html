@@ -6,6 +6,7 @@
 <link rel="import" href="stitch-editor.html">
 <link rel="import" href="stitch-home.html">
 <link rel="import" href="stitch-upload.html">
+<link rel="import" href="stitch-login.html">
 
 <dom-module id="stitch-app">
   <template>
@@ -23,6 +24,7 @@
         <a name href="/">Home</a>
         <a name="upload" href="/upload">Upload</a>
         <a name="editor" href="/editor">Editor</a>
+        <a name="login" href="/login">Login</a>
       </iron-selector>
     </nav>
 
@@ -30,6 +32,7 @@
       <stitch-home name></stitch-home>
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
+      <stitch-login name="login"></stitch-login>
     </iron-pages>
   </template>
   <script>

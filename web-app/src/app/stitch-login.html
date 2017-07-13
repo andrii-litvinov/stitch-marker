@@ -1,3 +1,6 @@
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
 <dom-module id="stitch-login">
     <template>
         <style>
@@ -11,12 +14,41 @@
                 font-size: 50px;
                 color: black;
             }
+
+            h3 {
+                font-family: sans-serif;
+                font-style: italic;
+                font-size: 20px;
+                text-align: center;
+                margin: 50px;
+            }
+
+            paper-input {
+                width: 324px;
+            }
+
+            #input {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
         </style>
 
-         <header>
-      <h1> Stitch Marker</h1>
-        </header>       
-        
+        <header>
+            <h1> Stitch Marker</h1>
+        </header>
+        <h3>Войдите, чтобы начать вышивать</h3>
+
+        <div id="input">
+            <paper-input always-float-label label="Эл. адрес"></paper-input>
+            <paper-input always-float-label label="Пароль"></paper-input>
+        </div>
+
+        <paper-button>Войти</paper-button>
+        <paper-button>Восстановить пароль</paper-button>
+        <paper-button>Зарегистрироваться</paper-button>
+        <paper-button>Войти с помощью Google</paper-button>
     </template>
     <script>
         class Login extends Polymer.Element {
