@@ -1,0 +1,11 @@
+{
+  "name": "stitch-marker",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "lr-http-server -d ./wwwroot/"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "lr-http-server": "^0.1.5"
+  }
+}

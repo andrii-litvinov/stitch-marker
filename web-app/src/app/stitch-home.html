@@ -1,0 +1,91 @@
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+
+<dom-module id="stitch-home">
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
+
+      header {
+        margin-bottom: 250px;
+      }
+
+      main {
+        margin-bottom: 100px;
+      }
+
+      h1 {
+        font-family: 'Lobster', cursive;
+        text-align: center;
+        font-size: 50px;
+        color: black;
+      }
+
+      main {
+        font-family: 'Droid Sans', sans-serif;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+      }
+
+      main>div {
+        max-width: 250px;
+      }
+
+      h4 {
+        font-size: 18px;
+      }
+
+      #buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+      }
+
+      paper-button {
+        background-color: white;
+        border: 1px solid black;
+        height: 43px;
+        width: 150px;
+        text-align: center;
+        font-size: 12px;
+        margin: 10px;
+      }
+    </style>
+
+    <header>
+      <h1>Stitch Marker</h1>
+    </header>
+
+    <main>
+      <div>
+        <h4>Добавляйте схемы</h4>
+        <p>Возможность добавлять схемы любым удобным для Вас способом.</p>
+      </div>
+      <div>
+        <h4>Отмечайте вышитое</h4>
+        <p>Функция, которая облегчает процесс всем, кто любит вышивать.</p>
+      </div>
+      <div>
+        <h4>Наслаждайтесь процессом</h4>
+        <p>Процесс вышивания становится намного удобнее вместе со Stitch&nbsp;Marker.</p>
+      </div>
+    </main>
+
+    <div id="buttons" class="any class">
+      <paper-button>Вход</paper-button>
+      <paper-button>Регистрация</paper-button>
+    </div>
+  </template>
+
+  <script>
+    class Home extends Polymer.Element {
+      static get is() { return "stitch-home"; }
+    }
+    customElements.define(Home.is, Home);
+  </script>
+
+</dom-module>

@@ -1,0 +1,41 @@
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
+
+<dom-module id="stitch-upload">
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
+    </style>
+    <app-location id="location" path="[[path]]"></app-location>
+    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="_onUploadResponse" nodrop></vaadin-upload>
+  </template>
+  <script>
+    class Upload extends Polymer.Element {
+      static get is() { return 'stitch-upload'; }
+
+      static get properties() {
+        return {
+          uploadUrl: {
+            type: String,
+            value: `${SM.apiUrl}patterns`
+          },
+          route: {
+            type: Object
+          }
+        }
+      }
+
+      _onUploadResponse(event) {
+        const xhr = event.detail.xhr;
+        if (xhr.status === 201) {
+          const location = xhr.getResponseHeader('Location');
+          this.path = '/editor/' + location;
+        }
+      }
+    }
+
+    customElements.define(Upload.is, Upload);
+  </script>
+</dom-module>
