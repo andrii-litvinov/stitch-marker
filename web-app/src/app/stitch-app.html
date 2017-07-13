@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
 <link rel="import" href="stitch-editor.html">
 <link rel="import" href="stitch-home.html">
 <link rel="import" href="stitch-upload.html">
@@ -19,19 +20,18 @@
 
     <nav>
       <iron-selector id="viewSelector" selected="{{routeData.view}}" attr-for-selected="name">
-        <a name="home" href="/">Home</a>
+        <a name href="/">Home</a>
         <a name="upload" href="/upload">Upload</a>
         <a name="editor" href="/editor">Editor</a>
       </iron-selector>
     </nav>
 
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
-      <stitch-home name="home"></stitch-home>
+      <stitch-home name></stitch-home>
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
     </iron-pages>
   </template>
-  <script src="../bower_components/js-throttle-debounce/build/js-throttle-debounce.min.js"></script>
   <script>
     class App extends Polymer.Element {
       static get is() { return "stitch-app"; }
