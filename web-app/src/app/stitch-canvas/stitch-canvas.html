@@ -91,7 +91,7 @@
         this.canvas = this.$.canvas;
         this.container = this.$.container;
         this.ctx = this.canvas.getContext('2d');
-        this.grid = new Grid(this.ctx);
+        this.grid = new Grid();
         this._debouncedDraw = this._draw.debounce(250);
       }
 
@@ -100,7 +100,7 @@
       }
 
       reset() {
-        this.cells = new Array(this.wCells * this.hCells);
+        this.stitches = new Array(this.dimension[0] * this.dimension[1]);
         this._draw();
       }
 
@@ -128,8 +128,8 @@
           Math.round((focus.y - this.offset.y) * k)
         );
 
-        this.canvas.width = this.wCells * this.stitchSize;
-        this.canvas.height = this.hCells * this.stitchSize;
+        this.canvas.width = this.dimension[0] * this.stitchSize;
+        this.canvas.height = this.dimension[1] * this.stitchSize;
         this._draw();
         this.oldStitchSize = this.stitchSize;
       }
@@ -140,14 +140,12 @@
       }
 
       _init() {
-        this.wCells = this.pattern ? this.pattern.width : 50;
-        this.hCells = this.pattern ? this.pattern.height : 50;
-        this.cells = this.pattern.cells;
-        this.canvas.width = this.wCells * this.stitchSize;
-        this.canvas.height = this.hCells * this.stitchSize;
+        this.dimension = [ this.pattern.width, this.pattern.height ];
+        this.stitches = this.pattern.stitches;
+        this.canvas.width = this.dimension[0] * this.stitchSize;
+        this.canvas.height = this.dimension[1] * this.stitchSize;
         this.oldStitchSize = this.stitchSize;
-        this.offset = new Point(0, 0);   // relative zero point - begin of ctx
-        this.mode = 'view';
+        this.offset = new Point(0, 0);
         this.events = {
           mouseup: (e) => this._handleMouseUp(e),
           mousedown: (e) => this._handleMouseDown(e),
@@ -183,6 +181,7 @@
 
 
         this._drawWorkspace(this.ctx, this.canvas.width, this.canvas.height);
+
         this._drawStitches(this.ctx, _begin, _end, size);
         
         this.display.grid && this.grid.draw(this.ctx, begin, end, size);
@@ -196,11 +195,11 @@
       }
 
       _drawStitches(ctx, begin, end, size) {
-        for (let x = begin.x, cell; x <= end.x; x++) {
+        for (let x = begin.x, stitch; x <= end.x; x++) {
           for (let y = begin.y; y <= end.y; y++) {
-            cell = this.cells[x + this.wCells * y];
+            stitch = this.stitches[x + this.dimension[0] * y];
 
-            if (cell) cell.draw(ctx, size, this.display.symbol, this.display.color);
+            if (stitch) stitch.draw(ctx, size, this.display.symbol, this.display.color);
           }
         }
       }
@@ -247,26 +246,26 @@
       _setCell(pt, color) {
         if (this.mode === 'view') return;
 
-        let i = pt.x + this.wCells * pt.y;
+        let i = pt.x + this.dimension[0] * pt.y;
         if (this.shape === 'eraser') {
-          delete this.cells[i];
+          delete this.stitches[i];
           this._draw();
-        } else if (!this.cells[i] && this.shape !== 'eraser') {
-          this.cells[i] = new Stitch({
+        } else if (!this.stitches[i] && this.shape !== 'eraser') {
+          this.stitches[i] = new Stitch({
             x: pt.x,
             y: pt.y,
             symbol: this.stitch.symbol,
             color: this.stitch.color
           });
-          this.cells[i].draw(this.ctx, this.stitchSize);
+          this.stitches[i].draw(this.ctx, this.stitchSize);
         }
       }
 
       _isInGrid(pt) {
         return pt.x >= 0 &&
-          pt.x < this.wCells &&
+          pt.x < this.dimension[0] &&
           pt.y >= 0 &&
-          pt.y < this.hCells;
+          pt.y < this.dimension[1];
       }
 
       _handleMouseUp(e) {

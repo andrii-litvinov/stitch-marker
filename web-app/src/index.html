@@ -13,13 +13,14 @@
   <link rel="import" href="/bower_components/polymer/polymer.html">
   <link rel="import" href="/app/stitch-app.html">
   <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+  <script src="/bower_components/js-throttle-debounce/build/js-throttle-debounce.min.js"></script>      
   <style>
 
   </style>
 </head>
 
 <body>
-  <stitch-app></stitch-app>
+  <stitch-app></stitch-app>  
   <script>
     (function () {
       if (typeof fetch === 'undefined') {
@@ -35,7 +36,6 @@
     })();
   </script>
   <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="/bower_components/js-throttle-debounce/build/js-throttle-debounce.min.js"></script>
 </body>
 
 </html>
