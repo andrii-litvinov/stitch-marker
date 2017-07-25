@@ -1,0 +1,38 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+
+<dom-module id="stitch-logo">
+    <template>
+        <style>
+             :host {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+            }
+
+            h1 {
+                font-family: 'Lobster', cursive;
+                text-align: center;
+                font-size: 50px;
+                color: black;
+            }
+
+            a {
+                text-decoration-line: none;
+            }
+        </style>
+
+        <a href="/">
+            <h1>Stitch Marker</h1>
+        </a>
+        </div>
+    </template>
+    <script>
+        class Logo extends Polymer.Element {
+            static get is() {
+                return "stitch-logo";
+            }
+        }
+        customElements.define(Logo.is, Logo);
+    </script>
+</dom-module>
