@@ -1,0 +1,28 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+
+<dom-module id="stitch-social">
+  <template>
+    <style>
+       :host {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+    </style>
+    <a href="/">
+      <img src="/app/images/instagram-logo.svg" alt="Instagram"/>
+    </a>
+    <a href="/">
+      <img src="/app/images/facebook-logo.svg" alt="Facebook"/>
+    </a>
+  </template>
+  <script>
+    class Icons extends Polymer.Element {
+      static get is() {
+        return "stitch-social";
+      }
+    }
+    customElements.define(Social.is, Social);
+  </script>
+</dom-module>

@@ -8,24 +8,26 @@
       }
 
       stitch-logo {
-        margin-bottom: 250px;
+        margin-bottom: 50px;
       }
 
       main {
-        margin-bottom: 100px;
-      }
-
-      main {
-        font-family: 'Droid Sans';
+        font-family: helvetica;
         display: flex;
         flex-direction: row;
         justify-content: space-around;
-        font-family: Helvetica;
         text-align: center;
+        align-content: center;
+        margin-bottom: 100px;
       }
 
       main>div {
         max-width: 250px;
+      }
+
+      img {
+        max-width: 110px;
+    
       }
 
       h4 {
@@ -47,20 +49,28 @@
         font-size: 12px;
         margin: 10px;
       }
+
+      #signup {
+        background-color: black;
+        color: white;
+      }
     </style>
 
     <stitch-logo></stitch-logo>
 
     <main>
       <div>
+        <img src="/images/landing/add-icon.svg" alt="add" />
         <h4>Добавляйте схемы</h4>
         <p>Возможность добавлять схемы любым удобным для Вас способом.</p>
       </div>
       <div>
+        <img src="/images/landing/marker-icon.svg" alt="mark"/>
         <h4>Отмечайте вышитое</h4>
         <p>Функция, которая облегчает процесс всем, кто любит вышивать.</p>
       </div>
       <div>
+        <img src="/images/landing/enjoy-icon.svg" alt="enjoy"/>
         <h4>Наслаждайтесь процессом</h4>
         <p>Процесс вышивания становится намного удобнее вместе со Stitch&nbsp;Marker.</p>
       </div>
@@ -68,8 +78,9 @@
 
     <div id="buttons">
       <paper-button>Вход</paper-button>
-      <paper-button>Регистрация</paper-button>
+      <paper-button id="signup">Регистрация</paper-button>
     </div>
+    <stitch-social> </stitch-social>
   </template>
 
   <script>
