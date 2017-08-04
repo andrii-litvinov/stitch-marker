@@ -5,20 +5,31 @@
   <template>
     <style>
        :host {
+        display: block;
+      }
+
+      div {
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content: center;
+        align-content: center;
+      }
+
+      img {
+        width: 30px;
       }
     </style>
-    <a href="/">
-      <img src="/app/images/instagram-logo.svg" alt="Instagram"/>
-    </a>
-    <a href="/">
-      <img src="/app/images/facebook-logo.svg" alt="Facebook"/>
-    </a>
+    <div>
+      <a href="https://www.instagram.com/stitchmarker/"  target="_blank">
+      <img src="/images/instagram-logo.svg" alt="Instagram"/>
+     </a>
+      <a href="/">
+      <img src="/images/facebook-logo.svg" alt="Facebook"/>
+     </a>
+    </div>
   </template>
   <script>
-    class Icons extends Polymer.Element {
+    class Social extends Polymer.Element {
       static get is() {
         return "stitch-social";
       }
