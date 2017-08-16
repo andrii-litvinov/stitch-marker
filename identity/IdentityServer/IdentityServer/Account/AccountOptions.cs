@@ -12,8 +12,8 @@ namespace IdentityServer
         public static bool AllowRememberLogin = true;
         public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(30);
 
-        public static bool ShowLogoutPrompt = true;
-        public static bool AutomaticRedirectAfterSignOut = false;
+        public static bool ShowLogoutPrompt = false;
+        public static bool AutomaticRedirectAfterSignOut = true;
 
         public static bool WindowsAuthenticationEnabled = false;
         // specify the Windows authentication schemes you want to use for authentication

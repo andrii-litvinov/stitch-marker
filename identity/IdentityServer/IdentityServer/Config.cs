@@ -25,8 +25,8 @@ namespace IdentityServer
                     ClientName = "MVC Client",
                     AllowedGrantTypes = GrantTypes.Implicit,
 
-                    RedirectUris = { "http://localhost:5002/signin-google" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris = { "http://127.0.0.1:8081" },//where to redirect after login
+                    PostLogoutRedirectUris = { "http://127.0.0.1:8081" },//where to redirect after logout
 
                     AllowedScopes =
                     {
