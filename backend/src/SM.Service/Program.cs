@@ -31,7 +31,7 @@ namespace SM.Service
             var props = Actor.FromProducer(() => new Pattern(reader));
             
             // TODO: Register all known actors in a generic way 
-            Remote.RegisterKnownKind("Pattern", props);
+            Remote.RegisterKnownKind("pattern", props);
             Remote.Start("127.0.0.1", 12001);
             Cluster.Start("PatternCluster", new ConsulProvider(new ConsulProviderOptions()));
         }

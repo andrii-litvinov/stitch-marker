@@ -15,8 +15,8 @@ namespace SM.Service.Patterns
         [HttpGet("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
-            var pid = await Cluster.GetAsync($"{patternId}", "Pattern");
-            var request = await pid.RequestAsync<PatternState>(new PatternQuery());
+            var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var request = await pattern.RequestAsync<PatternState>(new PatternQuery());
             return Ok(request);
         }
 
@@ -24,13 +24,13 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Post(IFormFile file)
         {
             var patternId = Guid.NewGuid();
-            var pid = await Cluster.GetAsync($"{patternId}", "Pattern");
+            var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
 
             using (var memoryStream = new MemoryStream())
             {
                 await file.CopyToAsync(memoryStream);
                 var createPattern = new CreatePattern(patternId.ToString(), memoryStream.ToArray());
-                pid.Tell(createPattern);
+                pattern.Tell(createPattern);
             }
 
             return Created(patternId.ToString(), null);
