@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using Proto;
 using SM.Core;
+using SM.Core.Model;
 
 namespace SM.Service.Classes
 {
     public class Pattern : IActor
     {
         private readonly IPatternReader patternReader;
-        private Core.Model.Pattern state;
+        private PatternState state;
 
         public Pattern(IPatternReader patternReader)
         {
@@ -18,12 +19,12 @@ namespace SM.Service.Classes
         public Task ReceiveAsync(IContext context)
         {
             if (context.Message is CreatePattern pattern)
-            {
-                var patternBytes = pattern.Content;
-                var memoryStream = new MemoryStream(patternBytes) {Position = 0};
-                var patternRead = patternReader.Read(memoryStream);
-                state = patternRead;
-            }
+                using (var memoryStream = new MemoryStream(pattern.Content) {Position = 0})
+                {
+                    state = patternReader.Read(memoryStream);
+                }
+            else if (context.Message is PatternQuery)
+                context.Respond(state);
             return Actor.Done;
         }
     }

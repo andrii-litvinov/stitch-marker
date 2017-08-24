@@ -10,7 +10,7 @@ namespace SM.Xsd
 {
     public class XsdPatternReader : IPatternReader
     {
-        public Core.Model.Pattern Read(Stream stream)
+        public PatternState Read(Stream stream)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
@@ -572,10 +572,10 @@ namespace SM.Xsd
             }
         }
 
-        private static Core.Model.Pattern Convert(Pattern pattern)
+        private static Core.Model.PatternState Convert(Pattern pattern)
         {
             // TODO: Cover property mapping with tests.
-            var result = new Core.Model.Pattern
+            var result = new Core.Model.PatternState
             {
                 Width = pattern.Width,
                 Height = pattern.Height,

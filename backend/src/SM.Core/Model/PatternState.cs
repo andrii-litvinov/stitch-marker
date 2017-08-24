@@ -2,7 +2,7 @@
 
 namespace SM.Core.Model
 {
-    public class Pattern
+    public class PatternState
     {
         public Info Info { get; } = new Info();
         public Canvas Canvas { get; } = new Canvas();
