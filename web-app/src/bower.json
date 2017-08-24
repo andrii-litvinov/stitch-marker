@@ -17,6 +17,11 @@
     "paper-spinner": "^2.0.0",
     "paper-toast": "^2.0.0",
     "js-throttle-debounce": "^0.1.1",
-    "paper-input": "PolymerElements/paper-input#2.0.0"
+    "paper-input": "PolymerElements/paper-input#2.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1",
+    "paper-header-panel": "PolymerElements/paper-header-panel#^2.0.0",
+    "paper-toolbar": "PolymerElements/paper-toolbar#^2.0.0",
+    "app-layout": "PolymerElements/app-layout#^2.0.1",
+    "paper-tabs": "PolymerElements/paper-tabs#^2.0.0"
   }
 }
