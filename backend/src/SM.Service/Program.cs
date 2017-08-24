@@ -4,6 +4,8 @@ using Proto;
 using Proto.Cluster;
 using Proto.Cluster.Consul;
 using Proto.Remote;
+using SM.Xsd;
+using Pattern = SM.Service.Classes.Pattern;
 
 namespace SM.Service
 {
@@ -25,7 +27,8 @@ namespace SM.Service
         
         private static void StartCluster()
         {
-            var props = Actor.FromFunc(ctx => Actor.Done);
+            var reader = new XsdPatternReader();
+            var props = Actor.FromProducer(() => new Pattern(reader));
             
             // TODO: Register all known actors in a generic way 
             Remote.RegisterKnownKind("Pattern", props);

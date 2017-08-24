@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Proto.Cluster;
 using SM.Core;
+using SM.Service.Classes;
 
 namespace SM.Service.Patterns
 {
@@ -35,6 +37,21 @@ namespace SM.Service.Patterns
             var patternId = Guid.NewGuid();
             var path = $"Patterns/{patternId}";
             Directory.CreateDirectory(path);
+            var pid = await Cluster.GetAsync($"{patternId}", "Pattern");
+
+            using (var memoryStream1 = new MemoryStream())
+            {
+                await file.CopyToAsync(memoryStream1);
+
+                using (var fileStream = new FileStream($"{path}/pattern.xsd", FileMode.Create, FileAccess.Write, FileShare.None, 4096, FileOptions.Asynchronous))
+                {
+                    memoryStream1.Position = 0;
+                    await memoryStream1.CopyToAsync(fileStream);
+                }
+                var bytes = memoryStream1.ToArray();
+                var createPattern = new CreatePattern(patternId.ToString(), bytes);
+                var reply = await pid.RequestAsync<object>(createPattern);
+            }
 
             using (var memoryStream = new MemoryStream())
             {
