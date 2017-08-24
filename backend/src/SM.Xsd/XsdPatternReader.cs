@@ -10,260 +10,263 @@ namespace SM.Xsd
 {
     public class XsdPatternReader : IPatternReader
     {
-        public PatternState Read(Stream stream)
+        public PatternState Read(byte[] content)
         {
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
-            var vendors = new Dictionary<int, XsdVendor>();
-            var array = new byte[1024];
-            stream.Read(array, 0, 2);
-            var num = BitConverter.ToUInt16(array, 0);
-            if (num == 1296)
+            using (var stream = new MemoryStream(content) {Position = 0})
             {
-                var pattern = new Pattern();
-                stream.Seek(741L, SeekOrigin.Begin);
-                stream.Read(array, 0, 14);
-                pattern.Width = BitConverter.ToUInt16(array, 0);
-                pattern.Height = BitConverter.ToUInt16(array, 2);
-                var propCount = BitConverter.ToUInt32(array, 4);
-                var count = BitConverter.ToUInt16(array, 8);
-                pattern.ThreadCountX = BitConverter.ToUInt16(array, 10);
-                pattern.ThreadCountY = BitConverter.ToUInt16(array, 12);
-                stream.Seek(761L, SeekOrigin.Begin);
-                stream.Read(array, 0, 1);
-                int num2 = array[0];
-                var count2 = 123;
-                stream.Seek(763L, SeekOrigin.Begin);
-                for (var i = 0; i < num2; i++)
-                {
-                    stream.Read(array, 0, count2);
-                    var color = new Color(i);
-                    int key = array[2];
-                    if (vendors.ContainsKey(key))
-                    {
-                        color.VendorCode = vendors[key].Code;
-                        color.VendorTitle = vendors[key].Title;
-                    }
-                    else
-                    {
-                        color.VendorCode = "ZZZ";
-                        color.VendorTitle = "Unknown";
-                    }
-                    color.ColorCode = ReadStringTrim(array, 3, 11);
-                    color.ColorTitle = ReadStringTrim(array, 14, 41);
-                    color.Rgb = new Rgb(array[55], array[56], array[57]);
-                    int num3 = BitConverter.ToUInt16(array, 59);
-                    var num4 = 61;
-                    for (var j = 0; j < 4; j++)
-                    {
-                        key = array[num4];
-                        num4++;
-                        var colorCode = ReadStringTrim(array, num4, 11);
-                        num4 += 11;
-                        if (j < num3)
-                        {
-                            string vendorCode;
-                            string vendorTitle;
-                            if (vendors.ContainsKey(key))
-                            {
-                                vendorCode = vendors[key].Code;
-                                vendorTitle = vendors[key].Title;
-                            }
-                            else
-                            {
-                                vendorCode = "ZZZ";
-                                vendorTitle = "Unknown";
-                            }
-                            var blendColor = new Color.BlendColor
-                            {
-                                VendorCode = vendorCode,
-                                VendorTitle = vendorTitle,
-                                ColorCode = colorCode
-                            };
-                            color.Blends.Add(blendColor);
-                        }
-                    }
-                    for (var k = 0; k < num3; k++)
-                    {
-                        color.Blends[k].Strands.Full = array[num4];
-                        color.Blends[k].Strands.Half = array[num4];
-                        color.Blends[k].Strands.Quarter = array[num4];
-                        color.Blends[k].Strands.ThreeQuarter = array[num4];
-                        color.Blends[k].Strands.Petit = array[num4];
-                        color.Blends[k].Strands.FrenchKnot = array[num4];
-                        color.Blends[k].Strands.BackStitch = array[num4];
-                        num4++;
-                    }
-                    pattern.Colors.Add(color);
-                }
-                stream.Seek(num2 * 2, SeekOrigin.Current);
-                for (var l = 0; l < num2 * 9; l++)
-                {
-                    stream.Read(array, 0, 2);
-                    int num5 = BitConverter.ToUInt16(array, 0);
-                    if (num5 > 0)
-                    {
-                        var array2 = new byte[num5];
-                        stream.Read(array2, 0, num5);
-                        ReadStringTrim(array2, 0, num5);
-                    }
-                }
-                for (var m = 0; m < num2 * 8; m++)
-                {
-                    var index = (int) Math.Floor(m / 8f);
-                    var num6 = m % 8;
-                    stream.Read(array, 0, 2);
-                    int num7 = BitConverter.ToUInt16(array, 0);
-                    switch (num6)
-                    {
-                        case 0:
-                            pattern.Colors[index].Strands.Full = num7;
-                            break;
-                        case 1:
-                            pattern.Colors[index].Strands.Half = num7;
-                            break;
-                        case 2:
-                            pattern.Colors[index].Strands.Quarter = num7;
-                            break;
-                        case 3:
-                            pattern.Colors[index].Strands.BackStitch = num7;
-                            break;
-                        case 4:
-                            pattern.Colors[index].Strands.FrenchKnot = num7;
-                            break;
-                        case 5:
-                            pattern.Colors[index].Strands.Petit = num7;
-                            break;
-                    }
-                }
-                stream.Seek(2400L, SeekOrigin.Current);
-                stream.Seek(2400L, SeekOrigin.Current);
-                stream.Seek(960L, SeekOrigin.Current);
-                stream.Seek(2400L, SeekOrigin.Current);
-                stream.Seek(2400L, SeekOrigin.Current);
-                stream.Seek(2400L, SeekOrigin.Current);
-                stream.Seek(2400L, SeekOrigin.Current);
-                for (var n = 0; n < 240; n++)
-                {
-                    stream.Read(array, 0, 53);
-                    if (n < num2)
-                        pattern.Colors[n].FontFamily = ReadStringTrim(array, 0, 33);
-                }
-                for (var num8 = 0; num8 < num2 * 6; num8++)
-                {
-                    stream.Read(array, 0, 2);
-                    var index2 = (int) Math.Floor(num8 / 6f);
-                    if (pattern.Colors[index2].Symbol == "" && array[0] != 255 && array[1] != 255 && array[0] >= 32 && array[0] != 127 && array[0] != 160 && array[0] != 173)
-                        try
-                        {
-                            pattern.Colors[index2].Symbol = Encoding.GetEncoding(1252).GetString(array, 0, 1);
-                        }
-                        catch
-                        {
-                            //
-                        }
-                }
-                stream.Read(array, 0, 53);
-                var text = ReadStringTrim(array, 0, 33);
-                //if (!Font.fonts.ContainsKey(text))
-                //{
-                //    text = "CrossStitchDim";
-                //}
-                stream.Seek(33L, SeekOrigin.Current);
-                stream.Seek(2L, SeekOrigin.Current);
-                stream.Seek(4L, SeekOrigin.Current);
-                stream.Seek(28L, SeekOrigin.Current);
-                stream.Seek(120L, SeekOrigin.Current);
-                stream.Seek(120L, SeekOrigin.Current);
-                stream.Seek(12L, SeekOrigin.Current);
-                stream.Seek(2L, SeekOrigin.Current);
-                stream.Seek(2L, SeekOrigin.Current);
-                stream.Seek(101L, SeekOrigin.Current);
-                stream.Read(array, 0, 3);
-                pattern.Canvas.DefaultRGB = new Rgb(array[0], array[1], array[2]);
-                stream.Seek(65L, SeekOrigin.Current);
-                stream.Read(array, 0, 41);
-                pattern.Info.Title = ReadStringTrim(array, 0, 41);
-                stream.Read(array, 0, 41);
-                pattern.Info.Author = ReadStringTrim(array, 0, 41);
-                stream.Read(array, 0, 41);
-                pattern.Info.Company = ReadStringTrim(array, 0, 41);
-                stream.Read(array, 0, 201);
-                pattern.Info.Copyright = ReadStringTrim(array, 0, 201);
-                stream.Seek(2049L, SeekOrigin.Current);
-                stream.Seek(6L, SeekOrigin.Current);
-                stream.Read(array, 0, 31);
-                pattern.Canvas.Title = ReadStringTrim(array, 0, 31);
-                stream.Seek(216L, SeekOrigin.Current);
-                stream.Read(array, 0, 14);
-                pattern.Strands.Full = BitConverter.ToUInt16(array, 0);
-                pattern.Strands.Half = BitConverter.ToUInt16(array, 2);
-                pattern.Strands.Quarter = BitConverter.ToUInt16(array, 4);
-                pattern.Strands.BackStitch = BitConverter.ToUInt16(array, 6);
-                pattern.Strands.Petit = BitConverter.ToUInt16(array, 8);
-                pattern.Strands.FrenchKnot = 2;
-                pattern.Strands.ThreeQuarter = 2;
-                foreach (var current in pattern.Colors)
-                {
-                    if (current.FontFamily == "default")
-                        current.FontFamily = text;
-                    if (current.Strands.BackStitch == 0)
-                        current.Strands.BackStitch = pattern.Strands.BackStitch;
-                    if (current.Strands.FrenchKnot == 0)
-                        current.Strands.FrenchKnot = pattern.Strands.FrenchKnot;
-                    if (current.Strands.Full == 0)
-                        current.Strands.Full = pattern.Strands.Full;
-                    if (current.Strands.Half == 0)
-                        current.Strands.Half = pattern.Strands.Half;
-                    if (current.Strands.Petit == 0)
-                        current.Strands.Petit = pattern.Strands.Petit;
-                    if (current.Strands.Quarter == 0)
-                        current.Strands.Quarter = pattern.Strands.Quarter;
-                    if (current.Strands.ThreeQuarter == 0)
-                        current.Strands.ThreeQuarter = pattern.Strands.ThreeQuarter;
-                }
-                stream.Seek(16994L, SeekOrigin.Current);
-                LoadStitches(pattern, stream, propCount);
-                stream.Seek(2L, SeekOrigin.Current);
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+                var vendors = new Dictionary<int, XsdVendor>();
+                var array = new byte[1024];
                 stream.Read(array, 0, 2);
-                var num9 = BitConverter.ToUInt16(array, 0);
-                for (var num10 = 0; num10 < (int) num9; num10++)
+                var num = BitConverter.ToUInt16(array, 0);
+                if (num == 1296)
                 {
-                    stream.Read(array, 0, 2);
-                    var num11 = BitConverter.ToUInt16(array, 0);
-                    if (num11 == 4)
+                    var pattern = new Pattern();
+                    stream.Seek(741L, SeekOrigin.Begin);
+                    stream.Read(array, 0, 14);
+                    pattern.Width = BitConverter.ToUInt16(array, 0);
+                    pattern.Height = BitConverter.ToUInt16(array, 2);
+                    var propCount = BitConverter.ToUInt32(array, 4);
+                    var count = BitConverter.ToUInt16(array, 8);
+                    pattern.ThreadCountX = BitConverter.ToUInt16(array, 10);
+                    pattern.ThreadCountY = BitConverter.ToUInt16(array, 12);
+                    stream.Seek(761L, SeekOrigin.Begin);
+                    stream.Read(array, 0, 1);
+                    int num2 = array[0];
+                    var count2 = 123;
+                    stream.Seek(763L, SeekOrigin.Begin);
+                    for (var i = 0; i < num2; i++)
                     {
-                        stream.Seek(2L, SeekOrigin.Current);
-                        stream.Read(array, 0, 4);
-                        var @string = Encoding.ASCII.GetString(array, 0, 4);
-                        if (@string == "sps1")
+                        stream.Read(array, 0, count2);
+                        var color = new Color(i);
+                        int key = array[2];
+                        if (vendors.ContainsKey(key))
                         {
-                            stream.Seek(256L, SeekOrigin.Current);
-                            stream.Seek(256L, SeekOrigin.Current);
-                            stream.Seek(2L, SeekOrigin.Current);
-                            for (var num12 = 0; num12 < 3; num12++)
+                            color.VendorCode = vendors[key].Code;
+                            color.VendorTitle = vendors[key].Title;
+                        }
+                        else
+                        {
+                            color.VendorCode = "ZZZ";
+                            color.VendorTitle = "Unknown";
+                        }
+                        color.ColorCode = ReadStringTrim(array, 3, 11);
+                        color.ColorTitle = ReadStringTrim(array, 14, 41);
+                        color.Rgb = new Rgb(array[55], array[56], array[57]);
+                        int num3 = BitConverter.ToUInt16(array, 59);
+                        var num4 = 61;
+                        for (var j = 0; j < 4; j++)
+                        {
+                            key = array[num4];
+                            num4++;
+                            var colorCode = ReadStringTrim(array, num4, 11);
+                            num4 += 11;
+                            if (j < num3)
                             {
-                                stream.Read(array, 0, 10);
-                                stream.Read(array, 0, 2);
-                                num11 = BitConverter.ToUInt16(array, 0);
-                                if (num11 != 1296)
-                                    break;
-                                stream.Read(array, 0, 2);
-                                var num13 = BitConverter.ToUInt16(array, 0);
-                                if (num13 > 0)
+                                string vendorCode;
+                                string vendorTitle;
+                                if (vendors.ContainsKey(key))
                                 {
-                                    var list = new List<Node>();
-                                    var list2 = new List<Backstitch>();
-                                    LoadJoints(pattern, stream, num13, ref list, ref list2);
+                                    vendorCode = vendors[key].Code;
+                                    vendorTitle = vendors[key].Title;
+                                }
+                                else
+                                {
+                                    vendorCode = "ZZZ";
+                                    vendorTitle = "Unknown";
+                                }
+                                var blendColor = new Color.BlendColor
+                                {
+                                    VendorCode = vendorCode,
+                                    VendorTitle = vendorTitle,
+                                    ColorCode = colorCode
+                                };
+                                color.Blends.Add(blendColor);
+                            }
+                        }
+                        for (var k = 0; k < num3; k++)
+                        {
+                            color.Blends[k].Strands.Full = array[num4];
+                            color.Blends[k].Strands.Half = array[num4];
+                            color.Blends[k].Strands.Quarter = array[num4];
+                            color.Blends[k].Strands.ThreeQuarter = array[num4];
+                            color.Blends[k].Strands.Petit = array[num4];
+                            color.Blends[k].Strands.FrenchKnot = array[num4];
+                            color.Blends[k].Strands.BackStitch = array[num4];
+                            num4++;
+                        }
+                        pattern.Colors.Add(color);
+                    }
+                    stream.Seek(num2 * 2, SeekOrigin.Current);
+                    for (var l = 0; l < num2 * 9; l++)
+                    {
+                        stream.Read(array, 0, 2);
+                        int num5 = BitConverter.ToUInt16(array, 0);
+                        if (num5 > 0)
+                        {
+                            var array2 = new byte[num5];
+                            stream.Read(array2, 0, num5);
+                            ReadStringTrim(array2, 0, num5);
+                        }
+                    }
+                    for (var m = 0; m < num2 * 8; m++)
+                    {
+                        var index = (int) Math.Floor(m / 8f);
+                        var num6 = m % 8;
+                        stream.Read(array, 0, 2);
+                        int num7 = BitConverter.ToUInt16(array, 0);
+                        switch (num6)
+                        {
+                            case 0:
+                                pattern.Colors[index].Strands.Full = num7;
+                                break;
+                            case 1:
+                                pattern.Colors[index].Strands.Half = num7;
+                                break;
+                            case 2:
+                                pattern.Colors[index].Strands.Quarter = num7;
+                                break;
+                            case 3:
+                                pattern.Colors[index].Strands.BackStitch = num7;
+                                break;
+                            case 4:
+                                pattern.Colors[index].Strands.FrenchKnot = num7;
+                                break;
+                            case 5:
+                                pattern.Colors[index].Strands.Petit = num7;
+                                break;
+                        }
+                    }
+                    stream.Seek(2400L, SeekOrigin.Current);
+                    stream.Seek(2400L, SeekOrigin.Current);
+                    stream.Seek(960L, SeekOrigin.Current);
+                    stream.Seek(2400L, SeekOrigin.Current);
+                    stream.Seek(2400L, SeekOrigin.Current);
+                    stream.Seek(2400L, SeekOrigin.Current);
+                    stream.Seek(2400L, SeekOrigin.Current);
+                    for (var n = 0; n < 240; n++)
+                    {
+                        stream.Read(array, 0, 53);
+                        if (n < num2)
+                            pattern.Colors[n].FontFamily = ReadStringTrim(array, 0, 33);
+                    }
+                    for (var num8 = 0; num8 < num2 * 6; num8++)
+                    {
+                        stream.Read(array, 0, 2);
+                        var index2 = (int) Math.Floor(num8 / 6f);
+                        if (pattern.Colors[index2].Symbol == "" && array[0] != 255 && array[1] != 255 && array[0] >= 32 && array[0] != 127 && array[0] != 160 && array[0] != 173)
+                            try
+                            {
+                                pattern.Colors[index2].Symbol = Encoding.GetEncoding(1252).GetString(array, 0, 1);
+                            }
+                            catch
+                            {
+                                //
+                            }
+                    }
+                    stream.Read(array, 0, 53);
+                    var text = ReadStringTrim(array, 0, 33);
+                    //if (!Font.fonts.ContainsKey(text))
+                    //{
+                    //    text = "CrossStitchDim";
+                    //}
+                    stream.Seek(33L, SeekOrigin.Current);
+                    stream.Seek(2L, SeekOrigin.Current);
+                    stream.Seek(4L, SeekOrigin.Current);
+                    stream.Seek(28L, SeekOrigin.Current);
+                    stream.Seek(120L, SeekOrigin.Current);
+                    stream.Seek(120L, SeekOrigin.Current);
+                    stream.Seek(12L, SeekOrigin.Current);
+                    stream.Seek(2L, SeekOrigin.Current);
+                    stream.Seek(2L, SeekOrigin.Current);
+                    stream.Seek(101L, SeekOrigin.Current);
+                    stream.Read(array, 0, 3);
+                    pattern.Canvas.DefaultRGB = new Rgb(array[0], array[1], array[2]);
+                    stream.Seek(65L, SeekOrigin.Current);
+                    stream.Read(array, 0, 41);
+                    pattern.Info.Title = ReadStringTrim(array, 0, 41);
+                    stream.Read(array, 0, 41);
+                    pattern.Info.Author = ReadStringTrim(array, 0, 41);
+                    stream.Read(array, 0, 41);
+                    pattern.Info.Company = ReadStringTrim(array, 0, 41);
+                    stream.Read(array, 0, 201);
+                    pattern.Info.Copyright = ReadStringTrim(array, 0, 201);
+                    stream.Seek(2049L, SeekOrigin.Current);
+                    stream.Seek(6L, SeekOrigin.Current);
+                    stream.Read(array, 0, 31);
+                    pattern.Canvas.Title = ReadStringTrim(array, 0, 31);
+                    stream.Seek(216L, SeekOrigin.Current);
+                    stream.Read(array, 0, 14);
+                    pattern.Strands.Full = BitConverter.ToUInt16(array, 0);
+                    pattern.Strands.Half = BitConverter.ToUInt16(array, 2);
+                    pattern.Strands.Quarter = BitConverter.ToUInt16(array, 4);
+                    pattern.Strands.BackStitch = BitConverter.ToUInt16(array, 6);
+                    pattern.Strands.Petit = BitConverter.ToUInt16(array, 8);
+                    pattern.Strands.FrenchKnot = 2;
+                    pattern.Strands.ThreeQuarter = 2;
+                    foreach (var current in pattern.Colors)
+                    {
+                        if (current.FontFamily == "default")
+                            current.FontFamily = text;
+                        if (current.Strands.BackStitch == 0)
+                            current.Strands.BackStitch = pattern.Strands.BackStitch;
+                        if (current.Strands.FrenchKnot == 0)
+                            current.Strands.FrenchKnot = pattern.Strands.FrenchKnot;
+                        if (current.Strands.Full == 0)
+                            current.Strands.Full = pattern.Strands.Full;
+                        if (current.Strands.Half == 0)
+                            current.Strands.Half = pattern.Strands.Half;
+                        if (current.Strands.Petit == 0)
+                            current.Strands.Petit = pattern.Strands.Petit;
+                        if (current.Strands.Quarter == 0)
+                            current.Strands.Quarter = pattern.Strands.Quarter;
+                        if (current.Strands.ThreeQuarter == 0)
+                            current.Strands.ThreeQuarter = pattern.Strands.ThreeQuarter;
+                    }
+                    stream.Seek(16994L, SeekOrigin.Current);
+                    LoadStitches(pattern, stream, propCount);
+                    stream.Seek(2L, SeekOrigin.Current);
+                    stream.Read(array, 0, 2);
+                    var num9 = BitConverter.ToUInt16(array, 0);
+                    for (var num10 = 0; num10 < (int) num9; num10++)
+                    {
+                        stream.Read(array, 0, 2);
+                        var num11 = BitConverter.ToUInt16(array, 0);
+                        if (num11 == 4)
+                        {
+                            stream.Seek(2L, SeekOrigin.Current);
+                            stream.Read(array, 0, 4);
+                            var @string = Encoding.ASCII.GetString(array, 0, 4);
+                            if (@string == "sps1")
+                            {
+                                stream.Seek(256L, SeekOrigin.Current);
+                                stream.Seek(256L, SeekOrigin.Current);
+                                stream.Seek(2L, SeekOrigin.Current);
+                                for (var num12 = 0; num12 < 3; num12++)
+                                {
+                                    stream.Read(array, 0, 10);
+                                    stream.Read(array, 0, 2);
+                                    num11 = BitConverter.ToUInt16(array, 0);
+                                    if (num11 != 1296)
+                                        break;
+                                    stream.Read(array, 0, 2);
+                                    var num13 = BitConverter.ToUInt16(array, 0);
+                                    if (num13 > 0)
+                                    {
+                                        var list = new List<Node>();
+                                        var list2 = new List<Backstitch>();
+                                        LoadJoints(pattern, stream, num13, ref list, ref list2);
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                LoadJoints(pattern, stream, count, ref pattern.Nodes, ref pattern.Backstitches);
-                stream.Dispose();
+                    LoadJoints(pattern, stream, count, ref pattern.Nodes, ref pattern.Backstitches);
+                    stream.Dispose();
 
-                return Convert(pattern);
+                    return Convert(pattern);
+                }
             }
 
             return null;

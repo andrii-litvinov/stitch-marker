@@ -18,13 +18,16 @@ namespace SM.Service.Classes
 
         public Task ReceiveAsync(IContext context)
         {
-            if (context.Message is CreatePattern pattern)
-                using (var memoryStream = new MemoryStream(pattern.Content) {Position = 0})
-                {
-                    state = patternReader.Read(memoryStream);
-                }
-            else if (context.Message is PatternQuery)
-                context.Respond(state);
+            switch (context.Message)
+            {
+                case CreatePattern pattern:
+                    state = patternReader.Read(pattern.Content);
+                    break;
+                case PatternQuery _:
+                    context.Respond(state);
+                    break;
+            }
+            
             return Actor.Done;
         }
     }

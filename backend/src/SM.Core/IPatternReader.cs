@@ -5,6 +5,6 @@ namespace SM.Core
 {
     public interface IPatternReader
     {
-        PatternState Read(Stream stream);
+        PatternState Read(byte[] content);
     }
 }
