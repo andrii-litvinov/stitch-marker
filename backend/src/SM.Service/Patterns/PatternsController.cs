@@ -12,7 +12,7 @@ namespace SM.Service.Patterns
     [Route("api/[controller]")]
     public class PatternsController : Controller
     {
-        [HttpGet("{patternId}")]
+        [Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
@@ -20,7 +20,6 @@ namespace SM.Service.Patterns
             return Ok(request);
         }
 
-        [HttpPost]
         public async Task<IActionResult> Post(IFormFile file)
         {
             var patternId = Guid.NewGuid();
