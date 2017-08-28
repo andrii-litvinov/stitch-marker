@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 
+
 <dom-module id="stitch-upload">
   <template>
     <style>
@@ -10,10 +11,18 @@
     </style>
     <app-location id="location" path="[[path]]"></app-location>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="_onUploadResponse" nodrop></vaadin-upload>
+    <div> Pattern list: </div>
+    <template is="dom-repeat" items="{{patternInfos}}">
+      <div>Pattern name: <span>[[item.patternName]]</span></div>
+      <div>Height: <span>[[item.height]]</span></div>
+      <div>Width: <span>[[item.width]]</span></div>
+    </template>
   </template>
   <script>
     class Upload extends Polymer.Element {
-      static get is() { return 'stitch-upload'; }
+      static get is() {
+        return 'stitch-upload';
+      }
 
       static get properties() {
         return {
@@ -23,6 +32,10 @@
           },
           route: {
             type: Object
+          },
+          patternInfos: {
+            type: Array,
+            value: []
           }
         }
       }
@@ -31,11 +44,10 @@
         const xhr = event.detail.xhr;
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
-          this.path = '/editor/' + location;
+          this.push('patternInfos', JSON.parse(xhr.responseText));
         }
       }
     }
-
     customElements.define(Upload.is, Upload);
   </script>
 </dom-module>

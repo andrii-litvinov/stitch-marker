@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +21,12 @@ namespace SM.Service.Patterns
 
         public async Task<IActionResult> Post(IFormFile file)
         {
-            var patternId = Guid.NewGuid();
+            var patternId = Guid.NewGuid().ToString();
             var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-
-            using (var memoryStream = new MemoryStream())
-            {
-                await file.CopyToAsync(memoryStream);
-                var createPattern = new CreatePattern(patternId.ToString(), memoryStream.ToArray());
-                pattern.Tell(createPattern);
-            }
-
-            return Created(patternId.ToString(), null);
+            var content = await file.ReadAllBytes();
+            var command = new CreatePattern(file.FileName, content);
+            var info = await pattern.RequestAsync<PatternBasicInfo>(command);
+            return Created(patternId, info);
         }
     }
 }

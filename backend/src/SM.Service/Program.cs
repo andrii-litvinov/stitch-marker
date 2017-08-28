@@ -4,6 +4,7 @@ using Proto;
 using Proto.Cluster;
 using Proto.Cluster.Consul;
 using Proto.Remote;
+using SM.Service.Classes;
 using SM.Xsd;
 using Pattern = SM.Service.Classes.Pattern;
 
