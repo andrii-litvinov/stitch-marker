@@ -10,7 +10,8 @@
 <link rel="import" href="stitch-logo.html">
 <link rel="import" href="stitch-social.html">
 <link rel="import" href="stitch-header.html">
-   
+<link rel="import" href="stitch-patterns.html">
+
 <dom-module id="stitch-app">
   <template>
     <style>
@@ -29,6 +30,8 @@
         <a name="upload" href="/upload">Upload</a>
         <a name="editor" href="/editor">Editor</a>
         <a name="login" href="/login">Login</a>
+        <a name="patterns" href="/patterns">Patterns</a>
+        
       </iron-selector>
     </nav>
    
@@ -37,6 +40,7 @@
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
       <stitch-login name="login"></stitch-login>
+      <stitch-patterns name="patterns"></stitch-patterns>      
     </iron-pages>
   </template>
   <script>

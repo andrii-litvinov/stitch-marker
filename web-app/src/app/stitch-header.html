@@ -2,46 +2,44 @@
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
-<link rel="import" href="../bower_components/font-roboto/roboto.html">
 
 <link rel="import" href="stitch-logo.html">
 
 <dom-module id="stitch-header">
- <template>
-  <style>
-     :host {
-     display: block;
-    }
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
 
-   paper-button {
-       font-size: 12px;
-       height: 60px
-   }
+      paper-button {
+        font-size: 12px;
+        height: 60px
+      }
 
-   app-toolbar {
-       background-color: white;
-       margin-bottom: 50px
-   }
-   
-   stitch-logo {
-     margin-left: 30px;
-   }
+      app-toolbar {
+        background-color: white;
+        margin-bottom: 50px
+      }
 
-   #login {
-     margin-left: 50px;
-   }
+      stitch-logo {
+        margin-left: 30px;
+      }
 
-</style>
- <app-header reveals>
-  <app-toolbar>
-    <stitch-logo main-title></stitch-logo> 
-    <paper-button>О приложении</paper-button>
-    <paper-button>Магазин</paper-button>
-    <paper-button>Связаться с нами</paper-button>
-    <paper-button id="login">Войти</paper-button>
-  </app-toolbar>
-</app-header>
- </template>
+      #login {
+        margin-left: 50px;
+      }
+    </style>
+    <app-header reveals>
+      <app-toolbar>
+        <stitch-logo main-title></stitch-logo>
+        <paper-button>О приложении</paper-button>
+        <paper-button>Магазин</paper-button>
+        <paper-button>Связаться с нами</paper-button>
+        <paper-button id="login">Войти</paper-button>
+      </app-toolbar>
+    </app-header>
+  </template>
 
   <script>
     class Header extends Polymer.Element {

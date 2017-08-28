@@ -1,114 +1,112 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/font-roboto/roboto.html">
-
 
 <dom-module id="stitch-login">
-    <template>
-        <style>
-             :host {
-                display: block;
-            }
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
 
-            h3 {
-                font-family:'Roboto';
-                font-weight: lighter;
-                font-size: 30px;
-                text-align: center;
-                margin-bottom: 50px;
-            }
+      h3 {
+        font-family: 'Roboto';
+        font-weight: lighter;
+        font-size: 30px;
+        text-align: center;
+        margin-bottom: 50px;
+      }
 
-            paper-input {
-                width: 324px;
-            }
+      paper-input {
+        width: 324px;
+      }
 
-            #credentials {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
+      #credentials {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
 
-            #buttons>div {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                text-decoration: none;
-                margin: 5px;
-            }
+      #buttons>div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-decoration: none;
+        margin: 5px;
+      }
 
-            #buttons {
-                display: flex;
-                flex-direction: row;
-                justify-content: center;
-                align-items: center;
-            }
+      #buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+      }
 
-            #login {
-                background-color: black;
-                color: whitesmoke;
-                font-size: 12px;
-                height: 45px;
-                width: 150px;
-                margin: 13px;
-                margin-top: 30px;
-            }
+      #login {
+        background-color: black;
+        color: whitesmoke;
+        font-size: 12px;
+        height: 45px;
+        width: 150px;
+        margin: 13px;
+        margin-top: 30px;
+      }
 
-            .external-login {
-                display: flex;
-                flex-direction: row;
-                flex-direction: row;
-                justify-content: center;
-            }
+      .external-login {
+        display: flex;
+        flex-direction: row;
+        flex-direction: row;
+        justify-content: center;
+      }
 
-            .external-login paper-button {
-                font-size: 12px;
-                height: 45px;
-                width: 250px;
-                margin: 15px 15px 150px;
-                }
+      .external-login paper-button {
+        font-size: 12px;
+        height: 45px;
+        width: 250px;
+        margin: 15px 15px 150px;
+      }
 
-            a:hover,
-            a:visited:hover {
-                color: black;
-            }
+      a:hover,
+      a:visited:hover {
+        color: black;
+      }
 
-            a,
-            a:visited {
-                margin-top: 11px;
-                color: grey;
-                text-decoration-line: none;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 15px;
-            }
-        </style>
-        <stitch-header></stitch-header>
+      a,
+      a:visited {
+        margin-top: 11px;
+        color: grey;
+        text-decoration-line: none;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+      }
+    </style>
+    <stitch-header></stitch-header>
 
-        <h3>Войдите, чтобы начать вышивать</h3>
+    <h3>Войдите, чтобы начать вышивать</h3>
 
-        <div id="credentials">
-            <paper-input always-float-label label="Эл. адрес"></paper-input>
-            <paper-input always-float-label label="Пароль"></paper-input>
-        </div>
+    <div id="credentials">
+      <paper-input always-float-label label="Эл. адрес"></paper-input>
+      <paper-input always-float-label label="Пароль"></paper-input>
+    </div>
 
-        <div id="buttons">
-            <div>
-                <a href="">Восстановить пароль</a>
-                <a href="">Зарегистрироваться</a>
-            </div>
-            <paper-button raised id="login">Войти</paper-button>
-        </div>
+    <div id="buttons">
+      <div>
+        <a href="">Восстановить пароль</a>
+        <a href="">Зарегистрироваться</a>
+      </div>
+      <paper-button raised id="login">Войти</paper-button>
+    </div>
 
-        <div class="external-login">
-            <paper-button raised class="google">Войти с помощью Google</paper-button>
-        </div>
-            <stitch-social> </stitch-social>
-    </template>
-    <script>
-        class Login extends Polymer.Element {
-            static get is() { return 'stitch-login'; }
-        }
-        customElements.define(Login.is, Login);
-    </script>
+    <div class="external-login">
+      <paper-button raised class="google">Войти с помощью Google</paper-button>
+    </div>
+    <stitch-social> </stitch-social>
+  </template>
+  <script>
+    class Login extends Polymer.Element {
+      static get is() { return 'stitch-login'; }
+    }
+    customElements.define(Login.is, Login);
+  </script>
 </dom-module>
