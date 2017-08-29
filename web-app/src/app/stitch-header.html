@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/polymer/lib/mixins/gesture-event-listeners.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 
 <link rel="import" href="stitch-logo.html">
 
@@ -13,13 +13,15 @@
       }
 
       paper-button {
-        font-size: 12px;
-        height: 60px
+        font-size: 14px;
+        height: 60px;
+        color: #424242;
       }
 
       app-toolbar {
         background-color: white;
-        margin-bottom: 50px
+        margin-bottom: 20px;
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.1);
       }
 
       stitch-logo {
@@ -27,10 +29,18 @@
       }
 
       #login {
-        margin-left: 50px;
+        margin: 0px 15px 0px 50px;
+      }
+
+      paper-progress {
+        display: block;
+        width: 100%;
+        --paper-progress-active-color: #D81B60;
+        --paper-progress-secondary-color: var(--paper-light-blue-100);
       }
     </style>
     <app-header reveals>
+      <paper-progress indeterminate id="progress"></paper-progress>
       <app-toolbar>
         <stitch-logo main-title></stitch-logo>
         <paper-button>О приложении</paper-button>

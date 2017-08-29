@@ -17,8 +17,7 @@
     <style>
        :host {
         display: block;
-      }
-
+      }      
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
@@ -31,16 +30,16 @@
         <a name="editor" href="/editor">Editor</a>
         <a name="login" href="/login">Login</a>
         <a name="patterns" href="/patterns">Patterns</a>
-        
+
       </iron-selector>
     </nav>
-   
+
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-home name></stitch-home>
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
       <stitch-login name="login"></stitch-login>
-      <stitch-patterns name="patterns"></stitch-patterns>      
+      <stitch-patterns name="patterns"></stitch-patterns>
     </iron-pages>
   </template>
   <script>
