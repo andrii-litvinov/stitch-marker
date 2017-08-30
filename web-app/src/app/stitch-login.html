@@ -10,8 +10,8 @@
 
       h3 {
         font-family: 'Roboto';
-        font-weight: lighter;
-        font-size: 30px;
+        font-weight: normal;
+        font-size: 24px;
         text-align: center;
         margin-bottom: 50px;
       }
@@ -30,10 +30,9 @@
       #buttons>div {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
+        justify-content: left;
+        align-items: left;
         text-decoration: none;
-        margin: 5px;
       }
 
       #buttons {
@@ -53,6 +52,14 @@
         margin-top: 30px;
       }
 
+      #links {
+        font-size: 11px;
+        color: #757575;
+        margin-top: 20px;
+        padding: 5px;
+        margin-right: 14px;
+      }
+
       .external-login {
         display: flex;
         flex-direction: row;
@@ -65,43 +72,48 @@
         height: 45px;
         width: 250px;
         margin: 15px 15px 150px;
+        background-color: white;
       }
 
-      a:hover,
-      a:visited:hover {
-        color: black;
+      stitch-social {
+        margin-top: 45px;
       }
 
-      a,
-      a:visited {
-        margin-top: 11px;
-        color: grey;
-        text-decoration-line: none;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 15px;
+      .card {
+        background-color: white;
+        max-width: 720px;
+        height: 500px;
+        margin: 16px auto;
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.37);
+        padding: 30px;
       }
     </style>
     <stitch-header></stitch-header>
 
-    <h3>Войдите, чтобы начать вышивать</h3>
+    <div class="card">
 
-    <div id="credentials">
-      <paper-input always-float-label label="Эл. адрес"></paper-input>
-      <paper-input always-float-label label="Пароль"></paper-input>
-    </div>
+      <h3>Войдите, чтобы начать вышивать</h3>
 
-    <div id="buttons">
-      <div>
-        <a href="">Восстановить пароль</a>
-        <a href="">Зарегистрироваться</a>
+      <div id="credentials">
+        <paper-input always-float-label label="Эл. адрес"></paper-input>
+        <paper-input always-float-label label="Пароль"></paper-input>
       </div>
-      <paper-button raised id="login">Войти</paper-button>
+
+      <div id="buttons">
+        <div id="links">
+          <paper-button >Зарегистрироваться</Paper-button>
+          <paper-button >Восстановить пароль</paper-button>
+        </div>
+        <paper-button raised id="login">Войти</paper-button>
+      </div>
+
+      <div class="external-login">
+        <paper-button raised class="google">Войти с помощью Google</paper-button>
+      </div>
     </div>
 
-    <div class="external-login">
-      <paper-button raised class="google">Войти с помощью Google</paper-button>
-    </div>
     <stitch-social> </stitch-social>
+
   </template>
   <script>
     class Login extends Polymer.Element {
