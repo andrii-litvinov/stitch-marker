@@ -2,6 +2,8 @@
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="stitch-logo.html">
 
@@ -12,12 +14,6 @@
         display: block;
       }
 
-      paper-button {
-        font-size: 14px;
-        height: 60px;
-        color: #424242;
-      }
-
       app-toolbar {
         background-color: white;
         margin-bottom: 20px;
@@ -25,11 +21,7 @@
       }
 
       stitch-logo {
-        margin-left: 30px;
-      }
-
-      #login {
-        margin: 0px 15px 0px 50px;
+        margin-left: 15px;
       }
 
       paper-progress {
@@ -38,15 +30,18 @@
         --paper-progress-active-color: #D81B60;
         --paper-progress-secondary-color: var(--paper-light-blue-100);
       }
+
+      paper-icon-button {
+        color:#424242;
+      }
+      
     </style>
     <app-header reveals>
       <paper-progress indeterminate id="progress"></paper-progress>
       <app-toolbar>
         <stitch-logo main-title></stitch-logo>
-        <paper-button>О приложении</paper-button>
-        <paper-button>Магазин</paper-button>
-        <paper-button>Связаться с нами</paper-button>
-        <paper-button id="login">Войти</paper-button>
+        <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button>
+
       </app-toolbar>
     </app-header>
   </template>
