@@ -8,7 +8,7 @@
        :host {
         display: block;
       }
-      
+
       #tabs {
         display: flex;
         flex-direction: row;
@@ -18,7 +18,7 @@
 
       a {
         text-decoration-line: none;
-        color: #000;
+        color: #616161;
         text-decoration: none;
       }
 
@@ -30,7 +30,7 @@
         font-family: 'Roboto';
         text-transform: uppercase;
         --paper-tabs-selection-bar-color: black;
-        font-size: 20px;
+        font-size: 18px;
       }
 
       .link {
@@ -39,22 +39,22 @@
       }
 
       paper-tab {
-        margin: 5px;
-        --paper-tab-ink: #000;
+        --paper-tab-ink: black;
+        margin-right: 10px;
       }
     </style>
 
-      <stitch-header></stitch-header>
-      <div id="tabs">
-        <paper-tabs selected="0">
-          <paper-tab link>
-            <a href="#link1" class="link" tabindex="-1">Мои схемы</a>
-          </paper-tab>
-          <paper-tab link>
-            <a href="#link2" class="link" tabindex="-1">Библиотека</a>
-          </paper-tab>
-        </paper-tabs>
-      </div>
+    <stitch-header></stitch-header>
+    <div id="tabs">
+      <paper-tabs selected="0">
+        <paper-tab link>
+          <a href="#link1" class="link" tabindex="-1">Мои схемы</a>
+        </paper-tab>
+        <paper-tab link>
+          <a href="#link2" class="link" tabindex="-1">Библиотека</a>
+        </paper-tab>
+      </paper-tabs>
+    </div>
 
   </template>
   <script>
