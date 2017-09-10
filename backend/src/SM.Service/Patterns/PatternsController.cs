@@ -26,6 +26,9 @@ namespace SM.Service.Patterns
             var content = await file.ReadAllBytes();
             var command = new CreatePattern(file.FileName, content);
             var info = await pattern.RequestAsync<PatternBasicInfo>(command);
+
+            info.PatternId = patternId;
+
             return Created(patternId, info);
         }
     }
