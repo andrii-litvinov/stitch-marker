@@ -274,3 +274,6 @@ __pycache__/
 # Stitch Marker
 **/Patterns/*/*.xsd
 **/Patterns/*/*.json
+
+#VSCode
+.vscode/

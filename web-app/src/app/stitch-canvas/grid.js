@@ -5,6 +5,12 @@ class Grid {
   draw(ctx, begin, end, size) {
     // TODO: Draw sharp lines when zoom is small.
     // TODO: Draw sharp lines on scroll. Consider to make scroll fixed or rounded or something.
+    
+    // cached last arguments for redrawing grid
+    if (arguments.length) {
+      this.draw._prevArguments = [...arguments];
+    }
+
     ctx.strokeStyle = 'lightgray';
     ctx.lineWidth = 1;
     ctx.beginPath();
@@ -23,7 +29,6 @@ class Grid {
     ctx.stroke();
 
     ctx.strokeStyle = 'black';
-    ctx.lineWidth = 1;
     ctx.beginPath();
 
     for (let x = begin.x + 0.5; x <= end.x + 1; x += size) {
@@ -41,5 +46,8 @@ class Grid {
     }
 
     ctx.stroke();
+  }
+  redraw() {
+    this.draw(...this.draw._prevArguments);
   }
 }
