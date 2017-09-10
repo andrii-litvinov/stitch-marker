@@ -32,10 +32,12 @@
       }
     </style>
     <div class="pattern-box">
-      <div class="image"></div>
-      <div><span class="info">Pattern name: [[patternInfo.patternName]]</span></div>
-      <div><span class="info">Height: [[patternInfo.height]]</span></div>
-      <div><span class="info">Width: [[patternInfo.width]]</span></div>
+      <a href="/editor/[[patternInfo.patternId]]">
+        <div class="image"></div>
+        <div><span class="info">Pattern name: [[patternInfo.patternName]]</span></div>
+        <div><span class="info">Height: [[patternInfo.height]]</span></div>
+        <div><span class="info">Width: [[patternInfo.width]]</span></div>
+      </a>
     </div>
   </template>
   <script>
