@@ -4,15 +4,16 @@ class Point {
     this.y = y;
   }
 
-  toRelativeUnit(ratio) {
-    return {
-      x: Math.floor(this.x / ratio),
-      y: Math.floor(this.y / ratio)
-    };
+  set(x, y) {
+    this.x = x !== undefined ? x : this.x;
+    this.y = y !== undefined ? y : this.y;
   }
 
   add(point) {
-    this.x = this.x + point.x;
-    this.y = this.y + point.y;
+    this.x += point.x;
+    this.y += point.y;
+  }
+  equal(that) {
+    return this.x === that.x && this.y === that.y;
   }
 }
