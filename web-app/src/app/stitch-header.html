@@ -4,6 +4,11 @@
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../bower_components/iron-icons/editor-icons.html">
+
 
 <link rel="import" href="stitch-logo.html">
 
@@ -28,27 +33,104 @@
         display: block;
         width: 100%;
         --paper-progress-active-color: #D81B60;
-        --paper-progress-secondary-color: var(--paper-light-blue-100);
       }
 
       paper-icon-button {
-        color:#424242;
+        color: #424242;
       }
-      
+
+      a,
+      a:visited {
+        text-decoration-line: none;
+        margin-top: 10px;
+        font-family: 'Roboto';
+        color: #616161;
+        font-size: 14px;
+      }
+
+      a:focus {
+        outline-color: rgba(0, 0, 0, 0);
+        font-weight: bold;
+      }
+
+      a:hover {
+        background-color: #E0E0E0;
+      }
+
+      a:active {
+        color: #D81B60;
+      }
+
+      #menu-tabs {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+
+      iron-icon {
+        margin-right: 20px;
+        color: #616161;
+      }
+
+      #drawer-menu {
+        margin: 10px 20px;
+      }
+
+      app-drawer {
+        z-index: 1;
+      }
+    </style>
+
     </style>
     <app-header reveals>
       <paper-progress indeterminate id="progress"></paper-progress>
       <app-toolbar>
         <stitch-logo main-title></stitch-logo>
-        <paper-icon-button icon="menu" onclick="drawer.toggle()"></paper-icon-button>
-
+        <paper-icon-button icon="menu" on-click="toggleMenu"></paper-icon-button>
       </app-toolbar>
     </app-header>
+    <app-drawer id="drawer" align="right" swipe-open>
+      <iron-selector id="viewSelector" selected="{{routeData.view}}" attr-for-selected="name">
+        <paper-icon-button id="drawer-menu" icon="menu" on-click="toggleMenu"></paper-icon-button>
+        <div role="listbox" id="menu-tabs">
+          <a href="/home" on-click="toggleMenu">
+            <paper-item>
+              <iron-icon icon="icons:home"></iron-icon>Home
+            </paper-item>
+          </a>
+          <a href="/login" on-click="toggleMenu">
+            <paper-item>
+              <iron-icon icon="icons:account-circle"></iron-icon>Login
+            </paper-item>
+          </a>
+          <a href="/patterns" on-click="toggleMenu">
+            <paper-item>
+              <iron-icon icon="image:collections"></iron-icon>Patterns
+            </paper-item>
+          </a>
+          <a href="/upload" on-click="toggleMenu">
+            <paper-item>
+              <iron-icon icon="icons:file-upload"></iron-icon>Upload
+            </paper-item>
+          </a>
+          <a href="/editor" on-click="toggleMenu">
+            <paper-item>
+              <iron-icon icon="editor:border-color"></iron-icon>Editor
+            </paper-item>
+          </a>
+        </div>
+      </iron-selector>
+    </app-drawer>
   </template>
 
   <script>
     class Header extends Polymer.Element {
       static get is() { return "stitch-header"; }
+
+      toggleMenu() {
+        this.$.drawer.toggle();
+      }
     }
     customElements.define(Header.is, Header);
   </script>
