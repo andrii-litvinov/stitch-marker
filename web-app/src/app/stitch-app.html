@@ -23,7 +23,7 @@
     <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" tail="{{subroute}}" pattern="/:view" data="{{routeData}}"></app-route>
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
-      <stitch-landing name="landing"></stitch-landing>
+      <stitch-landing name></stitch-landing>
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
       <stitch-login name="login"></stitch-login>
