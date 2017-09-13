@@ -27,10 +27,12 @@ namespace SM.Service.Classes
         {
             switch (context.Message)
             {
-                case CreatePattern pattern:
-                    state = patternReader.Read(pattern.Content);
+                case CreatePattern command:
+                    state = patternReader.Read(command.Content);
+                    state.PatternId = command.PatternId;
                     context.Respond(new PatternBasicInfo
                     {
+                        PatternId = state.PatternId,
                         PatternName = state.Info.Title,
                         Width = state.Width,
                         Height = state.Height

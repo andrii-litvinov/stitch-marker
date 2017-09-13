@@ -21,15 +21,12 @@ namespace SM.Service.Patterns
 
         public async Task<IActionResult> Post(IFormFile file)
         {
-            var patternId = Guid.NewGuid().ToString();
-            var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var patternId = Guid.NewGuid();
+            var pattern = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
             var content = await file.ReadAllBytes();
-            var command = new CreatePattern(file.FileName, content);
+            var command = new CreatePattern(patternId, file.FileName, content);
             var info = await pattern.RequestAsync<PatternBasicInfo>(command);
-
-            info.PatternId = patternId;
-
-            return Created(patternId, info);
+            return Created(patternId.ToString(), info);
         }
     }
 }

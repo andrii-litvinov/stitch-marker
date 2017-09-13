@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SM.Core.Model
 {
     public class PatternState
     {
+        public Guid PatternId { get; set; }
         public Info Info { get; } = new Info();
         public Canvas Canvas { get; } = new Canvas();
         public StrandsCount StrandsCount { get; } = new StrandsCount();
