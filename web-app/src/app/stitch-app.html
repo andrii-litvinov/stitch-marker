@@ -10,7 +10,7 @@
 <link rel="import" href="stitch-logo.html">
 <link rel="import" href="stitch-social.html">
 <link rel="import" href="stitch-header.html">
-<link rel="import" href="stitch-patterns.html">
+<link rel="import" href="stitch-landing.html">
 
 <dom-module id="stitch-app">
   <template>
@@ -23,11 +23,11 @@
     <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" tail="{{subroute}}" pattern="/:view" data="{{routeData}}"></app-route>
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
-      <stitch-home name="home"></stitch-home>
+      <stitch-landing name="landing"></stitch-landing>
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
       <stitch-login name="login"></stitch-login>
-      <stitch-patterns name="patterns"></stitch-patterns>
+      <stitch-home name="home"></stitch-home>
     </iron-pages>
   </template>
   <script>

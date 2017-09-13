@@ -1,4 +1,6 @@
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+
 
 <dom-module id="stitch-home">
   <template>
@@ -7,86 +9,60 @@
         display: block;
       }
 
-      stitch-header {
-        margin-bottom: 50px;
-      }
-
-      main {
-        font-family: 'Roboto';
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        text-align: center;
-        align-content: center;
-        margin-bottom: 100px;
-      }
-
-      main>div {
-        max-width: 250px;
-      }
-
-      img {
-        max-width: 110px;
-      }
-
-      h4 {
-        font-size: 18px;
-      }
-
-      #buttons {
+      #tabs {
         display: flex;
         flex-direction: row;
         justify-content: center;
+        align-content: center;
       }
 
-      paper-button {
-        background-color: black;
-        color: white;
-        text-align: center;
-        font-size: 14px;
-        margin: 10px 10px 100px;
-        height: 48px;
-        width: 200px;
+      a {
+        text-decoration-line: none;
+        color: #616161;
+        text-decoration: none;
       }
 
-      stitch-social {
-        margin-top: 70px;
+      a:focus {
+        outline-color: rgba(0, 0, 0, 0);
+      }
+
+      paper-tabs {
+        font-family: 'Roboto';
+        text-transform: uppercase;
+        --paper-tabs-selection-bar-color: black;
+        font-size: 18px;
+      }
+
+      .link {
+        @apply --layout-horizontal;
+        @apply --layout-center-center;
+      }
+
+      paper-tab {
+        --paper-tab-ink: black;
+        margin-right: 10px;
       }
     </style>
 
     <stitch-header></stitch-header>
-
-    <main>
-      <div>
-        <img src="/images/landing/add-icon.svg" alt="add" />
-        <h4>Добавляйте схемы</h4>
-        <p>Возможность добавлять схемы любым удобным для Вас способом.</p>
-      </div>
-      <div>
-        <img src="/images/landing/marker-icon.svg" alt="mark" />
-        <h4>Отмечайте вышитое</h4>
-        <p>Функция, которая облегчает процесс всем, кто любит вышивать.</p>
-      </div>
-      <div>
-        <img src="/images/landing/enjoy-icon.svg" alt="enjoy" />
-        <h4>Наслаждайтесь процессом</h4>
-        <p>Процесс вышивания становится намного удобнее вместе со Stitch&nbsp;Marker.</p>
-      </div>
-    </main>
-
-    <div id="buttons">
-      <paper-button raised id="Start">Начать вышивать</paper-button>
+    <div id="tabs">
+      <paper-tabs selected="0">
+        <paper-tab link>
+          <a href="#link1" class="link" tabindex="-1">Мои схемы</a>
+        </paper-tab>
+        <paper-tab link>
+          <a href="#link2" class="link" tabindex="-1">Библиотека</a>
+        </paper-tab>
+      </paper-tabs>
     </div>
 
-    <stitch-social> </stitch-social>
-
   </template>
-
   <script>
     class Home extends Polymer.Element {
-      static get is() { return "stitch-home"; }
+      static get is() {
+        return "stitch-home";
+      }
     }
     customElements.define(Home.is, Home);
   </script>
-
 </dom-module>
