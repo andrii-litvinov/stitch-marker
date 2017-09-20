@@ -13,6 +13,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Proto.Actor" Version="0.1.10" />
     <PackageReference Include="Proto.Cluster.Consul" Version="0.1.10" />
+    <PackageReference Include="SkiaSharp" Version="1.59.1" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0-msbuild3-final" />

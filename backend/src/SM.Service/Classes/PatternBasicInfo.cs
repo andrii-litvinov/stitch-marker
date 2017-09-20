@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SM.Service.Classes
 {
@@ -8,5 +8,6 @@ namespace SM.Service.Classes
         public string PatternName { get; set; }
         public uint Height { get; set; }
         public uint Width { get; set; }
+        public string Image { get; set; }
     }
 }

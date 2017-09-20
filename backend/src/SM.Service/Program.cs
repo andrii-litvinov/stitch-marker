@@ -15,7 +15,7 @@ namespace SM.Service
         public static void Main(string[] args)
         {
             StartCluster();
-            
+
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
@@ -25,12 +25,13 @@ namespace SM.Service
 
             host.Run();
         }
-        
+
         private static void StartCluster()
         {
             var reader = new XsdPatternReader();
-            var props = Actor.FromProducer(() => new Pattern(reader));
-            
+            var drawer = new ThumbnailDrawer();
+            var props = Actor.FromProducer(() => new Pattern(reader, drawer));
+
             // TODO: Register all known actors in a generic way 
             Remote.RegisterKnownKind("pattern", props);
             Remote.Start("127.0.0.1", 12001);

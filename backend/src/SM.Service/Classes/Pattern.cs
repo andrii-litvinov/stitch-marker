@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Proto;
 using SM.Core;
 using SM.Core.Model;
@@ -8,12 +9,14 @@ namespace SM.Service.Classes
     public class Pattern : IActor
     {
         private readonly Behavior behavior;
+        private readonly ThumbnailDrawer drawer;
         private readonly IPatternReader patternReader;
         private PatternState state;
 
-        public Pattern(IPatternReader patternReader)
+        public Pattern(IPatternReader patternReader, ThumbnailDrawer drawer)
         {
             this.patternReader = patternReader;
+            this.drawer = drawer;
             behavior = new Behavior();
             behavior.Become(New);
         }
@@ -35,7 +38,8 @@ namespace SM.Service.Classes
                         PatternId = state.PatternId,
                         PatternName = state.Info.Title,
                         Width = state.Width,
-                        Height = state.Height
+                        Height = state.Height,
+                        Image = Convert.ToBase64String(drawer.Draw(state))
                     });
                     behavior.Become(Created);
                     break;
