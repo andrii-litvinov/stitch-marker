@@ -6,3 +6,11 @@ services:
     command: "consul agent -dev -client 0.0.0.0"
     ports:
       - "8500:8500"
+
+  web-app:
+    image: jefferyb/polymer-cli
+    command: "polymer serve -H 0.0.0.0"
+    ports:
+      - "8081:8081"
+    volumes:
+      - "./web-app/src:/home/polymer/app"
