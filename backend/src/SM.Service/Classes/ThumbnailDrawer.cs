@@ -13,6 +13,7 @@ namespace SM.Service.Classes
             {
                 var canvas = surface.Canvas;
                 var bitmap = new SKBitmap((int) state.Width, (int) state.Height, imageInfo, alphaType);
+                bitmap.Erase(SKColor.Empty);
 
                 foreach (var stitch in state.Stitches)
                 {
