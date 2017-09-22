@@ -11,6 +11,8 @@
 <link rel="import" href="stitch-social.html">
 <link rel="import" href="stitch-header.html">
 <link rel="import" href="stitch-landing.html">
+<link rel="import" href="stitch-patterns.html">
+
 
 <dom-module id="stitch-app">
   <template>
@@ -27,7 +29,7 @@
       <stitch-upload name="upload"></stitch-upload>
       <stitch-editor name="editor" route="{{subroute}}"></stitch-editor>
       <stitch-login name="login"></stitch-login>
-      <stitch-home name="home"></stitch-home>
+      <stitch-home name="home" route="{{subroute}}"></stitch-home>
     </iron-pages>
   </template>
   <script>

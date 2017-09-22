@@ -48,12 +48,18 @@
     <div id="tabs">
       <paper-tabs selected="0">
         <paper-tab link>
-          <a href="#link1" class="link" tabindex="-1">Мои схемы</a>
+          <a href="/home/patterns" class="link" tabindex="-1">Мои схемы</a>
         </paper-tab>
         <paper-tab link>
-          <a href="#link2" class="link" tabindex="-1">Библиотека</a>
+          <a href="/home/library" class="link" tabindex="-1">Библиотека</a>
         </paper-tab>
       </paper-tabs>
+
+      <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
+      <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name">
+        <stitch-patterns name="patterns"></stitch-patterns>
+        <stitch-library name="library"></stitch-library>
+      </iron-pages>
     </div>
 
   </template>
