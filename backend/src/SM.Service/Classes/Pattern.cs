@@ -25,7 +25,15 @@ namespace SM.Service.Classes
         public Task ReceiveAsync(IContext context)
         {
             Console.WriteLine($"Message received {context.Message.GetType().Name}.");
-            return behavior.ReceiveAsync(context);
+            try
+            {
+                return behavior.ReceiveAsync(context);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         private Task New(IContext context)
@@ -41,7 +49,7 @@ namespace SM.Service.Classes
                         PatternName = state.Info.Title,
                         Width = state.Width,
                         Height = state.Height,
-                        Image = Convert.ToBase64String(drawer.Draw(state))
+                        //Image = Convert.ToBase64String(drawer.Draw(state))
                     });
                     behavior.Become(Created);
                     break;

@@ -6,6 +6,10 @@ services:
     command: "consul agent -dev -client 0.0.0.0"
     ports:
       - "8500:8500"
+    logging:
+      driver: "none"
+    # networks:
+    #  - stitch-marker-network
 
   web-app:
     image: jefferyb/polymer-cli
@@ -14,8 +18,6 @@ services:
       - "8081:8081"
     volumes:
       - ./web-app/src:/home/polymer/app
-    networks:
-     - stitch-marker-network
 
   backend:
     image: backend
@@ -24,11 +26,12 @@ services:
       - ./backend/src:/dotnetapp
     ports:
      - "5000:5000"
+     - "12001:12001"
     depends_on:
      - "consul"
-    networks:
-     - stitch-marker-network
+    # networks:
+    #  - stitch-marker-network
 
-networks:
-  stitch-marker-network:
-    driver: bridge
+# networks:
+#   stitch-marker-network:
+#     driver: bridge

@@ -6,11 +6,15 @@
     <None Remove="*.ncrunchproject" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Avalonia.Skia.Linux.Natives" Version="1.57.1.4" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
     <PackageReference Include="Proto.Actor" Version="0.1.10" />
     <PackageReference Include="Proto.Cluster.Consul" Version="0.1.10" />
-    <PackageReference Include="SkiaSharp" Version="1.59.1" />
+    <PackageReference Include="SkiaSharp" Version="1.57.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="2.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SM.Core\SM.Core.csproj" />

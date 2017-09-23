@@ -5,4 +5,4 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:5000
 
 WORKDIR /dotnetapp/SM.Service
 
-CMD ["/bin/bash", "-c", "dotnet run"]
+CMD ["/bin/bash", "-c", "dotnet restore && dotnet watch run"]
