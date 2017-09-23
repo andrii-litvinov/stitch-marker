@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Proto;
 using Proto.Cluster;
@@ -34,8 +35,10 @@ namespace SM.Service
 
             // TODO: Register all known actors in a generic way 
             Remote.RegisterKnownKind("pattern", props);
-            Remote.Start("127.0.0.1", 12001);
-            Cluster.Start("PatternCluster", new ConsulProvider(new ConsulProviderOptions()));
+            Remote.Start("172.17.0.1", 12001);
+            Cluster.Start("PatternCluster", new ConsulProvider(new ConsulProviderOptions(), configuration => configuration.Address = new Uri("http://172.17.0.1:8500")));
+
+            Console.WriteLine("Configured");
         }
     }
 }

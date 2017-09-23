@@ -25,7 +25,7 @@ namespace SM.Service.Patterns
             var pattern = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
             var content = await file.ReadAllBytes();
             var command = new CreatePattern(patternId, file.FileName, content);
-            var info = await pattern.RequestAsync<PatternBasicInfo>(command);
+            var info = await pattern.RequestAsync<PatternBasicInfo>(command, TimeSpan.FromSeconds(10));
             return Created(patternId.ToString(), info);
         }
     }

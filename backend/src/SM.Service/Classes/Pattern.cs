@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Proto;
 using SM.Core;
 using SM.Core.Model;
@@ -23,6 +24,7 @@ namespace SM.Service.Classes
 
         public Task ReceiveAsync(IContext context)
         {
+            Console.WriteLine($"Message received {context.Message.GetType().Name}.");
             return behavior.ReceiveAsync(context);
         }
 
