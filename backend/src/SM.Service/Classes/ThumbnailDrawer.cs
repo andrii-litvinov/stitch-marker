@@ -7,22 +7,24 @@ namespace SM.Service.Classes
     {
         public byte[] Draw(PatternState state)
         {
-            const SKAlphaType alphaType = SKAlphaType.Premul;
-            var imageInfo = SKImageInfo.PlatformColorType;
-            using (var surface = SKSurface.Create((int) state.Width, (int) state.Height, imageInfo, alphaType))
+            const int stitchSize = 5;
+            using (var surface = SKSurface.Create((int) state.Width * stitchSize, (int) state.Height * stitchSize,
+                SKImageInfo.PlatformColorType, SKAlphaType.Premul))
             {
-                var canvas = surface.Canvas;
-                var bitmap = new SKBitmap((int) state.Width, (int) state.Height, imageInfo, alphaType);
-                bitmap.Erase(SKColor.Empty);
-
                 foreach (var stitch in state.Stitches)
                 {
                     var configuration = state.Configurations[stitch.ConfigurationIndex];
-                    var color = SKColor.Parse(configuration.HexColor);
-                    bitmap.SetPixel((int) stitch.Point.X, (int) stitch.Point.Y, color);
+                    var paint = new SKPaint {Color = SKColor.Parse(configuration.HexColor)};
+                    var rect = new SKRect
+                    {
+                        Left = stitch.Point.X * stitchSize,
+                        Top = stitch.Point.Y * stitchSize,
+                        Right = (stitch.Point.X + 1) * stitchSize,
+                        Bottom = (stitch.Point.Y + 1) * stitchSize
+                    };
+                    surface.Canvas.DrawRect(rect, paint);
                 }
-                canvas.DrawBitmap(bitmap, new SKRect(0, 0, state.Width, state.Height));
-                return surface.Snapshot().Encode().ToArray();
+                return surface.Snapshot().Encode(SKEncodedImageFormat.Png, int.MaxValue).ToArray();
             }
         }
     }

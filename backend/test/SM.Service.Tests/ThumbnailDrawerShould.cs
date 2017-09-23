@@ -13,7 +13,7 @@ namespace SM.Service.Tests
     {
         [Theory]
         [AutoData]
-        public void DrawExpectedmage(XsdPatternReader patternReader, ThumbnailDrawer sut)
+        public void DrawExpectedImage(XsdPatternReader patternReader, ThumbnailDrawer sut)
         {
             //Arrange
             var state = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
@@ -50,8 +50,8 @@ namespace SM.Service.Tests
 
             //Act
             var image = sut.Draw(state);
+
             //Assert
-            
             image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
         }
     }
