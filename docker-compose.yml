@@ -20,8 +20,6 @@ services:
   backend:
     image: backend
     build: ./backend
-    volumes:
-      - ./backend/src:/dotnetapp
     ports:
      - "5000:80"
     depends_on:
