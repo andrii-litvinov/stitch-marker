@@ -2,7 +2,9 @@ FROM microsoft/aspnetcore-build AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers to leverage caching
-COPY src/*/*.csproj ./src/
+COPY src/SM.Service/*.csproj ./src/SM.Service/
+COPY src/SM.Core/*.csproj ./src/SM.Core/
+COPY src/SM.Xsd/*.csproj ./src/SM.Xsd/
 COPY *.sln ./
 RUN dotnet restore
 
