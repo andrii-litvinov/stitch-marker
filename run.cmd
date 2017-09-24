@@ -1,3 +1,1 @@
-docker-compose stop
-docker-compose build
-docker-compose up
+docker-compose -f backend/docker-compose.yml  up --force-recreate
