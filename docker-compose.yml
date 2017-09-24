@@ -8,8 +8,6 @@ services:
       - "8500:8500"
     logging:
       driver: "none"
-    # networks:
-    #  - stitch-marker-network
 
   web-app:
     image: jefferyb/polymer-cli
@@ -21,17 +19,10 @@ services:
 
   backend:
     image: backend
-    build: ./backend/src/SM.Service
+    build: ./backend
     volumes:
       - ./backend/src:/dotnetapp
     ports:
-     - "5000:5000"
-     - "12001:12001"
+     - "5000:80"
     depends_on:
      - "consul"
-    # networks:
-    #  - stitch-marker-network
-
-# networks:
-#   stitch-marker-network:
-#     driver: bridge
