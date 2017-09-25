@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
+<link rel="import" href="stitch-patterns.html">
 
 <dom-module id="stitch-home">
   <template>
@@ -54,14 +55,13 @@
           <a href="/home/library" class="link" tabindex="-1">Библиотека</a>
         </paper-tab>
       </paper-tabs>
-
-      <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
-      <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name">
-        <stitch-patterns name="patterns"></stitch-patterns>
-        <stitch-library name="library"></stitch-library>
-      </iron-pages>
     </div>
 
+    <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
+    <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name">
+      <stitch-patterns name="patterns"></stitch-patterns>
+      <stitch-library name="library"></stitch-library>
+    </iron-pages>
   </template>
   <script>
     class Home extends Polymer.Element {

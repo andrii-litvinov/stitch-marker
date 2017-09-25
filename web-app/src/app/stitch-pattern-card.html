@@ -8,7 +8,6 @@
       }
 
       .pattern-box {
-        background: violet;
         border-radius: 2px;
         max-height: 300px;
         max-width: 300px;
@@ -23,12 +22,26 @@
       }
 
       .image {
-        background: blueviolet;
         height: 200px;
       }
 
+      a {
+        text-decoration-line: none;
+      }
+
       .info {
-        font-size: 16px;
+        font-family: 'Roboto';
+        color: #424242;
+        font-size: 14px;
+        text-decoration: none;
+        text-align: center;
+      }
+
+      #info-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       img {
@@ -38,10 +51,11 @@
     </style>
     <div class="pattern-box">
       <a href="/editor/[[patternInfo.patternId]]">
-        <div class="image"><img src="data:image/png;base64,[[patternInfo.image]]"/></div>
-        <div><span class="info">Pattern name: [[patternInfo.patternName]]</span></div>
-        <div><span class="info">Height: [[patternInfo.height]]</span></div>
-        <div><span class="info">Width: [[patternInfo.width]]</span></div>
+        <div class="image"></div>
+        <div id="info-box">
+          <div><span class="info">[[patternInfo.patternName]]</span></div>
+          <div><span class="info">[[patternInfo.height]]x[[patternInfo.width]]</span></div>
+        </div>
       </a>
     </div>
   </template>
