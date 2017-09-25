@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Proto;
@@ -46,7 +47,7 @@ namespace SM.Service.Classes
                     context.Respond(new PatternBasicInfo
                     {
                         PatternId = state.PatternId,
-                        PatternName = state.Info.Title,
+                        PatternName = command.FileName,
                         Width = state.Width,
                         Height = state.Height,
                         //Image = Convert.ToBase64String(drawer.Draw(state))
