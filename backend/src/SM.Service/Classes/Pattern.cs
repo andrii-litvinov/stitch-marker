@@ -50,7 +50,7 @@ namespace SM.Service.Classes
                         PatternName = command.FileName,
                         Width = state.Width,
                         Height = state.Height,
-                        //Image = Convert.ToBase64String(drawer.Draw(state))
+                        Image = Convert.ToBase64String(drawer.Draw(state))
                     });
                     behavior.Become(Created);
                     break;
