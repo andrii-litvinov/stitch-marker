@@ -7,7 +7,7 @@ namespace SM.Service.Classes
     {
         public byte[] Draw(PatternState state)
         {
-            const int stitchSize = 5;
+            const int stitchSize = 2;
             using (var surface = SKSurface.Create((int) state.Width * stitchSize, (int) state.Height * stitchSize,
                 SKImageInfo.PlatformColorType, SKAlphaType.Premul))
             {

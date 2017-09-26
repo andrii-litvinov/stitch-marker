@@ -20,7 +20,7 @@ namespace SM.Service.Tests
 
             //Act
             var image = sut.Draw(state);
-
+            
             //Assert
             image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
         }
@@ -32,8 +32,8 @@ namespace SM.Service.Tests
             //Arrange
             var state = new PatternState
             {
-                Width = 100,
-                Height = 100,
+                Width = 5,
+                Height = 5,
                 Stitches =
                 {
                     new Stitch {ConfigurationIndex = 0, Point = new Point {X = 1, Y = 1}, Type = StitchType.Full},
@@ -50,7 +50,7 @@ namespace SM.Service.Tests
 
             //Act
             var image = sut.Draw(state);
-
+            
             //Assert
             image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
         }
