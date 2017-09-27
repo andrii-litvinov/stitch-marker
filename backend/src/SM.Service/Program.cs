@@ -19,7 +19,7 @@ namespace SM.Service
 
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseUrls("http://::80")
+                //.UseUrls("http://::80") - move to settings
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
@@ -36,8 +36,8 @@ namespace SM.Service
 
             // TODO: Register all known actors in a generic way 
             Remote.RegisterKnownKind("pattern", props);
-            Remote.Start("172.17.0.1", 12001);
-            Cluster.Start("PatternCluster", new ConsulProvider(new ConsulProviderOptions(), configuration => configuration.Address = new Uri("http://172.17.0.1:8500")));
+            Remote.Start("127.0.0.1", 12001);
+            Cluster.Start("PatternCluster", new ConsulProvider(new ConsulProviderOptions(), configuration => configuration.Address = new Uri("http://127.0.0.1:8500")));
         }
     }
 }

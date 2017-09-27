@@ -49,8 +49,7 @@ namespace SM.Service.Classes
                         PatternId = state.PatternId,
                         PatternName = command.FileName,
                         Width = state.Width,
-                        Height = state.Height,
-                        Image = Convert.ToBase64String(drawer.Draw(state))
+                        Height = state.Height
                     });
                     behavior.Become(Created);
                     break;
@@ -64,6 +63,12 @@ namespace SM.Service.Classes
             {
                 case PatternQuery _:
                     context.Respond(state);
+                    break;
+                case ThumbnailQuery _:
+                    context.Respond(new Thumbnail
+                    {
+                        Image = drawer.Draw(state)
+                    });
                     break;
             }
             return Actor.Done;

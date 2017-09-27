@@ -24,7 +24,7 @@ namespace SM.Service.Classes
                     };
                     surface.Canvas.DrawRect(rect, paint);
                 }
-                return surface.Snapshot().Encode(SKEncodedImageFormat.Png, int.MaxValue).ToArray();
+                return surface.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray();
             }
         }
     }

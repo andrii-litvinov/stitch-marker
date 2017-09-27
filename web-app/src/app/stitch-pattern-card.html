@@ -49,7 +49,7 @@
     </style>
     <div class="pattern-box">
       <a href="/editor/[[patternInfo.patternId]]">
-        <div class="image"><img src="data:image/png;base64,[[patternInfo.image]]"/></div>
+        <div class="image"><img src="[[thumbnailUrl]]?width=300&amp;height=200" /></div>
         <div id="info-box">
           <div><span class="info">[[patternInfo.patternName]]</span></div>
           <div><span class="info">[[patternInfo.height]]x[[patternInfo.width]]</span></div>
@@ -67,8 +67,16 @@
           patternInfo: {
             type: Object,
             value: {}
+          },
+          thumbnailUrl: {
+            type: String,
+            computed: "getThumbnailUrl(patternInfo)"
           }
         }
+      }
+
+      getThumbnailUrl(patternInfo) {
+        return `${SM.apiUrl}patterns/${patternInfo.patternId}/thumbnail`;
       }
     }
     customElements.define(PatternCard.is, PatternCard);
