@@ -20,7 +20,7 @@ namespace SM.Service.Tests
 
             //Act
             var image = sut.Draw(state);
-            
+
             //Assert
             image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
         }
@@ -50,7 +50,7 @@ namespace SM.Service.Tests
 
             //Act
             var image = sut.Draw(state);
-            
+
             //Assert
             image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
         }
