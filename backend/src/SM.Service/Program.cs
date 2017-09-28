@@ -1,13 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Proto;
-using Proto.Cluster;
-using Proto.Cluster.Consul;
-using Proto.Remote;
-using SM.Service.Classes;
-using SM.Xsd;
-using Pattern = SM.Service.Classes.Pattern;
+using Microsoft.Extensions.Configuration;
 
 namespace SM.Service
 {
@@ -15,29 +8,14 @@ namespace SM.Service
     {
         public static void Main(string[] args)
         {
-            StartCluster();
-
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                //.UseUrls("http://::80") - move to settings
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
+            WebHost.CreateDefaultBuilder()
                 .UseStartup<Startup>()
-                .Build();
-
-            host.Run();
-        }
-
-        private static void StartCluster()
-        {
-            var reader = new XsdPatternReader();
-            var drawer = new ThumbnailDrawer();
-            var props = Actor.FromProducer(() => new Pattern(reader, drawer));
-
-            // TODO: Register all known actors in a generic way 
-            Remote.RegisterKnownKind("pattern", props);
-            Remote.Start("127.0.0.1", 12001);
-            Cluster.Start("PatternCluster", new ConsulProvider(new ConsulProviderOptions(), configuration => configuration.Address = new Uri("http://127.0.0.1:8500")));
+                .ConfigureAppConfiguration(builder =>
+                {
+                    builder.AddEnvironmentVariables("STITCH_MARKER:");
+                })
+                .Build()
+                .Run();
         }
     }
 }

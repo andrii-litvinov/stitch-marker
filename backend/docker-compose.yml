@@ -20,7 +20,10 @@ services:
   backend:
     image: backend
     build: .
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - STITCH_MARKER__CONSUL_URL=http://172.17.0.1:8500
     ports:
-     - "5000:80"
+     - "5000:5000"
     depends_on:
      - "consul"
