@@ -165,7 +165,7 @@
         let pattern;
         
         try {
-          const response = await fetch(`${window.SM.apiUrl}patterns/${this.routeData.patternId}`);
+          const response = await fetch(`${window.SM.apiUrl}/api/patterns/${this.routeData.patternId}`);
           pattern = await response.json();
         } catch (error) {
           this.loading = false;

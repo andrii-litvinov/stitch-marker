@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Proto.Cluster;
 using SM.Core.Model;
 using SM.Service.Classes;
@@ -34,7 +37,18 @@ namespace SM.Service.Patterns
             var content = await file.ReadAllBytes();
             var command = new CreatePattern(patternId, file.FileName, content);
             var info = await pattern.RequestAsync<PatternBasicInfo>(command, 3.Seconds());
-            return Created(patternId.ToString(), info);
+            var json = JsonConvert.SerializeObject(new Resource
+                {
+                    Value = info,
+                    Links = new List<Links>
+                    {
+                        new Links {Ref = "self", Href = $"/api/patterns/{patternId}"},
+                        new Links {Ref = "thumbnail", Href = $"/api/patterns/{patternId}/thumbnail"}
+                    }
+                },
+                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
+
+            return Created(patternId.ToString(), json);
         }
     }
 }

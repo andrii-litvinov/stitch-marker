@@ -78,7 +78,7 @@
       }
 
       getThumbnailUrl(patternInfo) {
-        return `${SM.apiUrl}patterns/${patternInfo.patternId}/thumbnail`;
+        return `${SM.apiUrl}`+patternInfo.find("thumbnail");
       }
     }
     customElements.define(PatternCard.is, PatternCard);
