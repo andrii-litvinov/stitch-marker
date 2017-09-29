@@ -12,11 +12,25 @@
       vaadin-upload {
         margin: 10px;
       }
+
+      #container {
+        display: flex;
+        flex-direction: row;
+        align-items: left;
+        flex-wrap: wrap;
+        margin: 20px 100px;
+      }
+
+      stitch-pattern-card {
+        margin-bottom: 30px;
+      }
     </style>
     <app-location id="location" path="[[path]]"></app-location>
-    <template is="dom-repeat" items="[[patternInfos]]" as="pattern">
-      <stitch-pattern-card pattern-info="[[pattern]]"></stitch-pattern-card>
-    </template>
+    <div id="container">
+      <template is="dom-repeat" items="[[patternInfos]]" as="pattern">
+        <stitch-pattern-card pattern-info="[[pattern]]"></stitch-pattern-card>
+      </template>
+    </div>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="_onUploadResponse" nodrop></vaadin-upload>
   </template>
   <script>
@@ -41,14 +55,22 @@
         }
       }
 
+      constructor() {
+        super();
+        const json = localStorage.getItem("patternInfos");
+        if (json) this.patternInfos = JSON.parse(json);
+      }
+
       _onUploadResponse(event) {
         const xhr = event.detail.xhr;
         if (xhr.status === 201) {
           const location = xhr.getResponseHeader('Location');
           this.push('patternInfos', JSON.parse(xhr.responseText));
+          localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
         }
       }
     }
+
     customElements.define(Upload.is, Upload);
   </script>
 </dom-module>
