@@ -29,12 +29,12 @@ namespace SM.Service.Tests
   ""width"": 300,
   ""links"": [
     {
-      ""ref"": ""self"",
-      ""href"": ""/api/patterns/patternId""
+      ""rel"": ""self"",
+      ""href"": ""/api/patterns/1""
     },
     {
-      ""ref"": ""thumbnail"",
-      ""href"": ""/api/patterns/patternId/thumbnail""
+      ""rel"": ""thumbnail"",
+      ""href"": ""/api/patterns/1/thumbnail""
     }
   ]
 }";
@@ -44,8 +44,8 @@ namespace SM.Service.Tests
                 {
                     Links =
                     {
-                        new Link {Rel = "self", Href = "/api/patterns/patternId"},
-                        new Link {Rel = "thumbnail", Href = "/api/patterns/patternId/thumbnail"}
+                        new Link {Rel = "self", Href = "/api/patterns/1"},
+                        new Link {Rel = "thumbnail", Href = "/api/patterns/1/thumbnail"}
                     }
                 };
 
