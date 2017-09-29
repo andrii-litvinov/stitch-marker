@@ -42,8 +42,8 @@ namespace SM.Service.Patterns
                     Value = info,
                     Links = new List<Links>
                     {
-                        new Links {Ref = "self", Href = $"/api/patterns/{patternId}"},
-                        new Links {Ref = "thumbnail", Href = $"/api/patterns/{patternId}/thumbnail"}
+                        new Links {Rel = "self", Href = $"/api/patterns/{patternId}"},
+                        new Links {Rel = "thumbnail", Href = $"/api/patterns/{patternId}/thumbnail"}
                     }
                 },
                 new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});

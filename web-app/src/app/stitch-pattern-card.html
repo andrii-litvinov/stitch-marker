@@ -78,7 +78,8 @@
       }
 
       getThumbnailUrl(patternInfo) {
-        return `${SM.apiUrl}`+patternInfo.find("thumbnail");
+        const link = patternInfo.links.find(x => x.rel === 'thumbnail');
+        return SM.apiUrl+ link.href;
       }
     }
     customElements.define(PatternCard.is, PatternCard);
