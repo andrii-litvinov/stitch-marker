@@ -7,7 +7,7 @@ namespace SM.Xsd.Tests.Unit
     public class XsdPatternParserShould
     {
         [Fact]
-        public void ParseXsdPatterFile()
+        public void ParseXsdPatternFile()
         {
             // Arrange
             var sut = new XsdPatternReader();

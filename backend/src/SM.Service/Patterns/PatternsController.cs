@@ -1,26 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Proto.Cluster;
 using SM.Core.Model;
 using SM.Service.Classes;
 
 namespace SM.Service.Patterns
 {
-    [Route("api/[controller]")]
+    [Route("api/patterns")]
     public class PatternsController : Controller
     {
         [Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var request = await pattern.RequestAsync<PatternState>(new PatternQuery());
+            var request = await pattern.RequestAsync<PatternState>(new PatternQuery(), 3.Seconds());
             return Ok(request);
         }
 
         [Route("{patternId}/thumbnail")]
-        public async Task<IActionResult> Get(Guid patternId, int width, int height)
+        public async Task<IActionResult> GetThumbnail(Guid patternId)
         {
             var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
             var request = await pattern.RequestAsync<Thumbnail>(new ThumbnailQuery(), 3.Seconds());
@@ -34,7 +37,16 @@ namespace SM.Service.Patterns
             var content = await file.ReadAllBytes();
             var command = new CreatePattern(patternId, file.FileName, content);
             var info = await pattern.RequestAsync<PatternBasicInfo>(command, 3.Seconds());
-            return Created(patternId.ToString(), info);
+            var resource = new Resource(info)
+            {
+                Links =
+                {
+                    new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
+                    new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})}
+                }
+            };
+
+            return Created(patternId.ToString(), resource);
         }
     }
 }
