@@ -51,7 +51,7 @@
     </style>
     <div class="pattern-box">
       <a href="/editor/[[patternInfo.patternId]]">
-        <div class="image"><img src="[[thumbnailUrl]]?width=300&amp;height=200" /></div>
+        <div class="image"><img src="[[thumbnailUrl]]" /></div>
         <div id="info-box">
           <div><span class="info">[[patternInfo.patternName]]</span></div>
           <div><span class="info">[[patternInfo.height]]x[[patternInfo.width]]</span></div>
@@ -78,8 +78,7 @@
       }
 
       getThumbnailUrl(patternInfo) {
-        const link = patternInfo.links.find(x => x.rel === 'thumbnail');
-        return SM.apiUrl + link.href;
+        return SM.apiUrl + patternInfo.links.find(x => x.rel === 'thumbnail').href;
       }
     }
     customElements.define(PatternCard.is, PatternCard);
