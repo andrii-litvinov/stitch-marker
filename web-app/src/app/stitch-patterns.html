@@ -1,6 +1,6 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-  
-<link rel="import" href="stitch-upload.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="./stitch-pattern-card.html">
 
 <dom-module id="stitch-patterns">
   <template>
@@ -8,15 +8,69 @@
        :host {
         display: block;
       }
+
+      vaadin-upload {
+        margin: 10px;
+      }
+
+      #container {
+        display: flex;
+        flex-direction: row;
+        align-items: left;
+        flex-wrap: wrap;
+        margin: 20px 100px;
+      }
+
+      stitch-pattern-card {
+        margin-bottom: 30px;
+      }
     </style>
-  <stitch-upload></stitch-upload>
-</template>
+    <app-location id="location" path="[[path]]"></app-location>
+    <div id="container">
+      <template is="dom-repeat" items="[[patternInfos]]" as="pattern">
+        <stitch-pattern-card pattern-info="[[pattern]]"></stitch-pattern-card>
+      </template>
+    </div>
+    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="_onUploadResponse" nodrop></vaadin-upload>
+  </template>
   <script>
     class Patterns extends Polymer.Element {
       static get is() {
-        return "stitch-patterns";
+        return 'stitch-patterns';
+      }
+
+      static get properties() {
+        return {
+          uploadUrl: {
+            type: String,
+            value: `${SM.apiUrl}/api/patterns`
+          },
+          route: {
+            type: Object
+          },
+          patternInfos: {
+            type: Array,
+            value: []
+          }
+        }
+      }
+
+      constructor() {
+        super();
+        const json = localStorage.getItem("patternInfos");
+        if (json) this.patternInfos = JSON.parse(json);
+      }
+
+      _onUploadResponse(event) {
+        const xhr = event.detail.xhr;
+        if (xhr.status === 201) {
+          const location = xhr.getResponseHeader('Location');
+          this.push('patternInfos', JSON.parse(xhr.responseText));
+          localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
+        }
       }
     }
+
     customElements.define(Patterns.is, Patterns);
   </script>
 </dom-module>
