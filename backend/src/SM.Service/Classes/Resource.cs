@@ -6,7 +6,13 @@ namespace SM.Service.Classes
     [JsonConverter(typeof(ResourceJsonConverter))]
     public class Resource
     {
-        public object Value { get; set; }
-        public List<Links> Links { get; set; }
+        public Resource(object value)
+        {
+            Value = value;
+            Links = new List<Link>();
+        }
+
+        public object Value { get; }
+        public List<Link> Links { get; }
     }
 }

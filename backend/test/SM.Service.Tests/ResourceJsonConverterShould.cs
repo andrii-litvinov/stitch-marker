@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Ploeh.AutoFixture.Xunit2;
@@ -20,29 +19,41 @@ namespace SM.Service.Tests
 
         [Theory]
         [AutoData]
-        public void ConvertToJsonShould()
+        public void ConvertToJsonInExpectedFormat()
         {
             //Arrange
-            var expectedJson =
-                "{\"patternId\":1,\"patternName\":\"M198_Seaside beauty\",\"height\":300,\"width\":300," +
-                "\"links\":[{\"rel\":\"self\",\"href\":\"/api/patterns/patternId\"}" +
-                ",{\"rel\":\"thumbnail\",\"href\":\"/api/patterns/patternId/thumbnail\"}]}";
+            const string expectedJson = @"{
+  ""patternId"": 1,
+  ""patternName"": ""M198_Seaside beauty"",
+  ""height"": 300,
+  ""width"": 300,
+  ""links"": [
+    {
+      ""ref"": ""self"",
+      ""href"": ""/api/patterns/patternId""
+    },
+    {
+      ""ref"": ""thumbnail"",
+      ""href"": ""/api/patterns/patternId/thumbnail""
+    }
+  ]
+}";
+            var settings = new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()};
+            var resource =
+                new Resource(new {PatternId = 1, PatternName = "M198_Seaside beauty", Height = 300, Width = 300})
+                {
+                    Links =
+                    {
+                        new Link {Rel = "self", Href = "/api/patterns/patternId"},
+                        new Link {Rel = "thumbnail", Href = "/api/patterns/patternId/thumbnail"}
+                    }
+                };
 
             //Act
-            var json = JsonConvert.SerializeObject(
-                new Resource
-                {
-                    Links = new List<Links>
-                    {
-                        new Links {Rel = "self", Href = "/api/patterns/patternId"},
-                        new Links {Rel = "thumbnail", Href = "/api/patterns/patternId/thumbnail"}
-                    },
-                    Value = new {PatternId = 1, PatternName = "M198_Seaside beauty", Height = 300, Width = 300}
-                },
-                new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
+            var json = JsonConvert.SerializeObject(resource, Formatting.Indented, settings).Replace("\r\n", "\n");
 
             //Assert
-            json.ShouldBeEquivalentTo(expectedJson);
+            json.Should().Be(expectedJson);
         }
     }
 }
