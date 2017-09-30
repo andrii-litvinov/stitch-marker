@@ -23,7 +23,7 @@ namespace SM.Service.Tests
             var state = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
 
             //Act
-            var request = await pid.RequestAsync<Thumbnail>(state);
+            var request = await pid.RequestAsync<Thumbnail>(state, 3.Seconds());
 
             //Assert
             request.Image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
@@ -55,7 +55,7 @@ namespace SM.Service.Tests
             };
 
             //Act
-            var request = await pid.RequestAsync<Thumbnail>(state);
+            var request = await pid.RequestAsync<Thumbnail>(state, 3.Seconds());
 
             //Assert
             request.Image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
