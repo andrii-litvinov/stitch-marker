@@ -1,7 +1,6 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Proto;
 using SM.Core;
 using SM.Core.Model;
@@ -11,20 +10,23 @@ namespace SM.Service.Classes
     public class Pattern : IActor
     {
         private readonly Behavior behavior;
-        private readonly ThumbnailDrawer drawer;
         private readonly IPatternReader patternReader;
+        private readonly Queue<PID> thumbnailQueue = new Queue<PID>();
         private PatternState state;
+        private PID thumbnailGeneratorPid;
 
-        public Pattern(IPatternReader patternReader, ThumbnailDrawer drawer)
+
+        public Pattern(IPatternReader patternReader)
         {
             this.patternReader = patternReader;
-            this.drawer = drawer;
             behavior = new Behavior();
             behavior.Become(New);
         }
 
+
         public Task ReceiveAsync(IContext context)
         {
+            thumbnailGeneratorPid = context.Spawn(Actor.FromProducer(() => new ThumbnailDrawer()));
             Console.WriteLine($"Message received {context.Message.GetType().Name}.");
             try
             {
@@ -65,10 +67,11 @@ namespace SM.Service.Classes
                     context.Respond(state);
                     break;
                 case ThumbnailQuery _:
-                    context.Respond(new Thumbnail
-                    {
-                        Image = drawer.Draw(state)
-                    });
+                    thumbnailQueue.Enqueue(context.Sender);
+                    thumbnailGeneratorPid.Tell(state);
+                    break;
+                case Thumbnail _:
+                    context.Tell(thumbnailQueue.Dequeue(), context.Message);
                     break;
             }
             return Actor.Done;
