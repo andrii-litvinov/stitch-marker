@@ -50,10 +50,10 @@
         color: white;
       }
 
-        paper-button[active] {
-          background-color: var(--google-green-500);
-          color: white;
-        }
+      paper-button[active] {
+        background-color: var(--google-green-500);
+        color: white;
+      }
 
       paper-spinner {
         position: absolute;
@@ -163,9 +163,12 @@
 
       async _fetchData() {
         let pattern;
-        
+
         try {
-          const response = await fetch(`${window.SM.apiUrl}/api/patterns/${this.routeData.patternId}`);
+          const json = localStorage.getItem("patternInfo");
+          if (!json) return;
+          let patternInfo = JSON.parse(json);
+          const response = await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
           pattern = await response.json();
         } catch (error) {
           this.loading = false;
