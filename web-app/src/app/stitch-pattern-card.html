@@ -9,12 +9,15 @@
 
       .pattern-box {
         border-radius: 2px;
-        max-height: 300px;
-        max-width: 300px;
+        height: 250px;
+        width: 300px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
         transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
         margin: 20px;
         background-color: white;
+        display: flex;
+        justify-content: center;
+        align-content: center;
       }
 
       .pattern-box:hover {
@@ -22,8 +25,8 @@
       }
 
       img {
-        width: 300px;
-        height: 200px;
+        max-width: 300px;
+        max-height: 200px;
       }
 
       a {
@@ -47,7 +50,7 @@
     </style>
     <div class="pattern-box">
       <a href="/editor/[[patternInfo.patternId]]">
-        <div class="image"><img src="[[thumbnailUrl]]" /></div>
+        <img src="[[thumbnailUrl]]" />
         <div id="info-box">
           <div><span class="info">[[patternInfo.patternName]]</span></div>
           <div><span class="info">[[patternInfo.height]]x[[patternInfo.width]]</span></div>
