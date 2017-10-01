@@ -9,15 +9,16 @@ namespace SM.Service.Classes
     {
         public Task ReceiveAsync(IContext context)
         {
-            if (context.Message is PatternState state)
+            if (context.Message is CreateThumbnail command)
             {
+                var pattern = command.Pattern;
                 const int stitchSize = 2;
-                using (var surface = SKSurface.Create((int) state.Width * stitchSize, (int) state.Height * stitchSize,
+                using (var surface = SKSurface.Create((int) pattern.Width * stitchSize, (int) pattern.Height * stitchSize,
                     SKImageInfo.PlatformColorType, SKAlphaType.Premul))
                 {
-                    foreach (var stitch in state.Stitches)
+                    foreach (var stitch in pattern.Stitches)
                     {
-                        var configuration = state.Configurations[stitch.ConfigurationIndex];
+                        var configuration = pattern.Configurations[stitch.ConfigurationIndex];
                         var paint = new SKPaint {Color = SKColor.Parse(configuration.HexColor)};
                         var rect = new SKRect
                         {
@@ -30,6 +31,7 @@ namespace SM.Service.Classes
                     }
                     context.Parent.Tell(new Thumbnail
                     {
+                        Id = command.Id,
                         Image = surface.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray()
                     });
                 }

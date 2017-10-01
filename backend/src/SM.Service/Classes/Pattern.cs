@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Proto;
 using SM.Core;
@@ -11,10 +12,8 @@ namespace SM.Service.Classes
     {
         private readonly Behavior behavior;
         private readonly IPatternReader patternReader;
-        private readonly Queue<PID> thumbnailQueue = new Queue<PID>();
+        private readonly Queue<WaitlistItem> thumbnailWaitlist = new Queue<WaitlistItem>();
         private PatternState state;
-        private PID thumbnailGeneratorPid;
-
 
         public Pattern(IPatternReader patternReader)
         {
@@ -23,10 +22,8 @@ namespace SM.Service.Classes
             behavior.Become(New);
         }
 
-
         public Task ReceiveAsync(IContext context)
         {
-            thumbnailGeneratorPid = context.Spawn(Actor.FromProducer(() => new ThumbnailDrawer()));
             Console.WriteLine($"Message received {context.Message.GetType().Name}.");
             try
             {
@@ -67,14 +64,38 @@ namespace SM.Service.Classes
                     context.Respond(state);
                     break;
                 case ThumbnailQuery _:
-                    thumbnailQueue.Enqueue(context.Sender);
-                    thumbnailGeneratorPid.Tell(state);
+                    var drawer =
+                        context.Children.FirstOrDefault(pid => pid.Id.EndsWith(nameof(ThumbnailDrawer))) ??
+                        context.SpawnNamed(Actor.FromProducer(() => new ThumbnailDrawer()), nameof(ThumbnailDrawer));
+
+                    var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = state};
+                    drawer.Tell(command);
+                    thumbnailWaitlist.Enqueue(new WaitlistItem {Id = command.Id, Pid = context.Sender});
                     break;
-                case Thumbnail _:
-                    context.Tell(thumbnailQueue.Dequeue(), context.Message);
+                case Thumbnail thumbnail:
+                    while (thumbnailWaitlist.TryDequeue(out var item))
+                    {
+                        if (thumbnail.Id == item.Id)
+                        {
+                            context.Tell(item.Pid, thumbnail);
+                            break;
+                        }
+                    }
                     break;
             }
             return Actor.Done;
         }
+
+        class WaitlistItem
+        {
+            public Guid Id { get; set; }
+            public PID Pid { get; set; }
+        }
+    }
+
+    public class CreateThumbnail
+    {
+        public Guid Id { get; set; }
+        public PatternState Pattern { get; set; }
     }
 }
