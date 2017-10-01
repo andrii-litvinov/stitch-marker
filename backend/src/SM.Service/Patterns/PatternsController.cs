@@ -14,7 +14,7 @@ namespace SM.Service.Patterns
         [Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
-            var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
             var request = await pattern.RequestAsync<PatternState>(new PatternQuery(), 3.Seconds());
             return Ok(request);
         }
@@ -22,7 +22,7 @@ namespace SM.Service.Patterns
         [Route("{patternId}/thumbnail")]
         public async Task<IActionResult> GetThumbnail(Guid patternId)
         {
-            var pattern = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
             var request = await pattern.RequestAsync<Thumbnail>(new ThumbnailQuery(), 3.Seconds());
             return File(request.Image, "image/png");
         }
@@ -30,7 +30,7 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Post(IFormFile file)
         {
             var patternId = Guid.NewGuid();
-            var pattern = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
             var content = await file.ReadAllBytes();
             var command = new CreatePattern(patternId, file.FileName, content);
             var info = await pattern.RequestAsync<PatternBasicInfo>(command, 3.Seconds());

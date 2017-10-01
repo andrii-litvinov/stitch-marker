@@ -20,10 +20,10 @@ namespace SM.Service.Tests
             //Arrange
             var props = Actor.FromProducer(() => new DrawerSuperviser());
             var pid = Actor.Spawn(props);
-            var state = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
+            var pattern = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
 
             //Act
-            var request = await pid.RequestAsync<Thumbnail>(state, 3.Seconds());
+            var request = await pid.RequestAsync<Thumbnail>(pattern, 3.Seconds());
 
             //Assert
             request.Image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
@@ -36,7 +36,7 @@ namespace SM.Service.Tests
             //Arrange
             var props = Actor.FromProducer(() => new DrawerSuperviser());
             var pid = Actor.Spawn(props);
-            var state = new PatternState
+            var pattern = new PatternState
             {
                 Width = 5,
                 Height = 5,
@@ -55,7 +55,7 @@ namespace SM.Service.Tests
             };
 
             //Act
-            var request = await pid.RequestAsync<Thumbnail>(state, 3.Seconds());
+            var request = await pid.RequestAsync<Thumbnail>(pattern, 3.Seconds());
 
             //Assert
             request.Image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));

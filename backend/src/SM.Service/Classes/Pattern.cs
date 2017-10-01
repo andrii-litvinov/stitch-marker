@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Proto;
+using Proto.Persistence;
 using SM.Core;
 using SM.Core.Model;
 
@@ -11,29 +12,37 @@ namespace SM.Service.Classes
     public class Pattern : IActor
     {
         private readonly Behavior behavior;
+        private readonly IEventStore eventStore;
         private readonly IPatternReader patternReader;
         private readonly Queue<WaitlistItem> thumbnailWaitlist = new Queue<WaitlistItem>();
-        private PatternState state;
+        private PatternState pattern;
+        private Persistence persistence;
 
-        public Pattern(IPatternReader patternReader)
+        public Pattern(IPatternReader patternReader, IEventStore eventStore)
         {
             this.patternReader = patternReader;
+            this.eventStore = eventStore;
             behavior = new Behavior();
-            behavior.Become(New);
         }
 
-        public Task ReceiveAsync(IContext context)
+        public async Task ReceiveAsync(IContext context)
         {
-            Console.WriteLine($"Message received {context.Message.GetType().Name}.");
-            try
+            switch (context.Message)
             {
-                return behavior.ReceiveAsync(context);
+                case Started _:
+                    persistence = Persistence.WithEventSourcing(eventStore, context.Self.Id, ApplyEvent);
+                    await persistence.RecoverStateAsync();
+                    if (pattern == null) behavior.Become(New);
+                    else behavior.Become(Created);
+                    break;
+                default:
+                    await behavior.ReceiveAsync(context);
+                    break;
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+        }
+
+        private void ApplyEvent(Event obj)
+        {
         }
 
         private Task New(IContext context)
@@ -41,18 +50,19 @@ namespace SM.Service.Classes
             switch (context.Message)
             {
                 case CreatePattern command:
-                    state = patternReader.Read(command.Content);
-                    state.PatternId = command.PatternId;
+                    pattern = patternReader.Read(command.Content);
+                    pattern.PatternId = command.PatternId;
                     context.Respond(new PatternBasicInfo
                     {
-                        PatternId = state.PatternId,
+                        PatternId = pattern.PatternId,
                         PatternName = command.FileName,
-                        Width = state.Width,
-                        Height = state.Height
+                        Width = pattern.Width,
+                        Height = pattern.Height
                     });
                     behavior.Become(Created);
                     break;
             }
+
             return Actor.Done;
         }
 
@@ -61,32 +71,30 @@ namespace SM.Service.Classes
             switch (context.Message)
             {
                 case PatternQuery _:
-                    context.Respond(state);
+                    context.Respond(pattern);
                     break;
                 case ThumbnailQuery _:
                     var drawer =
                         context.Children.FirstOrDefault(pid => pid.Id.EndsWith(nameof(ThumbnailDrawer))) ??
                         context.SpawnNamed(Actor.FromProducer(() => new ThumbnailDrawer()), nameof(ThumbnailDrawer));
 
-                    var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = state};
+                    var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = pattern};
                     drawer.Tell(command);
                     thumbnailWaitlist.Enqueue(new WaitlistItem {Id = command.Id, Pid = context.Sender});
                     break;
                 case Thumbnail thumbnail:
                     while (thumbnailWaitlist.TryDequeue(out var item))
-                    {
                         if (thumbnail.Id == item.Id)
                         {
                             context.Tell(item.Pid, thumbnail);
                             break;
                         }
-                    }
                     break;
             }
             return Actor.Done;
         }
 
-        class WaitlistItem
+        private class WaitlistItem
         {
             public Guid Id { get; set; }
             public PID Pid { get; set; }
