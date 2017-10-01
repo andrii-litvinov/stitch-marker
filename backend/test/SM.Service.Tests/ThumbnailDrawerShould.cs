@@ -1,6 +1,8 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Ploeh.AutoFixture.Xunit2;
+using Proto;
 using SM.Core.Model;
 using SM.Service.Classes;
 using SM.Xsd;
@@ -13,23 +15,27 @@ namespace SM.Service.Tests
     {
         [Theory]
         [AutoData]
-        public void DrawExpectedImage(XsdPatternReader patternReader, ThumbnailDrawer sut)
+        public async void DrawExpectedImage(XsdPatternReader patternReader)
         {
             //Arrange
+            var props = Actor.FromProducer(() => new DrawerSuperviser());
+            var pid = Actor.Spawn(props);
             var state = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
 
             //Act
-            var image = sut.Draw(state);
+            var request = await pid.RequestAsync<Thumbnail>(state, 3.Seconds());
 
             //Assert
-            image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
+            request.Image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
         }
 
         [Theory]
         [AutoData]
-        public void DrawSimpleImage(ThumbnailDrawer sut)
+        public async void DrawSimpleImage()
         {
             //Arrange
+            var props = Actor.FromProducer(() => new DrawerSuperviser());
+            var pid = Actor.Spawn(props);
             var state = new PatternState
             {
                 Width = 5,
@@ -49,10 +55,32 @@ namespace SM.Service.Tests
             };
 
             //Act
-            var image = sut.Draw(state);
+            var request = await pid.RequestAsync<Thumbnail>(state, 3.Seconds());
 
             //Assert
-            image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
+            request.Image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
+        }
+
+        private class DrawerSuperviser : IActor
+        {
+            private PID requestor;
+
+            public Task ReceiveAsync(IContext context)
+            {
+                switch (context.Message)
+                {
+                    case PatternState pattern:
+                        var thumbnailActorProps = Actor.FromProducer(() => new ThumbnailDrawer());
+                        var thumbnailActorPid = context.Spawn(thumbnailActorProps);
+                        thumbnailActorPid.Tell(new CreateThumbnail {Pattern = pattern});
+                        requestor = context.Sender;
+                        break;
+                    case Thumbnail thumbnail:
+                        requestor?.Tell(thumbnail);
+                        break;
+                }
+                return Actor.Done;
+            }
         }
     }
 }

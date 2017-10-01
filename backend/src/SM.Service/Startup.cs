@@ -58,8 +58,7 @@ namespace SM.Service
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            var drawer = new ThumbnailDrawer();
-            var props = Actor.FromProducer(() => new Pattern(patternReader, drawer));
+            var props = Actor.FromProducer(() => new Pattern(patternReader));
 
             // TODO: Register all known actors in a generic way 
             Remote.RegisterKnownKind("pattern", props);

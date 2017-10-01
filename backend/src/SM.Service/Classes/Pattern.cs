@@ -1,7 +1,7 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Proto;
 using SM.Core;
 using SM.Core.Model;
@@ -11,14 +11,13 @@ namespace SM.Service.Classes
     public class Pattern : IActor
     {
         private readonly Behavior behavior;
-        private readonly ThumbnailDrawer drawer;
         private readonly IPatternReader patternReader;
+        private readonly Queue<WaitlistItem> thumbnailWaitlist = new Queue<WaitlistItem>();
         private PatternState state;
 
-        public Pattern(IPatternReader patternReader, ThumbnailDrawer drawer)
+        public Pattern(IPatternReader patternReader)
         {
             this.patternReader = patternReader;
-            this.drawer = drawer;
             behavior = new Behavior();
             behavior.Become(New);
         }
@@ -65,13 +64,38 @@ namespace SM.Service.Classes
                     context.Respond(state);
                     break;
                 case ThumbnailQuery _:
-                    context.Respond(new Thumbnail
+                    var drawer =
+                        context.Children.FirstOrDefault(pid => pid.Id.EndsWith(nameof(ThumbnailDrawer))) ??
+                        context.SpawnNamed(Actor.FromProducer(() => new ThumbnailDrawer()), nameof(ThumbnailDrawer));
+
+                    var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = state};
+                    drawer.Tell(command);
+                    thumbnailWaitlist.Enqueue(new WaitlistItem {Id = command.Id, Pid = context.Sender});
+                    break;
+                case Thumbnail thumbnail:
+                    while (thumbnailWaitlist.TryDequeue(out var item))
                     {
-                        Image = drawer.Draw(state)
-                    });
+                        if (thumbnail.Id == item.Id)
+                        {
+                            context.Tell(item.Pid, thumbnail);
+                            break;
+                        }
+                    }
                     break;
             }
             return Actor.Done;
         }
+
+        class WaitlistItem
+        {
+            public Guid Id { get; set; }
+            public PID Pid { get; set; }
+        }
+    }
+
+    public class CreateThumbnail
+    {
+        public Guid Id { get; set; }
+        public PatternState Pattern { get; set; }
     }
 }
