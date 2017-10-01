@@ -69,10 +69,10 @@ namespace SM.Service.Tests
             {
                 switch (context.Message)
                 {
-                    case PatternState state1:
+                    case PatternState pattern:
                         var thumbnailActorProps = Actor.FromProducer(() => new ThumbnailDrawer());
                         var thumbnailActorPid = context.Spawn(thumbnailActorProps);
-                        thumbnailActorPid.Tell(state1);
+                        thumbnailActorPid.Tell(new CreateThumbnail {Pattern = pattern});
                         requestor = context.Sender;
                         break;
                     case Thumbnail thumbnail:
