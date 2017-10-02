@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Proto;
 using Proto.Persistence;
-using SM.Core;
 using SM.Core.Model;
 
 namespace SM.Service.Classes
@@ -13,14 +12,13 @@ namespace SM.Service.Classes
     {
         private readonly Behavior behavior;
         private readonly IEventStore eventStore;
-        private readonly IPatternReader patternReader;
+        private readonly Queue<WaitlistItem> patternWaitlist = new Queue<WaitlistItem>();
         private readonly Queue<WaitlistItem> thumbnailWaitlist = new Queue<WaitlistItem>();
         private PatternState pattern;
         private Persistence persistence;
 
-        public Pattern(IPatternReader patternReader, IEventStore eventStore)
+        public Pattern(IEventStore eventStore)
         {
-            this.patternReader = patternReader;
             this.eventStore = eventStore;
             behavior = new Behavior();
         }
@@ -50,19 +48,29 @@ namespace SM.Service.Classes
             switch (context.Message)
             {
                 case CreatePattern command:
-                    pattern = patternReader.Read(command.Content);
-                    pattern.PatternId = command.PatternId;
-                    context.Respond(new PatternBasicInfo
-                    {
-                        PatternId = pattern.PatternId,
-                        PatternName = command.FileName,
-                        Width = pattern.Width,
-                        Height = pattern.Height
-                    });
-                    behavior.Become(Created);
+                    var parser =
+                        context.Children.FirstOrDefault(pid => pid.Id.EndsWith(nameof(XsdPatternParser))) ??
+                        context.SpawnNamed(Actor.FromProducer(() => new XsdPatternParser()), nameof(XsdPatternParser));
+                    parser.Tell(command);
+                    patternWaitlist.Enqueue(new WaitlistItem {Id = command.PatternId, Pid = context.Sender});
+                    break;
+                case PatternState patternState:
+                    while (patternWaitlist.TryDequeue(out var item))
+                        if (patternState.PatternId == item.Id)
+                        {
+                            pattern = patternState;
+                            var info = new PatternBasicInfo
+                            {
+                                Height = patternState.Height,
+                                Width = patternState.Width,
+                                Title = patternState.Info.Title,
+                                Id = patternState.PatternId
+                            };
+                            context.Tell(item.Pid, info);
+                            behavior.Become(Created);
+                        }
                     break;
             }
-
             return Actor.Done;
         }
 

@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Proto;
 using SkiaSharp;
-using SM.Core.Model;
 
 namespace SM.Service.Classes
 {
