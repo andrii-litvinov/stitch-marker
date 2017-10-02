@@ -5,7 +5,7 @@ namespace SM.Core.Model
 {
     public class PatternState
     {
-        public Guid PatternId { get; set; }
+        public Guid Id { get; set; }
         public Info Info { get; } = new Info();
         public Canvas Canvas { get; } = new Canvas();
         public StrandsCount StrandsCount { get; } = new StrandsCount();

@@ -16,20 +16,18 @@ namespace SM.Service
     public class ActorCluster : IHostedService
     {
         private readonly IConfiguration configuration;
-        private readonly IPatternReader patternReader;
         private readonly IEventStore eventStore;
 
-        public ActorCluster(IConfiguration configuration, IPatternReader patternReader, IEventStore eventStore)
+        public ActorCluster(IConfiguration configuration, IEventStore eventStore)
         {
             this.configuration = configuration;
-            this.patternReader = patternReader;
             this.eventStore = eventStore;
         }
         
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // TODO: Register all known actors in a generic way 
-            var props = Actor.FromProducer(() => new Pattern(patternReader, eventStore));
+            var props = Actor.FromProducer(() => new Pattern(eventStore));
             Remote.RegisterKnownKind("pattern", props);
             
             var provider = new ConsulProvider(new ConsulProviderOptions(),

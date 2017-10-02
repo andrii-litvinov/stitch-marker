@@ -2,10 +2,10 @@ using System;
 
 namespace SM.Service.Classes
 {
-    public class PatternBasicInfo
+    public class PatternPreview
     {
-        public Guid PatternId { get; set; }
-        public string PatternName { get; set; }
+        public Guid Id { get; set; }
+        public string Title { get; set; }
         public uint Height { get; set; }
         public uint Width { get; set; }
     }

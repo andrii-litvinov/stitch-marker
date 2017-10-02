@@ -22,7 +22,7 @@ namespace SM.Service.Tests
         public void ConvertToJsonInExpectedFormat()
         {
             //Arrange
-            const string expectedJson = @"{
+            string expectedJson = @"{
   ""patternId"": 1,
   ""patternName"": ""M198_Seaside beauty"",
   ""height"": 300,
@@ -37,7 +37,7 @@ namespace SM.Service.Tests
       ""href"": ""/api/patterns/1/thumbnail""
     }
   ]
-}";
+}".Replace("\r\n", "\n");
             var settings = new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()};
             var resource =
                 new Resource(new {PatternId = 1, PatternName = "M198_Seaside beauty", Height = 300, Width = 300})

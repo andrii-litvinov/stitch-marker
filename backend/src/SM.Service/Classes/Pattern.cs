@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using SM.Core;
 using SM.Core.Model;
 
 namespace SM.Service.Classes
@@ -13,14 +12,12 @@ namespace SM.Service.Classes
     {
         private readonly Behavior behavior;
         private readonly IEventStore eventStore;
-        private readonly IPatternReader patternReader;
-        private readonly Queue<WaitlistItem> thumbnailWaitlist = new Queue<WaitlistItem>();
+        private readonly MemoryCache recipients = new MemoryCache(new MemoryCacheOptions());
         private PatternState pattern;
         private Persistence persistence;
 
-        public Pattern(IPatternReader patternReader, IEventStore eventStore)
+        public Pattern(IEventStore eventStore)
         {
-            this.patternReader = patternReader;
             this.eventStore = eventStore;
             behavior = new Behavior();
         }
@@ -41,28 +38,29 @@ namespace SM.Service.Classes
             }
         }
 
-        private void ApplyEvent(Event obj)
-        {
-        }
-
         private Task New(IContext context)
         {
             switch (context.Message)
             {
                 case CreatePattern command:
-                    pattern = patternReader.Read(command.Content);
-                    pattern.PatternId = command.PatternId;
-                    context.Respond(new PatternBasicInfo
+                    var parser = context.GetChild<XsdPatternParser>();
+                    recipients.Set(command.Id, context.Sender, 30.Seconds());
+                    parser.Tell(command);
+                    break;
+                case PatternParsed @event:
+                    pattern = @event.Pattern;
+                    // TODO: Save state.
+                    behavior.Become(Created);
+                    var preview = new PatternPreview
                     {
-                        PatternId = pattern.PatternId,
-                        PatternName = command.FileName,
+                        Id = pattern.Id,
+                        Title = pattern.Info.Title,
                         Width = pattern.Width,
                         Height = pattern.Height
-                    });
-                    behavior.Become(Created);
+                    };
+                    recipients.Get<PID>(@event.Id)?.Tell(preview);
                     break;
             }
-
             return Actor.Done;
         }
 
@@ -74,36 +72,42 @@ namespace SM.Service.Classes
                     context.Respond(pattern);
                     break;
                 case ThumbnailQuery _:
-                    var drawer =
-                        context.Children.FirstOrDefault(pid => pid.Id.EndsWith(nameof(ThumbnailDrawer))) ??
-                        context.SpawnNamed(Actor.FromProducer(() => new ThumbnailDrawer()), nameof(ThumbnailDrawer));
-
+                    var drawer = context.GetChild<ThumbnailDrawer>();
                     var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = pattern};
+                    recipients.Set(command.Id, context.Sender, 30.Seconds());
                     drawer.Tell(command);
-                    thumbnailWaitlist.Enqueue(new WaitlistItem {Id = command.Id, Pid = context.Sender});
                     break;
                 case Thumbnail thumbnail:
-                    while (thumbnailWaitlist.TryDequeue(out var item))
-                        if (thumbnail.Id == item.Id)
-                        {
-                            context.Tell(item.Pid, thumbnail);
-                            break;
-                        }
+                    recipients.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
             }
             return Actor.Done;
         }
 
-        private class WaitlistItem
+        private void ApplyEvent(Event @event)
         {
-            public Guid Id { get; set; }
-            public PID Pid { get; set; }
         }
+    }
+
+    public class PatternParsed
+    {
+        public Guid Id { get; set; }
+        public PatternState Pattern { get; set; }
     }
 
     public class CreateThumbnail
     {
         public Guid Id { get; set; }
         public PatternState Pattern { get; set; }
+    }
+
+    public static class ChildActorExtensions
+    {
+        public static PID GetChild<T>(this IContext context) where T : IActor, new()
+        {
+            var name = typeof(T).Name;
+            return context.Children.FirstOrDefault(pid => pid.Id.EndsWith(name)) ??
+                   context.SpawnNamed(Actor.FromProducer(() => new T()), name);
+        }
     }
 }
