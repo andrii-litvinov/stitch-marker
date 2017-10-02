@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Proto;
 using SM.Core;
-using SM.Core.Model;
 using SM.Xsd;
 
 namespace SM.Service.Classes
@@ -12,12 +11,14 @@ namespace SM.Service.Classes
 
         public Task ReceiveAsync(IContext context)
         {
-            if (context.Message is CreatePattern command)
+            switch (context.Message)
             {
-                var pattern = patternReader.Read(command.Content);
-                pattern.Info.Title = command.FileName;
-                pattern.PatternId = command.PatternId;
-                context.Parent.Tell(pattern);
+                case CreatePattern command:
+                    var pattern = patternReader.Read(command.Content);
+                    pattern.Info.Title = command.FileName;
+                    pattern.Id = command.Id;
+                    context.Parent.Tell(new PatternParsed {Id = command.Id, Pattern = pattern});
+                    break;
             }
             return Actor.Done;
         }

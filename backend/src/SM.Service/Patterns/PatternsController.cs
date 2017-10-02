@@ -33,7 +33,7 @@ namespace SM.Service.Patterns
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
             var content = await file.ReadAllBytes();
             var command = new CreatePattern(patternId, file.FileName, content);
-            var info = await pattern.RequestAsync<PatternBasicInfo>(command, 3.Seconds());
+            var info = await pattern.RequestAsync<PatternPreview>(command, 3.Seconds());
             var resource = new Resource(info)
             {
                 Links =
