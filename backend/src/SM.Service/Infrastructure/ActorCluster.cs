@@ -8,10 +8,9 @@ using Proto.Cluster;
 using Proto.Cluster.Consul;
 using Proto.Persistence;
 using Proto.Remote;
-using SM.Core;
-using SM.Service.Classes;
+using SM.Service.Patterns;
 
-namespace SM.Service
+namespace SM.Service.Infrastructure
 {
     public class ActorCluster : IHostedService
     {
@@ -27,7 +26,7 @@ namespace SM.Service
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // TODO: Register all known actors in a generic way 
-            var props = Actor.FromProducer(() => new Pattern(eventStore));
+            var props = Actor.FromProducer(() => new PatternActor(eventStore));
             Remote.RegisterKnownKind("pattern", props);
             
             var provider = new ConsulProvider(new ConsulProviderOptions(),

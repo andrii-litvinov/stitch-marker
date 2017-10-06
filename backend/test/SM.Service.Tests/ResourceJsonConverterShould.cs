@@ -2,7 +2,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Ploeh.AutoFixture.Xunit2;
-using SM.Service.Classes;
+using SM.Service.Messages;
+using SM.Service.Resources;
 using Xunit;
 using Xunit.Abstractions;
 

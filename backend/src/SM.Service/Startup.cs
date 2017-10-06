@@ -4,8 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Proto.Persistence;
-using SM.Core;
-using SM.Xsd;
+using SM.Service.Infrastructure;
 
 namespace SM.Service
 {
@@ -17,7 +16,6 @@ namespace SM.Service
         {
             services.AddMvc();
             services.AddCors();
-            services.AddSingleton<IPatternReader, XsdPatternReader>();
             services.AddSingleton<IHostedService, ActorCluster>();
             services.AddSingleton<IEventStore, EventStore>();
         }

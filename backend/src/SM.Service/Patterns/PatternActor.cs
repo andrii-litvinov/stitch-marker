@@ -4,19 +4,21 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using SM.Core.Model;
+using SM.Service.Extentions;
+using SM.Service.Messages;
+using SM.Service.Patterns.Xsd;
 
-namespace SM.Service.Classes
+namespace SM.Service.Patterns
 {
-    public class Pattern : IActor
+    public class PatternActor : IActor
     {
         private readonly Behavior behavior;
         private readonly IEventStore eventStore;
         private readonly MemoryCache recipients = new MemoryCache(new MemoryCacheOptions());
-        private PatternState pattern;
+        private Messages.Pattern pattern;
         private Persistence persistence;
 
-        public Pattern(IEventStore eventStore)
+        public PatternActor(IEventStore eventStore)
         {
             this.eventStore = eventStore;
             behavior = new Behavior();
@@ -43,7 +45,7 @@ namespace SM.Service.Classes
             switch (context.Message)
             {
                 case CreatePattern command:
-                    var parser = context.GetChild<XsdPatternParser>();
+                    var parser = context.GetChild<XsdPatternActor>();
                     recipients.Set(command.Id, context.Sender, 30.Seconds());
                     parser.Tell(command);
                     break;
@@ -53,7 +55,7 @@ namespace SM.Service.Classes
                     behavior.Become(Created);
                     var preview = new PatternPreview
                     {
-                        Id = pattern.Id,
+                        Id = Guid.Parse(pattern.Id),
                         Title = pattern.Info.Title,
                         Width = pattern.Width,
                         Height = pattern.Height
@@ -72,7 +74,7 @@ namespace SM.Service.Classes
                     context.Respond(pattern);
                     break;
                 case ThumbnailQuery _:
-                    var drawer = context.GetChild<ThumbnailDrawer>();
+                    var drawer = context.GetChild<PatternImageActor>();
                     var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = pattern};
                     recipients.Set(command.Id, context.Sender, 30.Seconds());
                     drawer.Tell(command);
@@ -92,13 +94,13 @@ namespace SM.Service.Classes
     public class PatternParsed
     {
         public Guid Id { get; set; }
-        public PatternState Pattern { get; set; }
+        public Messages.Pattern Pattern { get; set; }
     }
 
     public class CreateThumbnail
     {
         public Guid Id { get; set; }
-        public PatternState Pattern { get; set; }
+        public Messages.Pattern Pattern { get; set; }
     }
 
     public static class ChildActorExtensions

@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Proto;
 using SkiaSharp;
+using SM.Service.Messages;
 
-namespace SM.Service.Classes
+namespace SM.Service.Patterns
 {
-    public class ThumbnailDrawer : IActor
+    public class PatternImageActor : IActor
     {
         public Task ReceiveAsync(IContext context)
         {

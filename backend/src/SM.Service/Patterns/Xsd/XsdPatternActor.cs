@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Proto;
-using SM.Core;
-using SM.Xsd;
+using SM.Service.Messages;
 
-namespace SM.Service.Classes
+namespace SM.Service.Patterns.Xsd
 {
-    public class XsdPatternParser : IActor
+    public class XsdPatternActor : IActor
     {
-        private readonly IPatternReader patternReader = new XsdPatternReader();
+        private readonly XsdPatternReader patternReader = new XsdPatternReader();
 
         public Task ReceiveAsync(IContext context)
         {
@@ -16,7 +15,7 @@ namespace SM.Service.Classes
                 case CreatePattern command:
                     var pattern = patternReader.Read(command.Content);
                     pattern.Info.Title = command.FileName;
-                    pattern.Id = command.Id;
+                    pattern.Id = command.Id.ToString();
                     context.Parent.Tell(new PatternParsed {Id = command.Id, Pattern = pattern});
                     break;
             }

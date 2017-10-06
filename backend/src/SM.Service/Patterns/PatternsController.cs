@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Proto.Cluster;
-using SM.Core.Model;
-using SM.Service.Classes;
+using SM.Service.Extentions;
+using SM.Service.Messages;
+using SM.Service.Resources;
 
 namespace SM.Service.Patterns
 {
@@ -15,7 +16,7 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var request = await pattern.RequestAsync<PatternState>(new PatternQuery(), 3.Seconds());
+            var request = await pattern.RequestAsync<Pattern>(new PatternQuery(), 3.Seconds());
             return Ok(request);
         }
 

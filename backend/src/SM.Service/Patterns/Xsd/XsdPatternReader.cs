@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using SM.Core;
-using SM.Core.Model;
+using SM.Service.Messages;
 
-namespace SM.Xsd
+namespace SM.Service.Patterns.Xsd
 {
-    public class XsdPatternReader : IPatternReader
+    public class XsdPatternReader
     {
-        public PatternState Read(byte[] content)
+        public Messages.Pattern Read(byte[] content)
         {
             using (var stream = new MemoryStream(content) {Position = 0})
             {
@@ -575,27 +574,27 @@ namespace SM.Xsd
             }
         }
 
-        private static Core.Model.PatternState Convert(Pattern pattern)
+        private static Messages.Pattern Convert(Pattern pattern)
         {
             // TODO: Cover property mapping with tests.
-            var result = new Core.Model.PatternState
+            var result = new Messages.Pattern
             {
                 Width = pattern.Width,
                 Height = pattern.Height,
-                Canvas =
+                Canvas = new Messages.Canvas
                 {
                     Title = pattern.Canvas.Title
                 },
-                Info =
+                Info = new Messages.Info
                 {
                     Title = pattern.Info.Title,
                     Author = pattern.Info.Author,
                     Company = pattern.Info.Company,
                     Copyright = pattern.Info.Copyright
                 },
-                StrandsCount =
+                StrandsCount = new StrandsCount
                 {
-                    BackStitch = pattern.Strands.BackStitch,
+                    Backstitch = pattern.Strands.BackStitch,
                     FrenchKnot = pattern.Strands.FrenchKnot,
                     Full = pattern.Strands.Full,
                     Half = pattern.Strands.Half,
@@ -609,11 +608,12 @@ namespace SM.Xsd
                 result.Configurations.Add(new StitchConfiguration
                 {
                     Symbol = color.Symbol,
-                    HexColor = "#" + color.Rgb.R.ToString("x2") + color.Rgb.G.ToString("x2") + color.Rgb.B.ToString("x2")
+                    HexColor = "#" + color.Rgb.R.ToString("x2") + color.Rgb.G.ToString("x2") +
+                               color.Rgb.B.ToString("x2")
                 });
 
             foreach (var stitch in pattern.Stitches)
-                result.Stitches.Add(new Core.Model.Stitch
+                result.Stitches.Add(new Messages.Stitch
                 {
                     Point = new Point {X = stitch.Offset / pattern.Height, Y = stitch.Offset % pattern.Height},
                     Type = (StitchType) Enum.Parse(typeof(StitchType), stitch.ItemType.ToString()),
@@ -621,7 +621,7 @@ namespace SM.Xsd
                 });
 
             foreach (var backstitch in pattern.Backstitches)
-                result.Backstitches.Add(new Core.Model.Backstitch
+                result.Backstitches.Add(new Messages.Backstitch
                 {
                     StartPoint = new Point {X = backstitch.X1, Y = backstitch.Y1},
                     EndPoint = new Point {X = backstitch.X2, Y = backstitch.Y2},
@@ -632,7 +632,7 @@ namespace SM.Xsd
                 result.Elements.Add(new Element
                 {
                     Point = new Point {X = node.X, Y = node.Y},
-                    Type = (ElementType)Enum.Parse(typeof(ElementType), node.Type.ToString()),
+                    Type = (ElementType) Enum.Parse(typeof(ElementType), node.Type.ToString()),
                     ConfigurationIndex = node.Color.Index
                 });
 

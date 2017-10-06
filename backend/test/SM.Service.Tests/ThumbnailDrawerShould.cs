@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Ploeh.AutoFixture.Xunit2;
 using Proto;
-using SM.Core.Model;
-using SM.Service.Classes;
-using SM.Xsd;
+using SM.Service.Messages;
+using SM.Service.Patterns;
+using SM.Service.Patterns.Xsd;
 using Xunit;
-using Stitch = SM.Core.Model.Stitch;
 
 namespace SM.Service.Tests
 {
@@ -36,15 +35,15 @@ namespace SM.Service.Tests
             //Arrange
             var props = Actor.FromProducer(() => new DrawerSuperviser());
             var pid = Actor.Spawn(props);
-            var pattern = new PatternState
+            var pattern = new Messages.Pattern
             {
                 Width = 5,
                 Height = 5,
                 Stitches =
                 {
-                    new Stitch {ConfigurationIndex = 0, Point = new Point {X = 1, Y = 1}, Type = StitchType.Full},
-                    new Stitch {ConfigurationIndex = 1, Point = new Point {X = 1, Y = 2}, Type = StitchType.Full},
-                    new Stitch {ConfigurationIndex = 2, Point = new Point {X = 2, Y = 1}, Type = StitchType.Full}
+                    new Messages.Stitch {ConfigurationIndex = 0, Point = new Point {X = 1, Y = 1}, Type = StitchType.Full},
+                    new Messages.Stitch {ConfigurationIndex = 1, Point = new Point {X = 1, Y = 2}, Type = StitchType.Full},
+                    new Messages.Stitch {ConfigurationIndex = 2, Point = new Point {X = 2, Y = 1}, Type = StitchType.Full}
                 },
                 Configurations =
                 {
@@ -69,8 +68,8 @@ namespace SM.Service.Tests
             {
                 switch (context.Message)
                 {
-                    case PatternState pattern:
-                        var thumbnailActorProps = Actor.FromProducer(() => new ThumbnailDrawer());
+                    case Messages.Pattern pattern:
+                        var thumbnailActorProps = Actor.FromProducer(() => new PatternImageActor());
                         var thumbnailActorPid = context.Spawn(thumbnailActorProps);
                         thumbnailActorPid.Tell(new CreateThumbnail {Pattern = pattern});
                         requestor = context.Sender;

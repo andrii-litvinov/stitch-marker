@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Proto.Persistence;
 
-namespace SM.Service
+namespace SM.Service.Infrastructure
 {
     public class EventStore : IEventStore
     {

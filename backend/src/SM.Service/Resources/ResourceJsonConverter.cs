@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 
-namespace SM.Service.Classes
+namespace SM.Service.Resources
 {
     public class ResourceJsonConverter : JsonConverter
     {
