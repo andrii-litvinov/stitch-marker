@@ -22,6 +22,7 @@
     "paper-header-panel": "PolymerElements/paper-header-panel#^2.0.0",
     "paper-toolbar": "PolymerElements/paper-toolbar#^2.0.0",
     "app-layout": "PolymerElements/app-layout#^2.0.1",
-    "paper-tabs": "PolymerElements/paper-tabs#^2.0.0"
+    "paper-tabs": "PolymerElements/paper-tabs#^2.0.0",
+    "paper-card": "PolymerElements/paper-card#^2.0.0"
   }
 }
