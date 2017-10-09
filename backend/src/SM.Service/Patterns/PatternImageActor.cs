@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Google.Protobuf;
 using Proto;
 using SkiaSharp;
@@ -14,36 +13,47 @@ namespace SM.Service.Patterns
             switch (context.Message)
             {
                 case GetThumbnail command:
-                    var pattern = command.Pattern;
-                    var stitchSize = 2;
-
-                    using (var surface = SKSurface.Create((int) pattern.Width * stitchSize,
-                        (int) pattern.Height * stitchSize,
-                        SKImageInfo.PlatformColorType, SKAlphaType.Premul))
+                    var thumbnail = CreateThumbnail(command.Pattern);
+                    context.Parent.Tell(new Thumbnail
                     {
-                        foreach (var stitch in pattern.Stitches)
-                        {
-                            var configuration = pattern.Configurations[stitch.ConfigurationIndex];
-                            var paint = new SKPaint {Color = SKColor.Parse(configuration.HexColor)};
-                            var rect = new SKRect
-                            {
-                                Left = stitch.Point.X * stitchSize,
-                                Top = stitch.Point.Y * stitchSize,
-                                Right = (stitch.Point.X + 1) * stitchSize,
-                                Bottom = (stitch.Point.Y + 1) * stitchSize
-                            };
-                            surface.Canvas.DrawRect(rect, paint);
-                        }
-                        var content = surface.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray();
-                        context.Parent.Tell(new Thumbnail
-                        {
-                            Id = command.Id,
-                            Image = ByteString.CopyFrom(content)
-                        });
-                    }
+                        Id = command.Id,
+                        Image = ByteString.CopyFrom(thumbnail)
+                    });
                     break;
             }
             return Actor.Done;
+        }
+
+        private static byte[] CreateThumbnail(Pattern pattern)
+        {
+            const int stitchSize = 2;
+            var width = (int) pattern.Width * stitchSize;
+            var height = (int) pattern.Height * stitchSize;
+
+            var bitmap = new SKBitmap(width, height);
+            bitmap.Erase(SKColor.Empty);
+            
+            var canvas = new SKCanvas(bitmap);
+
+            foreach (var stitch in pattern.Stitches)
+            {
+                var configuration = pattern.Configurations[stitch.ConfigurationIndex];
+                var paint = new SKPaint {Color = SKColor.Parse(configuration.HexColor)};
+                var rect = new SKRect
+                {
+                    Left = stitch.Point.X * stitchSize,
+                    Top = stitch.Point.Y * stitchSize,
+                    Right = (stitch.Point.X + 1) * stitchSize,
+                    Bottom = (stitch.Point.Y + 1) * stitchSize
+                };
+
+                canvas.DrawRect(rect, paint);
+            }
+            var image = SKImage.FromBitmap(bitmap);
+            var cropped = image.Subset(SKRectI.Create(300, 200));
+            var data = cropped.Encode(SKEncodedImageFormat.Png, 100);
+
+            return data.ToArray();
         }
     }
 }
