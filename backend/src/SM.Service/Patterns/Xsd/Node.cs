@@ -4,9 +4,9 @@
     {
         public enum NodeType
         {
-            Undefined,
-            FrenchKnot,
-            Bead
+            Undefined = 0,
+            FrenchKnot = 1,
+            Bead = 2
         }
 
         private Color color;

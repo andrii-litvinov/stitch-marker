@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Proto.Cluster;
-using SM.Service.Extentions;
+using SM.Service.Extensions;
 using SM.Service.Messages;
 using SM.Service.Resources;
 
@@ -16,16 +17,17 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var request = await pattern.RequestAsync<Pattern>(new PatternQuery(), 3.Seconds());
-            return Ok(request);
+            var response = await pattern.RequestAsync<Pattern>(new GetPattern(), 3.Seconds());
+            return Ok(response);
         }
 
         [Route("{patternId}/thumbnail")]
-        public async Task<IActionResult> GetThumbnail(Guid patternId)
+        public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var request = await pattern.RequestAsync<Thumbnail>(new ThumbnailQuery(), 3.Seconds());
-            return File(request.Image, "image/png");
+            var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
+            var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 3.Seconds());
+            return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
         public async Task<IActionResult> Post(IFormFile file)
@@ -33,9 +35,15 @@ namespace SM.Service.Patterns
             var patternId = Guid.NewGuid();
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
             var content = await file.ReadAllBytes();
-            var command = new CreatePattern(patternId, file.FileName, content);
-            var info = await pattern.RequestAsync<PatternPreview>(command, 3.Seconds());
-            var resource = new Resource(info)
+            var command = new CreatePattern
+            {
+                FileName = file.FileName,
+                Id = patternId.ToString(),
+                Content = ByteString.CopyFrom(content)
+            };
+            var preview = await pattern.RequestAsync<PatternPreview>(command, 3.Seconds());
+
+            var resource = new Resource(preview)
             {
                 Links =
                 {

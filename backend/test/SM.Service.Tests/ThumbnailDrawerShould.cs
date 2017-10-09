@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Ploeh.AutoFixture.Xunit2;
@@ -7,6 +8,8 @@ using SM.Service.Messages;
 using SM.Service.Patterns;
 using SM.Service.Patterns.Xsd;
 using Xunit;
+using Pattern = SM.Service.Messages.Pattern;
+using Stitch = SM.Service.Messages.Stitch;
 
 namespace SM.Service.Tests
 {
@@ -17,13 +20,13 @@ namespace SM.Service.Tests
         public async void DrawExpectedImage(XsdPatternReader patternReader)
         {
             //Arrange
-            var props = Actor.FromProducer(() => new DrawerSuperviser());
+            var props = Actor.FromProducer(() => new Superviser());
             var pid = Actor.Spawn(props);
             var pattern = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
 
             //Act
-            var request = await pid.RequestAsync<Thumbnail>(pattern, 3.Seconds());
-
+            var request = await pid.RequestAsync<Thumbnail>(pattern);
+            
             //Assert
             request.Image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
         }
@@ -33,17 +36,17 @@ namespace SM.Service.Tests
         public async void DrawSimpleImage()
         {
             //Arrange
-            var props = Actor.FromProducer(() => new DrawerSuperviser());
+            var props = Actor.FromProducer(() => new Superviser());
             var pid = Actor.Spawn(props);
-            var pattern = new Messages.Pattern
+            var pattern = new Pattern
             {
                 Width = 5,
                 Height = 5,
                 Stitches =
                 {
-                    new Messages.Stitch {ConfigurationIndex = 0, Point = new Point {X = 1, Y = 1}, Type = StitchType.Full},
-                    new Messages.Stitch {ConfigurationIndex = 1, Point = new Point {X = 1, Y = 2}, Type = StitchType.Full},
-                    new Messages.Stitch {ConfigurationIndex = 2, Point = new Point {X = 2, Y = 1}, Type = StitchType.Full}
+                    new Stitch {ConfigurationIndex = 0, Point = new Point {X = 1, Y = 1}, Type = StitchType.Full},
+                    new Stitch {ConfigurationIndex = 1, Point = new Point {X = 1, Y = 2}, Type = StitchType.Full},
+                    new Stitch {ConfigurationIndex = 2, Point = new Point {X = 2, Y = 1}, Type = StitchType.Full}
                 },
                 Configurations =
                 {
@@ -60,7 +63,7 @@ namespace SM.Service.Tests
             request.Image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
         }
 
-        private class DrawerSuperviser : IActor
+        private class Superviser : IActor
         {
             private PID requestor;
 
@@ -68,10 +71,16 @@ namespace SM.Service.Tests
             {
                 switch (context.Message)
                 {
-                    case Messages.Pattern pattern:
+                    case Pattern pattern:
                         var thumbnailActorProps = Actor.FromProducer(() => new PatternImageActor());
                         var thumbnailActorPid = context.Spawn(thumbnailActorProps);
-                        thumbnailActorPid.Tell(new CreateThumbnail {Pattern = pattern});
+                        thumbnailActorPid.Tell(new GetThumbnail
+                        {
+                            Width = 300,
+                            Height = 200,
+                            Pattern = pattern,
+                            Id = Guid.NewGuid().ToString()
+                        });
                         requestor = context.Sender;
                         break;
                     case Thumbnail thumbnail:

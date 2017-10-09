@@ -13,10 +13,10 @@ namespace SM.Service.Patterns.Xsd
             switch (context.Message)
             {
                 case CreatePattern command:
-                    var pattern = patternReader.Read(command.Content);
+                    var pattern = patternReader.Read(command.Content.ToByteArray());
                     pattern.Info.Title = command.FileName;
                     pattern.Id = command.Id.ToString();
-                    context.Parent.Tell(new PatternParsed {Id = command.Id, Pattern = pattern});
+                    context.Parent.Tell(pattern);
                     break;
             }
             return Actor.Done;

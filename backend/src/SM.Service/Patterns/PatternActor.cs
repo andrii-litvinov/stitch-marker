@@ -1,10 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using SM.Service.Extentions;
+using SM.Service.Extensions;
 using SM.Service.Messages;
 using SM.Service.Patterns.Xsd;
 
@@ -49,18 +47,18 @@ namespace SM.Service.Patterns
                     recipients.Set(command.Id, context.Sender, 30.Seconds());
                     parser.Tell(command);
                     break;
-                case PatternParsed @event:
-                    pattern = @event.Pattern;
+                case Messages.Pattern pattern1:
+                    pattern = pattern1;
                     // TODO: Save state.
                     behavior.Become(Created);
                     var preview = new PatternPreview
                     {
-                        Id = Guid.Parse(pattern.Id),
+                        Id = pattern.Id,
                         Title = pattern.Info.Title,
                         Width = pattern.Width,
                         Height = pattern.Height
                     };
-                    recipients.Get<PID>(@event.Id)?.Tell(preview);
+                    recipients.Get<PID>(pattern.Id)?.Tell(preview);
                     break;
             }
             return Actor.Done;
@@ -70,14 +68,14 @@ namespace SM.Service.Patterns
         {
             switch (context.Message)
             {
-                case PatternQuery _:
+                case GetPattern _:
                     context.Respond(pattern);
                     break;
-                case ThumbnailQuery _:
+                case GetThumbnail query:
+                    query.Pattern = pattern;
                     var drawer = context.GetChild<PatternImageActor>();
-                    var command = new CreateThumbnail {Id = Guid.NewGuid(), Pattern = pattern};
-                    recipients.Set(command.Id, context.Sender, 30.Seconds());
-                    drawer.Tell(command);
+                    recipients.Set(query.Id, context.Sender, 30.Seconds());
+                    drawer.Tell(query);
                     break;
                 case Thumbnail thumbnail:
                     recipients.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
@@ -88,28 +86,6 @@ namespace SM.Service.Patterns
 
         private void ApplyEvent(Event @event)
         {
-        }
-    }
-
-    public class PatternParsed
-    {
-        public Guid Id { get; set; }
-        public Messages.Pattern Pattern { get; set; }
-    }
-
-    public class CreateThumbnail
-    {
-        public Guid Id { get; set; }
-        public Messages.Pattern Pattern { get; set; }
-    }
-
-    public static class ChildActorExtensions
-    {
-        public static PID GetChild<T>(this IContext context) where T : IActor, new()
-        {
-            var name = typeof(T).Name;
-            return context.Children.FirstOrDefault(pid => pid.Id.EndsWith(name)) ??
-                   context.SpawnNamed(Actor.FromProducer(() => new T()), name);
         }
     }
 }

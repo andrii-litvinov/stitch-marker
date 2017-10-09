@@ -632,7 +632,7 @@ namespace SM.Service.Patterns.Xsd
                 result.Elements.Add(new Element
                 {
                     Point = new Point {X = node.X, Y = node.Y},
-                    Type = (ElementType) Enum.Parse(typeof(ElementType), node.Type.ToString()),
+                    Type = (ElementType) Enum.Parse(typeof(ElementType), ((int)node.Type).ToString(), true),
                     ConfigurationIndex = node.Color.Index
                 });
 

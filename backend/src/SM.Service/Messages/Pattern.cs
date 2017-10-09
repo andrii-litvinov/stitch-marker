@@ -6,7 +6,7 @@
 using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
-
+using scg = global::System.Collections.Generic;
 namespace SM.Service.Messages {
 
   /// <summary>Holder for reflection information generated from Pattern.proto</summary>
@@ -47,8 +47,8 @@ namespace SM.Service.Messages {
             "MhQucGF0dGVybi5FbGVtZW50VHlwZSpUCgpTdGl0Y2hUeXBlEggKBE5PTkUQ",
             "ABIICgRGVUxMEAESCAoESEFMRhACEgsKB1FVQVJURVIQAxIQCgxUSFJFRVFV",
             "QVJURVIQBBIJCgVQRVRJVBAFKjYKC0VsZW1lbnRUeXBlEg0KCVVOREVGSU5F",
-            "RBAAEg4KCkZSRU5DSEtOT1QQARIICgRCRUFEEAJCC6oCCE1lc3NhZ2VzYgZw",
-            "cm90bzM="));
+            "RBAAEg4KCkZSRU5DSEtOT1QQARIICgRCRUFEEAJCFqoCE1NNLlNlcnZpY2Uu",
+            "TWVzc2FnZXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.Messages.StitchType), typeof(global::SM.Service.Messages.ElementType), }, new pbr::GeneratedClrTypeInfo[] {

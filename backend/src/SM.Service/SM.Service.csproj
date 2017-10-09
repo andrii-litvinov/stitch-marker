@@ -16,8 +16,4 @@
     <PackageReference Include="SkiaSharp" Version="1.57.1" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SM.Core\SM.Core.csproj" />
-    <ProjectReference Include="..\SM.Xsd\SM.Xsd.csproj" />
-  </ItemGroup>
 </Project>

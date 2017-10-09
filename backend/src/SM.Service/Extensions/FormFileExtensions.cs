@@ -2,7 +2,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace SM.Service.Extentions
+namespace SM.Service.Extensions
 {
     public static class FormFileExtensions
     {

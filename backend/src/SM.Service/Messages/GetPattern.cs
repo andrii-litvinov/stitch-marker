@@ -1,6 +1,6 @@
 ﻿namespace SM.Service.Messages
 {
-    public class PatternQuery
+    public class GetPattern
     {
         
     }

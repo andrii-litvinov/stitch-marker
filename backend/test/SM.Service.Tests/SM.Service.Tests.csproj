@@ -19,6 +19,9 @@
     <None Update="Resources\M198_Seaside beauty.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+      <None Update="Resources\61_pochti_sovershe.xsd">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     <None Update="Resources\M198_Seaside beauty.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

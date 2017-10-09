@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Google.Protobuf;
 using Proto;
 using SkiaSharp;
 using SM.Service.Messages;
@@ -11,10 +13,12 @@ namespace SM.Service.Patterns
         {
             switch (context.Message)
             {
-                case CreateThumbnail command:
+                case GetThumbnail command:
                     var pattern = command.Pattern;
-                    const int stitchSize = 2;
-                    using (var surface = SKSurface.Create((int) pattern.Width * stitchSize, (int) pattern.Height * stitchSize,
+                    var stitchSize = 2;
+
+                    using (var surface = SKSurface.Create((int) pattern.Width * stitchSize,
+                        (int) pattern.Height * stitchSize,
                         SKImageInfo.PlatformColorType, SKAlphaType.Premul))
                     {
                         foreach (var stitch in pattern.Stitches)
@@ -30,10 +34,11 @@ namespace SM.Service.Patterns
                             };
                             surface.Canvas.DrawRect(rect, paint);
                         }
+                        var content = surface.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray();
                         context.Parent.Tell(new Thumbnail
                         {
                             Id = command.Id,
-                            Image = surface.Snapshot().Encode(SKEncodedImageFormat.Png, 100).ToArray()
+                            Image = ByteString.CopyFrom(content)
                         });
                     }
                     break;

@@ -1,0 +1,11 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service.Messages";
+
+message PatternPreview {
+    string id = 1;
+    string title = 2;
+    uint32 height = 3;
+    uint32 width = 4;
+}

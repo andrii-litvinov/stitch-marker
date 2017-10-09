@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SM.Service.Extentions
+namespace SM.Service.Extensions
 {
     internal static class TimeSpanExtensions
     {
