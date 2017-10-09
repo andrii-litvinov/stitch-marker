@@ -11,6 +11,7 @@
   <ItemGroup>
     <PackageReference Include="AutoFixture.Xunit2" Version="3.50.7" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="NSubstitute" Version="3.0.1" />
     <PackageReference Include="xunit" Version="2.2.0" />
     <PackageReference Include="FluentAssertions" Version="4.19.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
@@ -19,13 +20,7 @@
     <None Update="Resources\M198_Seaside beauty.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-      <None Update="Resources\61_pochti_sovershe.xsd">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
     <None Update="Resources\M198_Seaside beauty.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\SimpleImage.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

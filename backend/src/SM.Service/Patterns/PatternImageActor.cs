@@ -28,13 +28,13 @@ namespace SM.Service.Patterns
         private static byte[] CreateThumbnail(Pattern pattern, int thumbnailWidth, int thumbnailHeight)
         {
             var size = GetStitchSize((int) pattern.Width, (int) pattern.Height, thumbnailWidth, thumbnailHeight);
-            var width = (int) pattern.Width * size;
-            var height = (int) pattern.Height * size;
-            var bitmap = new SKBitmap(width, height);
+            var width = pattern.Width * size;
+            var height = pattern.Height * size;
+            var bitmap = new SKBitmap((int) width, (int) height);
             var canvas = new SKCanvas(bitmap);
-            
+
             canvas.Clear();
-            
+
             foreach (var stitch in pattern.Stitches)
             {
                 var configuration = pattern.Configurations[stitch.ConfigurationIndex];
@@ -49,21 +49,21 @@ namespace SM.Service.Patterns
                 canvas.DrawRect(rect, paint);
             }
 
-            var x = (width - thumbnailWidth) / 2;
-            var y = (height - thumbnailHeight) / 2;
-            var image = SKImage.FromBitmap(bitmap).Subset(SKRectI.Create(x, y,thumbnailWidth, thumbnailHeight));
+            var x = (int) (width - thumbnailWidth) / 2;
+            var y = (int) (height - thumbnailHeight) / 2;
+            var image = SKImage.FromBitmap(bitmap).Subset(SKRectI.Create(x, y, thumbnailWidth, thumbnailHeight));
 
             return image.Encode(SKEncodedImageFormat.Png, 100).ToArray();
         }
 
-        private static int GetStitchSize(int patternWidth, int patternHeight, int thumbnailWidth, int thumbnailHeight)
+        private static float GetStitchSize(int patternWidth, int patternHeight, int thumbnailWidth, int thumbnailHeight)
         {
             if (patternHeight >= thumbnailHeight && patternWidth >= thumbnailWidth) return 1;
 
-            var heightRatio = thumbnailHeight / (double) patternHeight;
-            var widthRatio = thumbnailWidth / (double) patternWidth;
+            var heightRatio = thumbnailHeight / (float) patternHeight;
+            var widthRatio = thumbnailWidth / (float) patternWidth;
 
-            return (int) Math.Round(Math.Max(heightRatio, widthRatio)) + 1;
+            return Math.Max(heightRatio, widthRatio);
         }
     }
 }
