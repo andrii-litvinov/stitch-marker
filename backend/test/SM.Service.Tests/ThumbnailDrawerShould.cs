@@ -28,7 +28,7 @@ namespace SM.Service.Tests
             var request = await pid.RequestAsync<Thumbnail>(pattern);
             
             //Assert
-            request.Image.Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
+            request.Image.ToByteArray().Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
         }
 
         [Theory]
@@ -58,9 +58,9 @@ namespace SM.Service.Tests
 
             //Act
             var request = await pid.RequestAsync<Thumbnail>(pattern, 3.Seconds());
-
+            
             //Assert
-            request.Image.Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
+            request.Image.ToByteArray().Should().Equal(File.ReadAllBytes("Resources/SimpleImage.png"));
         }
 
         private class Superviser : IActor

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Proto;
 using SkiaSharp;
@@ -13,7 +14,7 @@ namespace SM.Service.Patterns
             switch (context.Message)
             {
                 case GetThumbnail command:
-                    var thumbnail = CreateThumbnail(command.Pattern);
+                    var thumbnail = CreateThumbnail(command.Pattern, command.Width, command.Height);
                     context.Parent.Tell(new Thumbnail
                     {
                         Id = command.Id,
@@ -24,36 +25,45 @@ namespace SM.Service.Patterns
             return Actor.Done;
         }
 
-        private static byte[] CreateThumbnail(Pattern pattern)
+        private static byte[] CreateThumbnail(Pattern pattern, int thumbnailWidth, int thumbnailHeight)
         {
-            const int stitchSize = 2;
-            var width = (int) pattern.Width * stitchSize;
-            var height = (int) pattern.Height * stitchSize;
-
+            var size = GetStitchSize((int) pattern.Width, (int) pattern.Height, thumbnailWidth, thumbnailHeight);
+            var width = (int) pattern.Width * size;
+            var height = (int) pattern.Height * size;
             var bitmap = new SKBitmap(width, height);
-            bitmap.Erase(SKColor.Empty);
-            
             var canvas = new SKCanvas(bitmap);
-
+            
+            canvas.Clear();
+            
             foreach (var stitch in pattern.Stitches)
             {
                 var configuration = pattern.Configurations[stitch.ConfigurationIndex];
                 var paint = new SKPaint {Color = SKColor.Parse(configuration.HexColor)};
                 var rect = new SKRect
                 {
-                    Left = stitch.Point.X * stitchSize,
-                    Top = stitch.Point.Y * stitchSize,
-                    Right = (stitch.Point.X + 1) * stitchSize,
-                    Bottom = (stitch.Point.Y + 1) * stitchSize
+                    Left = stitch.Point.X * size,
+                    Top = stitch.Point.Y * size,
+                    Right = (stitch.Point.X + 1) * size,
+                    Bottom = (stitch.Point.Y + 1) * size
                 };
-
                 canvas.DrawRect(rect, paint);
             }
-            var image = SKImage.FromBitmap(bitmap);
-            var cropped = image.Subset(SKRectI.Create(width, height));
-            var data = cropped.Encode(SKEncodedImageFormat.Png, 100);
 
-            return data.ToArray();
+            var x = (width - thumbnailWidth) / 2;
+            var y = (height - thumbnailHeight) / 2;
+            var image = SKImage.FromBitmap(bitmap).Subset(SKRectI.Create(x, y,thumbnailWidth, thumbnailHeight));
+
+            return image.Encode(SKEncodedImageFormat.Png, 100).ToArray();
+        }
+
+        private static int GetStitchSize(int patternWidth, int patternHeight, int thumbnailWidth, int thumbnailHeight)
+        {
+            if (patternHeight >= thumbnailHeight && patternWidth >= thumbnailWidth) return 1;
+
+            var heightRatio = thumbnailHeight / (double) patternHeight;
+            var widthRatio = thumbnailWidth / (double) patternWidth;
+
+            return (int) Math.Round(Math.Max(heightRatio, widthRatio)) + 1;
         }
     }
 }
