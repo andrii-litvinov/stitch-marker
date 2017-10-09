@@ -50,7 +50,7 @@ namespace SM.Service.Patterns
                 canvas.DrawRect(rect, paint);
             }
             var image = SKImage.FromBitmap(bitmap);
-            var cropped = image.Subset(SKRectI.Create(300, 200));
+            var cropped = image.Subset(SKRectI.Create(width, height));
             var data = cropped.Encode(SKEncodedImageFormat.Png, 100);
 
             return data.ToArray();
