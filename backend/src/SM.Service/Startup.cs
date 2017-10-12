@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Proto.Persistence;
 using SM.Service.Infrastructure;
+using SM.Service.Infrastructure.EventStore;
 
 namespace SM.Service
 {
@@ -17,7 +18,9 @@ namespace SM.Service
             services.AddMvc();
             services.AddCors();
             services.AddSingleton<IHostedService, ActorCluster>();
-            services.AddSingleton<IEventStore, EventStore>();
+            services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
+            services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
+                provider => new ReadWriteEventStoreConnection("ConnectTo=tcp://admin:changeit@localhost:1113"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
