@@ -5,6 +5,7 @@ using Proto.Persistence;
 using SM.Service.Extensions;
 using SM.Service.Messages;
 using SM.Service.Patterns.Xsd;
+using Pattern = SM.Service.Messages.Pattern;
 
 namespace SM.Service.Patterns
 {
@@ -12,8 +13,8 @@ namespace SM.Service.Patterns
     {
         private readonly Behavior behavior;
         private readonly IEventStore eventStore;
-        private readonly MemoryCache recipients = new MemoryCache(new MemoryCacheOptions());
-        private Messages.Pattern pattern;
+        private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
+        private Pattern pattern;
         private Persistence persistence;
 
         public PatternActor(IEventStore eventStore)
@@ -38,30 +39,22 @@ namespace SM.Service.Patterns
             }
         }
 
-        private Task New(IContext context)
+        private async Task New(IContext context)
         {
             switch (context.Message)
             {
                 case CreatePattern command:
+                    await persistence.PersistEventAsync(
+                        new PatternUploaded {Id = command.Id, FileName = command.FileName, Content = command.Content});
                     var parser = context.GetChild<XsdPatternActor>();
-                    recipients.Set(command.Id, context.Sender, 30.Seconds());
+                    senders.Set(command.Id, context.Sender, 30.Seconds());
                     parser.Tell(command);
                     break;
-                case Messages.Pattern pattern1:
-                    pattern = pattern1;
-                    // TODO: Save state.
-                    behavior.Become(Created);
-                    var preview = new PatternPreview
-                    {
-                        Id = pattern.Id,
-                        Title = pattern.Info.Title,
-                        Width = pattern.Width,
-                        Height = pattern.Height
-                    };
-                    recipients.Get<PID>(pattern.Id)?.Tell(preview);
+                case PatternCreated @event:
+                    await persistence.PersistEventAsync(@event);
+                    senders.Get<PID>(pattern.Id)?.Tell(@event);
                     break;
             }
-            return Actor.Done;
         }
 
         private Task Created(IContext context)
@@ -74,11 +67,11 @@ namespace SM.Service.Patterns
                 case GetThumbnail query:
                     query.Pattern = pattern;
                     var drawer = context.GetChild<PatternImageActor>();
-                    recipients.Set(query.Id, context.Sender, 30.Seconds());
+                    senders.Set(query.Id, context.Sender, 30.Seconds());
                     drawer.Tell(query);
                     break;
                 case Thumbnail thumbnail:
-                    recipients.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
+                    senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
             }
             return Actor.Done;
@@ -86,6 +79,13 @@ namespace SM.Service.Patterns
 
         private void ApplyEvent(Event @event)
         {
+            switch (@event.Data)
+            {
+                case PatternCreated e:
+                    pattern = e.Pattern;
+                    behavior.Become(Created);
+                    break;
+            }
         }
     }
 }

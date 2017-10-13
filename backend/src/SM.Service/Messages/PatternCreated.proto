@@ -2,10 +2,9 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "SM.Service.Messages";
+import public "Pattern.proto";
 
-message PatternPreview {
+message PatternCreated {
     string id = 1;
-    string title = 2;
-    uint32 height = 3;
-    uint32 width = 4;
+    Pattern pattern = 5;
 }

@@ -82,7 +82,7 @@ namespace SM.Service.Infrastructure.EventStore
                     }
 
                 var eventData = new EventData(Guid.NewGuid(), @event.GetType().Name, false, data, metadata);
-                var result = await connection.AppendToStream(actorName, index, eventData);
+                var result = await connection.AppendToStream(actorName, index - 2, eventData);
                 return result.NextExpectedVersion;
             }
 

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using FluentAssertions;
 using Google.Protobuf;
-using Proto.Persistence;
 using SM.Service.Infrastructure.EventStore;
 using SM.Service.Messages;
 using Xunit;

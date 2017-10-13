@@ -28,7 +28,9 @@ services:
     environment:
       - ASPNETCORE_URLS=http://+:5000
       - STITCH_MARKER__CONSUL_URL=http://172.17.0.1:8500
+      - STITCH_MARKER__EVENTSTORE_CONNECTION=ConnectTo=tcp://admin:changeit@172.17.0.1:1113
     ports:
      - "5000:5000"
     depends_on:
      - "consul"
+     - "eventstore"

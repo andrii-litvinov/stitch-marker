@@ -17,7 +17,7 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<Pattern>(new GetPattern(), 3.Seconds());
+            var response = await pattern.RequestAsync<Pattern>(new GetPattern(), 10.Seconds());
             return Ok(response);
         }
 
@@ -26,7 +26,7 @@ namespace SM.Service.Patterns
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
             var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
-            var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 3.Seconds());
+            var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 10.Seconds());
             return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
@@ -41,8 +41,8 @@ namespace SM.Service.Patterns
                 Id = patternId.ToString(),
                 Content = ByteString.CopyFrom(content)
             };
-            var preview = await pattern.RequestAsync<PatternPreview>(command, 3.Seconds());
-
+            var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
+            var preview = new {@event.Id, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
             var resource = new Resource(preview)
             {
                 Links =

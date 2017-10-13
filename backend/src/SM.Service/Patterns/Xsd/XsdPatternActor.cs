@@ -14,9 +14,10 @@ namespace SM.Service.Patterns.Xsd
             {
                 case CreatePattern command:
                     var pattern = patternReader.Read(command.Content.ToByteArray());
+                    pattern.Id = command.Id;
                     pattern.Info.Title = command.FileName;
-                    pattern.Id = command.Id.ToString();
-                    context.Parent.Tell(pattern);
+                    var @event = new PatternCreated { Id = pattern.Id, Pattern = pattern };
+                    context.Parent.Tell(@event);
                     break;
             }
             return Actor.Done;
