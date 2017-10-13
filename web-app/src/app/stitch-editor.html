@@ -70,8 +70,6 @@
       }
     </style>
 
-    <app-route id="route" route="{{route}}" pattern="/:patternId" data="{{routeData}}"></app-route>
-
     <div class="controls top right column">
       <paper-icon-button icon="zoom-in" title="[[zoom]]" on-tap="zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" title="[[zoom]]" on-tap="zoomOut"></paper-icon-button>
@@ -180,7 +178,7 @@
         const result = {
           width: pattern.width,
           height: pattern.height,
-          stitches: []
+          stitches: {}
         };
 
         // TODO: Consider to move this logic to canvas.
