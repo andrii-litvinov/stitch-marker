@@ -36,7 +36,11 @@
             let x = 0;
             let y = 0;
 
-            setInterval(() => composite.translate(x-=1, y-=1), 100);
+            var move = () => {
+              composite.translate(x -= 1, y -= 1);
+              requestAnimationFrame(move);
+            }
+            requestAnimationFrame(move);
           });
         }
       }
