@@ -29,9 +29,67 @@
             this.$.canvas.height = this.offsetHeight;
 
             const ctx = this.$.canvas.getContext('2d');
-            ctx.fillStyle = "red";
-            ctx.fillRect(0, 0, this.$.canvas.width, this.$.canvas.height);
+
+            let composite = new Composite(ctx);
+            composite.draw();
+
+            let x = 0;
+            let y = 0;
+
+            setInterval(() => composite.translate(x-=1, y-=1), 100);
           });
+        }
+      }
+    }
+
+    class Tile {
+      constructor(color) {
+        this.color = color;
+      }
+
+      draw(ctx) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, 256, 256);
+      }
+    }
+
+    class Composite {
+      constructor(ctx) {
+        this.ctx = ctx;
+        this.tiles = [];
+        this.x = 0;
+        this.y = 0;
+
+        for (let row = 0; row < 25; row++) {
+          for (var column = 0; column < 25; column++) {
+            this.tiles[row * 25 + column] = new Tile(`rgb(${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1})`);
+          }
+        }
+      }
+
+      translate(x, y) {
+        this.x += x;
+        this.y += y;
+        this.draw();
+      }
+
+      draw() {
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+
+        let row = Math.abs(Math.ceil(this.y / 256));
+        let column1 = Math.abs(Math.ceil(this.x / 256));
+        const maxColumn = column1 + Math.abs(Math.ceil(this.x / 256)) + Math.ceil(this.ctx.canvas.width / 256) + 2;
+        const maxRow = row + Math.ceil(this.ctx.canvas.height / 256) + 2;
+
+        for (; row < maxRow; row++) {
+          for (let column = column1; column < maxColumn; column++) {
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.ctx.translate(this.x + column * 256, this.y + row * 256);
+
+            let tile = this.tiles[row * 25 + column];
+            tile.draw(this.ctx);
+          }
         }
       }
     }
