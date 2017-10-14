@@ -292,7 +292,7 @@
       _handleMouseUp(e) {
         e.preventDefault();
 
-        this._handleSelect(e);
+        //this._handleSelect(e);
 
         this.moveStart = null;
         this.moveEnd = null;
@@ -305,6 +305,7 @@
       }
 
       _handleMouseMove(e) {
+        console.log("move")
         e.preventDefault();
 
         if (this.moveStart) {
@@ -324,9 +325,9 @@
         this._moveTo(-e.deltaX, -e.deltaY, true);
       }
 
-      _patternChanged() {
-        this._enabledChanged();
-      }
+      // _patternChanged() {
+      //   this._enabledChanged();
+      // }
     }
 
     customElements.define(Canvas.is, Canvas);

@@ -5,7 +5,8 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
-<link rel="import" href="./stitch-canvas/stitch-canvas.html">
+<!-- <link rel="import" href="./stitch-canvas/stitch-canvas.html"> -->
+<link rel="import" href="./stitch-canvas/stitch-canvas-new.html">
 
 <dom-module id="stitch-editor">
   <template>
@@ -84,7 +85,7 @@
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
 
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas>
+    <stitch-canvas-new id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas-new>
   </template>
 
   <script>

@@ -1,0 +1,41 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="stitch-canvas-new">
+  <template>
+    <style>
+      :host {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+      }
+    </style>
+    <canvas id="canvas"></canvas>
+  </template>
+  <script src="../helpers/round-rect.js"></script>
+  <script src="./point.js"></script>
+  <script src="./stitch.js"></script>
+  <script src="./grid.js"></script>
+  <script>
+    class CanvasNew extends Polymer.Element {
+      static get is() { return 'stitch-canvas-new'; }
+
+      connectedCallback() {
+        super.connectedCallback();
+
+        if (!this.offsetWidth) {
+          requestAnimationFrame(() => {
+            this.$.canvas.width = this.offsetWidth;
+            this.$.canvas.height = this.offsetHeight;
+
+            const ctx = this.$.canvas.getContext('2d');
+            ctx.fillStyle = "red";
+            ctx.fillRect(0, 0, this.$.canvas.width, this.$.canvas.height);
+          });
+        }
+      }
+    }
+
+    customElements.define("stitch-canvas-new", CanvasNew);
+  </script>
+</dom-module>
