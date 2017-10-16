@@ -15,40 +15,53 @@
       paper-card {
         margin: 20px;
         width: 300px;
-        height: 300px;
+        height: 320px;
       }
 
-      .info {
+      #name {
         white-space: nowrap;
         overflow: hidden;
-        font-size: 16px;
+        font-size: 18px;
         text-overflow: ellipsis;
         padding: 0;
+      }
+
+      #size {
+        font-size: 14px;
       }
 
       paper-button {
         font-size: 14px;
         float: left;
+        color: var(--google-blue-500);
+        padding: 10px 0px;
+        margin: 0;
       }
 
-      .name-edit {
-        display: flex;
-        justify-content: space-between;
+      .card-actions {
+        border-top: 1px solid #e8e8e8;
+        padding: 5px 0;
+        position: relative;
+      }
+
+      #delete {
+        color: #616161;
+        float: right;
       }
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
-    <div class="pattern-box">
-      <paper-card image="[[thumbnailUrl]]">
-        <div class="card-content">
-          <div class="name-edit">
-            <div class="info">[[patternInfo.title]]</div>
-            <paper-icon-button icon="create"></paper-icon-button>
-          </div>
-          <div class="info">[[patternInfo.width]]x[[patternInfo.height]]</div>
-          <paper-button on-tap="editPattern">Open</paper-button>
+    <paper-card image="[[thumbnailUrl]]">
+      <div class="card-content">
+        <div class="edit-name">
+          <div id="name">[[patternInfo.title]]</div>
         </div>
-    </div>
+        <div id="size">[[patternInfo.width]]x[[patternInfo.height]]</div>
+      </div>
+      <div class="card-actions">
+        <paper-button>Open</paper-button>
+        <paper-icon-button id="delete" icon="delete"></paper-icon-button>
+      </div>
     </paper-card>
   </template>
   <script>
