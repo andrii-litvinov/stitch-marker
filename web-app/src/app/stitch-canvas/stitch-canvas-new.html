@@ -33,8 +33,21 @@
             let composite = new Composite(ctx);
             composite.draw();
 
+            let move = false;
+
+            this.$.canvas.addEventListener("mousedown", (event) => {
+              move = true;
+            });
+
+            this.$.canvas.addEventListener("mouseup", (event) => {
+              move = false;
+            });
+
             this.$.canvas.addEventListener("mousemove", (event) => {
-              requestAnimationFrame(() => composite.translate(event.movementX, event.movementY));
+              if (move) {
+                console.log(`x: ${event.movementX}, y: ${event.movementY}`)
+                requestAnimationFrame(() => composite.translate(event.movementX, event.movementY));
+              }
             });
           });
         }
