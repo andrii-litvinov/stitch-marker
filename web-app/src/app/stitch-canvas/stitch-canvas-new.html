@@ -33,14 +33,9 @@
             let composite = new Composite(ctx);
             composite.draw();
 
-            let x = 0;
-            let y = 0;
-
-            var move = () => {
-              composite.translate(x -= 1, y -= 1);
-              requestAnimationFrame(move);
-            }
-            requestAnimationFrame(move);
+            this.$.canvas.addEventListener("mousemove", (event) => {
+              requestAnimationFrame(() => composite.translate(event.movementX, event.movementY));
+            });
           });
         }
       }
