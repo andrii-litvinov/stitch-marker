@@ -42,7 +42,7 @@ namespace SM.Service.Tests.EventStore
             };
 
             var actorName = $"test-{Guid.NewGuid()}";
-            long version = ExpectedVersion.NoStream;
+            long version = ExpectedVersion.NoStream + 1;
             version = await eventStore.PersistEventAsync(actorName, version, event1);
             version = await eventStore.PersistEventAsync(actorName, version, event2);
 
@@ -76,7 +76,7 @@ namespace SM.Service.Tests.EventStore
 
             // Act
             var version =
-                await eventStore.PersistEventAsync($"test-{Guid.NewGuid()}", ExpectedVersion.NoStream, @event);
+                await eventStore.PersistEventAsync($"test-{Guid.NewGuid()}", ExpectedVersion.NoStream + 1, @event);
 
             // Assert
             version.Should().Be(0);
@@ -96,7 +96,7 @@ namespace SM.Service.Tests.EventStore
 
             // Act
             PatternUploaded recoveredEvent = null;
-            var version = await eventStore.PersistEventAsync(actorName, ExpectedVersion.NoStream, @event);
+            var version = await eventStore.PersistEventAsync(actorName, ExpectedVersion.NoStream + 1, @event);
             version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start, version,
                 e => recoveredEvent = (PatternUploaded)e);
 
