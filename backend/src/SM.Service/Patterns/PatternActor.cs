@@ -28,10 +28,14 @@ namespace SM.Service.Patterns
             switch (context.Message)
             {
                 case Started _:
+                    context.SetReceiveTimeout(5.Minutes());
                     persistence = Persistence.WithEventSourcing(eventStore, context.Self.Id, ApplyEvent);
                     await persistence.RecoverStateAsync();
                     if (pattern == null) behavior.Become(New);
                     else behavior.Become(Created);
+                    break;
+                case ReceiveTimeout _:
+                    context.Self.Stop();
                     break;
                 default:
                     await behavior.ReceiveAsync(context);

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Proto;
 using SkiaSharp;
+using SM.Service.Extensions;
 using SM.Service.Messages;
 
 namespace SM.Service.Patterns
@@ -13,6 +14,9 @@ namespace SM.Service.Patterns
         {
             switch (context.Message)
             {
+                case Started _:
+                    context.SetReceiveTimeout(5.Minutes());
+                    break;
                 case GetThumbnail command:
                     var thumbnail = CreateThumbnail(command.Pattern, command.Width, command.Height);
                     context.Parent.Tell(new Thumbnail
@@ -20,6 +24,9 @@ namespace SM.Service.Patterns
                         Id = command.Id,
                         Image = ByteString.CopyFrom(thumbnail)
                     });
+                    break;
+                case ReceiveTimeout _:
+                    context.Self.Stop();
                     break;
             }
             return Actor.Done;
