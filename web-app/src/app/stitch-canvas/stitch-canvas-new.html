@@ -33,22 +33,43 @@
             let composite = new Composite(ctx);
             composite.draw();
 
-            let move = false;
+            let move = null;
 
-            this.$.canvas.addEventListener("mousedown", (event) => {
-              move = true;
+            ["mousedown", "touchstart"].forEach(type => {
+              this.$.canvas.addEventListener(type, event => {
+                move = getPoint(event);
+              });
             });
 
-            this.$.canvas.addEventListener("mouseup", (event) => {
-              move = false;
+            ["mouseup", "touchend", "touchcancel"].forEach(type => {
+              this.$.canvas.addEventListener(type, event => {
+                move = null;
+              });
             });
 
-            this.$.canvas.addEventListener("mousemove", (event) => {
-              if (move) {
-                console.log(`x: ${event.movementX}, y: ${event.movementY}`)
-                requestAnimationFrame(() => composite.translate(event.movementX, event.movementY));
-              }
+            let reuestId = 0;
+
+            ["mousemove", "touchmove"].forEach(type => {
+              this.$.canvas.addEventListener(type, event => {
+                if (move) {
+                  const newMove = getPoint(event);
+                  const dx = newMove.x - move.x;
+                  const dy = newMove.y - move.y;
+                  move = newMove;
+                  
+                  if (reuestId) cancelAnimationFrame(reuestId);
+                  reuestId = reuestId = requestAnimationFrame(() => composite.translate(dx, dy));
+                  
+                  event.preventDefault();
+                }
+              });
             });
+
+            const getPoint = event => {
+              const e = (event.touches && event.touches[0] || event);
+              return new Point(e.clientX, e.clientY);
+            }
+
           });
         }
       }
