@@ -35,7 +35,6 @@
         float: left;
         color: var(--google-blue-500);
         padding: 10px 0px;
-        margin: 0;
       }
 
       .card-actions {
@@ -47,6 +46,7 @@
       #delete {
         color: #616161;
         float: right;
+        margin-right: 5px;
       }
     </style>
 
@@ -59,7 +59,7 @@
         <div id="size">[[patternInfo.width]]x[[patternInfo.height]]</div>
       </div>
       <div class="card-actions">
-        <paper-button>Open</paper-button>
+        <paper-button on-tap="editPattern">Open</paper-button>
         <paper-icon-button id="delete" icon="delete"></paper-icon-button>
       </div>
     </paper-card>
