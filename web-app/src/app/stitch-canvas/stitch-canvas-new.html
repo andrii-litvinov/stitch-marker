@@ -41,7 +41,7 @@
               });
             });
 
-            ["mouseup", "touchend", "touchcancel"].forEach(type => {
+            ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
               this.$.canvas.addEventListener(type, event => {
                 move = null;
               });
