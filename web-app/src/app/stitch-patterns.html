@@ -5,7 +5,7 @@
 <dom-module id="stitch-patterns">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
       }
 
@@ -16,23 +16,43 @@
       #container {
         display: flex;
         flex-direction: row;
-        align-items: left;
         flex-wrap: wrap;
-        margin: 20px 100px;
+        margin: auto;
       }
 
-      @media screen and (max-width: 350px) {
+      @media only screen and (max-width : 720px) {
         #container {
-          margin: 10px;
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          flex-wrap: wrap;
+          width: 320px;
+          justify-content: center;
+        }
+      }
+
+      @media only screen and (min-width: 720px) {
+        #container {
+          width: 660px;
+        }
+      }
+
+      @media only screen and (min-width: 1024px) {
+        #container {
+          width: 990px;
+        }
+      }
+
+      @media only screen and (min-width: 1366px) {
+        #container {
+          width: 1320px;
+        }
+      }
+
+      @media only screen and (min-width: 1824px) {
+        #container {
+          width: 1650px;
         }
       }
 
       stitch-pattern-card {
-        margin-bottom: 30px;
+        margin: 0 15px 30px 15px;
       }
     </style>
     <app-location id="location" path="[[path]]"></app-location>
