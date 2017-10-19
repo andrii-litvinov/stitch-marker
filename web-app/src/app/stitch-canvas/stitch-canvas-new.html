@@ -29,7 +29,7 @@
 
           const ctx = this.$.canvas.getContext('2d');
 
-          let composite = new Composite(ctx, 10, 10);
+          let composite = new Composite(ctx, 8, 4);
           composite.draw();
 
           let move = null;
@@ -117,35 +117,32 @@
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        let currentRow = Math.floor(Math.abs(Math.min(this.y, 0)) / Tile.size);
-        let currentColumn = Math.floor(Math.abs(Math.min(this.x, 0)) / Tile.size);
+        let horizontal = this.getRegion(this.y, this.hight, this.ctx.canvas.height);
+        let vartical = this.getRegion(this.x, this.width, this.ctx.canvas.width);
 
-        let fittinRowCount = Math.ceil(this.ctx.canvas.height / Tile.size);
-        let fittinColumnCount = Math.ceil(this.ctx.canvas.width / Tile.size);
-
-        let rowCount = Math.min(currentRow + fittinRowCount, this.hight);
-        let columnCount = Math.min(currentColumn + fittinColumnCount, this.width);
-
-        if (rowCount < this.hight) rowCount++;
-        if (columnCount < this.width) columnCount++;
-
-        for (let row = currentRow; row < rowCount; row++) {
-          for (let column = currentColumn; column < columnCount; column++) {
-            let row1 = row;
-            let column1 = column;
+        let rendered = 0;
+        for (let row = horizontal.start; row < horizontal.end; row++) {
+          for (let column = vartical.start; column < vartical.end; column++) {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.translate(this.x + column1 * Tile.size, this.y + row1 * Tile.size);
-
-            const index = row1 * this.hight + column1;
-            //console.log(`row: ${row1}, column: ${column1}, index: ${index}`);
-            let tile = this.tiles[index];
+            this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
+            let tile = this.tiles[row * this.hight + column];
             tile && tile.draw(this.ctx);
+            tile && rendered++;
           }
         }
+
+        console.log(`rendered: ${rendered}`);
       }
 
-      getRegion(){
-
+      getRegion(coordinate, size, canvasSize){
+        let current = Math.floor(Math.abs(Math.min(coordinate, 0)) / Tile.size);
+        let fittingCount = Math.ceil((canvasSize - Math.max(coordinate, 0)) / Tile.size);
+        let count = Math.min(current + fittingCount, size);
+        if (count < size) count++;
+        return {
+          start: current,
+          end: count
+        };
       }
     }
 
