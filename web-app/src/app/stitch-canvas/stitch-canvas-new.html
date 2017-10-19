@@ -21,91 +21,128 @@
     class CanvasNew extends Polymer.Element {
       static get is() { return 'stitch-canvas-new'; }
 
-      connectedCallback() {
-        super.connectedCallback();
-
-        const render = () => {
-          this.$.canvas.width = this.offsetWidth;
-          this.$.canvas.height = this.offsetHeight;
-
-          const ctx = this.$.canvas.getContext('2d');
-
-          let composite = new Composite(ctx, 10, 10);
-          composite.draw();
-
-          let move = null;
-
-          ["mousedown", "mouseenter", "touchstart"].forEach(type => {
-            this.$.canvas.addEventListener(type, event => {
-              if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
-                move = getPoint(event);
-              }
-            });
-          });
-
-          ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
-            this.$.canvas.addEventListener(type, event => {
-              move = null;
-            });
-          });
-
-          let reuestId = 0;
-
-          ["mousemove", "touchmove"].forEach(type => {
-            this.$.canvas.addEventListener(type, event => {
-              if (move) {
-                const newMove = getPoint(event);
-                const dx = newMove.x - move.x;
-                const dy = newMove.y - move.y;
-                move = newMove;
-
-                if (reuestId) cancelAnimationFrame(reuestId);
-                reuestId = reuestId = requestAnimationFrame(() => composite.translate(dx, dy));
-
-                event.preventDefault();
-              }
-            });
-          });
-
-          const getPoint = event => {
-            const e = (event.touches && event.touches[0] || event);
-            return new Point(e.clientX, e.clientY);
+      static get properties() {
+        return {
+          pattern: {
+            type: Object,
+            reflectToAttribute: false,
+            observer: "patternChanged"
           }
+        };
+      }
 
+      connectedCallback() {
+        super.connectedCallback()
+      }
+
+      patternChanged() {
+        if (this.offsetWidth) this.render();
+        else requestAnimationFrame(this.render);
+      }
+
+      render() {
+        this.$.canvas.width = this.offsetWidth;
+        this.$.canvas.height = this.offsetHeight;
+
+        const ctx = this.$.canvas.getContext('2d');
+        let composite = new Composite(ctx, this.pattern);
+
+        composite.draw();
+
+        let move = null;
+
+        ["mousedown", "mouseenter", "touchstart"].forEach(type => {
+          this.$.canvas.addEventListener(type, event => {
+            if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
+              move = getPoint(event);
+            }
+          });
+        });
+
+        ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
+          this.$.canvas.addEventListener(type, event => {
+            move = null;
+          });
+        });
+
+        let reuestId = 0;
+
+        ["mousemove", "touchmove"].forEach(type => {
+          this.$.canvas.addEventListener(type, event => {
+            if (move) {
+              const newMove = getPoint(event);
+              const dx = newMove.x - move.x;
+              const dy = newMove.y - move.y;
+              move = newMove;
+
+              if (reuestId) cancelAnimationFrame(reuestId);
+              reuestId = reuestId = requestAnimationFrame(() => composite.translate(dx, dy));
+
+              event.preventDefault();
+            }
+          });
+        });
+
+        const getPoint = event => {
+          const e = (event.touches && event.touches[0] || event);
+          return new Point(e.clientX, e.clientY);
         }
 
-        if (this.offsetWidth) render();
-        else requestAnimationFrame(render);
       }
     }
 
     class Tile {
       static get size() { return 256; }
 
-      constructor(color) {
-        this.color = color;
+      constructor(config, stitchSize) {
+        this.config = config;
+        this.stitchSize = stitchSize;
+        this.stitches = [];
+      }
+
+      add(stitch) {
+        this.stitches.push(stitch);
       }
 
       draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(0, 0, Tile.size, Tile.size);
+        this.stitches.forEach(function (stitch) {
+          ctx.fillStyle = this.config[stitch.configurationIndex].hexColor;
+          ctx.fillRect(stitch.point.x * this.stitchSize, stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
+        }, this);
       }
     }
 
     class Composite {
-      constructor(ctx, width, hight) {
+      constructor(ctx, pattern) {
         this.ctx = ctx;
         this.tiles = [];
         this.x = 0;
         this.y = 0;
-        this.width = width;
-        this.hight = hight;
+        this.width = pattern.width;
+        this.height = pattern.height;
 
-        for (let row = 0; row < this.hight; row++) {
-          for (var column = 0; column < this.width; column++) {
-            this.tiles[row * this.hight + column] = new Tile(`rgb(${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1})`);
+
+        let stitchSize = 30;
+        let tileSize = Tile.size;
+        let stitchesPerTile = tileSize / stitchSize;
+
+        pattern.stitches.forEach((stitch) => {
+          let column = Math.floor(stitch.point.x / stitchesPerTile);
+          let spanAcrossColumns = stitch.point.x * stitchSize > (column + 1) * tileSize;
+
+          let row = Math.floor(stitch.point.y / stitchesPerTile);
+          let spanAcrossRows = stitch.point.y * stitchSize > (row + 1) * tileSize;
+
+          let tile = this.tiles[row * this.height + column];
+          if (!tile) {
+            tile = new Tile(pattern.configurations, stitchSize);
+            this.tiles[row * this.height + column] = tile;
           }
-        }
+          tile.add(stitch);
+
+          // TODO: Add stitches spanning across tiles. Set offets.
+
+        });
       }
 
       translate(x, y) {
@@ -118,7 +155,7 @@
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        let horizontal = this.getRegion(this.y, this.hight, this.ctx.canvas.height);
+        let horizontal = this.getRegion(this.y, this.height, this.ctx.canvas.height);
         let vartical = this.getRegion(this.x, this.width, this.ctx.canvas.width);
 
         let rendered = 0;
@@ -126,7 +163,7 @@
           for (let column = vartical.start; column < vartical.end; column++) {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
             this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
-            let tile = this.tiles[row * this.hight + column];
+            let tile = this.tiles[row * this.height + column];
             tile && tile.draw(this.ctx);
             tile && rendered++;
           }
@@ -141,10 +178,7 @@
         let fittingCount = Math.ceil((canvasSize - Math.max(coordinate, 0)) / Tile.size);
         if (startCoordinate % Tile.size !== 0) fittingCount++;
         let count = Math.min(current + fittingCount, size);
-        return {
-          start: current,
-          end: count
-        };
+        return { start: current, end: count };
       }
     }
 

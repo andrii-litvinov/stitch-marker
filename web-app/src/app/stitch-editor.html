@@ -86,6 +86,7 @@
     <paper-toast id="toast"></paper-toast>
 
     <stitch-canvas-new id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas-new>
+    <!-- <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas> -->
   </template>
 
   <script>
@@ -176,24 +177,24 @@
           return;
         }
 
-        const result = {
-          width: pattern.width,
-          height: pattern.height,
-          stitches: {}
-        };
+        // const result = {
+        //   width: pattern.width,
+        //   height: pattern.height,
+        //   stitches: {}
+        // };
 
-        // TODO: Consider to move this logic to canvas.
-        pattern.stitches.forEach(s => {
-          let data = {
-            x: s.point.x,
-            y: s.point.y,
-            symbol: pattern.configurations[s.configurationIndex].symbol,
-            color: pattern.configurations[s.configurationIndex].hexColor
-          };
-          result.stitches[data.x + result.width * data.y] = new Stitch(data);
-        });
+        // // TODO: Consider to move this logic to canvas.
+        // pattern.stitches.forEach(s => {
+        //   let data = {
+        //     x: s.point.x,
+        //     y: s.point.y,
+        //     symbol: pattern.configurations[s.configurationIndex].symbol,
+        //     color: pattern.configurations[s.configurationIndex].hexColor
+        //   };
+        //   result.stitches[data.x + result.width * data.y] = new Stitch(data);
+        // });
 
-        this.pattern = result;
+        this.pattern = pattern;
         this.canvasEnabled = true;
         this.loading = false;
       }
