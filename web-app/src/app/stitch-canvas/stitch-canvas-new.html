@@ -29,7 +29,7 @@
 
           const ctx = this.$.canvas.getContext('2d');
 
-          let composite = new Composite(ctx, 3, 3);
+          let composite = new Composite(ctx, 5, 5);
           composite.draw();
 
           let move = null;
@@ -120,9 +120,12 @@
 
         let fittinRowCount = Math.ceil(this.ctx.canvas.height / Tile.size);
         let fittinColumnCount = Math.ceil(this.ctx.canvas.width / Tile.size);
-        
+
         let rowCount = Math.min(currentRow + fittinRowCount, this.hight);
         let columnCount = Math.min(currentColumn + fittinColumnCount, this.width);
+
+        // if (rowCount < this.hight) rowCount++;
+        // if (columnCount < this.width) columnCount++;
 
         for (let row = currentRow; row < rowCount; row++) {
           for (let column = currentColumn; column < columnCount; column++) {
