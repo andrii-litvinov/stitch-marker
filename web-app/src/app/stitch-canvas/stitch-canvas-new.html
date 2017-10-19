@@ -115,7 +115,7 @@
 
         let currentRow = Math.abs(Math.ceil(this.y / Tile.size));
         let column1 = Math.abs(Math.ceil(this.x / Tile.size));
-        const columnCount = column1 + Math.abs(Math.ceil(this.x / Tile.size)) + Math.ceil(this.ctx.canvas.width / Tile.size) + 2;
+        const columnCount = column1 + Math.ceil(this.ctx.canvas.width / Tile.size) + 2;
         const rowCount = currentRow + Math.ceil(this.ctx.canvas.height / Tile.size) + 2;
 
         for (; currentRow < rowCount; currentRow++) {
