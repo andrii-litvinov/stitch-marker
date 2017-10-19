@@ -93,8 +93,8 @@
       constructor(ctx, width, hight) {
         this.ctx = ctx;
         this.tiles = [];
-        this.x = 0;
-        this.y = 0;
+        this.x = -150;
+        this.y = -150;
         this.width = width;
         this.hight = hight;
 
@@ -115,8 +115,8 @@
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        let currentRow = Math.abs(Math.floor(this.y / Tile.size));
-        let currentColumn = Math.abs(Math.floor(this.x / Tile.size));
+        let currentRow = Math.floor(Math.abs(this.y) / Tile.size);
+        let currentColumn = Math.floor(Math.abs(this.x) / Tile.size);
 
         let fittinRowCount = Math.ceil(this.ctx.canvas.height / Tile.size);
         let fittinColumnCount = Math.ceil(this.ctx.canvas.width / Tile.size);
@@ -124,14 +124,11 @@
         let rowCount = Math.min(currentRow + fittinRowCount, this.hight);
         let columnCount = Math.min(currentColumn + fittinColumnCount, this.width);
 
-        // if (rowCount < this.hight) rowCount++;
-        // if (columnCount < this.width) columnCount++;
-
         for (let row = currentRow; row < rowCount; row++) {
           for (let column = currentColumn; column < columnCount; column++) {
             let row1 = row;
             let column1 = column;
-            setTimeout(() => {
+            //setTimeout(() => {
               this.ctx.setTransform(1, 0, 0, 1, 0, 0);
               this.ctx.translate(this.x + column1 * Tile.size, this.y + row1 * Tile.size);
 
@@ -139,7 +136,7 @@
               console.log(`row: ${row1}, column: ${column1}, index: ${index}`);
               let tile = this.tiles[index];
               tile && tile.draw(this.ctx);
-            }, 0);
+            //}, 0);
           }
         }
       }
