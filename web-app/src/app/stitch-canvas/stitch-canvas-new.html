@@ -23,66 +23,69 @@
       connectedCallback() {
         super.connectedCallback();
 
-        if (!this.offsetWidth) {
-          requestAnimationFrame(() => {
-            this.$.canvas.width = this.offsetWidth;
-            this.$.canvas.height = this.offsetHeight;
+        const render = () => {
+          this.$.canvas.width = this.offsetWidth;
+          this.$.canvas.height = this.offsetHeight;
 
-            const ctx = this.$.canvas.getContext('2d');
+          const ctx = this.$.canvas.getContext('2d');
 
-            let composite = new Composite(ctx);
-            composite.draw();
+          let composite = new Composite(ctx);
+          composite.draw();
 
-            let move = null;
+          let move = null;
 
-            ["mousedown", "touchstart"].forEach(type => {
-              this.$.canvas.addEventListener(type, event => {
-                move = getPoint(event);
-              });
+          ["mousedown", "touchstart"].forEach(type => {
+            this.$.canvas.addEventListener(type, event => {
+              move = getPoint(event);
             });
-
-            ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
-              this.$.canvas.addEventListener(type, event => {
-                move = null;
-              });
-            });
-
-            let reuestId = 0;
-
-            ["mousemove", "touchmove"].forEach(type => {
-              this.$.canvas.addEventListener(type, event => {
-                if (move) {
-                  const newMove = getPoint(event);
-                  const dx = newMove.x - move.x;
-                  const dy = newMove.y - move.y;
-                  move = newMove;
-                  
-                  if (reuestId) cancelAnimationFrame(reuestId);
-                  reuestId = reuestId = requestAnimationFrame(() => composite.translate(dx, dy));
-                  
-                  event.preventDefault();
-                }
-              });
-            });
-
-            const getPoint = event => {
-              const e = (event.touches && event.touches[0] || event);
-              return new Point(e.clientX, e.clientY);
-            }
-
           });
+
+          ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
+            this.$.canvas.addEventListener(type, event => {
+              move = null;
+            });
+          });
+
+          let reuestId = 0;
+
+          ["mousemove", "touchmove"].forEach(type => {
+            this.$.canvas.addEventListener(type, event => {
+              if (move) {
+                const newMove = getPoint(event);
+                const dx = newMove.x - move.x;
+                const dy = newMove.y - move.y;
+                move = newMove;
+
+                if (reuestId) cancelAnimationFrame(reuestId);
+                reuestId = reuestId = requestAnimationFrame(() => composite.translate(dx, dy));
+
+                event.preventDefault();
+              }
+            });
+          });
+
+          const getPoint = event => {
+            const e = (event.touches && event.touches[0] || event);
+            return new Point(e.clientX, e.clientY);
+          }
+
         }
+
+        if (this.offsetWidth) render();
+        else requestAnimationFrame(render);
       }
     }
 
     class Tile {
+      static get size() { return 256; }
+
       constructor(color) {
         this.color = color;
       }
 
       draw(ctx) {
         ctx.fillStyle = this.color;
-        ctx.fillRect(0, 0, 256, 256);
+        ctx.fillRect(0, 0, Tile.size, Tile.size);
       }
     }
 
@@ -110,17 +113,17 @@
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        let row = Math.abs(Math.ceil(this.y / 256));
-        let column1 = Math.abs(Math.ceil(this.x / 256));
-        const maxColumn = column1 + Math.abs(Math.ceil(this.x / 256)) + Math.ceil(this.ctx.canvas.width / 256) + 2;
-        const maxRow = row + Math.ceil(this.ctx.canvas.height / 256) + 2;
+        let currentRow = Math.abs(Math.ceil(this.y / Tile.size));
+        let column1 = Math.abs(Math.ceil(this.x / Tile.size));
+        const columnCount = column1 + Math.abs(Math.ceil(this.x / Tile.size)) + Math.ceil(this.ctx.canvas.width / Tile.size) + 2;
+        const rowCount = currentRow + Math.ceil(this.ctx.canvas.height / Tile.size) + 2;
 
-        for (; row < maxRow; row++) {
-          for (let column = column1; column < maxColumn; column++) {
+        for (; currentRow < rowCount; currentRow++) {
+          for (let column = column1; column < columnCount; column++) {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.translate(this.x + column * 256, this.y + row * 256);
+            this.ctx.translate(this.x + column * Tile.size, this.y + currentRow * Tile.size);
 
-            let tile = this.tiles[row * 25 + column];
+            let tile = this.tiles[currentRow * 25 + column];
             tile.draw(this.ctx);
           }
         }
