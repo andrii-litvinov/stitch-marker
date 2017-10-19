@@ -29,7 +29,7 @@
 
           const ctx = this.$.canvas.getContext('2d');
 
-          let composite = new Composite(ctx);
+          let composite = new Composite(ctx, 25, 25);
           composite.draw();
 
           let move = null;
@@ -90,15 +90,17 @@
     }
 
     class Composite {
-      constructor(ctx) {
+      constructor(ctx, width, hight) {
         this.ctx = ctx;
         this.tiles = [];
         this.x = 0;
         this.y = 0;
+        this.width = width;
+        this.hight = hight;
 
-        for (let row = 0; row < 25; row++) {
-          for (var column = 0; column < 25; column++) {
-            this.tiles[row * 25 + column] = new Tile(`rgb(${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1})`);
+        for (let row = 0; row < this.hight; row++) {
+          for (var column = 0; column < this.width; column++) {
+            this.tiles[row * this.hight + column] = new Tile(`rgb(${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1}, ${Math.floor(Math.random() * 255) + 1})`);
           }
         }
       }
@@ -114,16 +116,16 @@
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         let currentRow = Math.abs(Math.ceil(this.y / Tile.size));
-        let column1 = Math.abs(Math.ceil(this.x / Tile.size));
-        const columnCount = column1 + Math.ceil(this.ctx.canvas.width / Tile.size) + 2;
+        let currentColumn = Math.abs(Math.ceil(this.x / Tile.size));
+        const columnCount = currentColumn + Math.ceil(this.ctx.canvas.width / Tile.size) + 2;
         const rowCount = currentRow + Math.ceil(this.ctx.canvas.height / Tile.size) + 2;
 
-        for (; currentRow < rowCount; currentRow++) {
-          for (let column = column1; column < columnCount; column++) {
+        for (var row = currentRow; row < rowCount; row++) {
+          for (let column = currentColumn; column < columnCount; column++) {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.translate(this.x + column * Tile.size, this.y + currentRow * Tile.size);
+            this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
 
-            let tile = this.tiles[currentRow * 25 + column];
+            let tile = this.tiles[row * this.hight + column];
             tile.draw(this.ctx);
           }
         }
