@@ -8,6 +8,7 @@
         width: 100vw;
         height: 100vh;
         overflow: hidden;
+        user-select: none;
       }
     </style>
     <canvas id="canvas"></canvas>
@@ -29,7 +30,7 @@
 
           const ctx = this.$.canvas.getContext('2d');
 
-          let composite = new Composite(ctx, 8, 4);
+          let composite = new Composite(ctx, 10, 10);
           composite.draw();
 
           let move = null;
@@ -134,11 +135,12 @@
         console.log(`rendered: ${rendered}`);
       }
 
-      getRegion(coordinate, size, canvasSize){
-        let current = Math.floor(Math.abs(Math.min(coordinate, 0)) / Tile.size);
+      getRegion(coordinate, size, canvasSize) {
+        let startCoordinate = Math.abs(Math.min(coordinate, 0));
+        let current = Math.floor(startCoordinate / Tile.size);
         let fittingCount = Math.ceil((canvasSize - Math.max(coordinate, 0)) / Tile.size);
+        if (startCoordinate % Tile.size !== 0) fittingCount++;
         let count = Math.min(current + fittingCount, size);
-        if (count < size) count++;
         return {
           start: current,
           end: count
