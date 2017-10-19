@@ -29,14 +29,16 @@
 
           const ctx = this.$.canvas.getContext('2d');
 
-          let composite = new Composite(ctx, 5, 5);
+          let composite = new Composite(ctx, 10, 10);
           composite.draw();
 
           let move = null;
 
-          ["mousedown", "touchstart"].forEach(type => {
+          ["mousedown", "mouseenter", "touchstart"].forEach(type => {
             this.$.canvas.addEventListener(type, event => {
-              move = getPoint(event);
+              if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
+                move = getPoint(event);
+              }
             });
           });
 
@@ -93,8 +95,8 @@
       constructor(ctx, width, hight) {
         this.ctx = ctx;
         this.tiles = [];
-        this.x = -150;
-        this.y = -150;
+        this.x = 0;
+        this.y = 0;
         this.width = width;
         this.hight = hight;
 
@@ -115,8 +117,8 @@
         this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-        let currentRow = Math.floor(Math.abs(this.y) / Tile.size);
-        let currentColumn = Math.floor(Math.abs(this.x) / Tile.size);
+        let currentRow = Math.floor(Math.abs(Math.min(this.y, 0)) / Tile.size);
+        let currentColumn = Math.floor(Math.abs(Math.min(this.x, 0)) / Tile.size);
 
         let fittinRowCount = Math.ceil(this.ctx.canvas.height / Tile.size);
         let fittinColumnCount = Math.ceil(this.ctx.canvas.width / Tile.size);
@@ -124,21 +126,26 @@
         let rowCount = Math.min(currentRow + fittinRowCount, this.hight);
         let columnCount = Math.min(currentColumn + fittinColumnCount, this.width);
 
+        if (rowCount < this.hight) rowCount++;
+        if (columnCount < this.width) columnCount++;
+
         for (let row = currentRow; row < rowCount; row++) {
           for (let column = currentColumn; column < columnCount; column++) {
             let row1 = row;
             let column1 = column;
-            //setTimeout(() => {
-              this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-              this.ctx.translate(this.x + column1 * Tile.size, this.y + row1 * Tile.size);
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.ctx.translate(this.x + column1 * Tile.size, this.y + row1 * Tile.size);
 
-              const index = row1 * this.hight + column1;
-              console.log(`row: ${row1}, column: ${column1}, index: ${index}`);
-              let tile = this.tiles[index];
-              tile && tile.draw(this.ctx);
-            //}, 0);
+            const index = row1 * this.hight + column1;
+            //console.log(`row: ${row1}, column: ${column1}, index: ${index}`);
+            let tile = this.tiles[index];
+            tile && tile.draw(this.ctx);
           }
         }
+      }
+
+      getRegion(){
+
       }
     }
 
