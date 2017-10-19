@@ -94,9 +94,12 @@
     class Tile {
       static get size() { return 256; }
 
-      constructor(config, stitchSize) {
+      constructor(composite, config, stitchSize, row, column) {
+        this.composite = composite;
         this.config = config;
         this.stitchSize = stitchSize;
+        this.row = row;
+        this.column = column;
         this.stitches = [];
       }
 
@@ -107,8 +110,12 @@
       draw(ctx) {
         this.stitches.forEach(function (stitch) {
           ctx.fillStyle = this.config[stitch.configurationIndex].hexColor;
-          ctx.fillRect(stitch.point.x * this.stitchSize, stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
+          ctx.fillRect(this.composite.x + stitch.point.x * this.stitchSize, this.composite.y + stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
         }, this);
+
+        ctx.beginPath();
+        ctx.rect(this.composite.x + this.column * Tile.size, this.composite.y + this.row * Tile.size, Tile.size, Tile.size);
+        ctx.stroke();
       }
     }
 
@@ -135,7 +142,7 @@
 
           let tile = this.tiles[row * this.height + column];
           if (!tile) {
-            tile = new Tile(pattern.configurations, stitchSize);
+            tile = new Tile(this, pattern.configurations, stitchSize, row, column);
             this.tiles[row * this.height + column] = tile;
           }
           tile.add(stitch);
@@ -152,7 +159,7 @@
       }
 
       draw() {
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         let horizontal = this.getRegion(this.y, this.height, this.ctx.canvas.height);
@@ -162,7 +169,7 @@
         for (let row = horizontal.start; row < horizontal.end; row++) {
           for (let column = vartical.start; column < vartical.end; column++) {
             this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
+            //this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
             let tile = this.tiles[row * this.height + column];
             tile && tile.draw(this.ctx);
             tile && rendered++;
