@@ -7,7 +7,7 @@
 
 <link rel="import" href="./stitch-canvas/stitch-canvas.html">
 
-<dom-module id="stitch-editor">
+<dom-module id="stitch-marker">
   <template>
     <style>
        :host {
@@ -70,8 +70,6 @@
       }
     </style>
 
-    <app-route id="route" route="{{route}}" pattern="/:patternId" data="{{routeData}}"></app-route>
-
     <div class="controls top right column">
       <paper-icon-button icon="zoom-in" title="[[zoom]]" on-tap="zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" title="[[zoom]]" on-tap="zoomOut"></paper-icon-button>
@@ -86,7 +84,7 @@
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
 
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas>
+    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" zoom={{zoom}} display=[[display]]></stitch-canvas>
   </template>
 
   <script>
@@ -101,8 +99,8 @@
 
     const zoomLevels = [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
 
-    class Editor extends Polymer.Element {
-      static get is() { return 'stitch-editor'; }
+    class Marker extends Polymer.Element {
+      static get is() { return 'stitch-marker'; }
 
       static get properties() {
         return {
@@ -177,36 +175,19 @@
           return;
         }
 
-        const result = {
-          width: pattern.width,
-          height: pattern.height,
-          stitches: []
-        };
-
-        // TODO: Consider to move this logic to canvas.
-        pattern.stitches.forEach(s => {
-          let data = {
-            x: s.point.x,
-            y: s.point.y,
-            symbol: pattern.configurations[s.configurationIndex].symbol,
-            color: pattern.configurations[s.configurationIndex].hexColor
-          };
-          result.stitches[data.x + result.width * data.y] = new Stitch(data);
-        });
-
-        this.pattern = result;
+        this.pattern = pattern;
         this.canvasEnabled = true;
         this.loading = false;
       }
 
       zoomIn() {
-        // TODO: Handle zoom on swipe whne value is not predefined.
+        // TODO: Handle zoom on swipe when value is not predefined.
         let zoomIndex = Math.min(zoomLevels.indexOf(this.zoom) + 1, zoomLevels.length - 1);
         this.zoom = zoomLevels[zoomIndex];
       }
 
       zoomOut() {
-        // TODO: Handle zoom on swipe whne value is not predefined.
+        // TODO: Handle zoom on swipe when value is not predefined.
         let zoomIndex = Math.max(zoomLevels.indexOf(this.zoom) - 1, 0);
         this.zoom = zoomLevels[zoomIndex];
       }
@@ -222,6 +203,6 @@
       }
     }
 
-    customElements.define(Editor.is, Editor);
+    customElements.define(Marker.is, Marker);
   </script>
 </dom-module>
