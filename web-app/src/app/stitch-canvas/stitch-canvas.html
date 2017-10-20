@@ -36,9 +36,9 @@
       connectedCallback() {
         super.connectedCallback();
 
-        window.addEventListener('resize', (event) => {
-          this.renderScene();
-        });
+        // TODO: Remove event listers in disconnected callback.
+
+        window.addEventListener('resize', event => this.renderScene());
 
         let reuestId = 0;
         let position = null;
@@ -93,6 +93,13 @@
         this.scene.render();
       }
     }
+
+    class A {
+      constructor(a) {
+        this.a = a;
+      }
+    }
+
     customElements.define(Canvas.is, Canvas);
   </script>
 </dom-module>

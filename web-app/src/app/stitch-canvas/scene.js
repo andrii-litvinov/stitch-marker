@@ -49,8 +49,10 @@ class Scene {
         let tile = this.tiles[row * this.height + column];
         if (tile) {
           this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-          //this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
-          tile.draw(this.ctx);
+          const offsetX = this.x + column * Tile.size;
+          const offsetY = this.y + row * Tile.size
+          this.ctx.translate(offsetX, offsetY);
+          tile.draw(this.ctx, offsetX, offsetY);
           this.ctx.setTransform(1, 0, 0, 1, 0, 0);
           rendered++
         }
