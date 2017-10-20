@@ -1,12 +1,9 @@
 class Tile {
   static get size() { return 256; }
 
-  constructor(scene, config, stitchSize, row, column) {
-    this.scene = scene;
+  constructor(config, stitchSize) {
     this.config = config;
     this.stitchSize = stitchSize;
-    this.row = row;
-    this.column = column;
     this.stitches = [];
   }
 
@@ -14,12 +11,12 @@ class Tile {
     this.stitches.push(stitch);
   }
 
-  draw(ctx, offsetX, offsetY) {
+  render(ctx, offsetX, offsetY) {
     this.stitches.forEach(stitch => {
       ctx.fillStyle = this.config[stitch.configurationIndex].hexColor;
       ctx.fillRect(
-        this.scene.x + stitch.point.x * this.stitchSize - offsetX,
-        this.scene.y + stitch.point.y * this.stitchSize - offsetY,
+        stitch.point.x * this.stitchSize + offsetX,
+        stitch.point.y * this.stitchSize + offsetY,
         this.stitchSize, this.stitchSize);
     });
 
