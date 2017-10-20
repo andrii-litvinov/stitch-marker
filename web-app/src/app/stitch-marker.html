@@ -109,13 +109,6 @@
             reflectToAttribute: true,
             observer: '_activeChanged'
           },
-          pattern: {
-            type: Object,
-            reflectToAttribute: false
-          },
-          routeData: {
-            type: Object
-          },
           zoom: {
             type: Number,
             value: 1
@@ -175,7 +168,7 @@
           return;
         }
 
-        this.pattern = pattern;
+        this.$.canvas.pattern = pattern;
         this.canvasEnabled = true;
         this.loading = false;
       }

@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
-<dom-module id="stitch-canvas-new">
+<dom-module id="stitch-canvas">
   <template>
     <style>
       :host {
@@ -18,8 +18,8 @@
   <script src="./stitch.js"></script>
   <script src="./grid.js"></script>
   <script>
-    class CanvasNew extends Polymer.Element {
-      static get is() { return 'stitch-canvas-new'; }
+    class Canvas extends Polymer.Element {
+      static get is() { return 'stitch-canvas'; }
 
       static get properties() {
         return {
@@ -31,13 +31,9 @@
         };
       }
 
-      connectedCallback() {
-        super.connectedCallback()
-      }
-
       patternChanged() {
         if (this.offsetWidth) this.render();
-        else requestAnimationFrame(this.render);
+        else requestAnimationFrame(() => this.render());
       }
 
       render() {
@@ -189,6 +185,6 @@
       }
     }
 
-    customElements.define("stitch-canvas-new", CanvasNew);
+    customElements.define(Canvas.is, Canvas);
   </script>
 </dom-module>
