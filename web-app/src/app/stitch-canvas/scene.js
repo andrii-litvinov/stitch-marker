@@ -38,27 +38,29 @@ class Scene {
   }
 
   render() {
-    //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
-    let horizontal = this.getRegion(this.y, this.height, this.ctx.canvas.height);
-    let vartical = this.getRegion(this.x, this.width, this.ctx.canvas.width);
+    let horizontal = this.getTilesBounds(this.y, this.height, this.ctx.canvas.height);
+    let vartical = this.getTilesBounds(this.x, this.width, this.ctx.canvas.width);
 
     let rendered = 0;
     for (let row = horizontal.start; row < horizontal.end; row++) {
       for (let column = vartical.start; column < vartical.end; column++) {
-        this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        //this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
         let tile = this.tiles[row * this.height + column];
-        tile && tile.draw(this.ctx);
-        tile && rendered++;
+        if (tile) {
+          this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+          //this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
+          tile.draw(this.ctx);
+          this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+          rendered++
+        }
       }
     }
 
     console.log(`rendered: ${rendered}`);
   }
 
-  getRegion(coordinate, size, canvasSize) {
+  getTilesBounds(coordinate, size, canvasSize) {
     let startCoordinate = Math.abs(Math.min(coordinate, 0));
     let current = Math.floor(startCoordinate / Tile.size);
     let fittingCount = Math.ceil((canvasSize - Math.max(coordinate, 0)) / Tile.size);

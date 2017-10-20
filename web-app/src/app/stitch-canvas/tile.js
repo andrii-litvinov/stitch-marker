@@ -1,8 +1,8 @@
 class Tile {
   static get size() { return 256; }
 
-  constructor(composite, config, stitchSize, row, column) {
-    this.composite = composite;
+  constructor(scene, config, stitchSize, row, column) {
+    this.scene = scene;
     this.config = config;
     this.stitchSize = stitchSize;
     this.row = row;
@@ -15,13 +15,13 @@ class Tile {
   }
 
   draw(ctx) {
-    this.stitches.forEach(function (stitch) {
+    this.stitches.forEach(stitch => {
       ctx.fillStyle = this.config[stitch.configurationIndex].hexColor;
-      ctx.fillRect(this.composite.x + stitch.point.x * this.stitchSize, this.composite.y + stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
-    }, this);
+      ctx.fillRect(this.scene.x + stitch.point.x * this.stitchSize, this.scene.y + stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
+    });
 
-    ctx.beginPath();
-    ctx.rect(this.composite.x + this.column * Tile.size, this.composite.y + this.row * Tile.size, Tile.size, Tile.size);
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.rect(this.scene.x - this.column * Tile.size, this.scene.y - this.row * Tile.size, Tile.size, Tile.size);
+    // ctx.stroke();
   }
 }
