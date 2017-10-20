@@ -17,6 +17,8 @@
   <script src="./point.js"></script>
   <script src="./stitch.js"></script>
   <script src="./grid.js"></script>
+  <script src="./tile.js"></script>
+  <script src="./scene.js"></script>
   <script>
     class Canvas extends Polymer.Element {
       static get is() { return 'stitch-canvas'; }
@@ -31,160 +33,66 @@
         };
       }
 
-      patternChanged() {
-        if (this.offsetWidth) this.render();
-        else requestAnimationFrame(() => this.render());
-      }
+      connectedCallback() {
+        super.connectedCallback();
 
-      render() {
-        this.$.canvas.width = this.offsetWidth;
-        this.$.canvas.height = this.offsetHeight;
-
-        const ctx = this.$.canvas.getContext('2d');
-        let composite = new Composite(ctx, this.pattern);
-
-        composite.draw();
-
-        let move = null;
-
-        ["mousedown", "mouseenter", "touchstart"].forEach(type => {
-          this.$.canvas.addEventListener(type, event => {
-            if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
-              move = getPoint(event);
-            }
-          });
-        });
-
-        ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
-          this.$.canvas.addEventListener(type, event => {
-            move = null;
-          });
+        window.addEventListener('resize', (event) => {
+          this.renderScene();
         });
 
         let reuestId = 0;
+        let position = null;
 
-        ["mousemove", "touchmove"].forEach(type => {
-          this.$.canvas.addEventListener(type, event => {
-            if (move) {
-              const newMove = getPoint(event);
-              const dx = newMove.x - move.x;
-              const dy = newMove.y - move.y;
-              move = newMove;
-
-              if (reuestId) cancelAnimationFrame(reuestId);
-              reuestId = reuestId = requestAnimationFrame(() => composite.translate(dx, dy));
-
-              event.preventDefault();
-            }
-          });
-        });
-
-        const getPoint = event => {
+        const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
           return new Point(e.clientX, e.clientY);
         }
 
-      }
-    }
-
-    class Tile {
-      static get size() { return 256; }
-
-      constructor(composite, config, stitchSize, row, column) {
-        this.composite = composite;
-        this.config = config;
-        this.stitchSize = stitchSize;
-        this.row = row;
-        this.column = column;
-        this.stitches = [];
-      }
-
-      add(stitch) {
-        this.stitches.push(stitch);
-      }
-
-      draw(ctx) {
-        this.stitches.forEach(function (stitch) {
-          ctx.fillStyle = this.config[stitch.configurationIndex].hexColor;
-          ctx.fillRect(this.composite.x + stitch.point.x * this.stitchSize, this.composite.y + stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
-        }, this);
-
-        ctx.beginPath();
-        ctx.rect(this.composite.x + this.column * Tile.size, this.composite.y + this.row * Tile.size, Tile.size, Tile.size);
-        ctx.stroke();
-      }
-    }
-
-    class Composite {
-      constructor(ctx, pattern) {
-        this.ctx = ctx;
-        this.tiles = [];
-        this.x = 0;
-        this.y = 0;
-        this.width = pattern.width;
-        this.height = pattern.height;
-
-
-        let stitchSize = 30;
-        let tileSize = Tile.size;
-        let stitchesPerTile = tileSize / stitchSize;
-
-        pattern.stitches.forEach((stitch) => {
-          let column = Math.floor(stitch.point.x / stitchesPerTile);
-          let spanAcrossColumns = stitch.point.x * stitchSize > (column + 1) * tileSize;
-
-          let row = Math.floor(stitch.point.y / stitchesPerTile);
-          let spanAcrossRows = stitch.point.y * stitchSize > (row + 1) * tileSize;
-
-          let tile = this.tiles[row * this.height + column];
-          if (!tile) {
-            tile = new Tile(this, pattern.configurations, stitchSize, row, column);
-            this.tiles[row * this.height + column] = tile;
+        const onStart = event => {
+          if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
+            position = getPosition(event);
           }
-          tile.add(stitch);
+        };
 
-          // TODO: Add stitches spanning across tiles. Set offets.
+        const onEnd = event => position = null;
 
-        });
-      }
+        const onMove = event => {
+          if (position) {
+            const newPosition = getPosition(event);
+            const dx = newPosition.x - position.x;
+            const dy = newPosition.y - position.y;
+            position = newPosition;
 
-      translate(x, y) {
-        this.x += x;
-        this.y += y;
-        this.draw();
-      }
-
-      draw() {
-        //this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-
-        let horizontal = this.getRegion(this.y, this.height, this.ctx.canvas.height);
-        let vartical = this.getRegion(this.x, this.width, this.ctx.canvas.width);
-
-        let rendered = 0;
-        for (let row = horizontal.start; row < horizontal.end; row++) {
-          for (let column = vartical.start; column < vartical.end; column++) {
-            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-            //this.ctx.translate(this.x + column * Tile.size, this.y + row * Tile.size);
-            let tile = this.tiles[row * this.height + column];
-            tile && tile.draw(this.ctx);
-            tile && rendered++;
+            if (reuestId) cancelAnimationFrame(reuestId);
+            reuestId = reuestId = requestAnimationFrame(() => this.scene.translate(dx, dy));
           }
         }
 
-        console.log(`rendered: ${rendered}`);
+        ["mousedown", "mouseenter", "touchstart"].forEach(type => {
+          this.$.canvas.addEventListener(type, onStart);
+        });
+
+        ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
+          this.$.canvas.addEventListener(type, onEnd);
+        });
+
+        ["mousemove", "touchmove"].forEach(type => {
+          this.$.canvas.addEventListener(type, onMove);
+        });
       }
 
-      getRegion(coordinate, size, canvasSize) {
-        let startCoordinate = Math.abs(Math.min(coordinate, 0));
-        let current = Math.floor(startCoordinate / Tile.size);
-        let fittingCount = Math.ceil((canvasSize - Math.max(coordinate, 0)) / Tile.size);
-        if (startCoordinate % Tile.size !== 0) fittingCount++;
-        let count = Math.min(current + fittingCount, size);
-        return { start: current, end: count };
+      patternChanged(pattern) {
+        const ctx = this.$.canvas.getContext('2d');
+        this.scene = new Scene(ctx, pattern);
+        this.renderScene();
+      }
+
+      renderScene() {
+        this.$.canvas.width = this.offsetWidth;
+        this.$.canvas.height = this.offsetHeight;
+        this.scene.render();
       }
     }
-
     customElements.define(Canvas.is, Canvas);
   </script>
 </dom-module>
