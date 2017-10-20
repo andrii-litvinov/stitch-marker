@@ -20,8 +20,8 @@ class Tile {
       ctx.fillRect(this.scene.x + stitch.point.x * this.stitchSize, this.scene.y + stitch.point.y * this.stitchSize, this.stitchSize, this.stitchSize);
     });
 
-    // ctx.beginPath();
-    // ctx.rect(this.scene.x - this.column * Tile.size, this.scene.y - this.row * Tile.size, Tile.size, Tile.size);
-    // ctx.stroke();
+    ctx.beginPath();
+    ctx.rect(this.scene.x + this.column * Tile.size, this.scene.y + this.row * Tile.size, Tile.size, Tile.size);
+    ctx.stroke();
   }
 }
