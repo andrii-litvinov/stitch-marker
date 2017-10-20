@@ -5,8 +5,7 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
-<!-- <link rel="import" href="./stitch-canvas/stitch-canvas.html"> -->
-<link rel="import" href="./stitch-canvas/stitch-canvas-new.html">
+<link rel="import" href="./stitch-canvas/stitch-canvas.html">
 
 <dom-module id="stitch-marker">
   <template>
@@ -85,8 +84,7 @@
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
 
-    <stitch-canvas-new id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas-new>
-    <!-- <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" pattern="[[pattern]]" zoom={{zoom}} display=[[display]]></stitch-canvas> -->
+    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" zoom={{zoom}} display=[[display]]></stitch-canvas>
   </template>
 
   <script>
@@ -183,13 +181,13 @@
       }
 
       zoomIn() {
-        // TODO: Handle zoom on swipe whne value is not predefined.
+        // TODO: Handle zoom on swipe when value is not predefined.
         let zoomIndex = Math.min(zoomLevels.indexOf(this.zoom) + 1, zoomLevels.length - 1);
         this.zoom = zoomLevels[zoomIndex];
       }
 
       zoomOut() {
-        // TODO: Handle zoom on swipe whne value is not predefined.
+        // TODO: Handle zoom on swipe when value is not predefined.
         let zoomIndex = Math.max(zoomLevels.indexOf(this.zoom) - 1, 0);
         this.zoom = zoomLevels[zoomIndex];
       }
