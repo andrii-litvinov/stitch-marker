@@ -13,15 +13,25 @@ namespace SM.Service.Patterns
     [Route("api/patterns")]
     public class PatternsController : Controller
     {
-        [Route("{patternId}")]
+        [Route("{patternId}"), HttpGet]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<Pattern>(new GetPattern(), 10.Seconds());
+            var response =
+                await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
             return Ok(response);
         }
 
-        [Route("{patternId}/thumbnail")]
+        [Route("{patternId}"), HttpDelete]
+        public async Task<IActionResult> Delete(Guid patternId)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var response =
+                await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
+            return Ok();
+        }
+        
+        [Route("{patternId}/thumbnail"), HttpGet]
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
@@ -30,6 +40,7 @@ namespace SM.Service.Patterns
             return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
+        [HttpPost]
         public async Task<IActionResult> Post(IFormFile file)
         {
             var patternId = Guid.NewGuid();

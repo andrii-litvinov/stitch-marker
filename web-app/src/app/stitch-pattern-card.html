@@ -59,7 +59,7 @@
       </div>
       <div class="card-actions">
         <paper-button on-tap="open">Open</paper-button>
-        <paper-icon-button id="delete" icon="delete"></paper-icon-button>
+        <paper-icon-button id="delete" icon="delete" on-tap="delete"></paper-icon-button>
       </div>
     </paper-card>
   </template>
@@ -88,6 +88,13 @@
 
       getThumbnailUrl(patternInfo) {
         return SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href;
+      }
+
+      async delete() {
+        const response = await fetch(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href,
+          { method: 'DELETE' });
+        if (response.status === 200)
+          this.dispatchEvent(new CustomEvent('delete'));
       }
     }
     customElements.define(PatternCard.is, PatternCard);

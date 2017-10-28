@@ -3,6 +3,6 @@ package pattern;
 
 option csharp_namespace = "SM.Service.Messages";
 
-message GetPattern {
+message PatternDeleted {
     string id = 1;
 }

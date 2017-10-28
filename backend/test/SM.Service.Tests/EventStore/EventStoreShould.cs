@@ -48,7 +48,7 @@ namespace SM.Service.Tests.EventStore
 
             // Act
             var events = new List<PatternUploaded>();
-            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start, version,
+            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start + 1, version,
                 e => events.Add((PatternUploaded)e));
 
             // Assert
@@ -97,7 +97,7 @@ namespace SM.Service.Tests.EventStore
             // Act
             PatternUploaded recoveredEvent = null;
             var version = await eventStore.PersistEventAsync(actorName, ExpectedVersion.NoStream + 1, @event);
-            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start, version,
+            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start + 1, version,
                 e => recoveredEvent = (PatternUploaded)e);
 
             // Assert

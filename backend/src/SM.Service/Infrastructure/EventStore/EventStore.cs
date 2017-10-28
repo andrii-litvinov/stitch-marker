@@ -24,11 +24,11 @@ namespace SM.Service.Infrastructure.EventStore
             Action<object> callback)
         {
             StreamEventsSlice slice;
-            var start = indexStart;
+            var start = indexStart - 1;
 
             do
             {
-                var count = (int) Math.Min(indexEnd - start + 1, 200);
+                var count = (int)Math.Min(indexEnd - start, 200);
                 slice = await connection.ReadStreamEventsForward(actorName, start, count, false);
                 start = slice.NextEventNumber;
 

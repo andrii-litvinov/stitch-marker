@@ -58,7 +58,7 @@
     <app-location id="location" path="[[path]]"></app-location>
     <div id="container">
       <template is="dom-repeat" items="[[patternInfos]]" as="pattern">
-        <stitch-pattern-card pattern-info="[[pattern]]"></stitch-pattern-card>
+        <stitch-pattern-card pattern-info="[[pattern]]" on-delete="onDelete"></stitch-pattern-card>
       </template>
     </div>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" on-upload-response="_onUploadResponse" nodrop></vaadin-upload>
@@ -95,6 +95,12 @@
           this.push('patternInfos', JSON.parse(xhr.responseText));
           localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
         }
+      }
+
+      onDelete(event) {
+        var index = this.patternInfos.indexOf(event.target.patternInfo);
+        this.splice('patternInfos', index, 1);
+        localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
       }
     }
 

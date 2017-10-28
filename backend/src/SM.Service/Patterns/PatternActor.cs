@@ -61,7 +61,7 @@ namespace SM.Service.Patterns
             }
         }
 
-        private Task Created(IContext context)
+        private async Task Created(IContext context)
         {
             switch (context.Message)
             {
@@ -77,10 +77,19 @@ namespace SM.Service.Patterns
                 case Thumbnail thumbnail:
                     senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
+                case DeletePattern command:
+                    var patternDeleted = new PatternDeleted {Id = command.Id};
+                    await persistence.PersistEventAsync(patternDeleted);
+                    context.Sender.Tell(patternDeleted);
+                    break;
             }
-            return Actor.Done;
         }
 
+        private Task Deleted(IContext context)
+        {
+            return Actor.Done;
+        }
+        
         private void ApplyEvent(Event @event)
         {
             switch (@event.Data)
@@ -88,6 +97,9 @@ namespace SM.Service.Patterns
                 case PatternCreated e:
                     pattern = e.Pattern;
                     behavior.Become(Created);
+                    break;
+                case PatternDeleted _:
+                    behavior.Become(Deleted);
                     break;
             }
         }
