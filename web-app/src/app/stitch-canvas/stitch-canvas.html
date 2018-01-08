@@ -14,6 +14,7 @@
     <canvas id="canvas"></canvas>
   </template>
   <script src="../helpers/round-rect.js"></script>
+  <script src="./config.js"></script>
   <script src="./point.js"></script>
   <script src="./stitch.js"></script>
   <script src="./grid.js"></script>
@@ -29,6 +30,12 @@
             type: Object,
             reflectToAttribute: false,
             observer: "patternChanged"
+          },
+
+          zoom: {
+            type: Number,
+            reflectToAttribute: false,
+            observer: "zoomChanged"
           }
         };
       }
@@ -46,7 +53,7 @@
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
           return new Point(e.clientX, e.clientY);
-        }
+        };
 
         const onStart = event => {
           if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
@@ -66,7 +73,7 @@
             if (reuestId) cancelAnimationFrame(reuestId);
             reuestId = reuestId = requestAnimationFrame(() => this.scene.translate(dx, dy));
           }
-        }
+        };
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
           this.$.canvas.addEventListener(type, onStart);
@@ -82,9 +89,16 @@
       }
 
       patternChanged(pattern) {
-        const ctx = this.$.canvas.getContext('2d');
-        this.scene = new Scene(ctx, pattern);
+        this.ctx = this.$.canvas.getContext('2d');
+        this.scene = new Scene(this.ctx, pattern);
         this.renderScene();
+      }
+
+      zoomChanged(zoom) {
+        if (this.enabled) {
+          this.scene = new Scene(this.ctx, this.pattern, zoom, this.scene.x, this.scene.y);
+          this.renderScene();
+        }
       }
 
       renderScene() {

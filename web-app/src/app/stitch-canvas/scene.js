@@ -1,13 +1,13 @@
 class Scene {
-  constructor(ctx, pattern) {
+  constructor(ctx, pattern, zoom = 1, x = 0, y = 0) {
     this.ctx = ctx;
     this.tiles = [];
-    this.x = 0;
-    this.y = 0;
+    this.x = x;
+    this.y = y;
     this.width = pattern.width;
     this.height = pattern.height;
 
-    let stitchSize = 30;
+    let stitchSize = Math.floor(zoom * config.stitchSize);
     let stitchesPerTile = Tile.size / stitchSize;
 
     pattern.stitches.forEach((stitch) => {
@@ -50,10 +50,10 @@ class Scene {
 
           const offsetX = column * Tile.size;
           const offsetY = row * Tile.size
-          
+
           this.ctx.translate(offsetX + this.x, offsetY + this.y);
           tile.render(this.ctx, -offsetX, -offsetY);
-          
+
           rendered++
 
           this.ctx.setTransform(1, 0, 0, 1, 0, 0);

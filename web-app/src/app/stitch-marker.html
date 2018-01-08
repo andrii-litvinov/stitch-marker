@@ -70,6 +70,8 @@
       }
     </style>
 
+    <stitch-canvas id="canvas" zoom={{zoom}} display=[[display]]></stitch-canvas>
+
     <div class="controls top right column">
       <paper-icon-button icon="zoom-in" title="[[zoom]]" on-tap="zoomIn"></paper-icon-button>
       <paper-icon-button icon="zoom-out" title="[[zoom]]" on-tap="zoomOut"></paper-icon-button>
@@ -84,7 +86,6 @@
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
 
-    <stitch-canvas id="canvas" enabled="[[canvasEnabled]]" zoom={{zoom}} display=[[display]]></stitch-canvas>
   </template>
 
   <script>
@@ -128,7 +129,7 @@
           ruler: false,
           symbol: false,
           color: true
-        }
+        };
 
         this.events = {
           keyup: (e) => this._handleKeyUp(e),
@@ -168,8 +169,8 @@
           return;
         }
 
+        this.$.canvas.enabled = true;
         this.$.canvas.pattern = pattern;
-        this.canvasEnabled = true;
         this.loading = false;
       }
 
