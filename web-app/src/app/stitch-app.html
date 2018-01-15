@@ -2,29 +2,22 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-
-<link rel="import" href="stitch-marker.html">
-<link rel="import" href="stitch-home.html">
-<link rel="import" href="stitch-login.html">
-<link rel="import" href="stitch-logo.html">
-<link rel="import" href="stitch-social.html">
 <link rel="import" href="stitch-header.html">
 <link rel="import" href="stitch-landing.html">
-<link rel="import" href="stitch-patterns.html">
-
+<link rel="import" href="stitch-social.html">
 
 <dom-module id="stitch-app">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
       }
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" tail="{{subroute}}" pattern="/:view" data="{{routeData}}"></app-route>
-    <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
-      <stitch-landing name></stitch-landing>
+    <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
+      <stitch-landing name="landing"></stitch-landing>
       <stitch-marker name="marker" route="{{subroute}}"></stitch-marker>
       <stitch-login name="login"></stitch-login>
       <stitch-home name="home" route="{{subroute}}"></stitch-home>
@@ -33,6 +26,31 @@
   <script>
     class App extends Polymer.Element {
       static get is() { return "stitch-app"; }
+
+      static get properties() {
+        return {
+          view: {
+            type: String,
+            reflectToAttribute: true,
+            observer: 'viewChanged'
+          },
+        }
+      }
+
+      static get observers() {
+        return [
+          'routeViewChanged(routeData.view)'
+        ]
+      }
+
+      routeViewChanged(view) {
+        this.view = view || 'landing';
+      }
+
+      viewChanged(view) {
+        let resolvedUrl = this.resolveUrl(`stitch-${view}.html`);
+        Polymer.importHref(resolvedUrl, null, null, true);
+      }
     }
 
     customElements.define(App.is, App);
