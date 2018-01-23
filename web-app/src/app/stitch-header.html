@@ -36,6 +36,9 @@
         display: block;
         width: 100%;
         --paper-progress-active-color: #D81B60;
+        --paper-progress-transition-duration: 0.5s;
+        --paper-progress-transition-timing-function: ease;
+        --paper-progress-transition-transition-delay: 0s;
       }
 
       paper-icon-button {
@@ -127,7 +130,15 @@
       constructor() {
         super();
         this.progress = event => {
+          this.$.progress.classList.add("transiting");
           this.$.progress.value = event.detail;
+          
+          if (this.$.progress.value === 100) {
+            setTimeout(() => {
+              this.$.progress.classList.remove("transiting");
+              this.$.progress.value = 0;
+            }, 500);
+          }
         };
       }
 
