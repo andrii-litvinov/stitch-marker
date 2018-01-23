@@ -16,6 +16,8 @@
 
     <app-location id="location" route="{{route}}"></app-location>
     <app-route id="route" route="{{route}}" tail="{{subroute}}" pattern="/:view" data="{{routeData}}"></app-route>
+
+    <stitch-header id="header"></stitch-header>
     <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-landing name="landing"></stitch-landing>
       <stitch-marker name="marker" route="{{subroute}}"></stitch-marker>
@@ -50,6 +52,7 @@
       viewChanged(view) {
         let resolvedUrl = this.resolveUrl(`stitch-${view}.html`);
         Polymer.importHref(resolvedUrl, null, null, true);
+        this.$.header.hidden = view === "marker";
       }
     }
 
