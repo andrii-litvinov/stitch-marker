@@ -13,7 +13,7 @@
     "paper-menu-button": "PolymerElements/paper-menu-button#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
     "paper-item": "PolymerElements/paper-item#^2.0.0",
-    "vaadin-upload": "v2.0.0-alpha3",
+    "vaadin-upload": "v3.0.0",
     "paper-spinner": "^2.0.0",
     "paper-toast": "^2.0.0",
     "js-throttle-debounce": "^0.1.1",

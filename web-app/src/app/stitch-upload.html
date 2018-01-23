@@ -1,0 +1,86 @@
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
+
+<dom-module id="stitch-upload">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+      button {
+        border: none;
+        outline: none;
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+        margin-right: 30px;
+        margin-bottom: 30px;
+      }
+
+      #add {
+        color: white;
+        --iron-icon-height: 30px;
+        --iron-icon-width: 30px;
+      }
+
+      #button {
+        background-color: #3F51B5;
+        border-radius: 50%;
+        height: 60px;
+        width: 60px;
+        -webkit-transition: 0.2s;
+        transition: 0.2s;
+        -webkit-box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      #button:hover {
+        cursor: pointer;
+        background-color: #606fc7;
+        -webkit-box-shadow: 0 8px 15px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: 0 8px 15px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      div[slot=file-list] {
+        display: none;
+      }
+    </style>
+    <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" nodrop on-upload-response="onUploadResponse" on-upload-progress="onUploadProgress">
+      <button slot="add-button" id="button">
+        <iron-icon icon="add" id="add"></iron-icon>
+      </button>
+      <div slot="file-list"></div>
+    </vaadin-upload>
+  </template>
+  <script>
+    class Upload extends Polymer.Element {
+      static get is() {
+        return "stitch-upload";
+      }
+
+      static get properties() {
+        return {
+          uploadUrl: {
+            type: String,
+            value: `${SM.apiUrl}/api/patterns`
+          }
+        }
+      }
+
+      onUploadProgress(event) {
+        this.dispatchEvent(new CustomEvent('progress',
+          { bubbles: true, composed: true, detail: event.target.files[0].progress }));
+      }
+
+      onUploadResponse(event) {
+        const xhr = event.detail.xhr;
+        if (xhr.status === 201) {
+          this.dispatchEvent(new CustomEvent('upload', { detail: JSON.parse(xhr.responseText) }))
+        }
+        event.target.files = [];
+      }
+    }
+    customElements.define(Upload.is, Upload);
+
+  </script>
+</dom-module>

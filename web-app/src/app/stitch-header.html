@@ -15,7 +15,7 @@
 <dom-module id="stitch-header">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
       }
 
@@ -81,8 +81,6 @@
         z-index: 1;
       }
     </style>
-
-    </style>
     <app-header reveals>
       <paper-progress id="progress"></paper-progress>
       <app-toolbar>
@@ -122,6 +120,23 @@
   <script>
     class Header extends Polymer.Element {
       static get is() { return "stitch-header"; }
+
+      constructor() {
+        super();
+        this.progress = event => {
+          this.$.progress.value = event.detail;
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        window.addEventListener('progress', this.progress);
+      }
+
+      disconnectedCallback() {
+        super.disconnectedCallback();
+        window.removeEventListener('progress', this.progress);
+      }
 
       toggleMenu() {
         this.$.drawer.toggle();
