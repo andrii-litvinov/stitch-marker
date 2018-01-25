@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-auto-scroll/iron-auto-scroll-behavior.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="./stitch-pattern-card.html">
 <link rel="import" href="./stitch-upload.html">
 
@@ -58,7 +59,8 @@
         <stitch-pattern-card pattern-info="[[pattern]]" on-delete="delete"></stitch-pattern-card>
       </template>
     </div>
-    <stitch-upload on-upload="upload"></stitch-upload>
+    <stitch-upload on-upload="upload" on-error="error"></stitch-upload>
+    <paper-toast id="toast"></paper-toast>
   </template>
   <script>
     class Patterns extends Polymer.mixinBehaviors([Polymer.IronAutoScrollBehavior], Polymer.Element) {
@@ -97,6 +99,11 @@
         var cards = this.$.container.querySelectorAll('stitch-pattern-card');
         var latestCard = cards[cards.length - 1];
         this.smoothScroll(latestCard.offsetTop, 200);
+      }
+
+      error(event) {
+        this.$.toast.text = "Pattern upload failed.";
+        this.$.toast.open();
       }
     }
 

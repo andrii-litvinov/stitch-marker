@@ -129,15 +129,24 @@
 
       constructor() {
         super();
-        this.progress = event => {
+        this.progress = async event => {
           this.$.progress.classList.add("transiting");
-          this.$.progress.value = event.detail;
-          
-          if (this.$.progress.value === 100) {
-            setTimeout(() => {
-              this.$.progress.classList.remove("transiting");
-              this.$.progress.value = 0;
-            }, 500);
+          if (event.detail === 100 && this.$.progress.value < 100) {
+            this.$.progress.value = event.detail;
+            await Promise.delay(500);
+            this.$.progress.value = 0;
+          } else {
+            this.$.progress.value = event.detail;
+          }
+          this.$.progress.classList.remove("transiting");
+        };
+
+        this.progressrollback = async event => {
+          if (this.$.progress.value) {
+            this.$.progress.classList.add("transiting");
+            this.$.progress.value = 0;
+            await Promise.delay(500);
+            this.$.progress.classList.remove("transiting");
           }
         };
       }
@@ -145,11 +154,13 @@
       connectedCallback() {
         super.connectedCallback();
         window.addEventListener('progress', this.progress);
+        window.addEventListener('progressrollback', this.progressrollback);
       }
 
       disconnectedCallback() {
         super.disconnectedCallback();
         window.removeEventListener('progress', this.progress);
+        window.removeEventListener('progressrollback', this.progressrollback);
       }
 
       toggleMenu() {
