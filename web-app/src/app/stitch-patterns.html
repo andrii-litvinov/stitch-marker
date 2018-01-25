@@ -98,7 +98,10 @@
 
         var cards = this.$.container.querySelectorAll('stitch-pattern-card');
         var latestCard = cards[cards.length - 1];
-        this.smoothScroll(latestCard.offsetTop, 200);
+        var boundingRect = latestCard.getBoundingClientRect();
+        if (!(boundingRect.top >= 0 && boundingRect.bottom <= window.innerHeight)) {
+          this.smoothScroll(latestCard.offsetTop, 1000);
+        }
       }
 
       error(event) {
