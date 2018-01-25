@@ -26,6 +26,10 @@
 <body>
   <stitch-app></stitch-app>
   <script>
+
+    Promise.delay = delay => new Promise(resolve => setTimeout(resolve, delay));
+    Promise.yield = () => new Promise(resolve => setTimeout(resolve, 0));
+
     (function () {
       if (typeof fetch === 'undefined') {
         [

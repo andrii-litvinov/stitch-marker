@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-auto-scroll/iron-auto-scroll-behavior.html">
 <link rel="import" href="./stitch-pattern-card.html">
 <link rel="import" href="./stitch-upload.html">
 
@@ -60,7 +61,7 @@
     <stitch-upload on-upload="upload"></stitch-upload>
   </template>
   <script>
-    class Patterns extends Polymer.Element {
+    class Patterns extends Polymer.mixinBehaviors([Polymer.IronAutoScrollBehavior], Polymer.Element) {
       static get is() {
         return 'stitch-patterns';
       }
@@ -86,10 +87,16 @@
         localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
       }
 
-      upload(event) {
+      async upload(event) {
         const patternInfo = event.detail;
         this.push('patternInfos', patternInfo);
         localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
+
+        await Promise.yield();
+
+        var cards = this.$.container.querySelectorAll('stitch-pattern-card');
+        var latestCard = cards[cards.length - 1];
+        this.smoothScroll(latestCard.offsetTop, 200);
       }
     }
 
