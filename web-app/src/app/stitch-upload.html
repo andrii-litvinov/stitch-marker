@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 
 <dom-module id="stitch-upload">
   <template>
@@ -7,38 +8,11 @@
         display: block;
       }
 
-      button {
-        border: none;
-        outline: none;
+      paper-fab {
         position: fixed;
-        bottom: 0px;
-        right: 0px;
-        margin-right: 30px;
-        margin-bottom: 30px;
-      }
-
-      #add {
-        color: white;
-        --iron-icon-height: 30px;
-        --iron-icon-width: 30px;
-      }
-
-      #button {
-        background-color: #3F51B5;
-        border-radius: 50%;
-        height: 60px;
-        width: 60px;
-        -webkit-transition: 0.2s;
-        transition: 0.2s;
-        -webkit-box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
-        box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
-      }
-
-      #button:hover {
-        cursor: pointer;
-        background-color: #606fc7;
-        -webkit-box-shadow: 0 8px 15px 0 rgba(0, 0, 0, 0.3);
-        box-shadow: 0 8px 15px 0 rgba(0, 0, 0, 0.3);
+        bottom: 30px;
+        right: 30px;
+        --paper-fab-keyboard-focus-background: var(--accent-color);
       }
 
       div[slot=file-list] {
@@ -47,9 +21,7 @@
     </style>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" nodrop on-upload-response="onUploadResponse" on-upload-progress="onUploadProgress"
       on-upload-error="onUploadError">
-      <button slot="add-button" id="button">
-        <iron-icon icon="add" id="add"></iron-icon>
-      </button>
+      <paper-fab slot="add-button" icon="add" title="Upload pattern"></paper-fab>
       <div slot="file-list"></div>
     </vaadin-upload>
   </template>
