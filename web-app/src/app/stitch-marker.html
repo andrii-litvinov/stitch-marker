@@ -1,22 +1,22 @@
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
 <link rel="import" href="./stitch-canvas/stitch-canvas.html">
 
 <dom-module id="stitch-marker">
   <template>
     <style>
-       :host {
+      :host {
         display: none;
         width: 100%;
         height: 100%;
       }
 
-       :host([active]) {
+      :host([active]) {
         display: block;
       }
 
@@ -62,6 +62,10 @@
         transform: translate(-50%, -50%);
       }
 
+      paper-radio-group {
+        background-color: white;
+      }
+
       [icon*="zoom"] {
         background-color: white;
         border-radius: 50%;
@@ -70,7 +74,7 @@
       }
     </style>
 
-    <stitch-canvas id="canvas" zoom={{zoom}} display=[[display]]></stitch-canvas>
+    <stitch-canvas id="canvas" zoom={{zoom}} pattern-mode=[[patternMode]]></stitch-canvas>
 
     <div class="controls top right column">
       <paper-icon-button icon="zoom-in" title="[[zoom]]" on-tap="zoomIn"></paper-icon-button>
@@ -78,9 +82,10 @@
     </div>
 
     <div class="controls bottom right row">
-      <paper-button toggles raised active={{display.grid}}>Grid</paper-button>
-      <paper-button toggles raised active={{display.symbol}}>Symbols</paper-button>
-      <paper-button toggles raised active={{display.color}}>Color</paper-button>
+      <paper-radio-group selected="{{patternMode}}">
+        <paper-radio-button name="color">Color</paper-radio-button>
+        <paper-radio-button name="symbol">Symbol</paper-radio-button>
+      </paper-radio-group>
     </div>
 
     <paper-spinner active=[[loading]]></paper-spinner>
@@ -117,19 +122,16 @@
           loading: {
             type: Boolean,
             value: true
+          },
+          patternMode: {
+            type: String,
+            value: "color",
           }
         };
       }
 
       constructor() {
         super();
-
-        this.display = {
-          grid: true,
-          ruler: false,
-          symbol: false,
-          color: true
-        };
 
         this.events = {
           keyup: (e) => this._handleKeyUp(e),
@@ -168,7 +170,6 @@
           this.$.toast.open();
           return;
         }
-
         this.$.canvas.enabled = true;
         this.$.canvas.pattern = pattern;
         this.loading = false;

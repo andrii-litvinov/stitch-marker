@@ -36,13 +36,18 @@
             type: Number,
             reflectToAttribute: false,
             observer: "zoomChanged"
+          },
+
+          patternMode: {
+            type: String,
+            reflectToAttribute: false,
+            observer: "patternModeChanged"
           }
         };
       }
 
       connectedCallback() {
         super.connectedCallback();
-
         // TODO: Remove event listers in disconnected callback.
 
         window.addEventListener('resize', event => this.renderScene());
@@ -90,13 +95,20 @@
 
       patternChanged(pattern) {
         this.ctx = this.$.canvas.getContext('2d');
-        this.scene = new Scene(this.ctx, pattern);
+        this.scene = new Scene(this.ctx, pattern, this.patternMode);
         this.renderScene();
       }
 
       zoomChanged(zoom) {
         if (this.enabled) {
-          this.scene = new Scene(this.ctx, this.pattern, zoom, this.scene.x, this.scene.y);
+          this.scene = new Scene(this.ctx, this.pattern, this.patternMode, zoom, this.scene.x, this.scene.y);
+          this.renderScene();
+        }
+      }
+
+      patternModeChanged(patternMode) {
+        if (this.enabled) {
+          this.scene = new Scene(this.ctx, this.pattern, this.patternMode, this.zoom, this.scene.x, this.scene.y);
           this.renderScene();
         }
       }

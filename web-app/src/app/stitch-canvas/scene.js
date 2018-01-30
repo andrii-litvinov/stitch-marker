@@ -1,7 +1,8 @@
 class Scene {
-  constructor(ctx, pattern, zoom = 1, x = 0, y = 0) {
+  constructor(ctx, pattern, patternMode, zoom = 1, x = 0, y = 0) {
     this.ctx = ctx;
     this.tiles = [];
+    this.patternMode = patternMode;
     this.x = x;
     this.y = y;
     this.width = pattern.width;
@@ -52,7 +53,7 @@ class Scene {
           const offsetY = row * Tile.size
 
           this.ctx.translate(offsetX + this.x, offsetY + this.y);
-          tile.render(this.ctx, -offsetX, -offsetY);
+          tile.render(this.ctx, -offsetX, -offsetY, this.patternMode);
 
           rendered++
 
