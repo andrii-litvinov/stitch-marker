@@ -12,6 +12,7 @@
       }
     </style>
     <canvas id="canvas"></canvas>
+    <span id="fontMeasure"></span>
   </template>
   <script src="../helpers/round-rect.js"></script>
   <script src="./config.js"></script>
@@ -95,6 +96,14 @@
 
       patternChanged(pattern) {
         this.ctx = this.$.canvas.getContext('2d');
+        this.ctx.measureText = text => {
+          const metrics = Object.getPrototypeOf(this.ctx).measureText.call(this.ctx, text);
+          this.$.fontMeasure.style.font = this.ctx.font;
+          this.$.fontMeasure.style.color = "transparent";
+          this.$.fontMeasure.textContent = text;
+          metrics.height = this.$.fontMeasure.getBoundingClientRect().height;
+          return metrics;
+        };
         this.scene = new Scene(this.ctx, pattern, this.patternMode);
         this.renderScene();
       }

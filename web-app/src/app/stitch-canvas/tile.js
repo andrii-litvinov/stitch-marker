@@ -25,10 +25,12 @@ class Tile {
       case "symbol":
         this.stitches.forEach(stitch => {
           ctx.fillStyle = 'black';
-          ctx.font = this.stitchSize * .9 + "px Arial";
+          ctx.textBaseline = "middle";
+          ctx.font = this.stitchSize * 0.8 + "px Arial";
+          var metrics = ctx.measureText(this.config[stitch.configurationIndex].symbol);
           ctx.fillText(this.config[stitch.configurationIndex].symbol,
-            stitch.point.x * this.stitchSize + offsetX,
-            stitch.point.y * this.stitchSize + offsetY);
+            stitch.point.x * this.stitchSize + (this.stitchSize - metrics.width) / 2 + offsetX,
+            stitch.point.y * this.stitchSize + this.stitchSize / 2 + offsetY);
         })
         break;
       default:
