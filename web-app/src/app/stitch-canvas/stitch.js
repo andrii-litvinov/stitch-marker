@@ -1,58 +1,36 @@
 class Stitch {
-  static toPixel(n, ratio) { return n * ratio }
-  
-  constructor(data) {
-    this.selected = false;
-    this.x = null;
-    this.y = null;
-    this.symbol = '';
-    this.color = 'white';
-    
-    Object.assign(this, data);
+
+  constructor(config, stitchSize, stitches) {
+    this.config = config;
+    this.stitchSize = stitchSize;
+    this.stitches = stitches;
   }
 
-  draw(ctx, size, drawSymbol = true, drawColor = true) {
-    // cached last arguments for redrawing grid
-    if (arguments.length) {
-      this.draw._prevArguments = [...arguments];
+  draw(ctx, offsetX, offsetY, patternMode) {
+    switch (patternMode) {
+      case "color":
+        this.stitches.forEach(stitch => {
+          ctx.fillStyle = this.config[stitch.configurationIndex].hexColor;
+          ctx.fillRect(
+            stitch.point.x * this.stitchSize + offsetX,
+            stitch.point.y * this.stitchSize + offsetY,
+            this.stitchSize, this.stitchSize);
+        })
+        break;
+      case "symbol":
+        this.stitches.forEach(stitch => {
+          ctx.fillStyle = 'black';
+          ctx.textBaseline = "middle";
+          ctx.font = this.stitchSize * 0.8 + "px Arial";
+          var metrics = ctx.measureText(this.config[stitch.configurationIndex].symbol);
+          ctx.fillText(this.config[stitch.configurationIndex].symbol,
+            stitch.point.x * this.stitchSize + (this.stitchSize - metrics.width) / 2 + offsetX,
+            stitch.point.y * this.stitchSize + this.stitchSize / 2 + offsetY);
+        })
+        break;
+      default:
+        throw `PatternMode '${patternMode}' is not supported.`;
+        break;
     }
-    
-    let
-      cx = Stitch.toPixel(this.x, size),
-      cy = Stitch.toPixel(this.y, size);
-
-
-    // draw color
-    if (drawColor) {
-      ctx.fillStyle = this.color;
-      ctx.fillRect(cx, cy, size, size);
-    }
-
-    // draw symbol
-    if (drawSymbol && this.symbol) {
-      const symbolWidth = ctx.measureText(this.symbol).width;
-      ctx.fillStyle = 'black';
-      ctx.font = size * .9 + "px Arial";
-
-      ctx.fillText(
-        this.symbol,
-        cx + (size - symbolWidth) / 2,
-        cy + size * .9
-      );
-    }
-
-    if (this.selected) {
-      const lineWidth = 2;
-      ctx.lineWidth = lineWidth;
-      ctx.strokeStyle = 'red';
-      ctx.strokeRect(cx + (lineWidth + 0.5), cy + (lineWidth + 0.5), size - (2 * lineWidth + 0.5), size - (2 * lineWidth + 0.5));
-    }
-  }
-  redraw() {
-    this.draw(...this.draw._prevArguments);
-  }
-  toggle() {
-    this.selected = !this.selected;
-    this.redraw();
   }
 }
