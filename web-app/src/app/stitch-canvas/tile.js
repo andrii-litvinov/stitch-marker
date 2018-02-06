@@ -8,13 +8,30 @@ class Tile {
   }
 
   add(stitch) {
-    this.stitches.push(stitch);
+    this.stitches.push(new Stitch(this.config[stitch.configurationIndex], this.stitchSize, stitch));
+  }
+
+  createContext() {
+    var canvas = document.createElement('canvas');
+    canvas.width = Tile.size;
+    canvas.height = Tile.size;
+    return canvas.getContext("2d");
   }
 
   render(ctx, offsetX, offsetY, patternMode) {
-    new Stitch(this.config, this.stitchSize, this.stitches).draw(ctx, offsetX, offsetY, patternMode);
-    ctx.beginPath();
-    ctx.rect(0, 0, Tile.size, Tile.size);
-    ctx.stroke();
+    if (!this.ctx) {
+      this.ctx = this.createContext();
+      
+      this.ctx.translate(-offsetX, -offsetY);
+      this.stitches.forEach(stitch => {
+        stitch.draw(this.ctx, patternMode);
+      });
+      this.ctx.resetTransform();
+
+      this.ctx.beginPath();
+      this.ctx.rect(0, 0, Tile.size, Tile.size);
+      this.ctx.stroke();
+    }
+    ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
   }
 }

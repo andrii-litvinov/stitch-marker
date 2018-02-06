@@ -38,31 +38,26 @@ class Scene {
 
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.translate(this.x, this.y);
 
     let horizontal = this.getTilesBounds(this.y, this.height, this.ctx.canvas.height);
-    let vartical = this.getTilesBounds(this.x, this.width, this.ctx.canvas.width);
+    let vertical = this.getTilesBounds(this.x, this.width, this.ctx.canvas.width);
     let rendered = 0;
 
     for (let row = horizontal.start; row < horizontal.end; row++) {
-      for (let column = vartical.start; column < vartical.end; column++) {
+      for (let column = vertical.start; column < vertical.end; column++) {
         let tile = this.tiles[row * this.height + column];
         if (tile) {
-          this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-
           const offsetX = column * Tile.size;
           const offsetY = row * Tile.size
-
-          this.ctx.translate(offsetX + this.x, offsetY + this.y);
-          tile.render(this.ctx, -offsetX, -offsetY, this.patternMode);
-
-          rendered++
-
-          this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+          tile.render(this.ctx, offsetX, offsetY, this.patternMode);         
+          rendered++;
         }
       }
     }
 
     console.log(`rendered: ${rendered}`);
+    this.ctx.resetTransform();
   }
 
   getTilesBounds(coordinate, size, canvasSize) {
