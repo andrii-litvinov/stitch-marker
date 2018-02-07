@@ -8,7 +8,7 @@ class Tile {
   }
 
   add(stitch) {
-    this.stitches.push(new Stitch(this.config[stitch.configurationIndex], this.stitchSize, stitch));
+    this.stitches.push(stitch);
   }
 
   createContext() {

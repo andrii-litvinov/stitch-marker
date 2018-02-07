@@ -7,27 +7,32 @@ class Scene {
     this.y = y;
     this.width = pattern.width;
     this.height = pattern.height;
+    this.patternConfig = pattern.configurations;
+    this.stitchSize = Math.floor(zoom * config.stitchSize);
 
-    let stitchSize = Math.floor(zoom * config.stitchSize);
     let stitchesPerTile = Tile.size / stitchSize;
 
-    pattern.stitches.forEach((stitch) => {
+    pattern.stitches.forEach(s => {
+      const stitch = new Stitch(pattern.configurations[s.configurationIndex], this.stitchSize, s);
       let column = Math.floor(stitch.point.x / stitchesPerTile);
-      let spanAcrossColumns = stitch.point.x * stitchSize > (column + 1) * Tile.size;
-
       let row = Math.floor(stitch.point.y / stitchesPerTile);
-      let spanAcrossRows = stitch.point.y * stitchSize > (row + 1) * Tile.size;
+      const spanMultipleTilesX = (stitch.point.x + 1) * this.stitchSize > (column + 1) * Tile.size;
+      const spanMultipleTilesY = (stitch.point.y + 1) * this.stitchSize > (row + 1) * Tile.size;
 
-      let tile = this.tiles[row * this.height + column];
-      if (!tile) {
-        tile = new Tile(pattern.configurations, stitchSize);
-        this.tiles[row * this.height + column] = tile;
-      }
-      tile.add(stitch);
-
-      // TODO: Add stitches spanning across tiles. Set offets.
-
+      this.addStitchToTile(row, column, stitch);
+      if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch);
+      if (spanMultipleTilesY) this.addStitchToTile(row + 1, column, stitch);
+      if (spanMultipleTilesY && spanMultipleTilesX) this.addStitchToTile(row + 1, column + 1, stitch);
     });
+  }
+
+  addStitchToTile(row, column, stitch) {
+    let tile = this.tiles[row * this.height + column];
+    if (!tile) {
+      tile = new Tile(this.patternConfig, this.stitchSize);
+      this.tiles[row * this.height + column] = tile;
+    }
+    tile.add(stitch);
   }
 
   translate(x, y) {
@@ -50,7 +55,7 @@ class Scene {
         if (tile) {
           const offsetX = column * Tile.size;
           const offsetY = row * Tile.size
-          tile.render(this.ctx, offsetX, offsetY, this.patternMode);         
+          tile.render(this.ctx, offsetX, offsetY, this.patternMode);
           rendered++;
         }
       }
