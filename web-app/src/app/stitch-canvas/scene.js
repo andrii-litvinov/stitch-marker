@@ -10,7 +10,7 @@ class Scene {
     this.patternConfig = pattern.configurations;
     this.stitchSize = Math.floor(zoom * config.stitchSize);
 
-    let stitchesPerTile = Tile.size / stitchSize;
+    let stitchesPerTile = Tile.size / this.stitchSize;
 
     pattern.stitches.forEach(s => {
       const stitch = new Stitch(pattern.configurations[s.configurationIndex], this.stitchSize, s);
