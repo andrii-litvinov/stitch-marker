@@ -70,6 +70,7 @@
         const onEnd = event => position = null;
 
         const onMove = event => {
+          event.preventDefault();
           if (position) {
             const newPosition = getPosition(event);
             const dx = newPosition.x - position.x;
