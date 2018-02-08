@@ -110,15 +110,13 @@
 
       zoomChanged(zoom) {
         if (this.enabled) {
-          this.scene = new Scene(this.ctx, this.pattern, this.patternMode, zoom, this.scene.x, this.scene.y);
-          this.renderScene();
+          this.scene.setZoom(zoom);
         }
       }
 
       patternModeChanged(patternMode) {
         if (this.enabled) {
-          this.scene = new Scene(this.ctx, this.pattern, this.patternMode, this.zoom, this.scene.x, this.scene.y);
-          this.renderScene();
+          this.scene.setPatternMode(patternMode);
         }
       }
 

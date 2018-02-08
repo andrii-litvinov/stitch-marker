@@ -19,12 +19,13 @@ class Tile {
   }
 
   render(ctx, offsetX, offsetY, patternMode) {
-    if (!this.ctx) {
+    if (!this.ctx || this.patternMode != patternMode) {
+      this.patternMode = patternMode;
       this.ctx = this.createContext();
       
       this.ctx.translate(-offsetX, -offsetY);
       this.stitches.forEach(stitch => {
-        stitch.draw(this.ctx, patternMode);
+        stitch.draw(this.ctx, this.patternMode);
       });
       this.ctx.resetTransform();
 

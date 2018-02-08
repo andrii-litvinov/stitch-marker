@@ -1,39 +1,56 @@
 class Scene {
   constructor(ctx, pattern, patternMode, zoom = 1, x = 0, y = 0) {
     this.ctx = ctx;
-    this.tiles = [];
+    this.pattern = pattern;
     this.patternMode = patternMode;
+    this.zoom = zoom;
     this.x = x;
     this.y = y;
     this.width = pattern.width;
     this.height = pattern.height;
-    this.patternConfig = pattern.configurations;
-    this.stitchSize = Math.floor(zoom * config.stitchSize);
 
-    let stitchesPerTile = Tile.size / this.stitchSize;
+    this.rearrangeTiles();
+  }
 
-    pattern.stitches.forEach(s => {
-      const stitch = new Stitch(pattern.configurations[s.configurationIndex], this.stitchSize, s);
+  rearrangeTiles() {
+    this.tiles = [];
+    let stitchSize = Math.floor(this.zoom * config.stitchSize);
+    let stitchesPerTile = Tile.size / stitchSize;
+
+    this.pattern.stitches.forEach(s => {
+      const stitch = new Stitch(this.pattern.configurations[s.configurationIndex], stitchSize, s);
       let column = Math.floor(stitch.point.x / stitchesPerTile);
       let row = Math.floor(stitch.point.y / stitchesPerTile);
-      const spanMultipleTilesX = (stitch.point.x + 1) * this.stitchSize > (column + 1) * Tile.size;
-      const spanMultipleTilesY = (stitch.point.y + 1) * this.stitchSize > (row + 1) * Tile.size;
+      const spanMultipleTilesX = (stitch.point.x + 1) * stitchSize > (column + 1) * Tile.size;
+      const spanMultipleTilesY = (stitch.point.y + 1) * stitchSize > (row + 1) * Tile.size;
 
-      this.addStitchToTile(row, column, stitch);
-      if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch);
-      if (spanMultipleTilesY) this.addStitchToTile(row + 1, column, stitch);
-      if (spanMultipleTilesY && spanMultipleTilesX) this.addStitchToTile(row + 1, column + 1, stitch);
+      this.addStitchToTile(row, column, stitch, stitchSize);
+      if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch, stitchSize);
+      if (spanMultipleTilesY) this.addStitchToTile(row + 1, column, stitch, stitchSize);
+      if (spanMultipleTilesY && spanMultipleTilesX) this.addStitchToTile(row + 1, column + 1, stitch, stitchSize);
     });
   }
 
-  addStitchToTile(row, column, stitch) {
+  addStitchToTile(row, column, stitch, stitchSize) {
     let tile = this.tiles[row * this.height + column];
     if (!tile) {
-      tile = new Tile(this.patternConfig, this.stitchSize);
+      tile = new Tile(this.pattern.configurations, stitchSize);
       this.tiles[row * this.height + column] = tile;
     }
     tile.add(stitch);
   }
+
+  setPatternMode(patternMode) {
+    this.patternMode = patternMode;
+    this.render();
+  }
+
+  setZoom(zoom) {
+    this.zoom = zoom;
+    this.rearrangeTiles();
+    this.render();
+  }
+
 
   translate(x, y) {
     this.x += x;
