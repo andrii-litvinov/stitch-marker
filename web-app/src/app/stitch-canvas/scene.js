@@ -6,36 +6,42 @@ class Scene {
     this.zoom = zoom;
     this.x = x;
     this.y = y;
-    this.width = pattern.width;
-    this.height = pattern.height;
 
+    this.generateStitches();
     this.rearrangeTiles();
+  }
+
+  generateStitches() {
+    this.stitches = [];
+    this.pattern.stitches.forEach(s => {
+      const stitch = new Stitch(this.pattern.configurations[s.configurationIndex], s);
+      this.stitches[stitch.point.x * this.pattern.height + stitch.point.y] = stitch;
+    });
   }
 
   rearrangeTiles() {
     this.tiles = [];
-    let stitchSize = Math.floor(this.zoom * config.stitchSize);
-    let stitchesPerTile = Tile.size / stitchSize;
+    this.stitchSize = Math.floor(this.zoom * config.stitchSize);
+    let stitchesPerTile = Tile.size / this.stitchSize;
 
-    this.pattern.stitches.forEach(s => {
-      const stitch = new Stitch(this.pattern.configurations[s.configurationIndex], stitchSize, s);
+    this.stitches.forEach(stitch => {
       let column = Math.floor(stitch.point.x / stitchesPerTile);
       let row = Math.floor(stitch.point.y / stitchesPerTile);
-      const spanMultipleTilesX = (stitch.point.x + 1) * stitchSize > (column + 1) * Tile.size;
-      const spanMultipleTilesY = (stitch.point.y + 1) * stitchSize > (row + 1) * Tile.size;
+      const spanMultipleTilesX = (stitch.point.x + 1) * this.stitchSize > (column + 1) * Tile.size;
+      const spanMultipleTilesY = (stitch.point.y + 1) * this.stitchSize > (row + 1) * Tile.size;
 
-      this.addStitchToTile(row, column, stitch, stitchSize);
-      if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch, stitchSize);
-      if (spanMultipleTilesY) this.addStitchToTile(row + 1, column, stitch, stitchSize);
-      if (spanMultipleTilesY && spanMultipleTilesX) this.addStitchToTile(row + 1, column + 1, stitch, stitchSize);
+      this.addStitchToTile(row, column, stitch);
+      if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch);
+      if (spanMultipleTilesY) this.addStitchToTile(row + 1, column, stitch);
+      if (spanMultipleTilesY && spanMultipleTilesX) this.addStitchToTile(row + 1, column + 1, stitch);
     });
   }
 
-  addStitchToTile(row, column, stitch, stitchSize) {
-    let tile = this.tiles[row * this.height + column];
+  addStitchToTile(row, column, stitch) {
+    let tile = this.tiles[row * this.pattern.height + column];
     if (!tile) {
-      tile = new Tile(this.pattern.configurations, stitchSize);
-      this.tiles[row * this.height + column] = tile;
+      tile = new Tile();
+      this.tiles[row * this.pattern.height + column] = tile;
     }
     tile.add(stitch);
   }
@@ -51,7 +57,6 @@ class Scene {
     this.render();
   }
 
-
   translate(x, y) {
     this.x += x;
     this.y += y;
@@ -62,17 +67,17 @@ class Scene {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.x, this.y);
 
-    let horizontal = this.getTilesBounds(this.y, this.height, this.ctx.canvas.height);
-    let vertical = this.getTilesBounds(this.x, this.width, this.ctx.canvas.width);
+    let horizontal = this.getTilesBounds(this.y, this.pattern.height, this.ctx.canvas.height);
+    let vertical = this.getTilesBounds(this.x, this.pattern.width, this.ctx.canvas.width);
     let rendered = 0;
 
     for (let row = horizontal.start; row < horizontal.end; row++) {
       for (let column = vertical.start; column < vertical.end; column++) {
-        let tile = this.tiles[row * this.height + column];
+        let tile = this.tiles[row * this.pattern.height + column];
         if (tile) {
           const offsetX = column * Tile.size;
           const offsetY = row * Tile.size
-          tile.render(this.ctx, offsetX, offsetY, this.patternMode);
+          tile.render(this, offsetX, offsetY);
           rendered++;
         }
       }

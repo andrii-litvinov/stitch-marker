@@ -1,9 +1,7 @@
 class Tile {
   static get size() { return 256; }
 
-  constructor(config, stitchSize) {
-    this.config = config;
-    this.stitchSize = stitchSize;
+  constructor() {
     this.stitches = [];
   }
 
@@ -18,21 +16,19 @@ class Tile {
     return canvas.getContext("2d");
   }
 
-  render(ctx, offsetX, offsetY, patternMode) {
-    if (!this.ctx || this.patternMode != patternMode) {
-      this.patternMode = patternMode;
+  render(scene, offsetX, offsetY) {
+    if (!this.ctx || this.patternMode != scene.patternMode) {
+      this.patternMode = scene.patternMode;
       this.ctx = this.createContext();
       
       this.ctx.translate(-offsetX, -offsetY);
-      this.stitches.forEach(stitch => {
-        stitch.draw(this.ctx, this.patternMode);
-      });
+      this.stitches.forEach(stitch => stitch.draw(this.ctx, scene));
       this.ctx.resetTransform();
 
       this.ctx.beginPath();
       this.ctx.rect(0, 0, Tile.size, Tile.size);
       this.ctx.stroke();
     }
-    ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
+    scene.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
   }
 }

@@ -1,32 +1,32 @@
 class Stitch {
 
-  constructor(config, stitchSize, data) {
+  constructor(config, data) {
     this.config = config;
-    this.stitchSize = stitchSize;
-
     Object.assign(this, data);
   }
 
-  draw(ctx, patternMode) {
-    switch (patternMode) {
+  draw(ctx, scene) {
+    switch (scene.patternMode) {
       case "color":
         ctx.fillStyle = this.config.hexColor;
         ctx.fillRect(
-          this.point.x * this.stitchSize,
-          this.point.y * this.stitchSize,
-          this.stitchSize, this.stitchSize);
+          this.point.x * scene.stitchSize,
+          this.point.y * scene.stitchSize,
+          scene.stitchSize,
+          scene.stitchSize);
         break;
       case "symbol":
         ctx.fillStyle = 'black';
         ctx.textBaseline = "middle";
-        ctx.font = this.stitchSize * 0.8 + "px Arial";
+        ctx.font = scene.stitchSize * 0.8 + "px Arial";
         var metrics = ctx.measureText(this.config.symbol);
-        ctx.fillText(this.config.symbol,
-          this.point.x * this.stitchSize + (this.stitchSize - metrics.width) / 2,
-          this.point.y * this.stitchSize + this.stitchSize / 2);
+        ctx.fillText(
+          this.config.symbol,
+          this.point.x * scene.stitchSize + (scene.stitchSize - metrics.width) / 2,
+          this.point.y * scene.stitchSize + scene.stitchSize / 2);
         break;
       default:
-        throw `PatternMode '${patternMode}' is not supported.`;
+        throw `PatternMode '${scene.patternMode}' is not supported.`;
         break;
     }
   }
