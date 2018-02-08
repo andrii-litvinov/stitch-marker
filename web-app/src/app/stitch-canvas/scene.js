@@ -63,6 +63,12 @@ class Scene {
     this.render();
   }
 
+  handleClick(x, y) {
+    let coordX = Math.floor((x - this.x) / this.stitchSize);
+    let coordY = Math.floor((y - this.y) / this.stitchSize);
+    let stitch = this.stitches[coordX * this.pattern.height + coordY];
+  }
+
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.x, this.y);
