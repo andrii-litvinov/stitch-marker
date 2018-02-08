@@ -52,8 +52,9 @@
         // TODO: Remove event listers in disconnected callback.
 
         window.addEventListener('resize', event => this.renderScene());
-        this.$.canvas.addEventListener('click', e => {
-          this.scene.handleClick(e.clientX, e.clientY);
+
+        this.addEventListener('tap', e => {
+          this.scene.handleClick(e.detail.x, e.detail.y);
         })
 
         let requestId = 0;

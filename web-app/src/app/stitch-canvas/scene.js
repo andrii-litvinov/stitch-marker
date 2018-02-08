@@ -67,6 +67,7 @@ class Scene {
     let coordX = Math.floor((x - this.x) / this.stitchSize);
     let coordY = Math.floor((y - this.y) / this.stitchSize);
     let stitch = this.stitches[coordX * this.pattern.height + coordY];
+    console.log(stitch);
   }
 
   render() {
