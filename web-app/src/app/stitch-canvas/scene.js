@@ -22,6 +22,7 @@ class Scene {
 
   rearrangeTiles() {
     this.tiles.forEach(tile => tile.dispose());
+    this.tiles.length = 0;
 
     this.stitchSize = Math.floor(this.zoom * config.stitchSize);
     let stitchesPerTile = Tile.size / this.stitchSize;
