@@ -10,9 +10,11 @@ class Tile {
 
   add(stitch) {
     this.stitches.push(stitch);
-    stitch.addEventListener("change", () => {
-      this.render(true);
-    });
+    stitch.addEventListener("change", () => this.render(true));
+  }
+
+  dispose() {
+    this.stitches.forEach(stitch => stitch.removeEventListener("change", () => this.render(true)));
   }
 
   createContext() {

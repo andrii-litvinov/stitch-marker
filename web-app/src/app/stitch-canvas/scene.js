@@ -6,6 +6,7 @@ class Scene {
     this.zoom = zoom;
     this.x = x;
     this.y = y;
+    this.tiles = [];
 
     this.generateStitches();
     this.rearrangeTiles();
@@ -20,7 +21,8 @@ class Scene {
   }
 
   rearrangeTiles() {
-    this.tiles = [];
+    this.tiles.forEach(tile => tile.dispose());
+
     this.stitchSize = Math.floor(this.zoom * config.stitchSize);
     let stitchesPerTile = Tile.size / this.stitchSize;
 
