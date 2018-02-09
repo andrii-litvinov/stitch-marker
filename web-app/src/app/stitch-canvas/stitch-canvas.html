@@ -15,6 +15,7 @@
     <span id="fontMeasure"></span>
   </template>
   <script src="../helpers/round-rect.js"></script>
+  <script src="./eventDispatcher.js"></script>
   <script src="./config.js"></script>
   <script src="./point.js"></script>
   <script src="./stitch.js"></script>
@@ -53,7 +54,11 @@
 
         window.addEventListener('resize', event => this.renderScene());
 
-        let reuestId = 0;
+        this.addEventListener('tap', e => {
+          this.scene.tap(e.detail.x, e.detail.y);
+        })
+
+        let requestId = 0;
         let position = null;
 
         const getPosition = event => {
@@ -70,14 +75,15 @@
         const onEnd = event => position = null;
 
         const onMove = event => {
+          event.preventDefault();
           if (position) {
             const newPosition = getPosition(event);
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
             position = newPosition;
 
-            if (reuestId) cancelAnimationFrame(reuestId);
-            reuestId = reuestId = requestAnimationFrame(() => this.scene.translate(dx, dy));
+            if (requestId) cancelAnimationFrame(requestId);
+            requestId = requestId = requestAnimationFrame(() => this.scene.translate(dx, dy));
           }
         };
 
