@@ -6,15 +6,16 @@ class Tile {
     this.row = row;
     this.column = column;
     this.stitches = [];
+    this.rerender = () => this.render(true);
   }
 
   add(stitch) {
     this.stitches.push(stitch);
-    stitch.addEventListener("change", () => this.render(true));
+    stitch.addEventListener("change", this.rerender);
   }
 
   dispose() {
-    this.stitches.forEach(stitch => stitch.removeEventListener("change", () => this.render(true)));
+    this.stitches.forEach(stitch => stitch.removeEventListener("change", this.rerender));
   }
 
   createContext() {
@@ -39,6 +40,7 @@ class Tile {
       this.ctx.rect(0, 0, Tile.size, Tile.size);
       this.ctx.stroke();
     }
+
     this.scene.ctx.translate(this.scene.x, this.scene.y);
     this.scene.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
     this.scene.ctx.resetTransform();
