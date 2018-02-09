@@ -6,10 +6,16 @@ class Stitch extends EventDispatcher {
     Object.assign(this, data);
   }
 
+  tap() {
+    this.marked = !this.marked;
+    this.dispatchEvent(new CustomEvent("change"));
+  }
+
   draw(ctx, scene) {
     switch (scene.patternMode) {
       case "color":
         ctx.fillStyle = this.config.hexColor;
+        if (this.marked) ctx.fillStyle = "black";
         ctx.fillRect(
           this.point.x * scene.stitchSize,
           this.point.y * scene.stitchSize,
@@ -18,6 +24,7 @@ class Stitch extends EventDispatcher {
         break;
       case "symbol":
         ctx.fillStyle = 'black';
+        if (this.marked) ctx.fillStyle = "blue";
         ctx.textBaseline = "middle";
         ctx.font = scene.stitchSize * 0.8 + "px Arial";
         var metrics = ctx.measureText(this.config.symbol);

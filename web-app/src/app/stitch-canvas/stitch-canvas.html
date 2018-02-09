@@ -15,13 +15,13 @@
     <span id="fontMeasure"></span>
   </template>
   <script src="../helpers/round-rect.js"></script>
+  <script src="./eventDispatcher.js"></script>
   <script src="./config.js"></script>
   <script src="./point.js"></script>
   <script src="./stitch.js"></script>
   <script src="./grid.js"></script>
   <script src="./tile.js"></script>
   <script src="./scene.js"></script>
-  <script src="./eventDispatcher.js"></script>
   <script>
     class Canvas extends Polymer.Element {
       static get is() { return 'stitch-canvas'; }
@@ -55,7 +55,7 @@
         window.addEventListener('resize', event => this.renderScene());
 
         this.addEventListener('tap', e => {
-          this.scene.markStitch(e.detail.x, e.detail.y);
+          this.scene.tap(e.detail.x, e.detail.y);
         })
 
         let requestId = 0;
