@@ -1,6 +1,7 @@
-class Stitch {
-
+class Stitch extends EventDispatcher {
   constructor(config, data) {
+    super();
+
     this.config = config;
     Object.assign(this, data);
   }

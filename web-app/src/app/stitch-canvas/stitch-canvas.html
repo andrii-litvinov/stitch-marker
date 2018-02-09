@@ -21,6 +21,7 @@
   <script src="./grid.js"></script>
   <script src="./tile.js"></script>
   <script src="./scene.js"></script>
+  <script src="./eventDispatcher.js"></script>
   <script>
     class Canvas extends Polymer.Element {
       static get is() { return 'stitch-canvas'; }
@@ -54,7 +55,7 @@
         window.addEventListener('resize', event => this.renderScene());
 
         this.addEventListener('tap', e => {
-          this.scene.handleClick(e.detail.x, e.detail.y);
+          this.scene.markStitch(e.detail.x, e.detail.y);
         })
 
         let requestId = 0;
