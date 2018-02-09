@@ -12,7 +12,6 @@ class Tile {
     this.stitches.push(stitch);
     stitch.addEventListener("change", () => {
       this.render(true);
-      this.scene.ctx.resetTransform();
     });
   }
 
