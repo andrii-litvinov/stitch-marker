@@ -24,6 +24,8 @@
     "app-layout": "PolymerElements/app-layout#^2.0.1",
     "paper-tabs": "PolymerElements/paper-tabs#^2.0.0",
     "paper-card": "PolymerElements/paper-card#^2.0.0",
+    "paper-progress": "PolymerElements/paper-progress#^2.0.1",
+    "paper-fab": "PolymerElements/paper-fab#^2.0.0",
     "iron-auto-scroll": "Zecat/iron-auto-scroll#^0.4.0"
   }
 }

@@ -25,7 +25,6 @@ class Stitch extends EventDispatcher {
           scene.stitchSize);
         break;
       case "symbol":
-        ctx.fillStyle = 'black';
         ctx.fillStyle = shadeBlendConvert(.2, this.config.hexColor);
         if (this.marked) ctx.fillStyle = shadeBlendConvert(.5, this.config.hexColor);
         ctx.textBaseline = "middle";
