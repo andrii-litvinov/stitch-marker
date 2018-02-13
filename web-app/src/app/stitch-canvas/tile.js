@@ -34,7 +34,7 @@ class Tile {
       this.ctx = this.createContext();
       this.ctx.translate(-offsetX, -offsetY);
       this.stitches.forEach(stitch => stitch.draw(this.ctx, this.scene));
-      this.ctx.resetTransform();
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       this.ctx.beginPath();
       this.ctx.rect(0, 0, Tile.size, Tile.size);
@@ -43,6 +43,6 @@ class Tile {
 
     this.scene.ctx.translate(this.scene.x, this.scene.y);
     this.scene.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
-    this.scene.ctx.resetTransform();
+    this.scene.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 }

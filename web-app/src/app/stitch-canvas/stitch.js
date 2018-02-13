@@ -28,7 +28,7 @@ class Stitch extends EventDispatcher {
         ctx.fillStyle = shadeBlendConvert(.2, this.config.hexColor);
         if (this.marked) ctx.fillStyle = shadeBlendConvert(.5, this.config.hexColor);
         ctx.textBaseline = "middle";
-        ctx.font = scene.stitchSize * 0.8 + "px Arial";
+        ctx.font = scene.stitchSize * 0.8 + "px CrossStitch3";
         var metrics = ctx.measureText(this.config.symbol);
         ctx.fillText(
           this.config.symbol,

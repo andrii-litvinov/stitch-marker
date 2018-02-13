@@ -14,6 +14,7 @@
     <canvas id="canvas"></canvas>
     <span id="fontMeasure"></span>
   </template>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
   <script src="../helpers/round-rect.js"></script>
   <script src="./event-dispatcher.js"></script>
   <script src="./colors.js"></script>
@@ -49,9 +50,24 @@
         };
       }
 
+      constructor() {
+        super();
+        this.fontLoad = new Promise((resolve, reject) => {
+          WebFont.load({
+            custom: {
+              families: ['CrossStitch3'],
+              urls: ['../../fonts/cross-stitch-3.css']
+            },
+            active: () => resolve(),
+            inactive: () => reject()
+          });
+        });
+      }
+
       connectedCallback() {
         super.connectedCallback();
         // TODO: Remove event listers in disconnected callback.
+
 
         window.addEventListener('resize', event => this.renderScene());
 
@@ -127,13 +143,13 @@
         }
       }
 
-      renderScene() {
+      async renderScene() {
         this.$.canvas.width = this.offsetWidth;
         this.$.canvas.height = this.offsetHeight;
+        await this.fontLoad;
         this.scene.render();
       }
     }
-
     customElements.define(Canvas.is, Canvas);
   </script>
 </dom-module>
