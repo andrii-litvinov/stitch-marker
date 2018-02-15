@@ -21,6 +21,7 @@
   <script src="./stitch.js"></script>
   <script src="./grid.js"></script>
   <script src="./tile.js"></script>
+  <script src="./grid-layer.js"></script>
   <script src="./stitches-layer.js"></script>
   <script src="./scene.js"></script>
   <script>
@@ -65,16 +66,9 @@
 
       connectedCallback() {
         super.connectedCallback();
-        // TODO: Remove event listers in disconnected callback.
 
-        window.addEventListener('resize', event => this.resize());
-
-        this.addEventListener('tap', e => {
-          this.scene.tap(e.detail.x, e.detail.y);
-        })
-
-        let requestId = 0;
         let position = null;
+        let requestId = 0;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -101,6 +95,9 @@
             requestId = requestId = requestAnimationFrame(() => this.scene.translate(dx, dy));
           }
         };
+
+        window.addEventListener('resize', event => this.resize());
+        this.addEventListener('tap', e => this.scene.tap(e.detail.x, e.detail.y));
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
           this.addEventListener(type, onStart);
