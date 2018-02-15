@@ -120,8 +120,7 @@
             value: 1
           },
           loading: {
-            type: Boolean,
-            value: true
+            type: Boolean
           },
           patternMode: {
             type: String,
@@ -156,22 +155,20 @@
       }
 
       async _fetchData() {
-        let pattern;
+        this.loading = true;
 
         try {
           const json = localStorage.getItem("patternInfo");
           if (!json) return;
-          let patternInfo = JSON.parse(json);
+          const patternInfo = JSON.parse(json);
           const response = await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
-          pattern = await response.json();
+          this.$.canvas.pattern = await response.json();
+          this.$.canvas.enabled = true;
         } catch (error) {
-          this.loading = false;
           this.$.toast.text = error;
           this.$.toast.open();
-          return;
         }
-        this.$.canvas.enabled = true;
-        this.$.canvas.pattern = pattern;
+
         this.loading = false;
       }
 

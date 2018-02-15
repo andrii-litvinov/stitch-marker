@@ -11,8 +11,6 @@
         user-select: none;
       }
     </style>
-    <canvas id="canvas"></canvas>
-    <span id="fontMeasure"></span>
   </template>
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
   <script src="../helpers/round-rect.js"></script>
@@ -23,6 +21,7 @@
   <script src="./stitch.js"></script>
   <script src="./grid.js"></script>
   <script src="./tile.js"></script>
+  <script src="./stitches-layer.js"></script>
   <script src="./scene.js"></script>
   <script>
     class Canvas extends Polymer.Element {
@@ -68,8 +67,7 @@
         super.connectedCallback();
         // TODO: Remove event listers in disconnected callback.
 
-
-        window.addEventListener('resize', event => this.renderScene());
+        window.addEventListener('resize', event => this.resize());
 
         this.addEventListener('tap', e => {
           this.scene.tap(e.detail.x, e.detail.y);
@@ -105,49 +103,35 @@
         };
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
-          this.$.canvas.addEventListener(type, onStart);
+          this.addEventListener(type, onStart);
         });
 
         ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
-          this.$.canvas.addEventListener(type, onEnd);
+          this.addEventListener(type, onEnd);
         });
 
         ["mousemove", "touchmove"].forEach(type => {
-          this.$.canvas.addEventListener(type, onMove);
+          this.addEventListener(type, onMove);
         });
       }
 
-      patternChanged(pattern) {
-        this.ctx = this.$.canvas.getContext('2d');
-        this.ctx.measureText = text => {
-          const metrics = Object.getPrototypeOf(this.ctx).measureText.call(this.ctx, text);
-          this.$.fontMeasure.style.font = this.ctx.font;
-          this.$.fontMeasure.style.color = "transparent";
-          this.$.fontMeasure.textContent = text;
-          metrics.height = this.$.fontMeasure.getBoundingClientRect().height;
-          return metrics;
-        };
-        this.scene = new Scene(this.ctx, pattern, this.patternMode);
-        this.renderScene();
+      async patternChanged(pattern) {
+        this.scene && this.scene.dispose();
+        this.scene = new Scene(this, pattern, this.patternMode);
+        await this.resize();
       }
 
       zoomChanged(zoom) {
-        if (this.enabled) {
-          this.scene.setZoom(zoom);
-        }
+        this.enabled && this.scene.setZoom(zoom);
       }
 
       patternModeChanged(patternMode) {
-        if (this.enabled) {
-          this.scene.setPatternMode(patternMode);
-        }
+        this.enabled && this.scene.setPatternMode(patternMode);
       }
 
-      async renderScene() {
-        this.$.canvas.width = this.offsetWidth;
-        this.$.canvas.height = this.offsetHeight;
+      async resize() {
         await this.fontLoad;
-        this.scene.render();
+        this.scene.resize(this.offsetWidth, this.offsetHeight);
       }
     }
     customElements.define(Canvas.is, Canvas);

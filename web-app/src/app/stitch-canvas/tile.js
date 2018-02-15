@@ -1,8 +1,8 @@
 class Tile {
   static get size() { return 256; }
 
-  constructor(scene, row, column) {
-    this.scene = scene;
+  constructor(layer, row, column) {
+    this.layer = layer;
     this.row = row;
     this.column = column;
     this.stitches = [];
@@ -26,14 +26,15 @@ class Tile {
   }
 
   render(rerender) {
+    let scene = this.layer.scene;
     const offsetX = this.column * Tile.size;
     const offsetY = this.row * Tile.size;
 
-    if (rerender || !this.ctx || this.patternMode != this.scene.patternMode) {
-      this.patternMode = this.scene.patternMode;
+    if (rerender || !this.ctx || this.patternMode != scene.patternMode) {
+      this.patternMode = scene.patternMode;
       this.ctx = this.createContext();
       this.ctx.translate(-offsetX, -offsetY);
-      this.stitches.forEach(stitch => stitch.draw(this.ctx, this.scene));
+      this.stitches.forEach(stitch => stitch.draw(this.ctx, scene.patternMode, this.layer.stitchSize));
       this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       this.ctx.beginPath();
@@ -41,8 +42,8 @@ class Tile {
       this.ctx.stroke();
     }
 
-    this.scene.ctx.translate(this.scene.x, this.scene.y);
-    this.scene.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
-    this.scene.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.layer.ctx.translate(scene.x, scene.y);
+    this.layer.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
+    this.layer.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 }
