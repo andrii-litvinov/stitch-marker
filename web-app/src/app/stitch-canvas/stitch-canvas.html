@@ -19,13 +19,10 @@
     </style>
   </template>
   <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-  <script src="../helpers/round-rect.js"></script>
   <script src="./event-dispatcher.js"></script>
   <script src="./colors.js"></script>
   <script src="./config.js"></script>
-  <script src="./point.js"></script>
   <script src="./stitch.js"></script>
-  <script src="./grid.js"></script>
   <script src="./tile.js"></script>
   <script src="./grid-layer.js"></script>
   <script src="./stitches-layer.js"></script>
@@ -78,7 +75,7 @@
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
-          return new Point(e.clientX, e.clientY);
+          return { x: e.clientX, y: e.clientY };
         };
 
         const onStart = event => {

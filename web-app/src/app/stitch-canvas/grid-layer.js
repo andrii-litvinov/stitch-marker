@@ -45,6 +45,7 @@ class GridLayer {
     const yTo = Math.min(this.scene.pattern.height * stitchSize + this.scene.y, this.scene.height);
     const yFrom = this.scene.y;
     const lineCountX = Math.ceil(xTo / stitchSize) + 1;
+    this.ctx.strokeStyle = "lightgray";
 
     for (let i = 0; i < lineCountX; i++) {
       const xFrom = this.scene.x + stitchSize * i;
@@ -61,6 +62,7 @@ class GridLayer {
     const yTo = Math.min(this.scene.pattern.height * stitchSize, this.scene.height - this.scene.y);
     const xFrom = this.scene.x;
     const lineCountY = Math.ceil(yTo / stitchSize) + 1;
+    this.ctx.strokeStyle = "lightgray";
 
     for (let i = 0; i < lineCountY; i++) {
       const yFrom = this.scene.y + stitchSize * i;
