@@ -36,13 +36,17 @@ class GridLayer {
     this.ctx.translate(0.5, 0.5);
     this.drawVerticalLines();
     this.drawHorizontalLines();
+    this.drawTileLines();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   drawVerticalLines() {
+    let patternCanvasWidth = (Math.floor(this.scene.pattern.width / 10) + 1) * 10;
+    let patternCanvasHeight = (Math.floor(this.scene.pattern.height / 10) + 1) * 10;
+
     const stitchSize = Math.floor(this.scene.zoom * config.stitchSize);
-    const xTo = Math.min(this.scene.pattern.width * stitchSize, this.scene.width - this.scene.x);
-    const yTo = Math.min(this.scene.pattern.height * stitchSize + this.scene.y, this.scene.height);
+    const xTo = Math.min(patternCanvasWidth * stitchSize, this.scene.width - this.scene.x);
+    const yTo = Math.min(patternCanvasHeight * stitchSize + this.scene.y, this.scene.height);
     const yFrom = this.scene.y;
     const lineCountX = Math.ceil(xTo / stitchSize) + 1;
     this.ctx.strokeStyle = "lightgray";
@@ -57,9 +61,12 @@ class GridLayer {
   }
 
   drawHorizontalLines() {
+    let patternCanvasWidth = (Math.floor(this.scene.pattern.width / 10) + 1) * 10;
+    let patternCanvasHeight = (Math.floor(this.scene.pattern.height / 10) + 1) * 10;
+
     const stitchSize = Math.floor(this.scene.zoom * config.stitchSize);
-    const xTo = Math.min(this.scene.pattern.width * stitchSize + this.scene.x, this.scene.width);
-    const yTo = Math.min(this.scene.pattern.height * stitchSize, this.scene.height - this.scene.y);
+    const xTo = Math.min(patternCanvasWidth * stitchSize + this.scene.x, this.scene.width);
+    const yTo = Math.min(patternCanvasHeight * stitchSize, this.scene.height - this.scene.y);
     const xFrom = this.scene.x;
     const lineCountY = Math.ceil(yTo / stitchSize) + 1;
     this.ctx.strokeStyle = "lightgray";
@@ -69,6 +76,43 @@ class GridLayer {
       this.ctx.beginPath();
       this.ctx.moveTo(xFrom, yFrom);
       this.ctx.lineTo(xTo, yFrom);
+      this.ctx.stroke();
+    }
+
+
+  }
+
+  drawTileLines() {
+    let patternCanvasWidth = (Math.floor(this.scene.pattern.width / 10) + 1) * 10;
+    let patternCanvasHeight = (Math.floor(this.scene.pattern.height / 10) + 1) * 10;
+
+    const stitchSize = Math.floor(this.scene.zoom * config.stitchSize);
+    let xTo = Math.min(patternCanvasWidth * stitchSize + this.scene.x, this.scene.width);
+    let yTo = Math.min(patternCanvasHeight * stitchSize, this.scene.height - this.scene.y);
+    let xFrom = this.scene.x;
+    let lineCountY = Math.ceil(yTo / stitchSize) + 1;
+
+    for (let j = 0; j < lineCountY; j += 10) {
+      let yFrom = this.scene.y + stitchSize * j;
+      this.ctx.strokeStyle = "black";
+      this.ctx.beginPath();
+      this.ctx.moveTo(xFrom, yFrom);
+      this.ctx.lineTo(xTo, yFrom);
+      this.ctx.stroke();
+    }
+
+    xTo = Math.min(patternCanvasWidth * stitchSize, this.scene.width - this.scene.x);
+    yTo = Math.min(patternCanvasHeight * stitchSize + this.scene.y, this.scene.height);
+    let yFrom = this.scene.y;
+    let lineCountX = Math.ceil(xTo / stitchSize) + 1;
+
+
+    for (let j = 0; j < lineCountX; j += 10) {
+      xFrom = this.scene.x + stitchSize * j;
+      this.ctx.strokeStyle = "black";
+      this.ctx.beginPath();
+      this.ctx.moveTo(xFrom, yFrom);
+      this.ctx.lineTo(xFrom, yTo);
       this.ctx.stroke();
     }
   }
