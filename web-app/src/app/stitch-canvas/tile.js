@@ -37,13 +37,14 @@ class Tile {
       this.stitches.forEach(stitch => stitch.draw(this.ctx, scene.patternMode, this.layer.stitchSize));
       this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 
-      this.ctx.beginPath();
-      this.ctx.rect(0, 0, Tile.size, Tile.size);
-      this.ctx.stroke();
+      // this.ctx.beginPath();
+      // this.ctx.rect(0, 0, Tile.size, Tile.size);
+      // this.ctx.stroke();
     }
 
     this.layer.ctx.translate(scene.x, scene.y);
+    this.layer.ctx.clearRect(offsetX, offsetY, this.ctx.canvas.width, this.ctx.canvas.height);
     this.layer.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
-    this.layer.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.layer.ctx.translate(-scene.x, -scene.y);
   }
 }
