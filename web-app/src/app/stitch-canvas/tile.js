@@ -44,6 +44,6 @@ class Tile {
 
     this.layer.ctx.translate(scene.x, scene.y);
     this.layer.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
-    this.layer.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.layer.ctx.translate(-scene.x, -scene.y);
   }
 }

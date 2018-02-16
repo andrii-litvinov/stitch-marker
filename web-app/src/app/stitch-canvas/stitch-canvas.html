@@ -71,7 +71,6 @@
         super.connectedCallback();
 
         let position = null;
-        let requestId = 0;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -93,9 +92,7 @@
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
             position = newPosition;
-
-            if (requestId) cancelAnimationFrame(requestId);
-            requestId = requestId = requestAnimationFrame(() => this.scene.translate(dx, dy));
+            requestAnimationFrame(() => this.scene.translate(dx, dy));
           }
         };
 

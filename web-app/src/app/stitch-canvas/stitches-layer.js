@@ -77,19 +77,19 @@ class StitchesLayer {
 
   render(bounds) {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    let rendered = 0;
 
-    for (let row = bounds.row; row < bounds.row + bounds.rowCount; row++) {
-      for (let column = bounds.column; column < bounds.column + bounds.columnCount; column++) {
-        let tile = this.tiles[row * this.scene.pattern.height + column];
-        if (tile) {
-          tile.render();
-          rendered++;
-        }
+    const startRow = bounds.row;
+    const startColumn = bounds.column;
+    const rowCount = bounds.row + bounds.rowCount;
+    const columnCount = bounds.column + bounds.columnCount;
+    const patternHeight =  this.scene.pattern.height;
+
+    for (let row = startRow; row < rowCount; row++) {
+      for (let column = startColumn; column < columnCount; column++) {
+        let tile = this.tiles[row * patternHeight + column];
+        tile && tile.render();
       }
     }
-
-    console.log(`rendered: ${rendered}`);
   }
 
   dispose() {
