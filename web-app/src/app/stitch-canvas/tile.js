@@ -43,6 +43,7 @@ class Tile {
     }
 
     this.layer.ctx.translate(scene.x, scene.y);
+    this.layer.ctx.clearRect(offsetX, offsetY, this.ctx.canvas.width, this.ctx.canvas.height);
     this.layer.ctx.drawImage(this.ctx.canvas, offsetX, offsetY);
     this.layer.ctx.translate(-scene.x, -scene.y);
   }
