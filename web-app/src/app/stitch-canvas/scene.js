@@ -8,6 +8,8 @@ class Scene extends EventDispatcher {
     this.zoom = zoom;
     this.x = x;
     this.y = y;
+    this.stitchSize = Math.floor(this.zoom * config.stitchSize);
+
     this.layers = [];
     this.layers.push(new StitchesLayer(this));
     this.layers.push(new GridLayer(this));
@@ -30,6 +32,7 @@ class Scene extends EventDispatcher {
 
   setZoom(zoom) {
     this.zoom = zoom;
+    this.stitchSize = Math.floor(this.zoom * config.stitchSize);
     this.dispatchEvent(new CustomEvent("zoom", { detail: { zoom: zoom, bounds: this.getBounds() } }));
   }
 
