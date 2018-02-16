@@ -33,9 +33,10 @@ class GridLayer {
 
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.translate(0.5, 0.5);
     this.drawVerticalLines();
     this.drawHorizontalLines();
-
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
   drawVerticalLines() {
