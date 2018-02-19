@@ -32,14 +32,13 @@ class StitchesLayer {
     this.tiles.forEach(tile => tile.dispose());
     this.tiles.length = 0;
 
-    this.stitchSize = Math.floor(this.scene.zoom * config.stitchSize);
-    let stitchesPerTile = Tile.size / this.stitchSize;
+    let stitchesPerTile = Tile.size / this.scene.stitchSize;
 
     this.stitches.forEach(stitch => {
       let column = Math.floor(stitch.point.x / stitchesPerTile);
       let row = Math.floor(stitch.point.y / stitchesPerTile);
-      const spanMultipleTilesX = (stitch.point.x + 1) * this.stitchSize > (column + 1) * Tile.size;
-      const spanMultipleTilesY = (stitch.point.y + 1) * this.stitchSize > (row + 1) * Tile.size;
+      const spanMultipleTilesX = (stitch.point.x + 1) * this.scene.stitchSize > (column + 1) * Tile.size;
+      const spanMultipleTilesY = (stitch.point.y + 1) * this.scene.stitchSize > (row + 1) * Tile.size;
 
       this.addStitchToTile(row, column, stitch);
       if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch);
@@ -69,8 +68,8 @@ class StitchesLayer {
   }
 
   tap(event) {
-    let coordX = Math.floor((event.detail.x - this.scene.x) / this.stitchSize);
-    let coordY = Math.floor((event.detail.y - this.scene.y) / this.stitchSize);
+    let coordX = Math.floor((event.detail.x - this.scene.x) / this.scene.stitchSize);
+    let coordY = Math.floor((event.detail.y - this.scene.y) / this.scene.stitchSize);
     let stitch = this.stitches[coordX * this.scene.pattern.height + coordY];
     if (stitch) stitch.tap();
   }

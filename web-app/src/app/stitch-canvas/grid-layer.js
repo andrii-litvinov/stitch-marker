@@ -5,9 +5,9 @@ class GridLayer {
 
     let sceneEventListeners = {
       resize: e => this.resize(e),
-      patternmodechanged: e => this.render(e),
-      render: e => this.render(e),
-      zoom: e => this.render(e)
+      patternmodechanged: () => this.render(),
+      render: () => this.render(),
+      zoom: () => this.render()
     }
 
     for (const type in sceneEventListeners) {
@@ -36,8 +36,15 @@ class GridLayer {
     let boundsY = this.getBoundsY();
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(0.5, 0.5);
-    this.renderGrid(boundsX, boundsY);
-    this.renderDecGrid(boundsX, boundsY);
+
+    if (this.scene.zoom >= 0.5) {
+      this.renderGrid(boundsX, boundsY);
+      this.renderDecGrid(boundsX, boundsY);
+    }
+    else {
+      this.ctx.strokeRect(boundsX.xFrom, boundsY.yFrom, boundsX.xTo - boundsX.xFrom, boundsY.yTo - boundsY.yFrom);
+    }
+
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
@@ -86,7 +93,7 @@ class GridLayer {
     let patternCanvasHeight = (Math.floor(this.scene.pattern.height / 10) + 1) * 10;
 
     const xTo = Math.min(patternCanvasWidth * this.scene.stitchSize + this.scene.x, this.scene.width);
-    let yTo = Math.min(patternCanvasHeight * this.scene.stitchSize, this.scene.height - this.scene.y);
+    const yTo = Math.min(patternCanvasHeight * this.scene.stitchSize, this.scene.height - this.scene.y);
     const lineCountY = Math.ceil(yTo / this.scene.stitchSize) + 1;
     const xFrom = this.scene.x;
     return { xTo: xTo, xFrom: xFrom, lineCountY: lineCountY }

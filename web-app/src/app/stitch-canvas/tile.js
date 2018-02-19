@@ -34,7 +34,7 @@ class Tile {
       this.patternMode = scene.patternMode;
       this.ctx = this.createContext();
       this.ctx.translate(-offsetX, -offsetY);
-      this.stitches.forEach(stitch => stitch.draw(this.ctx, scene.patternMode, this.layer.stitchSize));
+      this.stitches.forEach(stitch => stitch.draw(this.ctx, scene.patternMode, this.layer.scene.stitchSize));
       this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       // this.ctx.beginPath();
