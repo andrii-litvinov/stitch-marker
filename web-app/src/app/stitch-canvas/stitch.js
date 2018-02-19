@@ -13,7 +13,8 @@ class Stitch extends EventDispatcher {
 
   draw(ctx, patternMode, stitchSize) {
     if (this.marked) {
-      ctx.clearRect(
+      ctx.fillStyle = "#fafafa";
+      ctx.fillRect(
         this.point.x * stitchSize,
         this.point.y * stitchSize,
         stitchSize,
@@ -29,8 +30,13 @@ class Stitch extends EventDispatcher {
 
     if (this.marked)
       ctx.fillStyle = "lightgray";
-    else
-      ctx.fillStyle = shadeBlendConvert(.2, this.config.hexColor);
+    else {
+      const brightness = getContrastYIQ(this.config.hexColor);
+      if (brightness === "bright")
+        ctx.fillStyle = shadeBlendConvert(.3, this.config.hexColor);
+      else
+        ctx.fillStyle = shadeBlendConvert(-.3, this.config.hexColor);;
+    }
 
     ctx.textBaseline = "middle";
     ctx.font = stitchSize * 0.8 + "px CrossStitch3";
