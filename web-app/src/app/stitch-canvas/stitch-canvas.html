@@ -38,17 +38,10 @@
             reflectToAttribute: false,
             observer: "patternChanged"
           },
-
           zoom: {
             type: Number,
             reflectToAttribute: false,
             observer: "zoomChanged"
-          },
-
-          patternMode: {
-            type: String,
-            reflectToAttribute: false,
-            observer: "patternModeChanged"
           }
         };
       }
@@ -114,16 +107,12 @@
 
       async patternChanged(pattern) {
         this.scene && this.scene.dispose();
-        this.scene = new Scene(this, pattern, this.patternMode);
+        this.scene = new Scene(this, pattern);
         await this.resize();
       }
 
       zoomChanged(zoom) {
         this.enabled && this.scene.setZoom(zoom);
-      }
-
-      patternModeChanged(patternMode) {
-        this.enabled && this.scene.setPatternMode(patternMode);
       }
 
       async resize() {

@@ -1,10 +1,9 @@
 class Scene extends EventDispatcher {
-  constructor(component, pattern, patternMode, zoom = 1, x = 0, y = 0) {
+  constructor(component, pattern, zoom = 1, x = 0, y = 0) {
     super();
 
     this.component = component;
     this.pattern = pattern;
-    this.patternMode = patternMode;
     this.zoom = zoom;
     this.x = x;
     this.y = y;
@@ -23,11 +22,6 @@ class Scene extends EventDispatcher {
     this.width = width;
     this.height = height;
     this.dispatchEvent(new CustomEvent("resize", { detail: { width: width, height: height, bounds: this.getBounds() } }));
-  }
-
-  setPatternMode(patternMode) {
-    this.patternMode = patternMode;
-    this.dispatchEvent(new CustomEvent("patternmodechange", { detail: { patternMode: patternMode, bounds: this.getBounds() } }));
   }
 
   setZoom(zoom) {

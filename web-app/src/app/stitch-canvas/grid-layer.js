@@ -5,7 +5,6 @@ class GridLayer {
 
     let sceneEventListeners = {
       resize: e => this.resize(e),
-      patternmodechanged: () => this.render(),
       render: () => this.render(),
       zoom: () => this.render()
     }

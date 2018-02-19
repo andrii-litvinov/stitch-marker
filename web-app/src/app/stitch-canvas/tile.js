@@ -30,11 +30,10 @@ class Tile {
     const offsetX = this.column * Tile.size;
     const offsetY = this.row * Tile.size;
 
-    if (rerender || !this.ctx || this.patternMode != scene.patternMode) {
-      this.patternMode = scene.patternMode;
+    if (rerender || !this.ctx) {
       this.ctx = this.createContext();
       this.ctx.translate(-offsetX, -offsetY);
-      this.stitches.forEach(stitch => stitch.draw(this.ctx, scene.patternMode, this.layer.scene.stitchSize));
+      this.stitches.forEach(stitch => stitch.draw(this.ctx, scene.stitchSize));
       this.ctx.setTransform(1, 0, 0, 1, 0, 0);
 
       // this.ctx.beginPath();

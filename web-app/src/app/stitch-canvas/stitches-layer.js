@@ -8,7 +8,6 @@ class StitchesLayer {
     this.rearrangeTiles();
 
     this.sceneEventListeners = {
-      patternmodechange: e => this.render(e.detail.bounds),
       render: e => this.render(e.detail.bounds),
       resize: e => this.resize(e),
       zoom: e => this.zoom(e),

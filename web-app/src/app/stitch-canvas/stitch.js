@@ -11,7 +11,7 @@ class Stitch extends EventDispatcher {
     this.dispatchEvent(new CustomEvent("change"));
   }
 
-  draw(ctx, patternMode, stitchSize) {
+  draw(ctx, stitchSize) {
     if (this.marked) {
       ctx.fillStyle = "#fafafa";
       ctx.fillRect(
