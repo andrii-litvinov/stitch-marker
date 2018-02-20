@@ -7,15 +7,15 @@ class StitchesLayer {
     this.generateStitches();
     this.rearrangeTiles();
 
-    this.sceneEventListeners = {
+    const sceneEventListeners = {
       render: e => this.render(e.detail.bounds),
       resize: e => this.resize(e),
       zoom: e => this.zoom(e),
       tap: e => this.tap(e)
     }
 
-    for (let type in this.sceneEventListeners) {
-      this.scene.addEventListener(type, this.sceneEventListeners[type]);
+    for (const type in sceneEventListeners) {
+      this.scene.addEventListener(type, sceneEventListeners[type]);
     }
   }
 

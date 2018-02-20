@@ -3,7 +3,7 @@ class GridLayer {
     this.scene = scene;
     this.ctx = this.createContext();
 
-    let sceneEventListeners = {
+    const sceneEventListeners = {
       resize: e => this.resize(e),
       render: () => this.render(),
       zoom: () => this.render()

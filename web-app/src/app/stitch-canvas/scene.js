@@ -12,6 +12,7 @@ class Scene extends EventDispatcher {
     this.layers = [];
     this.layers.push(new StitchesLayer(this));
     this.layers.push(new GridLayer(this));
+    this.layers.push(new BackstitchesLayer(this));
   }
 
   dispose() {
