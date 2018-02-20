@@ -1,3 +1,3 @@
 for %%f in (*.proto) do (
-    protoc --csharp_out=./ ./%%~nf.proto
+    %UserProfile%\.nuget\packages\google.protobuf.tools\3.5.1\tools\windows_x64\protoc.exe --csharp_out=.\ .\%%~nf.proto
 )
