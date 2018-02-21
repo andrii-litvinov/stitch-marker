@@ -24,39 +24,40 @@ namespace SM.Service.Messages {
     static PatternReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1QYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIsgCCgdQYXR0ZXJuEgoKAmlkGAEg",
+            "Cg1QYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIr0CCgdQYXR0ZXJuEgoKAmlkGAEg",
             "ASgJEhsKBGluZm8YAiABKAsyDS5wYXR0ZXJuLkluZm8SHwoGY2FudmFzGAMg",
-            "ASgLMg8ucGF0dGVybi5DYW52YXMSLAoNc3RyYW5kc19jb3VudBgEIAEoCzIV",
-            "LnBhdHRlcm4uU3RyYW5kc0NvdW50Eg0KBXdpZHRoGAUgASgNEg4KBmhlaWdo",
-            "dBgGIAEoDRI0Cg5jb25maWd1cmF0aW9ucxgHIAMoCzIcLnBhdHRlcm4uU3Rp",
-            "dGNoQ29uZmlndXJhdGlvbhIhCghzdGl0Y2hlcxgIIAMoCzIPLnBhdHRlcm4u",
-            "U3RpdGNoEikKDGJhY2tzdGl0Y2hlcxgJIAMoCzITLnBhdHRlcm4uQmFja3N0",
-            "aXRjaBIiCghlbGVtZW50cxgKIAMoCzIQLnBhdHRlcm4uRWxlbWVudCJJCgRJ",
-            "bmZvEg0KBXRpdGxlGAEgASgJEg4KBmF1dGhvchgCIAEoCRIPCgdjb21wYW55",
-            "GAMgASgJEhEKCWNvcHlyaWdodBgEIAEoCSIXCgZDYW52YXMSDQoFdGl0bGUY",
-            "ASABKAkiigEKDFN0cmFuZHNDb3VudBIMCgRmdWxsGAEgASgFEgwKBGhhbGYY",
-            "AiABKAUSDwoHcXVhcnRlchgDIAEoBRIVCg10aHJlZV9xdWFydGVyGAQgASgF",
-            "Eg0KBXBldGl0GAUgASgFEhIKCmJhY2tzdGl0Y2gYBiABKAUSEwoLZnJlbmNo",
-            "X2tub3QYByABKAUiOAoTU3RpdGNoQ29uZmlndXJhdGlvbhIOCgZzeW1ib2wY",
-            "ASABKAkSEQoJaGV4X2NvbG9yGAIgASgJIl4KBlN0aXRjaBIJCgF4GAEgASgN",
-            "EgkKAXkYAiABKA0SIQoEdHlwZRgDIAEoDjITLnBhdHRlcm4uU3RpdGNoVHlw",
-            "ZRIbChNjb25maWd1cmF0aW9uX2luZGV4GAQgASgFIl0KCkJhY2tzdGl0Y2gS",
-            "CwoDeF8xGAEgASgNEgsKA3lfMRgCIAEoDRILCgN4XzIYAyABKA0SCwoDeV8y",
-            "GAQgASgNEhsKE2NvbmZpZ3VyYXRpb25faW5kZXgYBSABKAUiYAoHRWxlbWVu",
-            "dBIJCgF4GAEgASgNEgkKAXkYAiABKA0SGwoTY29uZmlndXJhdGlvbl9pbmRl",
-            "eBgDIAEoBRIiCgR0eXBlGAQgASgOMhQucGF0dGVybi5FbGVtZW50VHlwZSpU",
-            "CgpTdGl0Y2hUeXBlEggKBE5PTkUQABIICgRGVUxMEAESCAoESEFMRhACEgsK",
-            "B1FVQVJURVIQAxIQCgxUSFJFRVFVQVJURVIQBBIJCgVQRVRJVBAFKjYKC0Vs",
-            "ZW1lbnRUeXBlEg0KCVVOREVGSU5FRBAAEg4KCkZSRU5DSEtOT1QQARIICgRC",
-            "RUFEEAJCFqoCE1NNLlNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
+            "ASgLMg8ucGF0dGVybi5DYW52YXMSIQoHc3RyYW5kcxgEIAEoCzIQLnBhdHRl",
+            "cm4uU3RyYW5kcxINCgV3aWR0aBgFIAEoDRIOCgZoZWlnaHQYBiABKA0SNAoO",
+            "Y29uZmlndXJhdGlvbnMYByADKAsyHC5wYXR0ZXJuLlN0aXRjaENvbmZpZ3Vy",
+            "YXRpb24SIQoIc3RpdGNoZXMYCCADKAsyDy5wYXR0ZXJuLlN0aXRjaBIpCgxi",
+            "YWNrc3RpdGNoZXMYCSADKAsyEy5wYXR0ZXJuLkJhY2tzdGl0Y2gSIgoIZWxl",
+            "bWVudHMYCiADKAsyEC5wYXR0ZXJuLkVsZW1lbnQiSQoESW5mbxINCgV0aXRs",
+            "ZRgBIAEoCRIOCgZhdXRob3IYAiABKAkSDwoHY29tcGFueRgDIAEoCRIRCglj",
+            "b3B5cmlnaHQYBCABKAkiFwoGQ2FudmFzEg0KBXRpdGxlGAEgASgJIoUBCgdT",
+            "dHJhbmRzEgwKBGZ1bGwYASABKAUSDAoEaGFsZhgCIAEoBRIPCgdxdWFydGVy",
+            "GAMgASgFEhUKDXRocmVlX3F1YXJ0ZXIYBCABKAUSDQoFcGV0aXQYBSABKAUS",
+            "EgoKYmFja3N0aXRjaBgGIAEoBRITCgtmcmVuY2hfa25vdBgHIAEoBSJbChNT",
+            "dGl0Y2hDb25maWd1cmF0aW9uEg4KBnN5bWJvbBgBIAEoCRIRCgloZXhfY29s",
+            "b3IYAiABKAkSIQoHc3RyYW5kcxgDIAEoCzIQLnBhdHRlcm4uU3RyYW5kcyJe",
+            "CgZTdGl0Y2gSCQoBeBgBIAEoDRIJCgF5GAIgASgNEiEKBHR5cGUYAyABKA4y",
+            "Ey5wYXR0ZXJuLlN0aXRjaFR5cGUSGwoTY29uZmlndXJhdGlvbl9pbmRleBgE",
+            "IAEoBSJdCgpCYWNrc3RpdGNoEgsKA3hfMRgBIAEoDRILCgN5XzEYAiABKA0S",
+            "CwoDeF8yGAMgASgNEgsKA3lfMhgEIAEoDRIbChNjb25maWd1cmF0aW9uX2lu",
+            "ZGV4GAUgASgFImAKB0VsZW1lbnQSCQoBeBgBIAEoDRIJCgF5GAIgASgNEhsK",
+            "E2NvbmZpZ3VyYXRpb25faW5kZXgYAyABKAUSIgoEdHlwZRgEIAEoDjIULnBh",
+            "dHRlcm4uRWxlbWVudFR5cGUqVAoKU3RpdGNoVHlwZRIICgROT05FEAASCAoE",
+            "RlVMTBABEggKBEhBTEYQAhILCgdRVUFSVEVSEAMSEAoMVEhSRUVRVUFSVEVS",
+            "EAQSCQoFUEVUSVQQBSo2CgtFbGVtZW50VHlwZRINCglVTkRFRklORUQQABIO",
+            "CgpGUkVOQ0hLTk9UEAESCAoEQkVBRBACQhaqAhNTTS5TZXJ2aWNlLk1lc3Nh",
+            "Z2VzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.Messages.StitchType), typeof(global::SM.Service.Messages.ElementType), }, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Pattern), global::SM.Service.Messages.Pattern.Parser, new[]{ "Id", "Info", "Canvas", "StrandsCount", "Width", "Height", "Configurations", "Stitches", "Backstitches", "Elements" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Pattern), global::SM.Service.Messages.Pattern.Parser, new[]{ "Id", "Info", "Canvas", "Strands", "Width", "Height", "Configurations", "Stitches", "Backstitches", "Elements" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Info), global::SM.Service.Messages.Info.Parser, new[]{ "Title", "Author", "Company", "Copyright" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Canvas), global::SM.Service.Messages.Canvas.Parser, new[]{ "Title" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.StrandsCount), global::SM.Service.Messages.StrandsCount.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.StitchConfiguration), global::SM.Service.Messages.StitchConfiguration.Parser, new[]{ "Symbol", "HexColor" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Strands), global::SM.Service.Messages.Strands.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.StitchConfiguration), global::SM.Service.Messages.StitchConfiguration.Parser, new[]{ "Symbol", "HexColor", "Strands" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Stitch), global::SM.Service.Messages.Stitch.Parser, new[]{ "X", "Y", "Type", "ConfigurationIndex" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Backstitch), global::SM.Service.Messages.Backstitch.Parser, new[]{ "X1", "Y1", "X2", "Y2", "ConfigurationIndex" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Element), global::SM.Service.Messages.Element.Parser, new[]{ "X", "Y", "ConfigurationIndex", "Type" }, null, null, null)
@@ -112,7 +113,7 @@ namespace SM.Service.Messages {
       id_ = other.id_;
       Info = other.info_ != null ? other.Info.Clone() : null;
       Canvas = other.canvas_ != null ? other.Canvas.Clone() : null;
-      StrandsCount = other.strandsCount_ != null ? other.StrandsCount.Clone() : null;
+      Strands = other.strands_ != null ? other.Strands.Clone() : null;
       width_ = other.width_;
       height_ = other.height_;
       configurations_ = other.configurations_.Clone();
@@ -160,14 +161,14 @@ namespace SM.Service.Messages {
       }
     }
 
-    /// <summary>Field number for the "strands_count" field.</summary>
-    public const int StrandsCountFieldNumber = 4;
-    private global::SM.Service.Messages.StrandsCount strandsCount_;
+    /// <summary>Field number for the "strands" field.</summary>
+    public const int StrandsFieldNumber = 4;
+    private global::SM.Service.Messages.Strands strands_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.StrandsCount StrandsCount {
-      get { return strandsCount_; }
+    public global::SM.Service.Messages.Strands Strands {
+      get { return strands_; }
       set {
-        strandsCount_ = value;
+        strands_ = value;
       }
     }
 
@@ -249,7 +250,7 @@ namespace SM.Service.Messages {
       if (Id != other.Id) return false;
       if (!object.Equals(Info, other.Info)) return false;
       if (!object.Equals(Canvas, other.Canvas)) return false;
-      if (!object.Equals(StrandsCount, other.StrandsCount)) return false;
+      if (!object.Equals(Strands, other.Strands)) return false;
       if (Width != other.Width) return false;
       if (Height != other.Height) return false;
       if(!configurations_.Equals(other.configurations_)) return false;
@@ -265,7 +266,7 @@ namespace SM.Service.Messages {
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (info_ != null) hash ^= Info.GetHashCode();
       if (canvas_ != null) hash ^= Canvas.GetHashCode();
-      if (strandsCount_ != null) hash ^= StrandsCount.GetHashCode();
+      if (strands_ != null) hash ^= Strands.GetHashCode();
       if (Width != 0) hash ^= Width.GetHashCode();
       if (Height != 0) hash ^= Height.GetHashCode();
       hash ^= configurations_.GetHashCode();
@@ -297,9 +298,9 @@ namespace SM.Service.Messages {
         output.WriteRawTag(26);
         output.WriteMessage(Canvas);
       }
-      if (strandsCount_ != null) {
+      if (strands_ != null) {
         output.WriteRawTag(34);
-        output.WriteMessage(StrandsCount);
+        output.WriteMessage(Strands);
       }
       if (Width != 0) {
         output.WriteRawTag(40);
@@ -330,8 +331,8 @@ namespace SM.Service.Messages {
       if (canvas_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Canvas);
       }
-      if (strandsCount_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(StrandsCount);
+      if (strands_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Strands);
       }
       if (Width != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Width);
@@ -369,11 +370,11 @@ namespace SM.Service.Messages {
         }
         Canvas.MergeFrom(other.Canvas);
       }
-      if (other.strandsCount_ != null) {
-        if (strandsCount_ == null) {
-          strandsCount_ = new global::SM.Service.Messages.StrandsCount();
+      if (other.strands_ != null) {
+        if (strands_ == null) {
+          strands_ = new global::SM.Service.Messages.Strands();
         }
-        StrandsCount.MergeFrom(other.StrandsCount);
+        Strands.MergeFrom(other.Strands);
       }
       if (other.Width != 0) {
         Width = other.Width;
@@ -415,10 +416,10 @@ namespace SM.Service.Messages {
             break;
           }
           case 34: {
-            if (strandsCount_ == null) {
-              strandsCount_ = new global::SM.Service.Messages.StrandsCount();
+            if (strands_ == null) {
+              strands_ = new global::SM.Service.Messages.Strands();
             }
-            input.ReadMessage(strandsCount_);
+            input.ReadMessage(strands_);
             break;
           }
           case 40: {
@@ -793,11 +794,11 @@ namespace SM.Service.Messages {
 
   }
 
-  public sealed partial class StrandsCount : pb::IMessage<StrandsCount> {
-    private static readonly pb::MessageParser<StrandsCount> _parser = new pb::MessageParser<StrandsCount>(() => new StrandsCount());
+  public sealed partial class Strands : pb::IMessage<Strands> {
+    private static readonly pb::MessageParser<Strands> _parser = new pb::MessageParser<Strands>(() => new Strands());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<StrandsCount> Parser { get { return _parser; } }
+    public static pb::MessageParser<Strands> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -810,14 +811,14 @@ namespace SM.Service.Messages {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public StrandsCount() {
+    public Strands() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public StrandsCount(StrandsCount other) : this() {
+    public Strands(Strands other) : this() {
       full_ = other.full_;
       half_ = other.half_;
       quarter_ = other.quarter_;
@@ -829,8 +830,8 @@ namespace SM.Service.Messages {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public StrandsCount Clone() {
-      return new StrandsCount(this);
+    public Strands Clone() {
+      return new Strands(this);
     }
 
     /// <summary>Field number for the "full" field.</summary>
@@ -912,11 +913,11 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as StrandsCount);
+      return Equals(other as Strands);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(StrandsCount other) {
+    public bool Equals(Strands other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -1020,7 +1021,7 @@ namespace SM.Service.Messages {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(StrandsCount other) {
+    public void MergeFrom(Strands other) {
       if (other == null) {
         return;
       }
@@ -1117,6 +1118,7 @@ namespace SM.Service.Messages {
     public StitchConfiguration(StitchConfiguration other) : this() {
       symbol_ = other.symbol_;
       hexColor_ = other.hexColor_;
+      Strands = other.strands_ != null ? other.Strands.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1147,6 +1149,17 @@ namespace SM.Service.Messages {
       }
     }
 
+    /// <summary>Field number for the "strands" field.</summary>
+    public const int StrandsFieldNumber = 3;
+    private global::SM.Service.Messages.Strands strands_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::SM.Service.Messages.Strands Strands {
+      get { return strands_; }
+      set {
+        strands_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as StitchConfiguration);
@@ -1162,6 +1175,7 @@ namespace SM.Service.Messages {
       }
       if (Symbol != other.Symbol) return false;
       if (HexColor != other.HexColor) return false;
+      if (!object.Equals(Strands, other.Strands)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1170,6 +1184,7 @@ namespace SM.Service.Messages {
       int hash = 1;
       if (Symbol.Length != 0) hash ^= Symbol.GetHashCode();
       if (HexColor.Length != 0) hash ^= HexColor.GetHashCode();
+      if (strands_ != null) hash ^= Strands.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1191,6 +1206,10 @@ namespace SM.Service.Messages {
         output.WriteRawTag(18);
         output.WriteString(HexColor);
       }
+      if (strands_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(Strands);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1204,6 +1223,9 @@ namespace SM.Service.Messages {
       }
       if (HexColor.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(HexColor);
+      }
+      if (strands_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Strands);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1222,6 +1244,12 @@ namespace SM.Service.Messages {
       if (other.HexColor.Length != 0) {
         HexColor = other.HexColor;
       }
+      if (other.strands_ != null) {
+        if (strands_ == null) {
+          strands_ = new global::SM.Service.Messages.Strands();
+        }
+        Strands.MergeFrom(other.Strands);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -1239,6 +1267,13 @@ namespace SM.Service.Messages {
           }
           case 18: {
             HexColor = input.ReadString();
+            break;
+          }
+          case 26: {
+            if (strands_ == null) {
+              strands_ = new global::SM.Service.Messages.Strands();
+            }
+            input.ReadMessage(strands_);
             break;
           }
         }

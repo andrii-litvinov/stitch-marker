@@ -11,7 +11,7 @@ namespace SM.Service.Patterns.Xsd
         public string FontFamily = "";
         public Pattern.ItemType HasItems;
         public Rgb Rgb;
-        public Strands Strands = default(Strands);
+        public Strands Strands = default;
         public string Symbol = "";
         public string VendorCode = "";
         public string VendorTitle = "";
@@ -28,7 +28,7 @@ namespace SM.Service.Patterns.Xsd
             public string ColorCode = "";
             public string ColorTitle = "";
             public Rgb Rgb;
-            public Strands Strands = default(Strands);
+            public Strands Strands = default;
             public string VendorCode = "";
             public string VendorTitle = "";
         }

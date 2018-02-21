@@ -1,7 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using Google.Protobuf;
 using Newtonsoft.Json;
 using Ploeh.AutoFixture.Xunit2;
@@ -11,6 +14,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Stitch = SM.Service.Messages.Stitch;
 using Pattern = SM.Service.Messages.Pattern;
+using Strands = SM.Service.Patterns.Xsd.Strands;
 
 namespace SM.Service.Tests
 {

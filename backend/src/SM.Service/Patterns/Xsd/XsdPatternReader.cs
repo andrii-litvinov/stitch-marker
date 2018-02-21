@@ -50,6 +50,7 @@ namespace SM.Service.Patterns.Xsd
                             color.VendorCode = "ZZZ";
                             color.VendorTitle = "Unknown";
                         }
+
                         color.ColorCode = ReadStringTrim(array, 3, 11);
                         color.ColorTitle = ReadStringTrim(array, 14, 41);
                         color.Rgb = new Rgb(array[55], array[56], array[57]);
@@ -75,6 +76,7 @@ namespace SM.Service.Patterns.Xsd
                                     vendorCode = "ZZZ";
                                     vendorTitle = "Unknown";
                                 }
+
                                 var blendColor = new Color.BlendColor
                                 {
                                     VendorCode = vendorCode,
@@ -84,6 +86,7 @@ namespace SM.Service.Patterns.Xsd
                                 color.Blends.Add(blendColor);
                             }
                         }
+
                         for (var k = 0; k < num3; k++)
                         {
                             color.Blends[k].Strands.Full = array[num4];
@@ -95,8 +98,10 @@ namespace SM.Service.Patterns.Xsd
                             color.Blends[k].Strands.BackStitch = array[num4];
                             num4++;
                         }
+
                         pattern.Colors.Add(color);
                     }
+
                     stream.Seek(num2 * 2, SeekOrigin.Current);
                     for (var l = 0; l < num2 * 9; l++)
                     {
@@ -109,6 +114,7 @@ namespace SM.Service.Patterns.Xsd
                             ReadStringTrim(array2, 0, num5);
                         }
                     }
+
                     for (var m = 0; m < num2 * 8; m++)
                     {
                         var index = (int) Math.Floor(m / 8f);
@@ -137,6 +143,7 @@ namespace SM.Service.Patterns.Xsd
                                 break;
                         }
                     }
+
                     stream.Seek(2400L, SeekOrigin.Current);
                     stream.Seek(2400L, SeekOrigin.Current);
                     stream.Seek(960L, SeekOrigin.Current);
@@ -150,11 +157,13 @@ namespace SM.Service.Patterns.Xsd
                         if (n < num2)
                             pattern.Colors[n].FontFamily = ReadStringTrim(array, 0, 33);
                     }
+
                     for (var num8 = 0; num8 < num2 * 6; num8++)
                     {
                         stream.Read(array, 0, 2);
                         var index2 = (int) Math.Floor(num8 / 6f);
-                        if (pattern.Colors[index2].Symbol == "" && array[0] != 255 && array[1] != 255 && array[0] >= 32 && array[0] != 127 && array[0] != 160 && array[0] != 173)
+                        if (pattern.Colors[index2].Symbol == "" && array[0] != 255 && array[1] != 255 &&
+                            array[0] >= 32 && array[0] != 127 && array[0] != 160 && array[0] != 173)
                             try
                             {
                                 pattern.Colors[index2].Symbol = Encoding.GetEncoding(1252).GetString(array, 0, 1);
@@ -164,6 +173,7 @@ namespace SM.Service.Patterns.Xsd
                                 //
                             }
                     }
+
                     stream.Read(array, 0, 53);
                     var text = ReadStringTrim(array, 0, 33);
                     //if (!Font.fonts.ContainsKey(text))
@@ -204,25 +214,6 @@ namespace SM.Service.Patterns.Xsd
                     pattern.Strands.Petit = BitConverter.ToUInt16(array, 8);
                     pattern.Strands.FrenchKnot = 2;
                     pattern.Strands.ThreeQuarter = 2;
-                    foreach (var current in pattern.Colors)
-                    {
-                        if (current.FontFamily == "default")
-                            current.FontFamily = text;
-                        if (current.Strands.BackStitch == 0)
-                            current.Strands.BackStitch = pattern.Strands.BackStitch;
-                        if (current.Strands.FrenchKnot == 0)
-                            current.Strands.FrenchKnot = pattern.Strands.FrenchKnot;
-                        if (current.Strands.Full == 0)
-                            current.Strands.Full = pattern.Strands.Full;
-                        if (current.Strands.Half == 0)
-                            current.Strands.Half = pattern.Strands.Half;
-                        if (current.Strands.Petit == 0)
-                            current.Strands.Petit = pattern.Strands.Petit;
-                        if (current.Strands.Quarter == 0)
-                            current.Strands.Quarter = pattern.Strands.Quarter;
-                        if (current.Strands.ThreeQuarter == 0)
-                            current.Strands.ThreeQuarter = pattern.Strands.ThreeQuarter;
-                    }
                     stream.Seek(16994L, SeekOrigin.Current);
                     LoadStitches(pattern, stream, propCount);
                     stream.Seek(2L, SeekOrigin.Current);
@@ -261,6 +252,7 @@ namespace SM.Service.Patterns.Xsd
                             }
                         }
                     }
+
                     LoadJoints(pattern, stream, count, ref pattern.Nodes, ref pattern.Backstitches);
                     stream.Dispose();
 
@@ -281,7 +273,8 @@ namespace SM.Service.Patterns.Xsd
         private static void Decrypt(ref uint[] rand1, out uint rand2, ref uint[] arr)
         {
             var num = 0u;
-            rand2 = (rand1[3] & 255u) | ((BitConverter.GetBytes(rand1[2])[2] | (((rand1[0] << 8) | BitConverter.GetBytes(rand1[1])[1]) << 8)) << 8);
+            rand2 = (rand1[3] & 255u) | ((BitConverter.GetBytes(rand1[2])[2] |
+                                          (((rand1[0] << 8) | BitConverter.GetBytes(rand1[1])[1]) << 8)) << 8);
             var array = new byte[16];
             for (var i = 0; i < 4; i++)
             {
@@ -289,9 +282,11 @@ namespace SM.Service.Patterns.Xsd
                 for (var j = 0; j < 4; j++)
                     array[i * 4 + j] = bytes[j];
             }
+
             do
             {
-                arr[(int) (UIntPtr) num] = (BitConverter.ToUInt32(array, (int) (4u * (num / 4u))) >> (int) (num % 4u)) % 32u;
+                arr[(int) (UIntPtr) num] =
+                    (BitConverter.ToUInt32(array, (int) (4u * (num / 4u))) >> (int) (num % 4u)) % 32u;
                 num += 1u;
             } while (num < 16u);
         }
@@ -303,7 +298,8 @@ namespace SM.Service.Patterns.Xsd
             return regex.Replace(@string, "");
         }
 
-        private static void LoadJoints(Pattern pattern, Stream stream, ushort count, ref List<Node> nodes, ref List<Backstitch> backstitches)
+        private static void LoadJoints(Pattern pattern, Stream stream, ushort count, ref List<Node> nodes,
+            ref List<Backstitch> backstitches)
         {
             var array = new byte[512];
             var i = 0;
@@ -358,6 +354,7 @@ namespace SM.Service.Patterns.Xsd
                     default:
                         goto IL_1C2;
                 }
+
                 IL_1EC:
                 i++;
                 continue;
@@ -385,6 +382,7 @@ namespace SM.Service.Patterns.Xsd
                 stream.Read(array, 0, 4);
                 array3[i] = BitConverter.ToUInt32(array, 0);
             }
+
             Decrypt(ref array3, out num4, ref array2);
             var num5 = 0;
             while (list.Count < num3)
@@ -405,6 +403,7 @@ namespace SM.Service.Patterns.Xsd
                         num5 = (num5 + 1) % 16;
                         num8++;
                     }
+
                     var num9 = 0;
                     while (num9 < num7)
                     {
@@ -414,15 +413,18 @@ namespace SM.Service.Patterns.Xsd
                             j = (int) ((array4[num9] & 1073741823u) >> 16);
                             num9++;
                         }
+
                         while (j > 0)
                         {
                             list.Add(array4[num9]);
                             j--;
                         }
+
                         num9++;
                     }
                 }
             }
+
             var list2 = new List<byte[]>();
             var num10 = 0;
             while (num10 < propCount)
@@ -432,6 +434,7 @@ namespace SM.Service.Patterns.Xsd
                 list2.Add(array5);
                 num10++;
             }
+
             for (var k = 0; k < num3; k++)
             {
                 if (k >= list.Count)
@@ -458,6 +461,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[0] & 2) != 0)
                         {
                             var stitch = new Stitch
@@ -469,6 +473,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[0] & 4) != 0)
                         {
                             var stitch = new Stitch
@@ -481,6 +486,7 @@ namespace SM.Service.Patterns.Xsd
 
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[0] & 16) != 0)
                         {
                             var stitch = new Stitch
@@ -492,6 +498,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[0] & 32) != 0)
                         {
                             var stitch = new Stitch
@@ -503,6 +510,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[0] & 8) != 0)
                         {
                             var stitch = new Stitch
@@ -514,6 +522,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[1] & 1) != 0)
                         {
                             var stitch = new Stitch
@@ -525,6 +534,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[1] & 4) != 0)
                         {
                             var stitch = new Stitch
@@ -536,6 +546,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[1] & 8) != 0)
                         {
                             var stitch = new Stitch
@@ -547,6 +558,7 @@ namespace SM.Service.Patterns.Xsd
                             };
                             pattern.Stitches.Add(stitch);
                         }
+
                         if ((array6[1] & 2) != 0)
                         {
                             var stitch = new Stitch
@@ -592,7 +604,7 @@ namespace SM.Service.Patterns.Xsd
                     Company = pattern.Info.Company,
                     Copyright = pattern.Info.Copyright
                 },
-                StrandsCount = new StrandsCount
+                Strands= new Messages.Strands
                 {
                     Backstitch = pattern.Strands.BackStitch,
                     FrenchKnot = pattern.Strands.FrenchKnot,
@@ -605,12 +617,25 @@ namespace SM.Service.Patterns.Xsd
             };
 
             foreach (var color in pattern.Colors)
+            {
                 result.Configurations.Add(new StitchConfiguration
                 {
                     Symbol = color.Symbol,
                     HexColor = "#" + color.Rgb.R.ToString("x2") + color.Rgb.G.ToString("x2") +
                                color.Rgb.B.ToString("x2")
                 });
+                if (!color.Strands.Equals(default(Strands)))
+                    result.Configurations[color.Index].Strands = new Messages.Strands
+                    {
+                        Backstitch = color.Strands.BackStitch,
+                        FrenchKnot = color.Strands.FrenchKnot,
+                        Full = color.Strands.Full,
+                        Half = color.Strands.Half,
+                        Petit = color.Strands.Petit,
+                        Quarter = color.Strands.Quarter,
+                        ThreeQuarter = color.Strands.ThreeQuarter
+                    };
+            }
 
             foreach (var stitch in pattern.Stitches)
                 result.Stitches.Add(new Messages.Stitch
@@ -624,10 +649,10 @@ namespace SM.Service.Patterns.Xsd
             foreach (var backstitch in pattern.Backstitches)
                 result.Backstitches.Add(new Messages.Backstitch
                 {
-                    X1 = backstitch.X1, 
+                    X1 = backstitch.X1,
                     X2 = backstitch.X2,
-                    Y1 = backstitch.Y1, 
-                    Y2 = backstitch.Y2, 
+                    Y1 = backstitch.Y1,
+                    Y2 = backstitch.Y2,
                     ConfigurationIndex = backstitch.Color.Index
                 });
 
@@ -636,7 +661,7 @@ namespace SM.Service.Patterns.Xsd
                 {
                     X = node.X,
                     Y = node.Y,
-                    Type = (ElementType) Enum.Parse(typeof(ElementType), ((int)node.Type).ToString(), true),
+                    Type = (ElementType) Enum.Parse(typeof(ElementType), ((int) node.Type).ToString(), true),
                     ConfigurationIndex = node.Color.Index
                 });
 

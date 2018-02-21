@@ -23,10 +23,10 @@ namespace SM.Service.Patterns.Xsd
         public Canvas Canvas = new Canvas();
         public readonly List<Color> Colors = new List<Color>();
         public ushort Height;
-        public Info Info = default(Info);
+        public Info Info = default;
         public List<Node> Nodes = new List<Node>();
         public readonly List<Stitch> Stitches = new List<Stitch>();
-        public Strands Strands = default(Strands);
+        public Strands Strands = default;
         public ushort Width;
 
         public ushort ThreadCountX { get; set; }

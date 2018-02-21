@@ -7,7 +7,7 @@ message Pattern {
     string id = 1;
     Info info = 2;
     Canvas canvas = 3;
-    StrandsCount strands_count = 4;
+    Strands strands = 4;
     uint32 width = 5;
     uint32 height = 6;
     repeated StitchConfiguration configurations = 7;
@@ -27,7 +27,7 @@ message Canvas {
     string title = 1;
 }
 
-message StrandsCount {
+message Strands {
     int32 full = 1;
     int32 half = 2;
     int32 quarter = 3;
@@ -40,6 +40,7 @@ message StrandsCount {
 message StitchConfiguration {
     string symbol = 1;
     string hex_color = 2;
+    Strands strands = 3;
 }
 
 message Stitch {
