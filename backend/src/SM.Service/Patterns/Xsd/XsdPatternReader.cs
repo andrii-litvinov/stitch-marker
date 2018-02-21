@@ -615,7 +615,8 @@ namespace SM.Service.Patterns.Xsd
             foreach (var stitch in pattern.Stitches)
                 result.Stitches.Add(new Messages.Stitch
                 {
-                    Point = new Point {X = stitch.Offset / pattern.Height, Y = stitch.Offset % pattern.Height},
+                    X = stitch.Offset / pattern.Height,
+                    Y = stitch.Offset % pattern.Height,
                     Type = (StitchType) Enum.Parse(typeof(StitchType), stitch.ItemType.ToString()),
                     ConfigurationIndex = stitch.Color.Index
                 });
@@ -623,15 +624,18 @@ namespace SM.Service.Patterns.Xsd
             foreach (var backstitch in pattern.Backstitches)
                 result.Backstitches.Add(new Messages.Backstitch
                 {
-                    StartPoint = new Point {X = backstitch.X1, Y = backstitch.Y1},
-                    EndPoint = new Point {X = backstitch.X2, Y = backstitch.Y2},
+                    X1 = backstitch.X1, 
+                    X2 = backstitch.X2,
+                    Y1 = backstitch.Y1, 
+                    Y2 = backstitch.Y2, 
                     ConfigurationIndex = backstitch.Color.Index
                 });
 
             foreach (var node in pattern.Nodes)
                 result.Elements.Add(new Element
                 {
-                    Point = new Point {X = node.X, Y = node.Y},
+                    X = node.X,
+                    Y = node.Y,
                     Type = (ElementType) Enum.Parse(typeof(ElementType), ((int)node.Type).ToString(), true),
                     ConfigurationIndex = node.Color.Index
                 });

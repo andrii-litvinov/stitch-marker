@@ -23,7 +23,7 @@ class StitchesLayer {
     this.stitches = [];
     this.scene.pattern.stitches.forEach(s => {
       const stitch = new Stitch(this.scene.pattern.configurations[s.configurationIndex], s);
-      this.stitches[stitch.point.x * this.scene.pattern.height + stitch.point.y] = stitch;
+      this.stitches[stitch.x * this.scene.pattern.height + stitch.y] = stitch;
     });
   }
 
@@ -34,10 +34,10 @@ class StitchesLayer {
     let stitchesPerTile = Tile.size / this.scene.stitchSize;
 
     this.stitches.forEach(stitch => {
-      let column = Math.floor(stitch.point.x / stitchesPerTile);
-      let row = Math.floor(stitch.point.y / stitchesPerTile);
-      const spanMultipleTilesX = (stitch.point.x + 1) * this.scene.stitchSize > (column + 1) * Tile.size;
-      const spanMultipleTilesY = (stitch.point.y + 1) * this.scene.stitchSize > (row + 1) * Tile.size;
+      let column = Math.floor(stitch.x / stitchesPerTile);
+      let row = Math.floor(stitch.y / stitchesPerTile);
+      const spanMultipleTilesX = (stitch.x + 1) * this.scene.stitchSize > (column + 1) * Tile.size;
+      const spanMultipleTilesY = (stitch.y + 1) * this.scene.stitchSize > (row + 1) * Tile.size;
 
       this.addStitchToTile(row, column, stitch);
       if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch);

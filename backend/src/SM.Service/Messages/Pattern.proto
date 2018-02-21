@@ -43,14 +43,10 @@ message StitchConfiguration {
 }
 
 message Stitch {
-    Point point = 1;
-    StitchType type = 2;
-    int32 configuration_index = 3;
-}
-
-message Point {
-    uint32 X = 1;
-    uint32 Y = 2;
+    uint32 x = 1;
+    uint32 y = 2;
+    StitchType type = 3;
+    int32 configuration_index = 4;
 }
 
 enum StitchType {
@@ -63,15 +59,18 @@ enum StitchType {
 }
 
 message Backstitch {
-    Point start_point = 1;
-    Point end_point = 2;
-    int32 configuration_index = 3;
+    uint32 x_1 = 1;
+    uint32 y_1 = 2;
+    uint32 x_2 = 3;
+    uint32 y_2 = 4;
+    int32 configuration_index = 5;
 }
 
 message Element {
-    Point point = 1;
-    int32 configuration_index = 2;
-    ElementType type = 3;
+    uint32 x = 1;
+    uint32 y = 2;
+    int32 configuration_index = 3;
+    ElementType type = 4;
 }
 
 enum ElementType {

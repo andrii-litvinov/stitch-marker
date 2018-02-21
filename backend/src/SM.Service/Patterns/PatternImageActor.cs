@@ -48,10 +48,10 @@ namespace SM.Service.Patterns
                 var paint = new SKPaint {Color = SKColor.Parse(configuration.HexColor)};
                 var rect = new SKRect
                 {
-                    Left = stitch.Point.X * size,
-                    Top = stitch.Point.Y * size,
-                    Right = (stitch.Point.X + 1) * size,
-                    Bottom = (stitch.Point.Y + 1) * size
+                    Left = stitch.X * size,
+                    Top = stitch.Y * size,
+                    Right = (stitch.X + 1) * size,
+                    Bottom = (stitch.Y + 1) * size
                 };
                 canvas.DrawRect(rect, paint);
             }

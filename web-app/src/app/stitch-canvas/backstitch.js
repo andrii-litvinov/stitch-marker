@@ -11,8 +11,8 @@ class Backstitch extends EventDispatcher {
     ctx.lineCap = "round";
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.moveTo(this.startPoint.x * stitchSize / 2, this.startPoint.y * stitchSize / 2);
-    ctx.lineTo(this.endPoint.x * stitchSize / 2, this.endPoint.y * stitchSize / 2);
+    ctx.moveTo(this.x1 * stitchSize / 2, this.y1 * stitchSize / 2);
+    ctx.lineTo(this.x2 * stitchSize / 2, this.y2 * stitchSize / 2);
     ctx.stroke();
   }
 }

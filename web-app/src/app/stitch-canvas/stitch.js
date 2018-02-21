@@ -15,15 +15,15 @@ class Stitch extends EventDispatcher {
     if (this.marked) {
       ctx.fillStyle = "#fafafa";
       ctx.fillRect(
-        this.point.x * stitchSize,
-        this.point.y * stitchSize,
+        this.x * stitchSize,
+        this.y * stitchSize,
         stitchSize,
         stitchSize);
     } else {
       ctx.fillStyle = this.config.hexColor;
       ctx.fillRect(
-        this.point.x * stitchSize,
-        this.point.y * stitchSize,
+        this.x * stitchSize,
+        this.y * stitchSize,
         stitchSize,
         stitchSize);
     }
@@ -43,7 +43,7 @@ class Stitch extends EventDispatcher {
     var metrics = ctx.measureText(this.config.symbol);
     ctx.fillText(
       this.config.symbol,
-      this.point.x * stitchSize + (stitchSize - metrics.width) / 2,
-      this.point.y * stitchSize + stitchSize / 2);
+      this.x * stitchSize + (stitchSize - metrics.width) / 2,
+      this.y * stitchSize + stitchSize / 2);
   }
 }

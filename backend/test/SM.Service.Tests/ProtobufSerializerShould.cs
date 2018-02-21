@@ -37,10 +37,10 @@ namespace SM.Service.Tests
 
             pattern1.Stitches.Add(pattern.Stitches.Select(stitch => new Stitch
             {
-                Point = new Point {X = stitch.Point.X, Y = stitch.Point.Y},
+                X = stitch.X,
+                Y = stitch.Y,
                 Type = (StitchType) (int) stitch.Type,
-                ConfigurationIndex = stitch.ConfigurationIndex,
-                
+                ConfigurationIndex = stitch.ConfigurationIndex
             }));
 
             stopwatch.Restart();

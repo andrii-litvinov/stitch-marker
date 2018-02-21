@@ -38,19 +38,17 @@ namespace SM.Service.Messages {
             "AiABKAUSDwoHcXVhcnRlchgDIAEoBRIVCg10aHJlZV9xdWFydGVyGAQgASgF",
             "Eg0KBXBldGl0GAUgASgFEhIKCmJhY2tzdGl0Y2gYBiABKAUSEwoLZnJlbmNo",
             "X2tub3QYByABKAUiOAoTU3RpdGNoQ29uZmlndXJhdGlvbhIOCgZzeW1ib2wY",
-            "ASABKAkSEQoJaGV4X2NvbG9yGAIgASgJImcKBlN0aXRjaBIdCgVwb2ludBgB",
-            "IAEoCzIOLnBhdHRlcm4uUG9pbnQSIQoEdHlwZRgCIAEoDjITLnBhdHRlcm4u",
-            "U3RpdGNoVHlwZRIbChNjb25maWd1cmF0aW9uX2luZGV4GAMgASgFIh0KBVBv",
-            "aW50EgkKAVgYASABKA0SCQoBWRgCIAEoDSJxCgpCYWNrc3RpdGNoEiMKC3N0",
-            "YXJ0X3BvaW50GAEgASgLMg4ucGF0dGVybi5Qb2ludBIhCgllbmRfcG9pbnQY",
-            "AiABKAsyDi5wYXR0ZXJuLlBvaW50EhsKE2NvbmZpZ3VyYXRpb25faW5kZXgY",
-            "AyABKAUiaQoHRWxlbWVudBIdCgVwb2ludBgBIAEoCzIOLnBhdHRlcm4uUG9p",
-            "bnQSGwoTY29uZmlndXJhdGlvbl9pbmRleBgCIAEoBRIiCgR0eXBlGAMgASgO",
-            "MhQucGF0dGVybi5FbGVtZW50VHlwZSpUCgpTdGl0Y2hUeXBlEggKBE5PTkUQ",
-            "ABIICgRGVUxMEAESCAoESEFMRhACEgsKB1FVQVJURVIQAxIQCgxUSFJFRVFV",
-            "QVJURVIQBBIJCgVQRVRJVBAFKjYKC0VsZW1lbnRUeXBlEg0KCVVOREVGSU5F",
-            "RBAAEg4KCkZSRU5DSEtOT1QQARIICgRCRUFEEAJCFqoCE1NNLlNlcnZpY2Uu",
-            "TWVzc2FnZXNiBnByb3RvMw=="));
+            "ASABKAkSEQoJaGV4X2NvbG9yGAIgASgJIl4KBlN0aXRjaBIJCgF4GAEgASgN",
+            "EgkKAXkYAiABKA0SIQoEdHlwZRgDIAEoDjITLnBhdHRlcm4uU3RpdGNoVHlw",
+            "ZRIbChNjb25maWd1cmF0aW9uX2luZGV4GAQgASgFIl0KCkJhY2tzdGl0Y2gS",
+            "CwoDeF8xGAEgASgNEgsKA3lfMRgCIAEoDRILCgN4XzIYAyABKA0SCwoDeV8y",
+            "GAQgASgNEhsKE2NvbmZpZ3VyYXRpb25faW5kZXgYBSABKAUiYAoHRWxlbWVu",
+            "dBIJCgF4GAEgASgNEgkKAXkYAiABKA0SGwoTY29uZmlndXJhdGlvbl9pbmRl",
+            "eBgDIAEoBRIiCgR0eXBlGAQgASgOMhQucGF0dGVybi5FbGVtZW50VHlwZSpU",
+            "CgpTdGl0Y2hUeXBlEggKBE5PTkUQABIICgRGVUxMEAESCAoESEFMRhACEgsK",
+            "B1FVQVJURVIQAxIQCgxUSFJFRVFVQVJURVIQBBIJCgVQRVRJVBAFKjYKC0Vs",
+            "ZW1lbnRUeXBlEg0KCVVOREVGSU5FRBAAEg4KCkZSRU5DSEtOT1QQARIICgRC",
+            "RUFEEAJCFqoCE1NNLlNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.Messages.StitchType), typeof(global::SM.Service.Messages.ElementType), }, new pbr::GeneratedClrTypeInfo[] {
@@ -59,10 +57,9 @@ namespace SM.Service.Messages {
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Canvas), global::SM.Service.Messages.Canvas.Parser, new[]{ "Title" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.StrandsCount), global::SM.Service.Messages.StrandsCount.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.StitchConfiguration), global::SM.Service.Messages.StitchConfiguration.Parser, new[]{ "Symbol", "HexColor" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Stitch), global::SM.Service.Messages.Stitch.Parser, new[]{ "Point", "Type", "ConfigurationIndex" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Point), global::SM.Service.Messages.Point.Parser, new[]{ "X", "Y" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Backstitch), global::SM.Service.Messages.Backstitch.Parser, new[]{ "StartPoint", "EndPoint", "ConfigurationIndex" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Element), global::SM.Service.Messages.Element.Parser, new[]{ "Point", "ConfigurationIndex", "Type" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Stitch), global::SM.Service.Messages.Stitch.Parser, new[]{ "X", "Y", "Type", "ConfigurationIndex" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Backstitch), global::SM.Service.Messages.Backstitch.Parser, new[]{ "X1", "Y1", "X2", "Y2", "ConfigurationIndex" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Element), global::SM.Service.Messages.Element.Parser, new[]{ "X", "Y", "ConfigurationIndex", "Type" }, null, null, null)
           }));
     }
     #endregion
@@ -1275,7 +1272,8 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Stitch(Stitch other) : this() {
-      Point = other.point_ != null ? other.Point.Clone() : null;
+      x_ = other.x_;
+      y_ = other.y_;
       type_ = other.type_;
       configurationIndex_ = other.configurationIndex_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1286,19 +1284,30 @@ namespace SM.Service.Messages {
       return new Stitch(this);
     }
 
-    /// <summary>Field number for the "point" field.</summary>
-    public const int PointFieldNumber = 1;
-    private global::SM.Service.Messages.Point point_;
+    /// <summary>Field number for the "x" field.</summary>
+    public const int XFieldNumber = 1;
+    private uint x_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Point Point {
-      get { return point_; }
+    public uint X {
+      get { return x_; }
       set {
-        point_ = value;
+        x_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "y" field.</summary>
+    public const int YFieldNumber = 2;
+    private uint y_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Y {
+      get { return y_; }
+      set {
+        y_ = value;
       }
     }
 
     /// <summary>Field number for the "type" field.</summary>
-    public const int TypeFieldNumber = 2;
+    public const int TypeFieldNumber = 3;
     private global::SM.Service.Messages.StitchType type_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::SM.Service.Messages.StitchType Type {
@@ -1309,7 +1318,7 @@ namespace SM.Service.Messages {
     }
 
     /// <summary>Field number for the "configuration_index" field.</summary>
-    public const int ConfigurationIndexFieldNumber = 3;
+    public const int ConfigurationIndexFieldNumber = 4;
     private int configurationIndex_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int ConfigurationIndex {
@@ -1332,7 +1341,8 @@ namespace SM.Service.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Point, other.Point)) return false;
+      if (X != other.X) return false;
+      if (Y != other.Y) return false;
       if (Type != other.Type) return false;
       if (ConfigurationIndex != other.ConfigurationIndex) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -1341,186 +1351,10 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (point_ != null) hash ^= Point.GetHashCode();
-      if (Type != 0) hash ^= Type.GetHashCode();
-      if (ConfigurationIndex != 0) hash ^= ConfigurationIndex.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (point_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Point);
-      }
-      if (Type != 0) {
-        output.WriteRawTag(16);
-        output.WriteEnum((int) Type);
-      }
-      if (ConfigurationIndex != 0) {
-        output.WriteRawTag(24);
-        output.WriteInt32(ConfigurationIndex);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (point_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Point);
-      }
-      if (Type != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
-      }
-      if (ConfigurationIndex != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConfigurationIndex);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(Stitch other) {
-      if (other == null) {
-        return;
-      }
-      if (other.point_ != null) {
-        if (point_ == null) {
-          point_ = new global::SM.Service.Messages.Point();
-        }
-        Point.MergeFrom(other.Point);
-      }
-      if (other.Type != 0) {
-        Type = other.Type;
-      }
-      if (other.ConfigurationIndex != 0) {
-        ConfigurationIndex = other.ConfigurationIndex;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 10: {
-            if (point_ == null) {
-              point_ = new global::SM.Service.Messages.Point();
-            }
-            input.ReadMessage(point_);
-            break;
-          }
-          case 16: {
-            type_ = (global::SM.Service.Messages.StitchType) input.ReadEnum();
-            break;
-          }
-          case 24: {
-            ConfigurationIndex = input.ReadInt32();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  public sealed partial class Point : pb::IMessage<Point> {
-    private static readonly pb::MessageParser<Point> _parser = new pb::MessageParser<Point>(() => new Point());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<Point> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[6]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public Point() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public Point(Point other) : this() {
-      x_ = other.x_;
-      y_ = other.y_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public Point Clone() {
-      return new Point(this);
-    }
-
-    /// <summary>Field number for the "X" field.</summary>
-    public const int XFieldNumber = 1;
-    private uint x_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint X {
-      get { return x_; }
-      set {
-        x_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Y" field.</summary>
-    public const int YFieldNumber = 2;
-    private uint y_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Y {
-      get { return y_; }
-      set {
-        y_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as Point);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(Point other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (X != other.X) return false;
-      if (Y != other.Y) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
       if (X != 0) hash ^= X.GetHashCode();
       if (Y != 0) hash ^= Y.GetHashCode();
+      if (Type != 0) hash ^= Type.GetHashCode();
+      if (ConfigurationIndex != 0) hash ^= ConfigurationIndex.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1542,6 +1376,14 @@ namespace SM.Service.Messages {
         output.WriteRawTag(16);
         output.WriteUInt32(Y);
       }
+      if (Type != 0) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) Type);
+      }
+      if (ConfigurationIndex != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(ConfigurationIndex);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1556,6 +1398,12 @@ namespace SM.Service.Messages {
       if (Y != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y);
       }
+      if (Type != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+      }
+      if (ConfigurationIndex != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConfigurationIndex);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -1563,7 +1411,7 @@ namespace SM.Service.Messages {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(Point other) {
+    public void MergeFrom(Stitch other) {
       if (other == null) {
         return;
       }
@@ -1572,6 +1420,12 @@ namespace SM.Service.Messages {
       }
       if (other.Y != 0) {
         Y = other.Y;
+      }
+      if (other.Type != 0) {
+        Type = other.Type;
+      }
+      if (other.ConfigurationIndex != 0) {
+        ConfigurationIndex = other.ConfigurationIndex;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1592,6 +1446,14 @@ namespace SM.Service.Messages {
             Y = input.ReadUInt32();
             break;
           }
+          case 24: {
+            type_ = (global::SM.Service.Messages.StitchType) input.ReadEnum();
+            break;
+          }
+          case 32: {
+            ConfigurationIndex = input.ReadInt32();
+            break;
+          }
         }
       }
     }
@@ -1606,7 +1468,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[7]; }
+      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1623,8 +1485,10 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Backstitch(Backstitch other) : this() {
-      StartPoint = other.startPoint_ != null ? other.StartPoint.Clone() : null;
-      EndPoint = other.endPoint_ != null ? other.EndPoint.Clone() : null;
+      x1_ = other.x1_;
+      y1_ = other.y1_;
+      x2_ = other.x2_;
+      y2_ = other.y2_;
       configurationIndex_ = other.configurationIndex_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -1634,30 +1498,52 @@ namespace SM.Service.Messages {
       return new Backstitch(this);
     }
 
-    /// <summary>Field number for the "start_point" field.</summary>
-    public const int StartPointFieldNumber = 1;
-    private global::SM.Service.Messages.Point startPoint_;
+    /// <summary>Field number for the "x_1" field.</summary>
+    public const int X1FieldNumber = 1;
+    private uint x1_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Point StartPoint {
-      get { return startPoint_; }
+    public uint X1 {
+      get { return x1_; }
       set {
-        startPoint_ = value;
+        x1_ = value;
       }
     }
 
-    /// <summary>Field number for the "end_point" field.</summary>
-    public const int EndPointFieldNumber = 2;
-    private global::SM.Service.Messages.Point endPoint_;
+    /// <summary>Field number for the "y_1" field.</summary>
+    public const int Y1FieldNumber = 2;
+    private uint y1_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Point EndPoint {
-      get { return endPoint_; }
+    public uint Y1 {
+      get { return y1_; }
       set {
-        endPoint_ = value;
+        y1_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "x_2" field.</summary>
+    public const int X2FieldNumber = 3;
+    private uint x2_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint X2 {
+      get { return x2_; }
+      set {
+        x2_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "y_2" field.</summary>
+    public const int Y2FieldNumber = 4;
+    private uint y2_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Y2 {
+      get { return y2_; }
+      set {
+        y2_ = value;
       }
     }
 
     /// <summary>Field number for the "configuration_index" field.</summary>
-    public const int ConfigurationIndexFieldNumber = 3;
+    public const int ConfigurationIndexFieldNumber = 5;
     private int configurationIndex_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int ConfigurationIndex {
@@ -1680,8 +1566,10 @@ namespace SM.Service.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(StartPoint, other.StartPoint)) return false;
-      if (!object.Equals(EndPoint, other.EndPoint)) return false;
+      if (X1 != other.X1) return false;
+      if (Y1 != other.Y1) return false;
+      if (X2 != other.X2) return false;
+      if (Y2 != other.Y2) return false;
       if (ConfigurationIndex != other.ConfigurationIndex) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -1689,8 +1577,10 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (startPoint_ != null) hash ^= StartPoint.GetHashCode();
-      if (endPoint_ != null) hash ^= EndPoint.GetHashCode();
+      if (X1 != 0) hash ^= X1.GetHashCode();
+      if (Y1 != 0) hash ^= Y1.GetHashCode();
+      if (X2 != 0) hash ^= X2.GetHashCode();
+      if (Y2 != 0) hash ^= Y2.GetHashCode();
       if (ConfigurationIndex != 0) hash ^= ConfigurationIndex.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1705,16 +1595,24 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (startPoint_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(StartPoint);
+      if (X1 != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(X1);
       }
-      if (endPoint_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(EndPoint);
+      if (Y1 != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Y1);
+      }
+      if (X2 != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(X2);
+      }
+      if (Y2 != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(Y2);
       }
       if (ConfigurationIndex != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(40);
         output.WriteInt32(ConfigurationIndex);
       }
       if (_unknownFields != null) {
@@ -1725,11 +1623,17 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (startPoint_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(StartPoint);
+      if (X1 != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X1);
       }
-      if (endPoint_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(EndPoint);
+      if (Y1 != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y1);
+      }
+      if (X2 != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X2);
+      }
+      if (Y2 != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y2);
       }
       if (ConfigurationIndex != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConfigurationIndex);
@@ -1745,17 +1649,17 @@ namespace SM.Service.Messages {
       if (other == null) {
         return;
       }
-      if (other.startPoint_ != null) {
-        if (startPoint_ == null) {
-          startPoint_ = new global::SM.Service.Messages.Point();
-        }
-        StartPoint.MergeFrom(other.StartPoint);
+      if (other.X1 != 0) {
+        X1 = other.X1;
       }
-      if (other.endPoint_ != null) {
-        if (endPoint_ == null) {
-          endPoint_ = new global::SM.Service.Messages.Point();
-        }
-        EndPoint.MergeFrom(other.EndPoint);
+      if (other.Y1 != 0) {
+        Y1 = other.Y1;
+      }
+      if (other.X2 != 0) {
+        X2 = other.X2;
+      }
+      if (other.Y2 != 0) {
+        Y2 = other.Y2;
       }
       if (other.ConfigurationIndex != 0) {
         ConfigurationIndex = other.ConfigurationIndex;
@@ -1771,21 +1675,23 @@ namespace SM.Service.Messages {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            if (startPoint_ == null) {
-              startPoint_ = new global::SM.Service.Messages.Point();
-            }
-            input.ReadMessage(startPoint_);
+          case 8: {
+            X1 = input.ReadUInt32();
             break;
           }
-          case 18: {
-            if (endPoint_ == null) {
-              endPoint_ = new global::SM.Service.Messages.Point();
-            }
-            input.ReadMessage(endPoint_);
+          case 16: {
+            Y1 = input.ReadUInt32();
             break;
           }
           case 24: {
+            X2 = input.ReadUInt32();
+            break;
+          }
+          case 32: {
+            Y2 = input.ReadUInt32();
+            break;
+          }
+          case 40: {
             ConfigurationIndex = input.ReadInt32();
             break;
           }
@@ -1803,7 +1709,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[8]; }
+      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1820,7 +1726,8 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Element(Element other) : this() {
-      Point = other.point_ != null ? other.Point.Clone() : null;
+      x_ = other.x_;
+      y_ = other.y_;
       configurationIndex_ = other.configurationIndex_;
       type_ = other.type_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -1831,19 +1738,30 @@ namespace SM.Service.Messages {
       return new Element(this);
     }
 
-    /// <summary>Field number for the "point" field.</summary>
-    public const int PointFieldNumber = 1;
-    private global::SM.Service.Messages.Point point_;
+    /// <summary>Field number for the "x" field.</summary>
+    public const int XFieldNumber = 1;
+    private uint x_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Point Point {
-      get { return point_; }
+    public uint X {
+      get { return x_; }
       set {
-        point_ = value;
+        x_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "y" field.</summary>
+    public const int YFieldNumber = 2;
+    private uint y_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Y {
+      get { return y_; }
+      set {
+        y_ = value;
       }
     }
 
     /// <summary>Field number for the "configuration_index" field.</summary>
-    public const int ConfigurationIndexFieldNumber = 2;
+    public const int ConfigurationIndexFieldNumber = 3;
     private int configurationIndex_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int ConfigurationIndex {
@@ -1854,7 +1772,7 @@ namespace SM.Service.Messages {
     }
 
     /// <summary>Field number for the "type" field.</summary>
-    public const int TypeFieldNumber = 3;
+    public const int TypeFieldNumber = 4;
     private global::SM.Service.Messages.ElementType type_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::SM.Service.Messages.ElementType Type {
@@ -1877,7 +1795,8 @@ namespace SM.Service.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!object.Equals(Point, other.Point)) return false;
+      if (X != other.X) return false;
+      if (Y != other.Y) return false;
       if (ConfigurationIndex != other.ConfigurationIndex) return false;
       if (Type != other.Type) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -1886,7 +1805,8 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (point_ != null) hash ^= Point.GetHashCode();
+      if (X != 0) hash ^= X.GetHashCode();
+      if (Y != 0) hash ^= Y.GetHashCode();
       if (ConfigurationIndex != 0) hash ^= ConfigurationIndex.GetHashCode();
       if (Type != 0) hash ^= Type.GetHashCode();
       if (_unknownFields != null) {
@@ -1902,16 +1822,20 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (point_ != null) {
-        output.WriteRawTag(10);
-        output.WriteMessage(Point);
+      if (X != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(X);
+      }
+      if (Y != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(Y);
       }
       if (ConfigurationIndex != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(24);
         output.WriteInt32(ConfigurationIndex);
       }
       if (Type != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(32);
         output.WriteEnum((int) Type);
       }
       if (_unknownFields != null) {
@@ -1922,8 +1846,11 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (point_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Point);
+      if (X != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X);
+      }
+      if (Y != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y);
       }
       if (ConfigurationIndex != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConfigurationIndex);
@@ -1942,11 +1869,11 @@ namespace SM.Service.Messages {
       if (other == null) {
         return;
       }
-      if (other.point_ != null) {
-        if (point_ == null) {
-          point_ = new global::SM.Service.Messages.Point();
-        }
-        Point.MergeFrom(other.Point);
+      if (other.X != 0) {
+        X = other.X;
+      }
+      if (other.Y != 0) {
+        Y = other.Y;
       }
       if (other.ConfigurationIndex != 0) {
         ConfigurationIndex = other.ConfigurationIndex;
@@ -1965,18 +1892,19 @@ namespace SM.Service.Messages {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 10: {
-            if (point_ == null) {
-              point_ = new global::SM.Service.Messages.Point();
-            }
-            input.ReadMessage(point_);
+          case 8: {
+            X = input.ReadUInt32();
             break;
           }
           case 16: {
-            ConfigurationIndex = input.ReadInt32();
+            Y = input.ReadUInt32();
             break;
           }
           case 24: {
+            ConfigurationIndex = input.ReadInt32();
+            break;
+          }
+          case 32: {
             type_ = (global::SM.Service.Messages.ElementType) input.ReadEnum();
             break;
           }
