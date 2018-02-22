@@ -35,7 +35,7 @@ class Stitch extends EventDispatcher {
       if (brightness === "bright")
         ctx.fillStyle = shadeBlendConvert(.3, this.config.hexColor);
       else
-        ctx.fillStyle = shadeBlendConvert(-.3, this.config.hexColor);;
+        ctx.fillStyle = shadeBlendConvert(-.3, this.config.hexColor);
     }
 
     ctx.textBaseline = "middle";
