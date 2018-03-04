@@ -113,8 +113,8 @@
         await this.resize();
       }
 
-      zoomChanged(zoom) {
-        this.enabled && this.scene.setZoom(zoom);
+      zoomChanged(scale) {
+        this.enabled && this.scene.zoomToCenter(scale);
       }
 
       async resize() {

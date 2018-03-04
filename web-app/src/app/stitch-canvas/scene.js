@@ -1,13 +1,13 @@
 class Scene extends EventDispatcher {
-  constructor(component, pattern, zoom = 1, x = 0, y = 0) {
+  constructor(component, pattern, scale = 1, x = 0, y = 0) {
     super();
 
     this.component = component;
     this.pattern = pattern;
-    this.zoom = zoom;
+    this.scale = scale;
     this.x = x;
     this.y = y;
-    this.stitchSize = Math.floor(this.zoom * config.stitchSize);
+    this.stitchSize = Math.floor(this.scale * config.stitchSize);
 
     this.layers = [];
     this.layers.push(new StitchesLayer(this));
@@ -22,13 +22,28 @@ class Scene extends EventDispatcher {
   resize(width, height) {
     this.width = width;
     this.height = height;
-    this.dispatchEvent(new CustomEvent("resize", { detail: { width: width, height: height, bounds: this.getBounds() } }));
+    this.dispatchEvent(new CustomEvent("resize", { detail: { width, height, bounds: this.getBounds() } }));
   }
 
-  setZoom(zoom) {
-    this.zoom = zoom;
-    this.stitchSize = Math.floor(this.zoom * config.stitchSize);
-    this.dispatchEvent(new CustomEvent("zoom", { detail: { zoom: zoom, bounds: this.getBounds() } }));
+  zoomToCenter(scale) {
+    return this.zoomToPoint({
+      x: this.width / 2 - this.x,
+      y: this.height / 2 - this.y
+    }, scale)
+  }
+
+  zoomToPoint(point, scale) {
+    const k = scale / this.scale;
+    this.scale = scale;
+
+    let newPoint = {
+      x: Math.round(point.x * k),
+      y: Math.round(point.y * k),
+    };
+
+    this.stitchSize = Math.floor(this.scale * config.stitchSize);
+    this.dispatchEvent(new CustomEvent("zoom", { detail: { scale, bounds: this.getBounds() } }));
+    this.translate(point.x - newPoint.x, point.y - newPoint.y);
   }
 
   translate(x, y) {
@@ -38,7 +53,7 @@ class Scene extends EventDispatcher {
   }
 
   tap(x, y) {
-    this.dispatchEvent(new CustomEvent("tap", { detail: { x: x, y: y } }));
+    this.dispatchEvent(new CustomEvent("tap", { detail: { x, y } }));
   }
 
   render() {

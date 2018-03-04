@@ -36,7 +36,7 @@ class GridLayer {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(0.5, 0.5);
 
-    if (this.scene.zoom >= 0.5) {
+    if (this.scene.scale >= 0.5) {
       this.renderGrid(boundsX, boundsY);
       this.renderDecGrid(boundsX, boundsY);
     }

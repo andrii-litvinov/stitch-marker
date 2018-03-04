@@ -1,9 +1,9 @@
 class Backstitch extends EventDispatcher {
   static get scaleFactor() { return 40; }
 
-  constructor(config, zoom, strands, data) {
+  constructor(config, scale, strands, data) {
     super();
-    this.zoom = zoom;
+    this.scale = scale;
     this.strands = strands;
     this.config = config;
     Object.assign(this, data);
@@ -13,7 +13,7 @@ class Backstitch extends EventDispatcher {
     ctx.strokeStyle = this.config.hexColor;
     ctx.lineCap = "round";
     ctx.lineWidth = Math.round(
-      Math.sqrt(this.strands.backstitch * Backstitch.scaleFactor) * this.zoom);
+      Math.sqrt(this.strands.backstitch * Backstitch.scaleFactor) * this.scale);
     ctx.beginPath();
     ctx.moveTo(this.x1 * stitchSize / 2, this.y1 * stitchSize / 2);
     ctx.lineTo(this.x2 * stitchSize / 2, this.y2 * stitchSize / 2);
