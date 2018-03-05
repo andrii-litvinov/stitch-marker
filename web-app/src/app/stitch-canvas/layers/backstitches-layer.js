@@ -14,7 +14,6 @@ class BackstitchesLayer extends BaseLayer {
     }
   }
 
-
   tap(event) {
     const x = event.detail.x;
     const y = event.detail.y;
@@ -26,7 +25,7 @@ class BackstitchesLayer extends BaseLayer {
     this.scene.pattern.backstitches.forEach(bs => {
       const config = this.scene.pattern.configurations[bs.configurationIndex];
       const strands = config.strands || this.scene.pattern.strands;
-      const backstitch = new Backstitch(config, this.scene.zoom, strands, bs);
+      const backstitch = new Backstitch(config, this.scene.scale, strands, bs);
       backstitch.draw(this.ctx, this.scene.stitchSize);
     });
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
