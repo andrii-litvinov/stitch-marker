@@ -78,6 +78,9 @@
           if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
             position = getPosition(event);
           }
+          if (event.type !== "mouseenter") {
+            this.scene.touchStart(position.x, position.y);
+          }
         };
 
         const onEnd = event => position = null;
