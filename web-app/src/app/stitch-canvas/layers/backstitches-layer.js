@@ -26,11 +26,12 @@ class BackstitchesLayer extends BaseLayer {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
     const point = this.backstitchesMap[x * this.scene.pattern.height + y];
-    if (point)
+    if (point) {
       point.forEach(backstitch => {
         this.markers = [];
-        this.markers.push(new BackstitchMarker(this.ctx, backstitch, x, y));
+        this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, x, y));
       });
+    }
   }
 
   render() {
@@ -49,7 +50,7 @@ class BackstitchesLayer extends BaseLayer {
     this.scene.pattern.backstitches.forEach(bs => {
       const config = this.scene.pattern.configurations[bs.configurationIndex];
       const strands = config.strands || this.scene.pattern.strands;
-      const backstitch = new Backstitch(config, strands, bs);
+      const backstitch = new Backstitch(config, strands, bs, this.scene.scale);
       [
         { x: backstitch.x1, y: backstitch.y1 },
         { x: backstitch.x2, y: backstitch.y2 }
