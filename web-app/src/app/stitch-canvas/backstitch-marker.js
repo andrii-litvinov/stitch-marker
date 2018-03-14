@@ -4,7 +4,6 @@ class BackstitchMarker {
     this.scene = scene;
     this.backstitch = backstitch;
     this.epsilon = backstitch.width + 3;
-
     this.setBackstitchPoints(backstitch, touchX, touchY);
 
     const sceneEventListeners = {
@@ -17,26 +16,31 @@ class BackstitchMarker {
   }
 
   move(e) {
-    const moveContext = this.getPointOnBackstitch(e.detail.x, e.detail.y);
+    const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
+    const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
+    const moveContext = this.getPointOnBackstitch(x, y);
+    console.log("move", moveContext);
 
     // TODO: Fire event that backstitch marking progressed.
     moveContext && this.draw(moveContext.x, moveContext.y);
   }
 
   getPointOnBackstitch(x, y) {
-    const startPoint = this.startPoint;
-    const endPoint = this.endPoint;
-    const distanceToStart = Math.sqrt(Math.pow(startPoint.x - x, 2) + Math.pow(startPoint.y - y, 2));
-    const distanceToEnd = Math.sqrt(Math.pow(endPoint.x - x, 2) + Math.pow(endPoint.y - y, 2));
-    const backstitchLength = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
+    const x1 = this.startPoint.x * this.scene.stitchSize / 2;
+    const x2 = this.endPoint.x * this.scene.stitchSize / 2;
+    const y1 = this.startPoint.y * this.scene.stitchSize / 2;
+    const y2 = this.endPoint.y * this.scene.stitchSize / 2;
+    const distanceToStart = Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2));
+    const distanceToEnd = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+    const backstitchLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     const distanceToBackstitch = this.getDistanceToBackstith(distanceToStart, distanceToEnd, backstitchLength);
 
     if (distanceToBackstitch < this.epsilon) {
       const cathetus = Math.sqrt(Math.pow(distanceToStart, 2) - Math.pow(distanceToBackstitch, 2));
 
-      let ab = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-      let bc = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - endPoint.y, 2));
-      let ac = Math.sqrt(Math.pow(startPoint.x - startPoint.x, 2) + Math.pow(startPoint.y - endPoint.y, 2));
+      let ab = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+      let bc = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y2, 2));
+      let ac = Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y2 - y1, 2));
 
       let dX = cathetus * bc / ab;
       let dY = cathetus * ac / ab;
@@ -44,15 +48,15 @@ class BackstitchMarker {
       const deviationY = [dY, -dY];
 
       for (let i = 0; i < deviationX.length; i++) {
-        const backstitchX = startPoint.x + deviationX[i];
+        const backstitchX = x1 + deviationX[i];
         for (let j = 0; j < deviationY.length; j++) {
-          const backstitchY = startPoint.y + deviationY[j];
-          const inbetween = Math.min(startPoint.x, endPoint.x) <= backstitchX && backstitchX <= Math.max(startPoint.x, endPoint.x) && Math.min(startPoint.y, endPoint.y) <= backstitchY && backstitchY <= Math.max(startPoint.y, endPoint.y);
+          const backstitchY = y1 + deviationY[j];
+          const inbetween = Math.min(x1, x2) <= backstitchX && backstitchX <= Math.max(x1, x2) && Math.min(y1, y2) <= backstitchY && backstitchY <= Math.max(y1, y2);
           const matchesDistance = Math.abs(Math.sqrt((Math.pow(x - backstitchX, 2) + Math.pow(y - backstitchY, 2))) - distanceToBackstitch) < 0.00001;
           if (inbetween && matchesDistance) {
             const pointOnBackstitch = { x: backstitchX, y: backstitchY };
-            const backstitchPointToStart = Math.sqrt(Math.pow(startPoint.x - pointOnBackstitch.x, 2) + Math.pow(startPoint.y - pointOnBackstitch.y, 2));
-            const backstitchPointToEnd = Math.sqrt(Math.pow(endPoint.x - pointOnBackstitch.x, 2) + Math.pow(endPoint.y - pointOnBackstitch.y, 2));
+            const backstitchPointToStart = Math.sqrt(Math.pow(x1 - pointOnBackstitch.x, 2) + Math.pow(y1 - pointOnBackstitch.y, 2));
+            const backstitchPointToEnd = Math.sqrt(Math.pow(x2 - pointOnBackstitch.x, 2) + Math.pow(y2 - pointOnBackstitch.y, 2));
             if (backstitchPointToStart < backstitchLength && backstitchPointToEnd < backstitchLength) {
 
               // TODO: Fire event directly here. Move the code to move method.
@@ -63,7 +67,7 @@ class BackstitchMarker {
               this.dispose();
 
               // TODO: Fire event that marking was aborted.
-              drawBackstitch(this.ctx, this.backstitch);
+              this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
             }
           }
         }
@@ -76,33 +80,36 @@ class BackstitchMarker {
   }
 
   draw(x, y) {
-    const startPoint = this.startPoint;
-    const endPoint = this.endPoint;
-    let distanceToEnd = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2)) - Math.sqrt(Math.pow(x - startPoint.x, 2) + Math.pow(y - startPoint.y, 2))
+    console.log("u are in draw method");
+    const x1 = this.startPoint.x * this.scene.stitchSize / 2;
+    const x2 = this.endPoint.x * this.scene.stitchSize / 2;
+    const y1 = this.startPoint.y * this.scene.stitchSize / 2;
+    const y2 = this.endPoint.y * this.scene.stitchSize / 2;
+    let distanceToEnd = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) - Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2))
 
     if (distanceToEnd < this.epsilon) {
       this.ctx.beginPath();
-      this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
-      this.ctx.lineTo(this.endPoint.x, this.endPoint.y);
-      this.ctx.lineWidth = 5;
+      this.ctx.moveTo(x1, y1);
+      this.ctx.lineTo(x2, y2);
+      this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = "blue";
       this.ctx.stroke();
       this.ctx.closePath();
       this.finalize();
     } else {
-      drawBackstitch(this.ctx, this.backstitch);
+      this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
       this.ctx.beginPath();
-      this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
+      this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x, y);
-      this.ctx.lineWidth = 5;
+      this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = "blue";
       this.ctx.stroke();
       this.ctx.closePath();
 
       this.ctx.beginPath();
       this.ctx.moveTo(x, y);
-      this.ctx.lineTo(this.endPoint.x, this.endPoint.y);
-      this.ctx.lineWidth = 5;
+      this.ctx.lineTo(x2, y2);
+      this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = "green";
       this.ctx.stroke();
       this.ctx.closePath();
@@ -117,7 +124,8 @@ class BackstitchMarker {
   }
 
   setBackstitchPoints(backstitch, touchX, touchY) {
-    if (backstitch.x1 - this.epsilon < touchX && touchX < backstitch.x1 + this.epsilon && backstitch.y1 - this.epsilon < touchY && touchY < backstitch.y1 + this.epsilon) {
+    console.log("setBackstitchPoints");
+    if (backstitch.x1 * this.scene.stitchSize / 2 - this.epsilon < touchX && touchX < backstitch.x1 * this.scene.stitchSize / 2 + this.epsilon && backstitch.y1 * this.scene.stitchSize / 2 - this.epsilon < touchY && touchY < backstitch.y1 * this.scene.stitchSize / 2 + this.epsilon) {
       this.startPoint = { x: backstitch.x1, y: backstitch.y1 };
       this.endPoint = { x: backstitch.x2, y: backstitch.y2 };
     } else {
@@ -138,7 +146,7 @@ class BackstitchMarker {
     this.dispose();
 
     // TODO: Fire event that marking was aborted.
-    drawBackstitch(this.ctx, this.backstitch);
+    this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
   }
 
   dispose() {

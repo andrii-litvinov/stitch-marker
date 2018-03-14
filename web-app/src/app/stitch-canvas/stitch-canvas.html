@@ -92,7 +92,9 @@
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
             position = newPosition;
-            requestAnimationFrame(() => this.scene.translate(dx, dy));
+            //change translate params to dx, dy to make previous tranlsate
+            //this one is used to "move"
+            requestAnimationFrame(() => this.scene.translate(event.clientX, event.clientY));
           }
         };
 
