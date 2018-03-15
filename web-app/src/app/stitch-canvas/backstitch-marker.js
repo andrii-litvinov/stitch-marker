@@ -5,7 +5,8 @@ class BackstitchMarker {
     this.backstitch = backstitch;
     this.epsilon = backstitch.width + 3;
     this.setBackstitchPoints(backstitch, touchX, touchY);
-
+    console.log(this.backstitch);
+    console.log(this.startPoint);
     const sceneEventListeners = {
       move: this.move.bind(this),
     }
@@ -16,8 +17,9 @@ class BackstitchMarker {
   }
 
   move(e) {
-    const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
-    const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
+    const x = e.detail.x;
+    const y = e.detail.y;
+    console.log(x, y);
     const moveContext = this.getPointOnBackstitch(x, y);
     console.log("move", moveContext);
 
@@ -110,7 +112,7 @@ class BackstitchMarker {
       this.ctx.moveTo(x, y);
       this.ctx.lineTo(x2, y2);
       this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = "green";
+      this.ctx.strokeStyle = this.backstitch.config.hexColor;
       this.ctx.stroke();
       this.ctx.closePath();
     }
@@ -125,7 +127,8 @@ class BackstitchMarker {
 
   setBackstitchPoints(backstitch, touchX, touchY) {
     console.log("setBackstitchPoints");
-    if (backstitch.x1 * this.scene.stitchSize / 2 - this.epsilon < touchX && touchX < backstitch.x1 * this.scene.stitchSize / 2 + this.epsilon && backstitch.y1 * this.scene.stitchSize / 2 - this.epsilon < touchY && touchY < backstitch.y1 * this.scene.stitchSize / 2 + this.epsilon) {
+    //normalizing epsilon
+    if (backstitch.x1 - this.epsilon / this.scene.stitchSize * 2 < touchX && touchX < backstitch.x1 + this.epsilon / this.scene.stitchSize * 2 && backstitch.y1 - this.epsilon / this.scene.stitchSize * 2 < touchY && touchY < backstitch.y1 + this.epsilon / this.scene.stitchSize * 2) {
       this.startPoint = { x: backstitch.x1, y: backstitch.y1 };
       this.endPoint = { x: backstitch.x2, y: backstitch.y2 };
     } else {
