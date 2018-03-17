@@ -29,8 +29,12 @@ class BackstitchMarker extends EventDispatcher {
     const distanceToEnd = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
     const backstitchLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     const halfPerimeter = (distanceToStart + distanceToEnd + backstitchLength) * 0.5;
-    const area = Math.sqrt(halfPerimeter * (halfPerimeter - distanceToStart) * (halfPerimeter - distanceToEnd) * (halfPerimeter - backstitchLength));
+    const area = Math.sqrt(halfPerimeter * (halfPerimeter - distanceToStart) * (halfPerimeter - distanceToEnd) * Math.abs(halfPerimeter - backstitchLength));
     const distanceToBackstitch = (area * 2 / backstitchLength);
+    // we have halfPerimeter - backstitchLength: 109.20164833920776 - 109.20164833920778 = negative double
+    // as result we have undefined distanceToBackstitch
+    // so we have to round or take abs of given number
+
 
     if (distanceToBackstitch < this.epsilon) {
       const cathetus = Math.sqrt(Math.pow(distanceToStart, 2) - Math.pow(distanceToBackstitch, 2));
@@ -67,9 +71,9 @@ class BackstitchMarker extends EventDispatcher {
           }
         }
       }
-    } else {
+    }
+    else {
       this.stopDrawing();
-      moveContext = null;
     }
 
     if (moveContext) {
@@ -92,7 +96,7 @@ class BackstitchMarker extends EventDispatcher {
       this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x2, y2);
       this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = "blue";
+      this.ctx.strokeStyle = "grey";
       this.ctx.stroke();
       this.ctx.closePath();
       this.finalize();
@@ -103,7 +107,7 @@ class BackstitchMarker extends EventDispatcher {
       this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x, y);
       this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = "blue";
+      this.ctx.strokeStyle = "grey";
       this.ctx.stroke();
       this.ctx.closePath();
 

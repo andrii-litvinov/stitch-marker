@@ -40,7 +40,6 @@ class BackstitchesLayer extends BaseLayer {
 
   inProgress(e) {
     if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
-      console.log("bs: ", this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y])
       //set flag for this backstitch in bsMap but we're rendering backstitches Array
     }
   }
