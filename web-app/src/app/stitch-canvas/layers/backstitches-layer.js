@@ -11,7 +11,13 @@ class BackstitchesLayer extends BaseLayer {
       resize: this.resize.bind(this),
       zoom: this.render.bind(this),
       touchstart: this.touchStart.bind(this)
-    }
+    };
+
+    this.markerEventListeners = {
+      inprogress: this.inProgress.bind(this),
+      complete: this.backstitchComplete.bind(this),
+      dispose: this.disposeMarker.bind(this)
+    };
 
     for (const type in sceneEventListeners) {
       this.scene.addEventListener(type, sceneEventListeners[type]);
@@ -20,6 +26,23 @@ class BackstitchesLayer extends BaseLayer {
 
   dispose() {
     this.scene.component.shadowRoot.removeChild(this.ctx.canvas);
+  }
+
+  disposeMarker() {
+    this.markers && this.markers.forEach(marker => {
+      marker.dispose();
+    });
+  }
+
+  backstitchComplete() {
+    //set flag for backstitch that  he is complete
+  }
+
+  inProgress(e) {
+    if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
+      console.log("bs: ", this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y])
+      //set flag for this backstitch in bsMap but we're rendering backstitches Array
+    }
   }
 
   touchStart(e) {
@@ -31,6 +54,11 @@ class BackstitchesLayer extends BaseLayer {
         this.markers = [];
         this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, x, y));
       });
+      for (const type in this.markerEventListeners) {
+        this.markers.forEach(marker => {
+          marker.addEventListener(type, this.markerEventListeners[type]);
+        });
+      }
     }
   }
 
