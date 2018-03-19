@@ -65,6 +65,10 @@ class Scene extends EventDispatcher {
     this.dispatchEvent(new CustomEvent("touchstart", { detail: { x, y } }));
   }
 
+  touchEnd() {
+    this.dispatchEvent(new CustomEvent("touchend"));
+  }
+
   getBounds() {
     const bounds = {};
     Object.assign(bounds, this.getBound("row", this.y, this.height));

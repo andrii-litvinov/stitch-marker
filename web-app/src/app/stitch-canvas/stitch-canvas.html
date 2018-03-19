@@ -83,7 +83,10 @@
           }
         };
 
-        const onEnd = event => position = null;
+        const onEnd = event => {
+          position = null;
+          this.scene.touchEnd();
+        }
 
         const onMove = event => {
           event.preventDefault();

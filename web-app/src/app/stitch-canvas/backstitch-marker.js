@@ -9,11 +9,16 @@ class BackstitchMarker extends EventDispatcher {
     this.setBackstitchPoints(backstitch, touchX, touchY);
     const sceneEventListeners = {
       move: this.move.bind(this),
+      touchend: this.touchend.bind(this)
     }
 
     for (const type in sceneEventListeners) {
       this.scene.addEventListener(type, sceneEventListeners[type]);
     }
+  }
+
+  touchend() {
+    this.stopDrawing();
   }
 
   move(e) {
@@ -33,8 +38,7 @@ class BackstitchMarker extends EventDispatcher {
     const distanceToBackstitch = (area * 2 / backstitchLength);
     // we have halfPerimeter - backstitchLength: 109.20164833920776 - 109.20164833920778 = negative double
     // as result we have undefined distanceToBackstitch
-    // so we have to round or take abs of given number
-
+    // so we have to round or take abs of given number as a quick fix 
 
     if (distanceToBackstitch < this.epsilon) {
       const cathetus = Math.sqrt(Math.pow(distanceToStart, 2) - Math.pow(distanceToBackstitch, 2));
@@ -63,10 +67,7 @@ class BackstitchMarker extends EventDispatcher {
               moveContext = pointOnBackstitch;
             }
             else {
-              // TODO: Call dispose from layer as reaction to the event.
-              this.dispatchEvent(new CustomEvent("dispose"));
-              // TODO: Fire event that marking was aborted.
-              this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
+              this.stopDrawing();
             }
           }
         }
@@ -77,8 +78,7 @@ class BackstitchMarker extends EventDispatcher {
     }
 
     if (moveContext) {
-      // TODO: Fire event that backstitch marking progressed.
-      this.dispatchEvent(new CustomEvent("inprogress", { detail: { x: this.backstitch.x1, y: this.backstitch.y1 } }));
+      this.dispatchEvent(new CustomEvent("progress"));
       this.draw(moveContext.x, moveContext.y);
     }
   }
@@ -101,7 +101,8 @@ class BackstitchMarker extends EventDispatcher {
       this.ctx.closePath();
       this.finalize();
     } else {
-      this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
+      //we dont need here abort. just need to redraw bs
+      this.dispatchEvent(new CustomEvent("abort"));
       this.ctx.beginPath();
       this.ctx.lineCap = 'round';
       this.ctx.moveTo(x1, y1);
@@ -124,7 +125,11 @@ class BackstitchMarker extends EventDispatcher {
 
   setBackstitchPoints(backstitch, touchX, touchY) {
     //normalizing epsilon
-    if (backstitch.x1 - this.epsilon / this.scene.stitchSize * 2 < touchX && touchX < backstitch.x1 + this.epsilon / this.scene.stitchSize * 2 && backstitch.y1 - this.epsilon / this.scene.stitchSize * 2 < touchY && touchY < backstitch.y1 + this.epsilon / this.scene.stitchSize * 2) {
+    if (backstitch.x1 - this.epsilon / this.scene.stitchSize * 2 < touchX &&
+      touchX < backstitch.x1 + this.epsilon / this.scene.stitchSize * 2 &&
+      backstitch.y1 - this.epsilon / this.scene.stitchSize * 2 < touchY &&
+      touchY < backstitch.y1 + this.epsilon / this.scene.stitchSize * 2) {
+
       this.startPoint = { x: backstitch.x1, y: backstitch.y1 };
       this.endPoint = { x: backstitch.x2, y: backstitch.y2 };
     } else {
@@ -134,22 +139,15 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   finalize() {
-    // TODO: fire event that backstitch is completed
-    this.dispatchEvent(new CustomEvent("complete", { detail: { x: this.backstitch.x1, y: this.backstitch.y1 } }));
-
-    // TODO: Dispose from layer.
-    this.dispatchEvent(new CustomEvent("dispose"));
+    this.dispatchEvent(new CustomEvent("complete"));
   }
 
   stopDrawing() {
-    // TODO: Call dispose from layer as reaction to the event.
-    this.dispatchEvent(new CustomEvent("dispose"));
-
-    // TODO: Fire event that marking was aborted.
-    this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
+    this.dispatchEvent(new CustomEvent("abort"));
   }
 
   dispose() {
     this.scene.removeEventListener("move", this.move);
+    this.scene.removeEventListener("touchend", this.touchend);
   }
 }

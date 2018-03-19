@@ -5,6 +5,7 @@ class BackstitchesLayer extends BaseLayer {
     this.scene = scene;
     this.ctx = this.createContext();
     this.generateBackstitches();
+    this.markers = [];
 
     const sceneEventListeners = {
       render: this.render.bind(this),
@@ -14,9 +15,9 @@ class BackstitchesLayer extends BaseLayer {
     };
 
     this.markerEventListeners = {
-      inprogress: this.inProgress.bind(this),
+      progress: this.progress.bind(this),
       complete: this.backstitchComplete.bind(this),
-      dispose: this.disposeMarker.bind(this)
+      abort: this.abort.bind(this)
     };
 
     for (const type in sceneEventListeners) {
@@ -28,17 +29,23 @@ class BackstitchesLayer extends BaseLayer {
     this.scene.component.shadowRoot.removeChild(this.ctx.canvas);
   }
 
-  disposeMarker() {
-    this.markers && this.markers.forEach(marker => {
+  disposeMarkers() {
+    this.markers.forEach(marker => {
       marker.dispose();
     });
+    this.markers.length = 0;
+  }
+
+  abort() {
+    this.disposeMarkers();
   }
 
   backstitchComplete() {
-    //set flag for backstitch that  he is complete
+    //set flag for backstitch that bs is complete in marker
+    this.disposeMarkers();
   }
 
-  inProgress(e) {
+  progress(e) {
     if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
       //set flag for this backstitch in bsMap but we're rendering backstitches Array
     }
@@ -50,7 +57,6 @@ class BackstitchesLayer extends BaseLayer {
     const point = this.backstitchesMap[x * this.scene.pattern.height + y];
     if (point) {
       point.forEach(backstitch => {
-        this.markers = [];
         this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, x, y));
       });
       for (const type in this.markerEventListeners) {
