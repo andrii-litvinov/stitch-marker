@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Ploeh.AutoFixture.Xunit2;
+using AutoFixture.Xunit2;
 using Proto;
 using SM.Service.Messages;
 using SM.Service.Patterns;

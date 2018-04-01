@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using Ploeh.AutoFixture.Xunit2;
-using SM.Service.Messages;
+using AutoFixture.Xunit2;
 using SM.Service.Resources;
 using Xunit;
 using Xunit.Abstractions;
