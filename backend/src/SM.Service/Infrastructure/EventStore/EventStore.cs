@@ -28,10 +28,9 @@ namespace SM.Service.Infrastructure.EventStore
 
             do
             {
-                var count = (int) Math.Min(indexEnd - start + 1, 200);
+                var count = (int) Math.Min(indexEnd - start, 199) + 1;
                 slice = await connection.ReadStreamEventsForward(actorName, start, count, false);
-                start = slice.NextEventNumber;
-
+                
                 foreach (var resolvedEvent in slice.Events)
                 {
                     var data = resolvedEvent.Event.Data;
@@ -57,6 +56,8 @@ namespace SM.Service.Infrastructure.EventStore
                     message.MergeFrom(data);
                     callback(message);
                 }
+                
+                start = slice.NextEventNumber;
             } while (start <= indexEnd && !slice.IsEndOfStream);
 
             return slice.NextEventNumber;
