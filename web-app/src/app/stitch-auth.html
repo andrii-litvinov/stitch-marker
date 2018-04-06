@@ -6,44 +6,48 @@
       :host {
         display: block;
       }
-    </style>
+    </style> 
   </template>
-  
+
   <script>
     class Auth extends Polymer.Element {
       static get is() { return 'stitch-auth'; }
 
+      static get properties() {
+        return {
+          webAuth: {
+            type: Object
+          }
+        }
+      }
+
+      constructor() {
+        super();
+        this.handleAuthentication = this.handleAuthentication.bind(this);
+      }
+
       ready() {
-        debugger
         super.ready();
 
-        var webAuth = new auth0.WebAuth({
+        this.webAuth = new auth0.WebAuth({
           domain: 'stitch-marker.auth0.com',
           clientID: 'bjyzupUo4rEn7vvEzTtb2cUuhUsNcT2e',
           responseType: 'token id_token',
           audience: 'https://stitch-marker.auth0.com/userinfo',
           scope: 'openid',
-          redirectUri: window.location.href
+          redirectUri: 'http://localhost:8081/auth'
         });
 
-        // buttons and event listeners
-        var loginBtn = header.$.login;
-        var logoutBtn = header.$.logout;
-
-        loginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            webAuth.authorize();
-          });
-
-        logoutBtn.addEventListener('click', this.logout);
-
-        function handleAuthentication() {
-            webAuth.parseHash(function(err, authResult) {
+        this.handleAuthentication();
+      }
+      
+      // check authorization
+      handleAuthentication() {
+            this.webAuth.parseHash((err, authResult) => {
             if (authResult && authResult.accessToken && authResult.idToken) {
-              debugger
                 window.location.hash = '';
-                setSession(authResult);
-                loginBtn.style.display = 'none';
+                console.log(this);
+                this.setSession(authResult);
             } else if (err) {
                 console.log(err);
                 alert(
@@ -53,28 +57,16 @@
           });
         }
 
-        // Set the time that the Access Token will expire at
-        function setSession(authResult) {
+      // Set the time that the Access Token will expire at
+      setSession(authResult) {
           var expiresAt = JSON.stringify(
           authResult.expiresIn * 1000 + new Date().getTime()
           );
           localStorage.setItem('access_token', authResult.accessToken);
           localStorage.setItem('id_token', authResult.idToken);
           localStorage.setItem('expires_at', expiresAt);
+          alert("User login");
         }
-        
-        handleAuthentication();
-      }
-      
-      // Set the time that the Access Token will expire at
-      setSession(authResult) {
-        var expiresAt = JSON.stringify(
-        authResult.expiresIn * 1000 + new Date().getTime()
-        );
-        localStorage.setItem('access_token', authResult.accessToken);
-        localStorage.setItem('id_token', authResult.idToken);
-        localStorage.setItem('expires_at', expiresAt);
-      }
 
       // Remove tokens and expiry time from localStorage
       logout() {
@@ -92,7 +84,7 @@
 
       // login
       authorize() {
-        webAuth.authorize();
+        this.webAuth.authorize();
       }
     }
     

@@ -103,12 +103,12 @@
               <iron-icon icon="icons:home"></iron-icon>Landing
             </paper-item>
           </a>
-          <a href="/" on-click="toggleMenu">
+          <a href="/" on-click="loginClick" id="loginBtn">
             <paper-item>
               <iron-icon icon="icons:account-circle"></iron-icon>Login
             </paper-item>
           </a>
-          <a href="/" on-click="toggleMenu" hidden>
+          <a href="/" on-click="logoutClick" id="logoutBtn">
             <paper-item>
               <iron-icon icon="icons:account-circle"></iron-icon>Logout
             </paper-item>
@@ -160,6 +160,17 @@
         super.connectedCallback();
         window.addEventListener('progress', this.progress);
         window.addEventListener('progressrollback', this.progressrollback);
+        
+        // toggle auth button
+        var token = localStorage.getItem('id_token');
+        if (token != null) {
+          this.$.loginBtn.style.display = 'none';
+          this.$.logoutBtn.style.display = 'block';
+        }
+          else {
+            this.$.loginBtn.style.display = 'block';
+            this.$.logoutBtn.style.display = 'none';
+          }
       }
 
       disconnectedCallback() {
@@ -171,6 +182,16 @@
       toggleMenu() {
         this.$.drawer.toggle();
       }
+
+      loginClick(e) {
+        this.dispatchEvent(new CustomEvent('loginClick', {detail: {kicked: true}}));
+      }
+
+      logoutClick(e) {
+        this.dispatchEvent(new CustomEvent('logoutClick', {detail: {kicked: true}}));
+      }
+
+
     }
     customElements.define(Header.is, Header);
   </script>
