@@ -161,16 +161,10 @@
         window.addEventListener('progress', this.progress);
         window.addEventListener('progressrollback', this.progressrollback);
         
-        // toggle auth button
-        var token = localStorage.getItem('id_token');
-        if (token != null) {
-          this.$.loginBtn.style.display = 'none';
-          this.$.logoutBtn.style.display = 'block';
-        }
-          else {
-            this.$.loginBtn.style.display = 'block';
-            this.$.logoutBtn.style.display = 'none';
-          }
+        // toggle auth buttons
+        var isAuthorized = (localStorage.getItem('is_authorized') == 'true');
+        this.$.loginBtn.hidden = isAuthorized;
+        this.$.logoutBtn.hidden = !isAuthorized;
       }
 
       disconnectedCallback() {
@@ -183,10 +177,12 @@
         this.$.drawer.toggle();
       }
 
+      // click on Login button event
       loginClick(e) {
         this.dispatchEvent(new CustomEvent('loginClick', {detail: {kicked: true}}));
       }
 
+      // click on Logout buton event
       logoutClick(e) {
         this.dispatchEvent(new CustomEvent('logoutClick', {detail: {kicked: true}}));
       }
