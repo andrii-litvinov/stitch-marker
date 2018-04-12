@@ -76,6 +76,7 @@
             this.errorDisplay(err);
           }
         });
+        this.redirectToMainWindow();
       }
 
       setSession(authResult) {
@@ -90,7 +91,7 @@
           user_name: authResult.idTokenPayload.name
         };
         localStorage.setItem('auth_data', JSON.stringify(auth_data));
-        this.redirectToMainWindow();
+        
       }
 
       logout() {
