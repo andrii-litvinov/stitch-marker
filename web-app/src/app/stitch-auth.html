@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<script src="https://cdn.auth0.com/js/auth0/9.3.1/auth0.min.js"></script>
 
 <dom-module id="stitch-auth">
   <template>
@@ -6,7 +8,9 @@
       :host {
         display: block;
       }
-    </style> 
+    </style>
+    <app-location id="location" route="{{route}}"></app-location>
+    <paper-toast id="toast"></paper-toast>
   </template>
 
   <script>
@@ -17,79 +21,103 @@
         return {
           webAuth: {
             type: Object
+          },
+          active: {
+            type: Boolean,
+            reflectToAttribute: true,
+            observer: '_activeChanged'
           }
         }
       }
 
-      connectedCallback() {
-        super.connectedCallback();
+      _activeChanged() {
+        if (this.active) {
+          this.authorizeToggle();
+        }
+      }
+
+      ready() {
+        super.ready();
 
         this.webAuth = new auth0.WebAuth({
           domain: 'stitch-marker.auth0.com',
           clientID: 'bjyzupUo4rEn7vvEzTtb2cUuhUsNcT2e',
           responseType: 'token id_token',
           audience: 'https://stitch-marker.auth0.com/userinfo',
-          scope: 'openid',
-          redirectUri: 'http://localhost:8081/auth'
+          scope: 'openid email profile',
+          redirectUri: location.origin + '/auth'
         });
+      }
 
+      connectedCallback() {
+        super.connectedCallback();
+        debugger
         this.handleAuthentication();
       }
-      
-      // check authorization
-      handleAuthentication() {
-            this.webAuth.parseHash((err, authResult) => {
-            if (authResult && authResult.accessToken && authResult.idToken) {
-                window.location.hash = '';
-                console.log(this);
-                this.setSession(authResult);
-            } else if (err) {
-                console.log(err);
-                alert(
-                'Error: ' + err.error + '. Check the console for further details.'
-                );
-            }
-          });
-        }
 
-      // Set the time that the Access Token will expire at
+      authorizeToggle() {
+        debugger
+        const toggle = this.isAuthenticated();
+        if (toggle) {
+          this.logout();
+        }
+        else {
+          this.login();
+        }
+      }
+
+      handleAuthentication() {
+        debugger
+        this.webAuth.parseHash((err, authResult) => {
+          if (authResult && authResult.accessToken && authResult.idToken) {
+            debugger
+            this.setSession(authResult);
+          } else if (err) {
+            this.errorDisplay(err);
+          }
+        });
+      }
+
       setSession(authResult) {
         var expiresAt = JSON.stringify(
-            authResult.expiresIn * 1000 + new Date().getTime()
-          );
-        localStorage.setItem('access_token', authResult.accessToken);
-        localStorage.setItem('id_token', authResult.idToken);
-        localStorage.setItem('expires_at', expiresAt);
-        localStorage.setItem('is_authorized', this.isAuthenticated());
-        this.redirectToMain();
+          authResult.expiresIn * 1000 + new Date().getTime()
+        );
+        let auth_data = {
+          access_token: authResult.accessToken,
+          id_token: authResult.idToken,
+          expires_at: expiresAt,
+          user_email: authResult.idTokenPayload.email,
+          user_name: authResult.idTokenPayload.name
+        };
+        localStorage.setItem('auth_data', JSON.stringify(auth_data));
+        this.redirectToMainWindow();
       }
 
-      // Remove tokens and expiry time from localStorage
       logout() {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('id_token');
-        localStorage.removeItem('expires_at');
-        localStorage.setItem('is_authorized', this.isAuthenticated());
-        this.redirectToMain();
+        localStorage.removeItem('auth_data');
+        this.redirectToMainWindow();
       }
 
-      // check user authorization
       isAuthenticated() {
-        var expiresAt = JSON.parse(localStorage.getItem('expires_at'));
-        return new Date().getTime() < expiresAt;
+        const auth_data = JSON.parse(localStorage.getItem("auth_data"));
+        if (auth_data == null) return false;
+        return new Date().getTime() < auth_data.expires_at;
       }
 
-      // login
-      authorize() {
+      login() {
         this.webAuth.authorize();
       }
 
-      // redirect to main
-      redirectToMain() { 
-        window.location = "http://localhost:8081/"; 
-      } 
+      redirectToMainWindow() {
+        this.set('route.path', '/landing');
+      }
+
+      errorDisplay(err) {
+        this.$.toast.text = 'Error at login.';
+        this.$.toast.open();
+      }
     }
-    
+
     customElements.define(Auth.is, Auth);
   </script>
 </dom-module>

@@ -103,14 +103,9 @@
               <iron-icon icon="icons:home"></iron-icon>Landing
             </paper-item>
           </a>
-          <a href="/" on-click="loginClick" id="loginBtn">
+          <a href="/auth" on-click="toggleMenu">
             <paper-item>
               <iron-icon icon="icons:account-circle"></iron-icon>Login
-            </paper-item>
-          </a>
-          <a href="/" on-click="logoutClick" id="logoutBtn">
-            <paper-item>
-              <iron-icon icon="icons:account-circle"></iron-icon>Logout
             </paper-item>
           </a>
           <a href="/home/patterns" on-click="toggleMenu">
@@ -160,11 +155,6 @@
         super.connectedCallback();
         window.addEventListener('progress', this.progress);
         window.addEventListener('progressrollback', this.progressrollback);
-        
-        // toggle auth buttons
-        var isAuthorized = (localStorage.getItem('is_authorized') == 'true');
-        this.$.loginBtn.hidden = isAuthorized;
-        this.$.logoutBtn.hidden = !isAuthorized;
       }
 
       disconnectedCallback() {
@@ -176,17 +166,6 @@
       toggleMenu() {
         this.$.drawer.toggle();
       }
-
-      // click on Login button event
-      loginClick(e) {
-        this.dispatchEvent(new CustomEvent('loginClick', {detail: {kicked: true}}));
-      }
-
-      // click on Logout buton event
-      logoutClick(e) {
-        this.dispatchEvent(new CustomEvent('logoutClick', {detail: {kicked: true}}));
-      }
-
 
     }
     customElements.define(Header.is, Header);
