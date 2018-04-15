@@ -16,7 +16,7 @@
     <PackageReference Include="Proto.Actor" Version="0.1.16" />
     <PackageReference Include="Proto.Cluster.Consul" Version="0.1.16" />
     <PackageReference Include="Proto.Persistence" Version="0.1.16" />
-    <PackageReference Include="SkiaSharp" Version="1.60.0" />
+    <PackageReference Include="SkiaSharp" Version="1.57.1" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.4.0" />
   </ItemGroup>
 </Project>
