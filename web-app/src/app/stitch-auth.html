@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<script src="https://cdn.auth0.com/js/auth0/9.3.1/auth0.min.js"></script>
 
 <dom-module id="stitch-auth">
   <template>
@@ -13,6 +12,7 @@
     <paper-toast id="toast"></paper-toast>
   </template>
 
+  <script src="https://cdn.auth0.com/js/auth0/9.3.1/auth0.min.js"></script>
   <script>
     class Auth extends Polymer.Element {
       static get is() { return 'stitch-auth'; }
@@ -31,13 +31,32 @@
       }
 
       _activeChanged() {
-        if (this.active) {
-          this.authorizeToggle();
+        if (!this.webAuth || !this.active) return;
+
+        if (window.location.hash) {
+          this.webAuth.parseHash({ hash: window.location.hash }, (error, authResult) => {
+            if (error) {
+              this.errorDisplay(err);
+              return;
+            }
+
+            this.setSession(authResult);
+            window.location.hash = '';
+            this.redirectToMainWindow();
+          });
+        } else {
+          if (this.isAuthenticated()) {
+            this.logout();
+            this.redirectToMainWindow();
+          }
+          else {
+            this.login();
+          }
         }
       }
 
-      ready() {
-        super.ready();
+      constructor() {
+        super();
 
         this.webAuth = new auth0.WebAuth({
           domain: 'stitch-marker.auth0.com',
@@ -49,40 +68,11 @@
         });
       }
 
-      connectedCallback() {
-        super.connectedCallback();
-        debugger
-        this.handleAuthentication();
-      }
-
-      authorizeToggle() {
-        debugger
-        const toggle = this.isAuthenticated();
-        if (toggle) {
-          this.logout();
-        }
-        else {
-          this.login();
-        }
-      }
-
-      handleAuthentication() {
-        debugger
-        this.webAuth.parseHash((err, authResult) => {
-          if (authResult && authResult.accessToken && authResult.idToken) {
-            debugger
-            this.setSession(authResult);
-          } else if (err) {
-            this.errorDisplay(err);
-          }
-        });
-        this.redirectToMainWindow();
-      }
-
       setSession(authResult) {
         var expiresAt = JSON.stringify(
           authResult.expiresIn * 1000 + new Date().getTime()
         );
+
         let auth_data = {
           access_token: authResult.accessToken,
           id_token: authResult.idToken,
@@ -90,13 +80,12 @@
           user_email: authResult.idTokenPayload.email,
           user_name: authResult.idTokenPayload.name
         };
+
         localStorage.setItem('auth_data', JSON.stringify(auth_data));
-        
       }
 
       logout() {
         localStorage.removeItem('auth_data');
-        this.redirectToMainWindow();
       }
 
       isAuthenticated() {
@@ -110,7 +99,7 @@
       }
 
       redirectToMainWindow() {
-        this.set('route.path', '/landing');
+        this.set('route.path', '/');
       }
 
       errorDisplay(err) {
@@ -118,7 +107,6 @@
         this.$.toast.open();
       }
     }
-
     customElements.define(Auth.is, Auth);
   </script>
 </dom-module>

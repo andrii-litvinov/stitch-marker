@@ -5,7 +5,6 @@
 <link rel="import" href="stitch-header.html">
 <link rel="import" href="stitch-landing.html">
 <link rel="import" href="stitch-social.html">
-<link rel="import" href="stitch-auth.html">
 
 <dom-module id="stitch-app">
   <template>
@@ -40,19 +39,6 @@
             observer: 'viewChanged'
           },
         }
-      }
-
-      connectedCallback() {
-        super.connectedCallback();
-
-        // add auth listners
-        var auth = this.$.auth;
-        this.$.header.addEventListener('loginClick', function (e) {
-          auth.authorize();
-        });
-        this.$.header.addEventListener('logoutClick', function (e) {
-          auth.logout();
-        })
       }
 
       static get observers() {
