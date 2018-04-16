@@ -98,8 +98,9 @@
         this.webAuth.authorize();
       }
 
-      redirectToMainWindow() {
-        this.set('route.path', '/');
+      async redirectToMainWindow() {
+        await Promise.yield();
+        this.set("route.path", "/");
       }
 
       errorDisplay(err) {
