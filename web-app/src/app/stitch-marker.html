@@ -137,7 +137,14 @@
           const json = localStorage.getItem("patternInfo");
           if (!json) return;
           const patternInfo = JSON.parse(json);
-          const response = await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
+          const authData = JSON.parse(localStorage.getItem("authData"));
+          var myHeaders = new Headers();
+          myHeaders.append("authorization", "Bearer "+authData.accessToken);
+          var myInit = {
+            method: 'GET',
+            headers: myHeaders
+          };
+          const response = await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href, myInit);
           this.$.canvas.pattern = await response.json();
           this.$.canvas.enabled = true;
         } catch (error) {

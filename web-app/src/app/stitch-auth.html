@@ -17,9 +17,9 @@
     (function () {
       const webAuth = new auth0.WebAuth({
         domain: 'stitch-marker.auth0.com',
-        clientID: 'bjyzupUo4rEn7vvEzTtb2cUuhUsNcT2e',
+        clientID: 'AZHrqJ4Qu2tfZ0F4oxljBtaLSv3cJQD1',
         responseType: 'token id_token',
-        audience: 'https://stitch-marker.auth0.com/userinfo',
+        audience: 'http://localhost:5000/api/',
         scope: 'openid email profile',
         redirectUri: `${location.origin}/auth`
       });
