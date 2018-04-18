@@ -14,100 +14,95 @@
 
   <script src="https://cdn.auth0.com/js/auth0/9.3.1/auth0.min.js"></script>
   <script>
-    class Auth extends Polymer.Element {
-      static get is() { return 'stitch-auth'; }
+    (function () {
+      const webAuth = new auth0.WebAuth({
+        domain: 'stitch-marker.auth0.com',
+        clientID: 'bjyzupUo4rEn7vvEzTtb2cUuhUsNcT2e',
+        responseType: 'token id_token',
+        audience: 'https://stitch-marker.auth0.com/userinfo',
+        scope: 'openid email profile',
+        redirectUri: `${location.origin}/auth`
+      });
 
-      static get properties() {
-        return {
-          webAuth: {
-            type: Object
-          },
-          active: {
-            type: Boolean,
-            reflectToAttribute: true,
-            observer: '_activeChanged'
-          }
-        }
-      }
+      class Auth extends Polymer.Element {
+        static get is() { return 'stitch-auth'; }
 
-      _activeChanged() {
-        if (!this.webAuth || !this.active) return;
-
-        if (window.location.hash) {
-          this.webAuth.parseHash({ hash: window.location.hash }, (error, authResult) => {
-            if (error) {
-              this.errorDisplay(err);
-              return;
+        static get properties() {
+          return {
+            active: {
+              type: Boolean,
+              reflectToAttribute: true,
+              observer: 'activeChanged'
             }
-
-            this.setSession(authResult);
-            window.location.hash = '';
-            this.redirectToMainWindow();
-          });
-        } else {
-          if (this.isAuthenticated()) {
-            this.logout();
-            this.redirectToMainWindow();
-          }
-          else {
-            this.login();
           }
         }
+
+        activeChanged() {
+          if (!this.active) return;
+
+          if (window.location.hash) {
+            webAuth.parseHash({ hash: window.location.hash }, (error, authResult) => {
+              if (error) {
+                this.errorDisplay(err);
+                return;
+              }
+
+              this.setSession(authResult);
+              window.location.hash = '';
+              this.redirect();
+            });
+          } else {
+            const authData = JSON.parse(localStorage.getItem("authData"));
+            if (this.isAuthenticated()) {
+              this.logout();
+              this.redirect();
+            }
+            else {
+              this.login();
+            }
+          }
+        }
+
+        setSession(authResult) {
+          var expiresAt = JSON.stringify(
+            authResult.expiresIn * 1000 + new Date().getTime()
+          );
+
+          let authData = {
+            accessToken: authResult.accessToken,
+            idToken: authResult.idToken,
+            expiresAt: expiresAt,
+            userEmail: authResult.idTokenPayload.email,
+            userName: authResult.idTokenPayload.name
+          };
+
+          localStorage.setItem('authData', JSON.stringify(authData));
+        }
+
+        logout() {
+          localStorage.removeItem('authData');
+        }
+
+        isAuthenticated() {
+          const authData = JSON.parse(localStorage.getItem("authData"));
+          return authData && new Date().getTime() < authData.expiresAt;
+        }
+
+        login() {
+          webAuth.authorize();
+        }
+
+        async redirect() {
+          await Promise.yield();
+          this.set("route.path", "/");
+        }
+
+        errorDisplay(err) {
+          this.$.toast.text = 'Error at login.';
+          this.$.toast.open();
+        }
       }
-
-      constructor() {
-        super();
-
-        this.webAuth = new auth0.WebAuth({
-          domain: 'stitch-marker.auth0.com',
-          clientID: 'bjyzupUo4rEn7vvEzTtb2cUuhUsNcT2e',
-          responseType: 'token id_token',
-          audience: 'https://stitch-marker.auth0.com/userinfo',
-          scope: 'openid email profile',
-          redirectUri: location.origin + '/auth'
-        });
-      }
-
-      setSession(authResult) {
-        var expiresAt = JSON.stringify(
-          authResult.expiresIn * 1000 + new Date().getTime()
-        );
-
-        let auth_data = {
-          access_token: authResult.accessToken,
-          id_token: authResult.idToken,
-          expires_at: expiresAt,
-          user_email: authResult.idTokenPayload.email,
-          user_name: authResult.idTokenPayload.name
-        };
-
-        localStorage.setItem('auth_data', JSON.stringify(auth_data));
-      }
-
-      logout() {
-        localStorage.removeItem('auth_data');
-      }
-
-      isAuthenticated() {
-        const auth_data = JSON.parse(localStorage.getItem("auth_data"));
-        if (auth_data == null) return false;
-        return new Date().getTime() < auth_data.expires_at;
-      }
-
-      login() {
-        this.webAuth.authorize();
-      }
-
-      async redirectToMainWindow() {
-        await Promise.yield();
-        this.set("route.path", "/");
-      }
-
-      errorDisplay(err) {
-        this.$.toast.text = 'Error at login.';
-        this.$.toast.open();
-      }
-    }
-    customElements.define(Auth.is, Auth);
+      customElements.define(Auth.is, Auth);
+    }());
   </script>
 </dom-module>

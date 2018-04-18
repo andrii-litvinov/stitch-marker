@@ -105,7 +105,8 @@
           </a>
           <a href="/auth" on-click="toggleMenu">
             <paper-item>
-              <iron-icon icon="icons:account-circle"></iron-icon>{{loginBtnText}}
+              <iron-icon icon="icons:account-circle"></iron-icon>
+              <span id="loginText">Login</span>
             </paper-item>
           </a>
           <a href="/home/patterns" on-click="toggleMenu">
@@ -126,7 +127,7 @@
   <script>
     class Header extends Polymer.Element {
       static get is() { return "stitch-header"; }
-      
+
       constructor() {
         super();
         this.progress = async event => {
@@ -164,13 +165,11 @@
       }
 
       toggleMenu() {
-        const user = localStorage.getItem("auth_data");
-        if (user) {
-          this.set('loginBtnText', 'Logout');
-        }
-        else {
-          this.set('loginBtnText', 'Login');
-        }
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        this.$.loginText.innerText =
+          authData && new Date().getTime() < authData.expiresAt
+            ? 'Logout'
+            : 'Login';
 
         this.$.drawer.toggle();
       }
