@@ -37,41 +37,32 @@
           }
         }
 
-        activeChanged() {
+        async activeChanged() {
           if (!this.active) return;
 
           if (window.location.hash) {
-            webAuth.parseHash({ hash: window.location.hash }, (error, authResult) => {
+            webAuth.parseHash({ hash: window.location.hash }, async (error, authResult) => {
               if (error) {
-                this.errorDisplay(err);
+                this.$.toast.text = `Error reading hash: ${error}`;
+                this.$.toast.open();
                 return;
               }
-
-              this.setSession(authResult);
-              window.location.hash = '';
-              this.redirect();
+              this.saveAuthData(authResult);
+              await this.redirect();
             });
+          } else if (this.isAuthenticated()) {
+            localStorage.removeItem('authData');
+            await this.redirect();
           } else {
-            const authData = JSON.parse(localStorage.getItem("authData"));
-            if (this.isAuthenticated()) {
-              this.logout();
-              this.redirect();
-            }
-            else {
-              this.login();
-            }
+            webAuth.authorize();
           }
         }
 
-        setSession(authResult) {
-          var expiresAt = JSON.stringify(
-            authResult.expiresIn * 1000 + new Date().getTime()
-          );
-
-          let authData = {
+        saveAuthData(authResult) {
+          const authData = {
             accessToken: authResult.accessToken,
             idToken: authResult.idToken,
-            expiresAt: expiresAt,
+            expiresOn: authResult.expiresIn * 1000 + new Date().getTime(),
             userEmail: authResult.idTokenPayload.email,
             userName: authResult.idTokenPayload.name
           };
@@ -79,27 +70,15 @@
           localStorage.setItem('authData', JSON.stringify(authData));
         }
 
-        logout() {
-          localStorage.removeItem('authData');
-        }
-
         isAuthenticated() {
           const authData = JSON.parse(localStorage.getItem("authData"));
-          return authData && new Date().getTime() < authData.expiresAt;
-        }
-
-        login() {
-          webAuth.authorize();
+          return authData && authData.expiresOn > new Date().getTime();
         }
 
         async redirect() {
           await Promise.yield();
+          window.location.hash = '';
           this.set("route.path", "/");
-        }
-
-        errorDisplay(err) {
-          this.$.toast.text = 'Error at login.';
-          this.$.toast.open();
         }
       }
       customElements.define(Auth.is, Auth);

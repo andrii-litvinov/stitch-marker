@@ -166,11 +166,8 @@
 
       toggleMenu() {
         const authData = JSON.parse(localStorage.getItem("authData"));
-        this.$.loginText.innerText =
-          authData && new Date().getTime() < authData.expiresAt
-            ? 'Logout'
-            : 'Login';
-
+        const authorized = authData && authData.expiresOn > new Date().getTime();
+        this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
         this.$.drawer.toggle();
       }
 
