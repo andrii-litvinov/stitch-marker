@@ -50,7 +50,7 @@
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
-    <paper-card image="[[thumbnailUrl]]">
+    <paper-card image="[[dataUrl]]">
       <div class="card-content">
         <div class="edit-name">
           <div id="title" title="[[patternInfo.title]]">[[patternInfo.title]]</div>
@@ -74,9 +74,9 @@
             type: Object,
             value: {}
           },
-          thumbnailUrl: {
+          dataUrl: {
             type: String,
-            computed: "getThumbnailUrl(patternInfo)"
+            computed: "getDataUrl(patternInfo)"
           }
         }
       }
@@ -88,8 +88,30 @@
         this.set('route.path', '/marker');
       }
 
-      getThumbnailUrl(patternInfo) {
-        return SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href;
+      async getDataUrl(patternInfo) {
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        let img = '';
+
+        await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href,
+          {
+            headers: {
+              "authorization": "Bearer " + authData.accessToken
+            }
+          }).then((response) => {
+            response.arrayBuffer().then((buffer) => {
+              let base64Flag = 'data:image/png;base64,';
+              let binary = '';
+              let bytes = [].slice.call(new Uint8Array(buffer));
+              bytes.forEach((b) => binary += String.fromCharCode(b));
+              let imageStr = window.btoa(binary);
+              img = base64Flag + imageStr;
+            });
+          });
+        await Promise.yield();
+        debugger
+ 
+        return img;
+        // return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAADICAYAAABS39xVAAAABHNCSVQICAgIfAhkiAAABXxJREFUeJzt3TFoXWUcxuETiSLYxTqE7iJCEAIOQjMIks2h2UQyu1ScHZwdnEUX5yJOtoiTQXCI4OZgoIi7ZGimCqJgnRwaJN8/zdcv5z3nedZ7OfckLT9O4OW7G1PB/t72o9Z7Pnzn7XNf/+Srb5ufc2fntHI7TZ///lKX6xydNH9seMzu1salr3H7xoMOd1Jz8PP1IZ9z9/D48r+YaZqe6XERgBEEC4hRekyr/EnY4s89zur1f6KHUX8aTVPen40Vrd+fPwmB1REsIIZgATEEC4ghWEAMwQJiCBYQQ7CAGJu9LtRjBGgUuhy9RqHX/vzy0td4+Py7zfdU7rfXuLT1/7PHsHSpPGEBMQQLiCFYQAzBAmIIFhBDsIAYggXEECwgRrfh6Ci9RqGjTrsceZJlmh6j0O0f32t/zs3251TGpXNSGVnP7VTSHjxhATEEC4ghWEAMwQJiCBYQQ7CAGIIFxBAsIMaw4Wiv00Qr5vQV6CNPslyiyjC0xzUq49Jb0/uXvpeKyjh6raeSesICYggWEEOwgBiCBcQQLCCGYAExBAuIsbm/t90cfYzaNY38xuYeh8dVpB0MN9I/n75ZeNev57762uuv9LkZInjCAmIIFhBDsIAYggXEECwghmABMQQLiCFYQIy4b34eqcfhcaVvHd5pj0vTDvmr3O+9D35ovqfHvwHL4QkLiCFYQAzBAmIIFhBDsIAYggXEECwghmABMQxHn7K0bx2GOfOEBcQQLCCGYAExBAuIIVhADMECYggWEEOwgBirHY76mvQMxze/OPd1J5KuiycsIIZgATEEC4ghWEAMwQJiCBYQQ7CAGIIFxFjkcNTXpGe4db99iuq9Vz879/XWsLTnvYyyu7XRfM/tGw8G3Mn8eMICYggWEEOwgBiCBcQQLCCGYAExBAuIIVhAjM27h8fNldrBtP2o9Z47O6fnvl4Zuh2dtAefIznt8urNadA5ytxGoZUhdqUjLft77c54wgJiCBYQQ7CAGIIFxBAsIIZgATEEC4ixyAP8KpZ4eNzX3/3SfE+Pb6t++fpzl77GmrU2i0tU2VhVeMICYggWEEOwgBiCBcQQLCCGYAExBAuIIVhAjEsfuvWf1jCs11iucpjYWv12+teQzxk5HG39TCPvZYmDzzkdzlfhCQuIIVhADMECYggWEEOwgBiCBcQQLCCGYAEx4k4crYz30sallcFnZSDZY0RZuZde91u5zk9vPWy+h/83ahQ6Tf2GoS2esIAYggXEECwghmABMQQLiCFYQAzBAmIIFhCj24mjLZVh2cgTHec0Lq383G98f23AnUzTx3882+U6H73wd/M9RqFPbomj0ApPWEAMwQJiCBYQQ7CAGIIFxBAsIIZgATEEC4gxbDhaMbdx6RodfvNil+sYjj65tY5CKzxhATEEC4ghWEAMwQJiCBYQQ7CAGIIFxBAsIMashqMVxqVXrzIuXetwtMdJtmsdhVZ+bk9YQAzBAmIIFhBDsIAYggXEECwghmABMTav+gYuqrLVOJhstZ6mysZqiUYerDfK7laf2z06GTP58oQFxBAsIIZgATEEC4ghWEAMwQJiCBYQQ7CAGFEjt55GHW5moLocPQ7nm5tew9GWyrDUAX7AoggWEEOwgBiCBcQQLCCGYAExBAuIIVhAjNUOR0dJ+/ZdQ1fOqgxmWwNUw1FgdQQLiCFYQAzBAmIIFhBDsIAYggXEECwghuEoj6kMXY1LOavHaayGo8CiCBYQQ7CAGIIFxBAsIIZgATEEC4ghWEAMw1EuzLiUi6oMSw1HgUURLCCGYAExBAuIIVhADMECYggWEEOwgBiCBcQQLCCGYAExBAuIIVhADMECYggWEEOwgBiCBcQQLCCGYAEx/gXhVSDsOJK6egAAAABJRU5ErkJggg==";
       }
 
       async delete() {

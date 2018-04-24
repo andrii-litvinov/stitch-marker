@@ -12,10 +12,10 @@ namespace SM.Service.Patterns
 {
     using Microsoft.AspNetCore.Authorization;
 
+    [Authorize]
     [Route("api/patterns")]
     public class PatternsController : Controller
     {
-        [Authorize]
         [Route("{patternId}"), HttpGet]
         public async Task<IActionResult> Get(Guid patternId)
         {
@@ -25,7 +25,6 @@ namespace SM.Service.Patterns
             return Ok(response);
         }
 
-        [Authorize]
         [Route("{patternId}"), HttpDelete]
         public async Task<IActionResult> Delete(Guid patternId)
         {
@@ -44,7 +43,6 @@ namespace SM.Service.Patterns
             return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Post(IFormFile file)
         {
