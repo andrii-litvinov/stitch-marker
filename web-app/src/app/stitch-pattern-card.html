@@ -8,7 +8,7 @@
 <dom-module id="stitch-pattern-card">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
       }
 
@@ -83,6 +83,8 @@
 
       open() {
         localStorage.setItem('patternInfo', JSON.stringify(this.patternInfo));
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        if (!authData) return;
         this.set('route.path', '/marker');
       }
 
@@ -91,8 +93,14 @@
       }
 
       async delete() {
+        const authData = JSON.parse(localStorage.getItem("authData"));
         const response = await fetch(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href,
-          { method: 'DELETE' });
+          {
+            method: 'DELETE',
+            headers: {
+              "authorization": "Bearer " + authData.accessToken
+            }
+          });
         if (response.status === 200)
           this.dispatchEvent(new CustomEvent('delete'));
       }
