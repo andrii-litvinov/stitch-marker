@@ -57,7 +57,7 @@
     </div>
 
     <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
-    <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name">
+    <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-patterns name="patterns"></stitch-patterns>
       <stitch-library name="library"></stitch-library>
     </iron-pages>

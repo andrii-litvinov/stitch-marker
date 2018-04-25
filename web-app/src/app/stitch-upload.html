@@ -21,7 +21,7 @@
     </style>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" nodrop on-upload-response="onUploadResponse" on-upload-progress="onUploadProgress"
       on-upload-error="onUploadError" headers='{"authorization": "[[accessToken]]"}'>
-      <paper-fab slot="add-button" icon="add" title="Upload pattern"></paper-fab>
+      <paper-fab slot="add-button" icon="add" title="Upload pattern" on-tap="getAuthToken"></paper-fab>
       <div slot="file-list"></div>
     </vaadin-upload>
   </template>
@@ -39,15 +39,16 @@
           },
           accessToken: {
             type: String,
-            computed: "getAuthToken()"
+            value: ''
           }
         }
       }
 
       getAuthToken() {
+        debugger
         const authData = JSON.parse(localStorage.getItem("authData"));
-        if (!authData) return "";
-        return "Bearer " + authData.accessToken;
+        if (!authData) this.accessToken = ""
+        else this.accessToken = "Bearer " + authData.accessToken;
       }
 
       onUploadProgress(event) {

@@ -70,6 +70,11 @@
 
       static get properties() {
         return {
+          active: {
+            type: Boolean,
+            reflectToAttribute: true,
+            observer: 'activeChanged'
+          },
           patternInfos: {
             type: Array,
             value: []
@@ -77,10 +82,14 @@
         }
       }
 
-      constructor() {
-        super();
-        const json = localStorage.getItem("patternInfos");
-        if (json) this.patternInfos = JSON.parse(json);
+      activeChanged() {
+        if (!this.active) return;
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        if (!authData) this.patternInfos = []
+        else {
+          const json = localStorage.getItem("patternInfos");
+          if (json) this.patternInfos = JSON.parse(json);
+        }
       }
 
       delete(event) {
