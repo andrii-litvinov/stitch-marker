@@ -29,16 +29,14 @@ namespace SM.Service
                     services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
                         provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
                     services.AddAuthentication(options =>
-                            {
-                                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-                            })
-                            .AddJwtBearer(options =>
-                            {
-                                options.Authority = context.Configuration["Auth0:Authority"];
-                                options.Audience = context.Configuration["Auth0:Audience"];
-                            });
+                        {
+                            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                        }).AddJwtBearer(options =>
+                        {
+                            options.Authority = context.Configuration["AUTH_AUTHORITY"];
+                            options.Audience = context.Configuration["AUTH_AUDIENCE"];
+                        });
                 })
                 .Build()
                 .Run();

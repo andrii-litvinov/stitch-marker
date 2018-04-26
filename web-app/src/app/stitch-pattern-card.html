@@ -84,42 +84,25 @@
 
       open() {
         localStorage.setItem('patternInfo', JSON.stringify(this.patternInfo));
-        const authData = JSON.parse(localStorage.getItem("authData"));
-        if (!authData) return;
         this.set('route.path', '/marker');
       }
 
-      async patternInfoChanged(patternInfo) {
-        const authData = JSON.parse(localStorage.getItem("authData"));
-        if (!authData) return;
-        let img = '';
-
-        await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href,
+      patternInfoChanged(patternInfo) {
+        fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href,
           {
-            headers: {
-              "authorization": "Bearer " + authData.accessToken
-            }
+            headers: window.getAuthHeaders()
           }).then((response) => {
             response.arrayBuffer().then((buffer) => {
-              let base64Flag = 'data:image/png;base64,';
-              let binary = '';
-              let bytes = [].slice.call(new Uint8Array(buffer));
-              bytes.forEach((b) => binary += String.fromCharCode(b));
-              let imageStr = window.btoa(binary);
-              this.imageUrl = base64Flag + imageStr;
+              this.imageUrl = 'data:image/png;base64,' + btoa(String.fromCharCode(...new Uint8Array(buffer)));
             });
           });
       }
 
       async delete() {
-        const authData = JSON.parse(localStorage.getItem("authData"));
-        if (!authData) return;
         const response = await fetch(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href,
           {
             method: 'DELETE',
-            headers: {
-              "authorization": "Bearer " + authData.accessToken
-            }
+            headers: window.getAuthHeaders()
           });
         if (response.status === 200)
           this.dispatchEvent(new CustomEvent('delete'));

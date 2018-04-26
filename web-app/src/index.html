@@ -30,6 +30,14 @@
     Promise.delay = delay => new Promise(resolve => setTimeout(resolve, delay));
     Promise.yield = () => new Promise(resolve => setTimeout(resolve, 0));
 
+    function getAuthHeaders() {
+      const authData = JSON.parse(localStorage.getItem("authData"));
+      if (!authData) return null;
+      return {
+        "authorization": "Bearer " + authData.accessToken
+      }
+    }
+
     (function () {
       if (typeof fetch === 'undefined') {
         [

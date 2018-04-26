@@ -20,7 +20,7 @@
       }
     </style>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" nodrop on-upload-response="onUploadResponse" on-upload-progress="onUploadProgress"
-      on-upload-error="onUploadError" headers='{"authorization": "[[accessToken]]"}'>
+      on-upload-error="onUploadError" headers="[[authHeader]]">
       <paper-fab slot="add-button" icon="add" title="Upload pattern" on-tap="getAuthToken"></paper-fab>
       <div slot="file-list"></div>
     </vaadin-upload>
@@ -37,7 +37,7 @@
             type: String,
             value: `${SM.apiUrl}/api/patterns`
           },
-          accessToken: {
+          authHeader: {
             type: String,
             value: ''
           }
@@ -45,10 +45,7 @@
       }
 
       getAuthToken() {
-        debugger
-        const authData = JSON.parse(localStorage.getItem("authData"));
-        if (!authData) this.accessToken = ""
-        else this.accessToken = "Bearer " + authData.accessToken;
+        this.authHeader = JSON.stringify(window.getAuthHeaders());
       }
 
       onUploadProgress(event) {
