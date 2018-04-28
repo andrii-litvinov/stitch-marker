@@ -76,8 +76,7 @@
             observer: 'patternInfoChanged'
           },
           imageUrl: {
-            type: String,
-            value: ''
+            type: String
           }
         }
       }
@@ -87,23 +86,18 @@
         this.set('route.path', '/marker');
       }
 
-      patternInfoChanged(patternInfo) {
-        fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href,
-          {
-            headers: window.getAuthHeaders()
-          }).then((response) => {
-            response.arrayBuffer().then((buffer) => {
-              this.imageUrl = 'data:image/png;base64,' + btoa(String.fromCharCode(...new Uint8Array(buffer)));
-            });
-          });
+      async patternInfoChanged(patternInfo) {
+        const response = await window.apiGetThumbnail(patternInfo);
+        if (response.status === 200) {
+          const buffer = await response.arrayBuffer();
+          if (buffer) {
+            this.imageUrl = 'data:image/png;base64,' + btoa(String.fromCharCode(...new Uint8Array(buffer)));
+          };
+        }
       }
 
       async delete() {
-        const response = await fetch(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href,
-          {
-            method: 'DELETE',
-            headers: window.getAuthHeaders()
-          });
+        const response = await window.apiDelete(this.patternInfo);
         if (response.status === 200)
           this.dispatchEvent(new CustomEvent('delete'));
       }

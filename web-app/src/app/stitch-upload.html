@@ -21,7 +21,7 @@
     </style>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" nodrop on-upload-response="onUploadResponse" on-upload-progress="onUploadProgress"
       on-upload-error="onUploadError" headers="[[authHeader]]">
-      <paper-fab slot="add-button" icon="add" title="Upload pattern" on-tap="getAuthToken"></paper-fab>
+      <paper-fab slot="add-button" icon="add" title="Upload pattern"></paper-fab>
       <div slot="file-list"></div>
     </vaadin-upload>
   </template>
@@ -36,16 +36,16 @@
           uploadUrl: {
             type: String,
             value: `${SM.apiUrl}/api/patterns`
-          },
-          authHeader: {
-            type: String,
-            value: ''
           }
         }
       }
 
-      getAuthToken() {
-        this.authHeader = JSON.stringify(window.getAuthHeaders());
+      connectedCallback() {
+        super.connectedCallback();
+        const upload = this.$.upload;
+        upload.addEventListener('upload-before', function (event) {
+          upload.headers = JSON.stringify(window.getAuthHeaders());
+        });
       }
 
       onUploadProgress(event) {
