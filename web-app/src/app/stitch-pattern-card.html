@@ -87,7 +87,7 @@
       }
 
       async patternInfoChanged(patternInfo) {
-        const response = await window.apiGetThumbnail(patternInfo);
+        const response = await http.get(SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href);
         if (response.status === 200) {
           const buffer = await response.arrayBuffer();
           if (buffer) {
@@ -97,7 +97,7 @@
       }
 
       async delete() {
-        const response = await window.apiDelete(this.patternInfo);
+        const response = await http.delete(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href);
         if (response.status === 200)
           this.dispatchEvent(new CustomEvent('delete'));
       }

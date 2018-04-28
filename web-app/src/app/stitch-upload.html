@@ -42,9 +42,8 @@
 
       connectedCallback() {
         super.connectedCallback();
-        const upload = this.$.upload;
-        upload.addEventListener('upload-before', function (event) {
-          upload.headers = JSON.stringify(window.getAuthHeaders());
+        this.$.upload.addEventListener('upload-before', (event) => {
+          this.$.upload.headers = JSON.stringify(window.getAuthHeaders());
         });
       }
 
