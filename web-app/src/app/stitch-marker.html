@@ -137,7 +137,7 @@
           const json = localStorage.getItem("patternInfo");
           if (!json) return;
           const patternInfo = JSON.parse(json);
-          const response = await fetch(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
+          const response = await http.get(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
           this.$.canvas.pattern = await response.json();
           this.$.canvas.enabled = true;
         } catch (error) {

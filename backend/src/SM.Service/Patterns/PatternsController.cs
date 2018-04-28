@@ -10,6 +10,9 @@ using SM.Service.Resources;
 
 namespace SM.Service.Patterns
 {
+    using Microsoft.AspNetCore.Authorization;
+
+    [Authorize]
     [Route("api/patterns")]
     public class PatternsController : Controller
     {
@@ -30,7 +33,7 @@ namespace SM.Service.Patterns
                 await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
             return Ok();
         }
-        
+
         [Route("{patternId}/thumbnail"), HttpGet]
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {

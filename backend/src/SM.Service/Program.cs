@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Proto.Persistence;
 using SM.Service.Infrastructure;
 using SM.Service.Infrastructure.EventStore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace SM.Service
 {
@@ -27,6 +28,15 @@ namespace SM.Service
                     services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
                     services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
                         provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
+                    services.AddAuthentication(options =>
+                        {
+                            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                        }).AddJwtBearer(options =>
+                        {
+                            options.Authority = context.Configuration["AUTH_AUTHORITY"];
+                            options.Audience = context.Configuration["AUTH_AUDIENCE"];
+                        });
                 })
                 .Build()
                 .Run();
