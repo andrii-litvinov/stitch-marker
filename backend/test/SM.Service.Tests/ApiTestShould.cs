@@ -40,17 +40,13 @@ namespace SM.Service.Tests
         {
             using (var httpClient = new HttpClient())
             {
-                var stringContent = new StringContent(
-                    JsonConvert.SerializeObject(
-                        new
-                            {
-                                client_id = "AZHrqJ4Qu2tfZ0F4oxljBtaLSv3cJQD1",
-                                client_secret = "GsJR7FwkJ-fCQDnhhh3GtwGlM4svMLMzAWDMhCeJZuuzGHzDAhznbIriQ3FF4UNn",
-                                audience = "http://localhost:5000/api/",
-                                grant_type = "client_credentials"
-                            }),
-                    Encoding.UTF8,
-                    "application/json");
+                var stringContent = new StringContent(JsonConvert.SerializeObject(new
+                {
+                    client_id = "AZHrqJ4Qu2tfZ0F4oxljBtaLSv3cJQD1",
+                    client_secret = "GsJR7FwkJ-fCQDnhhh3GtwGlM4svMLMzAWDMhCeJZuuzGHzDAhznbIriQ3FF4UNn",
+                    audience = "http://localhost:5000/api/",
+                    grant_type = "client_credentials"
+                }), Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync("https://stitch-marker.auth0.com/oauth/token", stringContent);
                 var resultContent = await response.Content.ReadAsStringAsync();
                 return JObject.Parse(resultContent).SelectToken("access_token").Value<string>();
@@ -63,7 +59,11 @@ namespace SM.Service.Tests
             {
                 var fileContent = await File.ReadAllBytesAsync(@"Resources/M198_Seaside beauty.xsd");
                 var fileStreamContent = new StreamContent(new MemoryStream(fileContent));
-                fileStreamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data") { Name = "file", FileName = "M198_Seaside beauty.xsd" };
+                fileStreamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+                {
+                    Name = "file",
+                    FileName = "M198_Seaside beauty.xsd"
+                };
                 fileStreamContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
                 using (var formData = new MultipartFormDataContent())
                 {
