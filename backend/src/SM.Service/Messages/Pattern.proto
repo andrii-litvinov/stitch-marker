@@ -14,6 +14,7 @@ message Pattern {
     repeated Stitch stitches = 8;
     repeated Backstitch backstitches = 9;
     repeated Element elements = 10;
+    string user_id = 11;
 }
 
 message Info {

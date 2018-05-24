@@ -7,4 +7,5 @@ message CreatePattern {
     string id = 1;
     string file_name = 2;
     bytes content = 3;
+    string user_id = 4;
 }

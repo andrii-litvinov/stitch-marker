@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Authorization;
 using Proto.Persistence;
 using SM.Service.Infrastructure;
 using SM.Service.Infrastructure.EventStore;
+using SM.Service.AuthorizationHandlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace SM.Service
@@ -40,6 +42,13 @@ namespace SM.Service
                             options.Authority = context.Configuration["AUTH_AUTHORITY"];
                             options.Audience = context.Configuration["AUTH_AUDIENCE"];
                         });
+                    services.AddAuthorization(options =>
+                        {
+                            options.AddPolicy("IsUsersPattern", policy =>
+                                policy.Requirements.Add(new AuthorRequirement()));
+                        });
+
+                    services.AddSingleton<IAuthorizationHandler, PatternAuthorizationHandler>();
                 });
     }
 }

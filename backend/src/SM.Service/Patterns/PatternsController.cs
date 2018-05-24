@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Linq;
+using System.Security.Claims;
+using System;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Http;
@@ -7,31 +9,47 @@ using Proto.Cluster;
 using SM.Service.Extensions;
 using SM.Service.Messages;
 using SM.Service.Resources;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SM.Service.Patterns
 {
-    using Microsoft.AspNetCore.Authorization;
-
     [Authorize]
     [Route("api/patterns")]
     public class PatternsController : Controller
     {
+        IAuthorizationService authorizationService;
+        public PatternsController(IAuthorizationService _authorizationService)
+        {
+            authorizationService = _authorizationService;
+        }
+
         [Route("{patternId}"), HttpGet]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response =
-                await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-            return Ok(response);
+
+            if (await IsUsersPattern(patternId, pattern))
+            {
+                var response =
+                    await pattern.RequestAsync<Pattern>(new GetPattern { Id = patternId.ToString() }, 10.Seconds());
+                return Ok(response);
+            }
+
+            return Forbid();
         }
 
         [Route("{patternId}"), HttpDelete]
         public async Task<IActionResult> Delete(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response =
-                await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
-            return Ok();
+
+            if (await IsUsersPattern(patternId, pattern))
+            {
+                await pattern.RequestAsync<PatternDeleted>(new DeletePattern { Id = patternId.ToString() }, 10.Seconds());
+                return Ok();
+            }
+            
+            return Forbid();
         }
 
         [Route("{patternId}/thumbnail"), HttpGet]
@@ -53,8 +71,9 @@ namespace SM.Service.Patterns
             {
                 FileName = file.FileName,
                 Id = patternId.ToString(),
-                Content = ByteString.CopyFrom(content)
-            };
+                Content = ByteString.CopyFrom(content),
+                UserId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value
+        };
             var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
             var preview = new {@event.Id, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
             var resource = new Resource(preview)
@@ -67,6 +86,18 @@ namespace SM.Service.Patterns
             };
 
             return Created(patternId.ToString(), resource);
+        }
+
+        private async Task<bool> IsUsersPattern(Guid patternId, Proto.PID pattern)
+        {
+            var response =
+                await pattern.RequestAsync<Pattern>(new GetPattern { Id = patternId.ToString() }, 10.Seconds());
+
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, "IsUsersPattern");
+
+            if (authorizationResult.Succeeded) return true;
+
+            return false;
         }
     }
 }

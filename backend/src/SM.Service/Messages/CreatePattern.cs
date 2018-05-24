@@ -24,13 +24,14 @@ namespace SM.Service.Messages {
     static CreatePatternReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChNDcmVhdGVQYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIj8KDUNyZWF0ZVBhdHRl",
+            "ChNDcmVhdGVQYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIlAKDUNyZWF0ZVBhdHRl",
             "cm4SCgoCaWQYASABKAkSEQoJZmlsZV9uYW1lGAIgASgJEg8KB2NvbnRlbnQY",
-            "AyABKAxCFqoCE1NNLlNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
+            "AyABKAwSDwoHdXNlcl9pZBgEIAEoCUIWqgITU00uU2VydmljZS5NZXNzYWdl",
+            "c2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.CreatePattern), global::SM.Service.Messages.CreatePattern.Parser, new[]{ "Id", "FileName", "Content" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.CreatePattern), global::SM.Service.Messages.CreatePattern.Parser, new[]{ "Id", "FileName", "Content", "UserId" }, null, null, null)
           }));
     }
     #endregion
@@ -65,6 +66,7 @@ namespace SM.Service.Messages {
       id_ = other.id_;
       fileName_ = other.fileName_;
       content_ = other.content_;
+      userId_ = other.userId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -106,6 +108,17 @@ namespace SM.Service.Messages {
       }
     }
 
+    /// <summary>Field number for the "user_id" field.</summary>
+    public const int UserIdFieldNumber = 4;
+    private string userId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UserId {
+      get { return userId_; }
+      set {
+        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as CreatePattern);
@@ -122,6 +135,7 @@ namespace SM.Service.Messages {
       if (Id != other.Id) return false;
       if (FileName != other.FileName) return false;
       if (Content != other.Content) return false;
+      if (UserId != other.UserId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -131,6 +145,7 @@ namespace SM.Service.Messages {
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (FileName.Length != 0) hash ^= FileName.GetHashCode();
       if (Content.Length != 0) hash ^= Content.GetHashCode();
+      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -156,6 +171,10 @@ namespace SM.Service.Messages {
         output.WriteRawTag(26);
         output.WriteBytes(Content);
       }
+      if (UserId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(UserId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -172,6 +191,9 @@ namespace SM.Service.Messages {
       }
       if (Content.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Content);
+      }
+      if (UserId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -192,6 +214,9 @@ namespace SM.Service.Messages {
       }
       if (other.Content.Length != 0) {
         Content = other.Content;
+      }
+      if (other.UserId.Length != 0) {
+        UserId = other.UserId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -214,6 +239,10 @@ namespace SM.Service.Messages {
           }
           case 26: {
             Content = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            UserId = input.ReadString();
             break;
           }
         }
