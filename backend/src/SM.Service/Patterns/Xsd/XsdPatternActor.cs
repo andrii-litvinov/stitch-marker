@@ -20,7 +20,7 @@ namespace SM.Service.Patterns.Xsd
                     var pattern = patternReader.Read(command.Content.ToByteArray());
                     pattern.Id = command.Id;
                     pattern.Info.Title = command.FileName;
-                    pattern.UserId = command.UserId;
+                    pattern.OwnerId = command.OwnerId;
                     var @event = new PatternCreated { Id = pattern.Id, Pattern = pattern };
                     context.Parent.Tell(@event);
                     break;

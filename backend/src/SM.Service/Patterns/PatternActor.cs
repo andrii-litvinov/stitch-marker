@@ -49,7 +49,7 @@ namespace SM.Service.Patterns
             {
                 case CreatePattern command:
                     await persistence.PersistEventAsync(
-                        new PatternUploaded {Id = command.Id, FileName = command.FileName, Content = command.Content, UserId = command.UserId});
+                        new PatternUploaded {Id = command.Id, FileName = command.FileName, Content = command.Content, OwnerId = command.OwnerId});
                     var parser = context.GetChild<XsdPatternActor>();
                     senders.Set(command.Id, context.Sender, 30.Seconds());
                     parser.Tell(command);

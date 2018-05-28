@@ -44,8 +44,8 @@ namespace SM.Service
                         });
                     services.AddAuthorization(options =>
                         {
-                            options.AddPolicy("IsUsersPattern", policy =>
-                                policy.Requirements.Add(new AuthorRequirement()));
+                            options.AddPolicy("OwnerPattern", policy =>
+                                policy.Requirements.Add(new OwnerRequirement()));
                         });
 
                     services.AddSingleton<IAuthorizationHandler, PatternAuthorizationHandler>();

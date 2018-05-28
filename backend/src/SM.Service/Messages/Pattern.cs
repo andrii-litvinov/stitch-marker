@@ -24,36 +24,36 @@ namespace SM.Service.Messages {
     static PatternReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1QYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIs4CCgdQYXR0ZXJuEgoKAmlkGAEg",
+            "Cg1QYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIs8CCgdQYXR0ZXJuEgoKAmlkGAEg",
             "ASgJEhsKBGluZm8YAiABKAsyDS5wYXR0ZXJuLkluZm8SHwoGY2FudmFzGAMg",
             "ASgLMg8ucGF0dGVybi5DYW52YXMSIQoHc3RyYW5kcxgEIAEoCzIQLnBhdHRl",
             "cm4uU3RyYW5kcxINCgV3aWR0aBgFIAEoDRIOCgZoZWlnaHQYBiABKA0SNAoO",
             "Y29uZmlndXJhdGlvbnMYByADKAsyHC5wYXR0ZXJuLlN0aXRjaENvbmZpZ3Vy",
             "YXRpb24SIQoIc3RpdGNoZXMYCCADKAsyDy5wYXR0ZXJuLlN0aXRjaBIpCgxi",
             "YWNrc3RpdGNoZXMYCSADKAsyEy5wYXR0ZXJuLkJhY2tzdGl0Y2gSIgoIZWxl",
-            "bWVudHMYCiADKAsyEC5wYXR0ZXJuLkVsZW1lbnQSDwoHdXNlcl9pZBgLIAEo",
-            "CSJJCgRJbmZvEg0KBXRpdGxlGAEgASgJEg4KBmF1dGhvchgCIAEoCRIPCgdj",
-            "b21wYW55GAMgASgJEhEKCWNvcHlyaWdodBgEIAEoCSIXCgZDYW52YXMSDQoF",
-            "dGl0bGUYASABKAkihQEKB1N0cmFuZHMSDAoEZnVsbBgBIAEoBRIMCgRoYWxm",
-            "GAIgASgFEg8KB3F1YXJ0ZXIYAyABKAUSFQoNdGhyZWVfcXVhcnRlchgEIAEo",
-            "BRINCgVwZXRpdBgFIAEoBRISCgpiYWNrc3RpdGNoGAYgASgFEhMKC2ZyZW5j",
-            "aF9rbm90GAcgASgFIlsKE1N0aXRjaENvbmZpZ3VyYXRpb24SDgoGc3ltYm9s",
-            "GAEgASgJEhEKCWhleF9jb2xvchgCIAEoCRIhCgdzdHJhbmRzGAMgASgLMhAu",
-            "cGF0dGVybi5TdHJhbmRzIl4KBlN0aXRjaBIJCgF4GAEgASgNEgkKAXkYAiAB",
-            "KA0SIQoEdHlwZRgDIAEoDjITLnBhdHRlcm4uU3RpdGNoVHlwZRIbChNjb25m",
-            "aWd1cmF0aW9uX2luZGV4GAQgASgFIl0KCkJhY2tzdGl0Y2gSCwoDeF8xGAEg",
-            "ASgNEgsKA3lfMRgCIAEoDRILCgN4XzIYAyABKA0SCwoDeV8yGAQgASgNEhsK",
-            "E2NvbmZpZ3VyYXRpb25faW5kZXgYBSABKAUiYAoHRWxlbWVudBIJCgF4GAEg",
-            "ASgNEgkKAXkYAiABKA0SGwoTY29uZmlndXJhdGlvbl9pbmRleBgDIAEoBRIi",
-            "CgR0eXBlGAQgASgOMhQucGF0dGVybi5FbGVtZW50VHlwZSpUCgpTdGl0Y2hU",
-            "eXBlEggKBE5PTkUQABIICgRGVUxMEAESCAoESEFMRhACEgsKB1FVQVJURVIQ",
-            "AxIQCgxUSFJFRVFVQVJURVIQBBIJCgVQRVRJVBAFKjYKC0VsZW1lbnRUeXBl",
-            "Eg0KCVVOREVGSU5FRBAAEg4KCkZSRU5DSEtOT1QQARIICgRCRUFEEAJCFqoC",
-            "E1NNLlNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
+            "bWVudHMYCiADKAsyEC5wYXR0ZXJuLkVsZW1lbnQSEAoIb3duZXJfaWQYCyAB",
+            "KAkiSQoESW5mbxINCgV0aXRsZRgBIAEoCRIOCgZhdXRob3IYAiABKAkSDwoH",
+            "Y29tcGFueRgDIAEoCRIRCgljb3B5cmlnaHQYBCABKAkiFwoGQ2FudmFzEg0K",
+            "BXRpdGxlGAEgASgJIoUBCgdTdHJhbmRzEgwKBGZ1bGwYASABKAUSDAoEaGFs",
+            "ZhgCIAEoBRIPCgdxdWFydGVyGAMgASgFEhUKDXRocmVlX3F1YXJ0ZXIYBCAB",
+            "KAUSDQoFcGV0aXQYBSABKAUSEgoKYmFja3N0aXRjaBgGIAEoBRITCgtmcmVu",
+            "Y2hfa25vdBgHIAEoBSJbChNTdGl0Y2hDb25maWd1cmF0aW9uEg4KBnN5bWJv",
+            "bBgBIAEoCRIRCgloZXhfY29sb3IYAiABKAkSIQoHc3RyYW5kcxgDIAEoCzIQ",
+            "LnBhdHRlcm4uU3RyYW5kcyJeCgZTdGl0Y2gSCQoBeBgBIAEoDRIJCgF5GAIg",
+            "ASgNEiEKBHR5cGUYAyABKA4yEy5wYXR0ZXJuLlN0aXRjaFR5cGUSGwoTY29u",
+            "ZmlndXJhdGlvbl9pbmRleBgEIAEoBSJdCgpCYWNrc3RpdGNoEgsKA3hfMRgB",
+            "IAEoDRILCgN5XzEYAiABKA0SCwoDeF8yGAMgASgNEgsKA3lfMhgEIAEoDRIb",
+            "ChNjb25maWd1cmF0aW9uX2luZGV4GAUgASgFImAKB0VsZW1lbnQSCQoBeBgB",
+            "IAEoDRIJCgF5GAIgASgNEhsKE2NvbmZpZ3VyYXRpb25faW5kZXgYAyABKAUS",
+            "IgoEdHlwZRgEIAEoDjIULnBhdHRlcm4uRWxlbWVudFR5cGUqVAoKU3RpdGNo",
+            "VHlwZRIICgROT05FEAASCAoERlVMTBABEggKBEhBTEYQAhILCgdRVUFSVEVS",
+            "EAMSEAoMVEhSRUVRVUFSVEVSEAQSCQoFUEVUSVQQBSo2CgtFbGVtZW50VHlw",
+            "ZRINCglVTkRFRklORUQQABIOCgpGUkVOQ0hLTk9UEAESCAoEQkVBRBACQhaq",
+            "AhNTTS5TZXJ2aWNlLk1lc3NhZ2VzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.Messages.StitchType), typeof(global::SM.Service.Messages.ElementType), }, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Pattern), global::SM.Service.Messages.Pattern.Parser, new[]{ "Id", "Info", "Canvas", "Strands", "Width", "Height", "Configurations", "Stitches", "Backstitches", "Elements", "UserId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Pattern), global::SM.Service.Messages.Pattern.Parser, new[]{ "Id", "Info", "Canvas", "Strands", "Width", "Height", "Configurations", "Stitches", "Backstitches", "Elements", "OwnerId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Info), global::SM.Service.Messages.Info.Parser, new[]{ "Title", "Author", "Company", "Copyright" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Canvas), global::SM.Service.Messages.Canvas.Parser, new[]{ "Title" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Strands), global::SM.Service.Messages.Strands.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
@@ -120,7 +120,7 @@ namespace SM.Service.Messages {
       stitches_ = other.stitches_.Clone();
       backstitches_ = other.backstitches_.Clone();
       elements_ = other.elements_.Clone();
-      userId_ = other.userId_;
+      ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -235,14 +235,14 @@ namespace SM.Service.Messages {
       get { return elements_; }
     }
 
-    /// <summary>Field number for the "user_id" field.</summary>
-    public const int UserIdFieldNumber = 11;
-    private string userId_ = "";
+    /// <summary>Field number for the "owner_id" field.</summary>
+    public const int OwnerIdFieldNumber = 11;
+    private string ownerId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string UserId {
-      get { return userId_; }
+    public string OwnerId {
+      get { return ownerId_; }
       set {
-        userId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        ownerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -269,7 +269,7 @@ namespace SM.Service.Messages {
       if(!stitches_.Equals(other.stitches_)) return false;
       if(!backstitches_.Equals(other.backstitches_)) return false;
       if(!elements_.Equals(other.elements_)) return false;
-      if (UserId != other.UserId) return false;
+      if (OwnerId != other.OwnerId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -286,7 +286,7 @@ namespace SM.Service.Messages {
       hash ^= stitches_.GetHashCode();
       hash ^= backstitches_.GetHashCode();
       hash ^= elements_.GetHashCode();
-      if (UserId.Length != 0) hash ^= UserId.GetHashCode();
+      if (OwnerId.Length != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -328,9 +328,9 @@ namespace SM.Service.Messages {
       stitches_.WriteTo(output, _repeated_stitches_codec);
       backstitches_.WriteTo(output, _repeated_backstitches_codec);
       elements_.WriteTo(output, _repeated_elements_codec);
-      if (UserId.Length != 0) {
+      if (OwnerId.Length != 0) {
         output.WriteRawTag(90);
-        output.WriteString(UserId);
+        output.WriteString(OwnerId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -362,8 +362,8 @@ namespace SM.Service.Messages {
       size += stitches_.CalculateSize(_repeated_stitches_codec);
       size += backstitches_.CalculateSize(_repeated_backstitches_codec);
       size += elements_.CalculateSize(_repeated_elements_codec);
-      if (UserId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(UserId);
+      if (OwnerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnerId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -407,8 +407,8 @@ namespace SM.Service.Messages {
       stitches_.Add(other.stitches_);
       backstitches_.Add(other.backstitches_);
       elements_.Add(other.elements_);
-      if (other.UserId.Length != 0) {
-        UserId = other.UserId;
+      if (other.OwnerId.Length != 0) {
+        OwnerId = other.OwnerId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -471,7 +471,7 @@ namespace SM.Service.Messages {
             break;
           }
           case 90: {
-            UserId = input.ReadString();
+            OwnerId = input.ReadString();
             break;
           }
         }
