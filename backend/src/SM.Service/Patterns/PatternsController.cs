@@ -24,31 +24,25 @@ namespace SM.Service.Patterns
             this.authorizationService = authorizationService;
         }
 
-        [Route("{patternId}"), HttpGet]
+        [HttpGet]
+        [Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, AuthPolicy.PatternOwner);
 
-            var response =
-                await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(User, response, "OwnerPattern");
-            if (authorizationResult.Succeeded) return Ok(response);
-
-            return Forbid();
+            return authorizationResult.Succeeded ? (IActionResult) Ok(response) : Forbid();
         }
 
-        [Route("{patternId}"), HttpDelete]
+        [HttpDelete]
+        [Route("{patternId}")]
         public async Task<IActionResult> Delete(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, AuthPolicy.PatternOwner);
 
-            var response =
-                await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(User, response, "OwnerPattern");
             if (authorizationResult.Succeeded)
             {
                 await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
@@ -58,15 +52,14 @@ namespace SM.Service.Patterns
             return Forbid();
         }
 
-        [Route("{patternId}/thumbnail"), HttpGet]
+        [HttpGet]
+        [Route("{patternId}/thumbnail")]
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response =
-                await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+            var response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, AuthPolicy.PatternOwner);
 
-            var authorizationResult =
-                await authorizationService.AuthorizeAsync(User, response, "OwnerPattern");
             if (authorizationResult.Succeeded)
             {
                 var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};

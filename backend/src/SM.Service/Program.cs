@@ -16,39 +16,34 @@ namespace SM.Service
     {
         public static void Main(string[] args)
         {
-            BuildWebHost().Build().Run();
+            BuildWebHost(args).Build().Run();
         }
 
-        public static IWebHostBuilder BuildWebHost() =>
-            WebHost.CreateDefaultBuilder().UseStartup<Startup>()
-                .ConfigureAppConfiguration(builder => { builder.AddEnvironmentVariables("STITCH_MARKER:"); })
-                .ConfigureServices((context, services) =>
+        public static IWebHostBuilder BuildWebHost(params string[] args) => WebHost.CreateDefaultBuilder(args).UseStartup<Startup>()
+            .ConfigureAppConfiguration(builder => { builder.AddEnvironmentVariables("STITCH_MARKER:"); })
+            .ConfigureServices((context, services) =>
+            {
+                services.AddMvc();
+                services.AddCors();
+                services.AddSingleton<IHostedService, ActorCluster>();
+                services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
+                services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
+                    provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
+                services.AddAuthentication(options =>
                 {
-                    services.AddMvc();
-                    services.AddCors();
-                    services.AddSingleton<IHostedService, ActorCluster>();
-                    services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
-                    services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
-                        provider => new ReadWriteEventStoreConnection(
-                            context.Configuration["EVENTSTORE_CONNECTION"]));
-                    services.AddAuthentication(
-                        options =>
-                        {
-                            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                        }).AddJwtBearer(
-                        options =>
-                        {
-                            options.Authority = context.Configuration["AUTH_AUTHORITY"];
-                            options.Audience = context.Configuration["AUTH_AUDIENCE"];
-                        });
-                    services.AddAuthorization(options =>
-                        {
-                            options.AddPolicy("OwnerPattern", policy =>
-                                policy.Requirements.Add(new OwnerRequirement()));
-                        });
-
-                    services.AddSingleton<IAuthorizationHandler, PatternAuthorizationHandler>();
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                }).AddJwtBearer(options =>
+                {
+                    options.Authority = context.Configuration["AUTH_AUTHORITY"];
+                    options.Audience = context.Configuration["AUTH_AUDIENCE"];
                 });
+                services.AddAuthorization(options =>
+                {
+                    options.AddPolicy(AuthPolicy.PatternOwner, policy => policy.Requirements.Add(new OwnerRequirement()));
+                });
+
+                services.AddSingleton<IAuthorizationHandler, PatternAuthorizationHandler>();
+            });
     }
 }
