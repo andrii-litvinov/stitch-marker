@@ -24,13 +24,14 @@ namespace SM.Service.Messages {
     static PatternUploadedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChVQYXR0ZXJuVXBsb2FkZWQucHJvdG8SB3BhdHRlcm4iQQoPUGF0dGVyblVw",
+            "ChVQYXR0ZXJuVXBsb2FkZWQucHJvdG8SB3BhdHRlcm4iUwoPUGF0dGVyblVw",
             "bG9hZGVkEgoKAmlkGAEgASgJEhEKCWZpbGVfbmFtZRgCIAEoCRIPCgdjb250",
-            "ZW50GAMgASgMQhaqAhNTTS5TZXJ2aWNlLk1lc3NhZ2VzYgZwcm90bzM="));
+            "ZW50GAMgASgMEhAKCG93bmVyX2lkGAQgASgJQhaqAhNTTS5TZXJ2aWNlLk1l",
+            "c3NhZ2VzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternUploaded), global::SM.Service.Messages.PatternUploaded.Parser, new[]{ "Id", "FileName", "Content" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternUploaded), global::SM.Service.Messages.PatternUploaded.Parser, new[]{ "Id", "FileName", "Content", "OwnerId" }, null, null, null)
           }));
     }
     #endregion
@@ -65,6 +66,7 @@ namespace SM.Service.Messages {
       id_ = other.id_;
       fileName_ = other.fileName_;
       content_ = other.content_;
+      ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -106,6 +108,17 @@ namespace SM.Service.Messages {
       }
     }
 
+    /// <summary>Field number for the "owner_id" field.</summary>
+    public const int OwnerIdFieldNumber = 4;
+    private string ownerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string OwnerId {
+      get { return ownerId_; }
+      set {
+        ownerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as PatternUploaded);
@@ -122,6 +135,7 @@ namespace SM.Service.Messages {
       if (Id != other.Id) return false;
       if (FileName != other.FileName) return false;
       if (Content != other.Content) return false;
+      if (OwnerId != other.OwnerId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -131,6 +145,7 @@ namespace SM.Service.Messages {
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       if (FileName.Length != 0) hash ^= FileName.GetHashCode();
       if (Content.Length != 0) hash ^= Content.GetHashCode();
+      if (OwnerId.Length != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -156,6 +171,10 @@ namespace SM.Service.Messages {
         output.WriteRawTag(26);
         output.WriteBytes(Content);
       }
+      if (OwnerId.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(OwnerId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -172,6 +191,9 @@ namespace SM.Service.Messages {
       }
       if (Content.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeBytesSize(Content);
+      }
+      if (OwnerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnerId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -192,6 +214,9 @@ namespace SM.Service.Messages {
       }
       if (other.Content.Length != 0) {
         Content = other.Content;
+      }
+      if (other.OwnerId.Length != 0) {
+        OwnerId = other.OwnerId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -214,6 +239,10 @@ namespace SM.Service.Messages {
           }
           case 26: {
             Content = input.ReadBytes();
+            break;
+          }
+          case 34: {
+            OwnerId = input.ReadString();
             break;
           }
         }
