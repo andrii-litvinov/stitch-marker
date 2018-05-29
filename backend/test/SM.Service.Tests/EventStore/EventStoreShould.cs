@@ -42,14 +42,14 @@ namespace SM.Service.Tests.EventStore
             };
 
             var actorName = $"test-{Guid.NewGuid()}";
-            long version = ExpectedVersion.NoStream + 1;
-            version = await eventStore.PersistEventAsync(actorName, version, event1);
-            version = await eventStore.PersistEventAsync(actorName, version, event2);
+            long version = ExpectedVersion.NoStream;
+            version = await eventStore.PersistEventAsync(actorName, version + 1, event1);
+            version = await eventStore.PersistEventAsync(actorName, version + 1, event2);
 
             // Act
             var events = new List<PatternUploaded>();
-            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start + 1, version,
-                e => events.Add((PatternUploaded)e));
+            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start, version,
+                e => events.Add((PatternUploaded) e));
 
             // Assert
             version.Should().Be(2);
@@ -81,7 +81,7 @@ namespace SM.Service.Tests.EventStore
             // Assert
             version.Should().Be(0);
         }
-        
+
         [Fact]
         public async Task CompressEvent()
         {
@@ -90,20 +90,20 @@ namespace SM.Service.Tests.EventStore
             {
                 Id = Guid.NewGuid().ToString(),
                 FileName = "pattern.xsd",
-                Content = ByteString.CopyFrom(Encoding.UTF8.GetBytes(new string('c', 512*1024)))
+                Content = ByteString.CopyFrom(Encoding.UTF8.GetBytes(new string('c', 512 * 1024)))
             };
             var actorName = $"test-{Guid.NewGuid()}";
 
             // Act
             PatternUploaded recoveredEvent = null;
             var version = await eventStore.PersistEventAsync(actorName, ExpectedVersion.NoStream + 1, @event);
-            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start + 1, version,
-                e => recoveredEvent = (PatternUploaded)e);
+            version = await eventStore.GetEventsAsync(actorName, StreamPosition.Start, version,
+                e => recoveredEvent = (PatternUploaded) e);
 
             // Assert
             version.Should().Be(1);
             recoveredEvent.FileName.Should().Be("pattern.xsd");
-            recoveredEvent.Content.Should().HaveCount(512*1024);
+            recoveredEvent.Content.Should().HaveCount(512 * 1024);
             Encoding.UTF8.GetString(recoveredEvent.Content.ToByteArray()).Should().MatchRegex("c{512}");
         }
     }

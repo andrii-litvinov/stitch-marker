@@ -8,7 +8,7 @@
 <dom-module id="stitch-pattern-card">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
       }
 
@@ -50,7 +50,7 @@
     </style>
 
     <app-location id="location" route="{{route}}"></app-location>
-    <paper-card image="[[thumbnailUrl]]">
+    <paper-card image="[[imageUrl]]">
       <div class="card-content">
         <div class="edit-name">
           <div id="title" title="[[patternInfo.title]]">[[patternInfo.title]]</div>
@@ -72,11 +72,11 @@
         return {
           patternInfo: {
             type: Object,
-            value: {}
+            value: {},
+            observer: 'patternInfoChanged'
           },
-          thumbnailUrl: {
-            type: String,
-            computed: "getThumbnailUrl(patternInfo)"
+          imageUrl: {
+            type: String
           }
         }
       }
@@ -86,13 +86,18 @@
         this.set('route.path', '/marker');
       }
 
-      getThumbnailUrl(patternInfo) {
-        return SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href;
+      async patternInfoChanged(patternInfo) {
+        const response = await http.get(SM.apiUrl + patternInfo.links.find(link => link.rel === 'thumbnail').href);
+        if (response.status === 200) {
+          const buffer = await response.arrayBuffer();
+          if (buffer) {
+            this.imageUrl = 'data:image/png;base64,' + btoa(String.fromCharCode(...new Uint8Array(buffer)));
+          };
+        }
       }
 
       async delete() {
-        const response = await fetch(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href,
-          { method: 'DELETE' });
+        const response = await http.delete(SM.apiUrl + this.patternInfo.links.find(link => link.rel === 'self').href);
         if (response.status === 200)
           this.dispatchEvent(new CustomEvent('delete'));
       }

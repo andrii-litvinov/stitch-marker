@@ -103,9 +103,10 @@
               <iron-icon icon="icons:home"></iron-icon>Landing
             </paper-item>
           </a>
-          <a href="/login" on-click="toggleMenu">
+          <a href="/auth" on-click="toggleMenu">
             <paper-item>
-              <iron-icon icon="icons:account-circle"></iron-icon>Login
+              <iron-icon icon="icons:account-circle"></iron-icon>
+              <span id="loginText">Login</span>
             </paper-item>
           </a>
           <a href="/home/patterns" on-click="toggleMenu">
@@ -164,8 +165,12 @@
       }
 
       toggleMenu() {
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        const authorized = authData && authData.expiresOn > new Date().getTime();
+        this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
         this.$.drawer.toggle();
       }
+
     }
     customElements.define(Header.is, Header);
   </script>

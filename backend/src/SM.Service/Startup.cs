@@ -8,6 +8,8 @@ namespace SM.Service
     {
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            app.UseAuthentication();
+
             loggerFactory.AddConsole();
 
             app.UseCors(builder => builder

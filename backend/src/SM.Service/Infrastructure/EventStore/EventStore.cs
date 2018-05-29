@@ -24,14 +24,13 @@ namespace SM.Service.Infrastructure.EventStore
             Action<object> callback)
         {
             StreamEventsSlice slice;
-            var start = indexStart - 1;
+            var start = indexStart;
 
             do
             {
-                var count = (int)Math.Min(indexEnd - start, 200);
+                var count = (int) Math.Min(indexEnd - start, 199) + 1;
                 slice = await connection.ReadStreamEventsForward(actorName, start, count, false);
-                start = slice.NextEventNumber;
-
+                
                 foreach (var resolvedEvent in slice.Events)
                 {
                     var data = resolvedEvent.Event.Data;
@@ -46,6 +45,7 @@ namespace SM.Service.Infrastructure.EventStore
                                 {
                                     gZipStream.CopyTo(originalStream);
                                 }
+
                                 data = originalStream.ToArray();
                             }
                     }
@@ -56,6 +56,8 @@ namespace SM.Service.Infrastructure.EventStore
                     message.MergeFrom(data);
                     callback(message);
                 }
+                
+                start = slice.NextEventNumber;
             } while (start <= indexEnd && !slice.IsEndOfStream);
 
             return slice.NextEventNumber;
@@ -63,30 +65,32 @@ namespace SM.Service.Infrastructure.EventStore
 
         public async Task<long> PersistEventAsync(string actorName, long index, object @event)
         {
-            if (@event is IMessage message)
+            switch (@event)
             {
-                var data = message.ToByteArray();
-                var metadata = Array.Empty<byte>();
+                case IMessage message:
+                    var data = message.ToByteArray();
+                    var metadata = Array.Empty<byte>();
 
-                if (data.Length > 512 * 1024)
-                    using (var compressedStream = new MemoryStream())
-                    {
-                        using (var originalStream = new MemoryStream(data))
-                        using (var gZipStream = new GZipStream(compressedStream, CompressionMode.Compress))
+                    if (data.Length > 512 * 1024)
+                        using (var compressedStream = new MemoryStream())
                         {
-                            originalStream.CopyTo(gZipStream);
+                            using (var originalStream = new MemoryStream(data))
+                            using (var gZipStream = new GZipStream(compressedStream, CompressionMode.Compress))
+                            {
+                                originalStream.CopyTo(gZipStream);
+                            }
+
+                            data = compressedStream.ToArray();
+                            metadata = Encoding.UTF8.GetBytes(
+                                new JObject {["encoding"] = "gzip"}.ToString(Formatting.None));
                         }
-                        data = compressedStream.ToArray();
-                        metadata = Encoding.UTF8.GetBytes(
-                            new JObject {["encoding"] = "gzip"}.ToString(Formatting.None));
-                    }
 
-                var eventData = new EventData(Guid.NewGuid(), @event.GetType().Name, false, data, metadata);
-                var result = await connection.AppendToStream(actorName, index - 2, eventData);
-                return result.NextExpectedVersion;
+                    var eventData = new EventData(Guid.NewGuid(), @event.GetType().Name, false, data, metadata);
+                    var result = await connection.AppendToStream(actorName, index - 1, eventData);
+                    return result.NextExpectedVersion;
+                default:
+                    throw new Exception($"Expected event of type 'IMessage', but found {@event.GetType().FullName}.");
             }
-
-            throw new Exception($"Expected event of type 'IMessage', but found {@event.GetType().FullName}.");
         }
 
         public Task DeleteEventsAsync(string actorName, long inclusiveToIndex)
