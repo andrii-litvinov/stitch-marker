@@ -82,6 +82,10 @@ namespace SM.Service.Patterns
                     await persistence.PersistEventAsync(patternDeleted);
                     context.Sender.Tell(patternDeleted);
                     break;
+                case GetPatternOwner _:
+                    var patternOwner = new PatternOwner {OwnerId = pattern.OwnerId};
+                    context.Sender.Tell(patternOwner);
+                    break;
             }
         }
 
@@ -89,7 +93,7 @@ namespace SM.Service.Patterns
         {
             return Actor.Done;
         }
-        
+
         private void ApplyEvent(Event @event)
         {
             switch (@event.Data)

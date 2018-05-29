@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
@@ -17,22 +15,18 @@ namespace SM.Service.Patterns
     [Route("api/patterns")]
     public class PatternsController : Controller
     {
-        private readonly IAuthorizationService authorizationService;
-
-        public PatternsController(IAuthorizationService authorizationService)
-        {
-            this.authorizationService = authorizationService;
-        }
-
         [HttpGet]
         [Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, AuthPolicy.PatternOwner);
+            dynamic response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
 
-            return authorizationResult.Succeeded ? (IActionResult) Ok(response) : Forbid();
+            if (response.OwnerId != User.GetUserId()) return Forbid();
+
+            response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+
+            return Ok(response);
         }
 
         [HttpDelete]
@@ -40,16 +34,13 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Delete(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, AuthPolicy.PatternOwner);
+            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
 
-            if (authorizationResult.Succeeded)
-            {
-                await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
-                return Ok();
-            }
+            if (response.OwnerId != User.GetUserId()) return Forbid();
 
-            return Forbid();
+            await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
+
+            return Ok();
         }
 
         [HttpGet]
@@ -57,23 +48,19 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-            var authorizationResult = await authorizationService.AuthorizeAsync(User, response, AuthPolicy.PatternOwner);
+            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
 
-            if (authorizationResult.Succeeded)
-            {
-                var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
-                var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 10.Seconds());
-                return File(thumbnail.Image.ToByteArray(), "image/png");
-            }
+            if (response.OwnerId != User.GetUserId()) return Forbid();
 
-            return Forbid();
+            var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
+            var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 10.Seconds());
+            return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
         [HttpPost]
         public async Task<IActionResult> Post(IFormFile file)
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            var userId = User.GetUserId();
             if (userId == null) return BadRequest();
 
             var patternId = Guid.NewGuid();
@@ -84,7 +71,7 @@ namespace SM.Service.Patterns
                 FileName = file.FileName,
                 Id = patternId.ToString(),
                 Content = ByteString.CopyFrom(content),
-                OwnerId = userId.Value
+                OwnerId = userId
             };
             var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
             var preview = new {@event.Id, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};

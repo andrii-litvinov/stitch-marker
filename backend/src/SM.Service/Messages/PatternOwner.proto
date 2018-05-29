@@ -1,0 +1,8 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service.Messages";
+
+message PatternOwner {
+    string owner_id = 1;
+}
