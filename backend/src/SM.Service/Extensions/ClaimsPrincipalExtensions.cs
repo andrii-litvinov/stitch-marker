@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace SM.Service.Extensions
 {
-    public static class ClaimsIdentityExtensions
+    public static class ClaimsPrincipalExtensions
     {
         public static string GetUserId(this ClaimsPrincipal user)
         {
