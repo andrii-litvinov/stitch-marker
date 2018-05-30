@@ -102,7 +102,7 @@ class BackstitchMarker extends EventDispatcher {
       this.finalize();
     } else {
       //we dont need here abort. just need to redraw bs
-      this.dispatchEvent(new CustomEvent("abort"));
+      // this.dispatchEvent(new CustomEvent("abort"));
       this.ctx.beginPath();
       this.ctx.lineCap = 'round';
       this.ctx.moveTo(x1, y1);
@@ -143,7 +143,7 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   stopDrawing() {
-    this.dispatchEvent(new CustomEvent("abort"));
+    // this.dispatchEvent(new CustomEvent("abort"));
   }
 
   dispose() {
