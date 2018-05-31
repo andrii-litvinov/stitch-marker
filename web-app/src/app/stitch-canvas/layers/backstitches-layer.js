@@ -54,9 +54,10 @@ class BackstitchesLayer extends BaseLayer {
   touchStart(e) {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
-    const tapCoords = [{x, y}, {x:x-1, y}, {x:x+1, y},
-      {x, y:y-1}, {x, y:y+1}, {x:x-1, y:y-1}, {x:x+1, y:y+1}];
-    
+    const tapCoords = [{ x, y }, { x: x - 1, y }, { x: x + 1, y },
+    { x, y: y - 1 }, { x, y: y + 1 }, { x: x - 1, y: y - 1 },
+    { x: x + 1, y: y + 1 }, { x: x + 1, y: y - 1 }, { x: x - 1, y: y + 1 }];
+
     tapCoords.forEach(p => {
       const point = this.backstitchesMap[p.x * this.scene.pattern.height + p.y];
       if (point) {

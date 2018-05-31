@@ -11,6 +11,7 @@ class BackstitchMarker extends EventDispatcher {
       move: this.move.bind(this),
       touchend: this.touchend.bind(this)
     }
+    let direction;
 
     for (const type in sceneEventListeners) {
       this.scene.addEventListener(type, sceneEventListeners[type]);
@@ -88,8 +89,16 @@ class BackstitchMarker extends EventDispatcher {
     const x2 = this.endPoint.x * this.scene.stitchSize / 2;
     const y1 = this.startPoint.y * this.scene.stitchSize / 2;
     const y2 = this.endPoint.y * this.scene.stitchSize / 2;
-    let distanceToEnd = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)) - Math.sqrt(Math.pow(x - x1, 2) + Math.pow(y - y1, 2))
+    let normalX = Math.pow(x - x2, 2);
+    let normalY = Math.pow(y - y2, 2);
+    let reverseX = Math.pow(x - x1, 2);
+    let reverseY = Math.pow(y - y1, 2);
 
+    if (this.direction == undefined) {
+      Math.sqrt(normalX + normalY) > Math.sqrt(reverseX + reverseY) ? this.direction = true : this.direction = false;
+    }
+
+    let distanceToEnd = this.direction ? Math.sqrt(normalX + normalY) : Math.sqrt(reverseX + reverseY);
     if (distanceToEnd < this.epsilon) {
       this.ctx.beginPath();
       this.ctx.lineCap = 'round';
@@ -143,6 +152,7 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   stopDrawing() {
+    this.direction = undefined;
     // this.dispatchEvent(new CustomEvent("abort"));
   }
 
