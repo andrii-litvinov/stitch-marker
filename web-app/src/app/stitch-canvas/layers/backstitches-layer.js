@@ -5,13 +5,20 @@ class BackstitchesLayer extends BaseLayer {
     this.scene = scene;
     this.ctx = this.createContext();
     this.generateBackstitches();
+    this.markers = [];
 
     const sceneEventListeners = {
       render: this.render.bind(this),
       resize: this.resize.bind(this),
       zoom: this.render.bind(this),
       touchstart: this.touchStart.bind(this)
-    }
+    };
+
+    this.markerEventListeners = {
+      progress: this.progress.bind(this),
+      complete: this.backstitchComplete.bind(this),
+      abort: this.abort.bind(this)
+    };
 
     for (const type in sceneEventListeners) {
       this.scene.addEventListener(type, sceneEventListeners[type]);
@@ -22,15 +29,49 @@ class BackstitchesLayer extends BaseLayer {
     this.scene.component.shadowRoot.removeChild(this.ctx.canvas);
   }
 
+  disposeMarkers() {
+    this.markers.forEach(marker => {
+      marker.dispose();
+    });
+    this.markers.length = 0;
+  }
+
+  abort() {
+    this.disposeMarkers();
+  }
+
+  backstitchComplete() {
+    //set flag for backstitch that bs is complete in marker
+    this.disposeMarkers();
+  }
+
+  progress(e) {
+    // if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
+    //   //set flag for this backstitch in bsMap but we're rendering backstitches Array
+    // }
+  }
+
   touchStart(e) {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
-    const point = this.backstitchesMap[x * this.scene.pattern.height + y];
-    if (point)
-      point.forEach(backstitch => {
-        this.markers = [];
-        this.markers.push(new BackstitchMarker(this.ctx, backstitch, x, y));
-      });
+    let tapCoords = [];
+    for (let i = 0; i <= 2; i++)
+      for (let j = 0; j <= 2; j++)
+        tapCoords.push({ x: (x - 1) + i, y: (y - 1) + j });
+
+    tapCoords.forEach(p => {
+      const point = this.backstitchesMap[p.x * this.scene.pattern.height + p.y];
+      if (point) {
+        point.forEach(backstitch => {
+          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, p.x, p.y));
+        });
+        for (const type in this.markerEventListeners) {
+          this.markers.forEach(marker => {
+            marker.addEventListener(type, this.markerEventListeners[type]);
+          });
+        }
+      }
+    });
   }
 
   render() {
@@ -49,7 +90,7 @@ class BackstitchesLayer extends BaseLayer {
     this.scene.pattern.backstitches.forEach(bs => {
       const config = this.scene.pattern.configurations[bs.configurationIndex];
       const strands = config.strands || this.scene.pattern.strands;
-      const backstitch = new Backstitch(config, strands, bs);
+      const backstitch = new Backstitch(config, strands, bs, this.scene.scale);
       [
         { x: backstitch.x1, y: backstitch.y1 },
         { x: backstitch.x2, y: backstitch.y2 }

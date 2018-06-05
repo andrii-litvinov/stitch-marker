@@ -83,7 +83,10 @@
           }
         };
 
-        const onEnd = event => position = null;
+        const onEnd = event => {
+          position = null;
+          this.scene.touchEnd();
+        }
 
         const onMove = event => {
           event.preventDefault();
@@ -92,6 +95,8 @@
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
             position = newPosition;
+            //change translate params to dx, dy to make previous tranlsate
+            //this one is used to "move"
             requestAnimationFrame(() => this.scene.translate(dx, dy));
           }
         };

@@ -47,6 +47,7 @@ class Scene extends EventDispatcher {
   }
 
   translate(x, y) {
+    this.dispatchEvent(new CustomEvent("move", { detail: { x, y } }));
     this.x += x;
     this.y += y;
     this.render();
@@ -61,7 +62,11 @@ class Scene extends EventDispatcher {
   }
 
   touchStart(x, y) {
-    this.dispatchEvent(new CustomEvent("touchstart", { detail: { x: x, y: y } }));
+    this.dispatchEvent(new CustomEvent("touchstart", { detail: { x, y } }));
+  }
+
+  touchEnd() {
+    this.dispatchEvent(new CustomEvent("touchend"));
   }
 
   getBounds() {

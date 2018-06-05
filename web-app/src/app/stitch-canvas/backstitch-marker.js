@@ -1,142 +1,167 @@
-class BackstitchMarker {
-  static get epsilon() { return 20; }
+class BackstitchMarker extends EventDispatcher {
+  constructor(ctx, scene, backstitch, touchX, touchY) {
+    super();
 
-  constructor(ctx, backstitch, touchX, touchY) {
     this.ctx = ctx;
+    this.scene = scene;
     this.backstitch = backstitch;
-
+    this.epsilon = backstitch.width + 3;
     this.setBackstitchPoints(backstitch, touchX, touchY);
-
-    this.move = this.move.bind(this);
-    this.ctx.canvas.addEventListener("mousemove", this.move);
-  }
-
-  move(event) {
-    const moveContext = this.getPointOnBackstitch(event.offsetX, event.offsetY);
-
-    // TODO: Fire event that backstitch marking progressed.
-    moveContext && this.draw(moveContext.x, moveContext.y);
-  }
-
-  getPointOnBackstitch(x, y) {
-    const startPoint = this.startPoint;
-    const endPoint = this.endPoint;
-    const distanceToStart = Math.sqrt(Math.pow(startPoint.x - x, 2) + Math.pow(startPoint.y - y, 2));
-    const distanceToEnd = Math.sqrt(Math.pow(endPoint.x - x, 2) + Math.pow(endPoint.y - y, 2));
-    const backstitchLength = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-    const distanceToBackstitch = this.getDistanceToBackstith(distanceToStart, distanceToEnd, backstitchLength);
-
-    if (distanceToBackstitch < BackstitchMarker.epsilon) {
-      const cathetus = Math.sqrt(Math.pow(distanceToStart, 2) - Math.pow(distanceToBackstitch, 2));
-
-      let ab = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2));
-      let bc = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - endPoint.y, 2));
-      let ac = Math.sqrt(Math.pow(startPoint.x - startPoint.x, 2) + Math.pow(startPoint.y - endPoint.y, 2));
-
-      let dX = cathetus * bc / ab;
-      let dY = cathetus * ac / ab;
-      const deviationX = [dX, -dX];
-      const deviationY = [dY, -dY];
-
-      for (let i = 0; i < deviationX.length; i++) {
-        const backstitchX = startPoint.x + deviationX[i];
-        for (let j = 0; j < deviationY.length; j++) {
-          const backstitchY = startPoint.y + deviationY[j];
-          const inbetween = Math.min(startPoint.x, endPoint.x) <= backstitchX && backstitchX <= Math.max(startPoint.x, endPoint.x) && Math.min(startPoint.y, endPoint.y) <= backstitchY && backstitchY <= Math.max(startPoint.y, endPoint.y);
-          const matchesDistance = Math.abs(Math.sqrt((Math.pow(x - backstitchX, 2) + Math.pow(y - backstitchY, 2))) - distanceToBackstitch) < 0.00001;
-          if (inbetween && matchesDistance) {
-            const pointOnBackstitch = { x: backstitchX, y: backstitchY };
-            const backstitchPointToStart = Math.sqrt(Math.pow(startPoint.x - pointOnBackstitch.x, 2) + Math.pow(startPoint.y - pointOnBackstitch.y, 2));
-            const backstitchPointToEnd = Math.sqrt(Math.pow(endPoint.x - pointOnBackstitch.x, 2) + Math.pow(endPoint.y - pointOnBackstitch.y, 2));
-            if (backstitchPointToStart < backstitchLength && backstitchPointToEnd < backstitchLength) {
-
-              // TODO: Fire event directly here. Move the code to move method.
-              return pointOnBackstitch;
-            }
-            else {
-              // TODO: Call dispose from layer as reaction to the event.
-              this.dispose();
-
-              // TODO: Fire event that marking was aborted.
-              drawBackstitch(this.ctx, this.backstitch);
-            }
-          }
-        }
-      }
-    } else {
-      this.stopDrawing();
+    const sceneEventListeners = {
+      move: this.move.bind(this),
+      touchend: this.touchend.bind(this)
     }
 
-    return null;
+    for (const type in sceneEventListeners) {
+      this.scene.addEventListener(type, sceneEventListeners[type]);
+    }
   }
 
-  draw(x, y) {
-    const startPoint = this.startPoint;
-    const endPoint = this.endPoint;
-    let distanceToEnd = Math.sqrt(Math.pow(endPoint.x - startPoint.x, 2) + Math.pow(endPoint.y - startPoint.y, 2)) - Math.sqrt(Math.pow(x - startPoint.x, 2) + Math.pow(y - startPoint.y, 2))
+  touchend() {
+    this.stopDrawing();
+    this.dispose();
+  }
 
-    if (distanceToEnd < BackstitchMarker.epsilon) {
+  // move(e) {
+  //   const x = e.detail.x;
+  //   const y = e.detail.y;
+  //   let moveContext;
+
+  //   const x1 = this.startPoint.x * this.scene.stitchSize / 2;
+  //   const x2 = this.endPoint.x * this.scene.stitchSize / 2;
+  //   const y1 = this.startPoint.y * this.scene.stitchSize / 2;
+  //   const y2 = this.endPoint.y * this.scene.stitchSize / 2;
+  //   const distanceToStart = Math.sqrt(Math.pow(x1 - x, 2) + Math.pow(y1 - y, 2));
+  //   const distanceToEnd = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+  //   const backstitchLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  //   const halfPerimeter = (distanceToStart + distanceToEnd + backstitchLength) * 0.5;
+  //   const area = Math.sqrt(halfPerimeter * (halfPerimeter - distanceToStart) * (halfPerimeter - distanceToEnd) * Math.abs(halfPerimeter - backstitchLength));
+  //   const distanceToBackstitch = (area * 2 / backstitchLength);
+  //   // we have halfPerimeter - backstitchLength: 109.20164833920776 - 109.20164833920778 = negative double
+  //   // as result we have undefined distanceToBackstitch
+  //   // so we have to round or take abs of given number as a quick fix 
+
+  //   if (distanceToBackstitch < this.epsilon) {
+  //     const cathetus = Math.sqrt(Math.pow(distanceToStart, 2) - Math.pow(distanceToBackstitch, 2));
+
+  //     let ab = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  //     let bc = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y2, 2));
+  //     let ac = Math.sqrt(Math.pow(x1 - x1, 2) + Math.pow(y2 - y1, 2));
+
+  //     let dX = cathetus * bc / ab;
+  //     let dY = cathetus * ac / ab;
+  //     const deviationX = [dX, -dX];
+  //     const deviationY = [dY, -dY];
+
+  //     for (let i = 0; i < deviationX.length; i++) {
+  //       const backstitchX = x1 + deviationX[i];
+  //       for (let j = 0; j < deviationY.length; j++) {
+  //         const backstitchY = y1 + deviationY[j];
+  //         const inbetween = Math.min(x1, x2) <= backstitchX && backstitchX <= Math.max(x1, x2) && Math.min(y1, y2) <= backstitchY && backstitchY <= Math.max(y1, y2);
+  //         const matchesDistance = Math.abs(Math.sqrt((Math.pow(x - backstitchX, 2) + Math.pow(y - backstitchY, 2))) - distanceToBackstitch) < 0.00001;
+  //         if (inbetween && matchesDistance) {
+  //           const pointOnBackstitch = { x: backstitchX, y: backstitchY };
+  //           const backstitchPointToStart = Math.sqrt(Math.pow(x1 - pointOnBackstitch.x, 2) + Math.pow(y1 - pointOnBackstitch.y, 2));
+  //           const backstitchPointToEnd = Math.sqrt(Math.pow(x2 - pointOnBackstitch.x, 2) + Math.pow(y2 - pointOnBackstitch.y, 2));
+  //           if (backstitchPointToStart < backstitchLength && backstitchPointToEnd < backstitchLength) {
+  //             // TODO: Fire event directly here. Move the code to move method.
+  //             moveContext = pointOnBackstitch;
+  //           }
+  //           else {
+  //             this.stopDrawing();
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  //   else {
+  //     this.stopDrawing();
+  //   }
+
+  //   if (moveContext) {
+  //     this.dispatchEvent(new CustomEvent("progress"));
+  //     this.draw(moveContext.x, moveContext.y, x1, y1, x2, y2);
+  //   }
+  // }
+
+  move(e) {
+    const x = e.detail.x;
+    const y = e.detail.y;
+
+    const x1 = this.startPoint.x * this.scene.stitchSize / 2;
+    const x2 = this.endPoint.x * this.scene.stitchSize / 2;
+    const y1 = this.startPoint.y * this.scene.stitchSize / 2;
+    const y2 = this.endPoint.y * this.scene.stitchSize / 2;
+
+    const k = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / (Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    const backstitchX = x1 + k * (x2 - x1);
+    const backstitchY = y1 + k * (y2 - y1);
+    const distanceToBackstitch = Math.sqrt(Math.pow(backstitchX - x, 2) + Math.pow(backstitchY - y, 2));
+
+    if (distanceToBackstitch < this.epsilon) {
+      const inbetween = Math.min(x1, x2) <= backstitchX && backstitchX <= Math.max(x1, x2) && Math.min(y1, y2) <= backstitchY && backstitchY <= Math.max(y1, y2);
+      if (inbetween) {
+        this.dispatchEvent(new CustomEvent("progress"));
+        this.draw(backstitchX, backstitchY, x1, y1, x2, y2);
+      }
+    }
+  }
+
+  draw(x, y, x1, y1, x2, y2) {
+    let distanceToEnd = Math.sqrt(Math.pow((this.endPoint.x * this.scene.stitchSize / 2) - x, 2) + Math.pow((this.endPoint.y * this.scene.stitchSize / 2) - y, 2));
+    if (distanceToEnd < this.epsilon) {
       this.ctx.beginPath();
-      this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
-      this.ctx.lineTo(this.endPoint.x, this.endPoint.y);
-      this.ctx.lineWidth = 5;
-      this.ctx.strokeStyle = "blue";
+      this.ctx.lineCap = 'round';
+      this.ctx.moveTo(x1, y1);
+      this.ctx.lineTo(x2, y2);
+      this.ctx.lineWidth = this.backstitch.width;
+      this.ctx.strokeStyle = "grey";
       this.ctx.stroke();
       this.ctx.closePath();
       this.finalize();
     } else {
-      drawBackstitch(this.ctx, this.backstitch);
+      //we dont need here abort. just need to redraw bs
+      // this.dispatchEvent(new CustomEvent("abort"));
       this.ctx.beginPath();
-      this.ctx.moveTo(this.startPoint.x, this.startPoint.y);
+      this.ctx.lineCap = 'round';
+      this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x, y);
-      this.ctx.lineWidth = 5;
-      this.ctx.strokeStyle = "blue";
+      this.ctx.lineWidth = this.backstitch.width;
+      this.ctx.strokeStyle = "grey";
       this.ctx.stroke();
       this.ctx.closePath();
 
       this.ctx.beginPath();
+      this.ctx.lineCap = 'butt';
       this.ctx.moveTo(x, y);
-      this.ctx.lineTo(this.endPoint.x, this.endPoint.y);
-      this.ctx.lineWidth = 5;
-      this.ctx.strokeStyle = "green";
+      this.ctx.lineTo(x2, y2);
+      this.ctx.lineWidth = this.backstitch.width;
+      this.ctx.strokeStyle = this.backstitch.config.hexColor;
       this.ctx.stroke();
       this.ctx.closePath();
     }
   }
 
-  getDistanceToBackstith(distanceToStart, distanceToEnd, backstitchLength) {
-    let halfPerimeter = (distanceToStart + distanceToEnd + backstitchLength) * 0.5;
-    let area = Math.sqrt(halfPerimeter * (halfPerimeter - distanceToStart) * (halfPerimeter - distanceToEnd) * (halfPerimeter - backstitchLength));
-    let distanceToBackstitch = (area * 2 / backstitchLength);
-    return distanceToBackstitch;
-  }
-
   setBackstitchPoints(backstitch, touchX, touchY) {
-    if (backstitch.startPoint.x - BackstitchMarker.epsilon < touchX && touchX < backstitch.startPoint.x + BackstitchMarker.epsilon && backstitch.startPoint.y - BackstitchMarker.epsilon < touchY && touchY < backstitch.startPoint.y + BackstitchMarker.epsilon) {
-      this.startPoint = { x: backstitch.startPoint.x, y: backstitch.startPoint.y };
-      this.endPoint = { x: backstitch.endPoint.x, y: backstitch.endPoint.y };
+    if (backstitch.x1 == touchX && backstitch.y1 == touchY) {
+      this.startPoint = { x: backstitch.x1, y: backstitch.y1 };
+      this.endPoint = { x: backstitch.x2, y: backstitch.y2 };
     } else {
-      this.startPoint = { x: backstitch.endPoint.x, y: backstitch.endPoint.y };
-      this.endPoint = { x: backstitch.startPoint.x, y: backstitch.startPoint.y };
+      this.startPoint = { x: backstitch.x2, y: backstitch.y2 };
+      this.endPoint = { x: backstitch.x1, y: backstitch.y1 };
     }
   }
 
   finalize() {
-    // TODO: fire event that backstitch is completed
-
-    // TODO: Dispose from layer.
-    this.dispose();
+    this.dispatchEvent(new CustomEvent("complete"));
   }
 
   stopDrawing() {
-    // TODO: Call dispose from layer as reaction to the event.
-    this.dispose();
-
-    // TODO: Fire event that marking was aborted.
-    drawBackstitch(this.ctx, this.backstitch);
+    // this.dispatchEvent(new CustomEvent("abort"));
   }
 
   dispose() {
-    this.ctx.canvas.removeEventListener("mousemove", this.move);
+    this.scene.removeEventListener("move", this.move);
+    this.scene.removeEventListener("touchend", this.touchend);
   }
 }
