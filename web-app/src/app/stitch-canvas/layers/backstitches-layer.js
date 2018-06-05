@@ -46,25 +46,32 @@ class BackstitchesLayer extends BaseLayer {
   }
 
   progress(e) {
-    if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
-      //set flag for this backstitch in bsMap but we're rendering backstitches Array
-    }
+    // if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
+    //   //set flag for this backstitch in bsMap but we're rendering backstitches Array
+    // }
   }
 
   touchStart(e) {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
-    const point = this.backstitchesMap[x * this.scene.pattern.height + y];
-    if (point) {
-      point.forEach(backstitch => {
-        this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, x, y));
-      });
-      for (const type in this.markerEventListeners) {
-        this.markers.forEach(marker => {
-          marker.addEventListener(type, this.markerEventListeners[type]);
+    let tapCoords = [];
+    for (let i = 0; i <= 2; i++)
+      for (let j = 0; j <= 2; j++)
+        tapCoords.push({ x: (x - 1) + i, y: (y - 1) + j });
+
+    tapCoords.forEach(p => {
+      const point = this.backstitchesMap[p.x * this.scene.pattern.height + p.y];
+      if (point) {
+        point.forEach(backstitch => {
+          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, p.x, p.y));
         });
+        for (const type in this.markerEventListeners) {
+          this.markers.forEach(marker => {
+            marker.addEventListener(type, this.markerEventListeners[type]);
+          });
+        }
       }
-    }
+    });
   }
 
   render() {
