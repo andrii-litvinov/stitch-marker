@@ -100,10 +100,9 @@ class BackstitchMarker extends EventDispatcher {
 
     if (distanceToBackstitch < this.epsilon) {
       const inbetween = Math.min(x1, x2) <= backstitchX && backstitchX <= Math.max(x1, x2) && Math.min(y1, y2) <= backstitchY && backstitchY <= Math.max(y1, y2);
-      const matchesDistance = Math.abs(Math.sqrt((Math.pow(x - backstitchX, 2) + Math.pow(y - backstitchY, 2))) - distanceToBackstitch) < 0.00001;
-      if (inbetween && matchesDistance) {
-          this.dispatchEvent(new CustomEvent("progress"));
-          this.draw(backstitchX, backstitchY, x1, y1, x2, y2);
+      if (inbetween) {
+        this.dispatchEvent(new CustomEvent("progress"));
+        this.draw(backstitchX, backstitchY, x1, y1, x2, y2);
       }
     }
   }
