@@ -1,16 +1,17 @@
 class Backstitch extends EventDispatcher {
   static get scaleFactor() { return 40; }
 
-  constructor(config, strands, data, scale) {
+  constructor(config, strands, data, scale, marked) {
     super();
     this.strands = strands;
     this.config = config;
     this.width = Math.round(Math.sqrt(this.strands.backstitch * Backstitch.scaleFactor) * scale);
     Object.assign(this, data);
+    this.marked = marked;
   }
 
-  draw(ctx, stitchSize, scale) {
-    ctx.strokeStyle = this.config.hexColor;
+  draw(ctx, stitchSize, scale, color) {
+    ctx.strokeStyle = color;
     ctx.lineCap = "round";
     ctx.lineWidth = Math.round(Math.sqrt(this.strands.backstitch * Backstitch.scaleFactor) * scale);
     this.width = ctx.lineWidth;

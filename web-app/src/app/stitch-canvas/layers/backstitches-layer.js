@@ -16,7 +16,7 @@ class BackstitchesLayer extends BaseLayer {
 
     this.markerEventListeners = {
       progress: this.progress.bind(this),
-      complete: this.backstitchComplete.bind(this),
+      complete: function (e) { this.backstitchComplete(e.detail); }.bind(this),
       abort: this.abort.bind(this)
     };
 
@@ -40,8 +40,12 @@ class BackstitchesLayer extends BaseLayer {
     this.disposeMarkers();
   }
 
-  backstitchComplete() {
+  backstitchComplete(backstitch) {
     //set flag for backstitch that bs is complete in marker
+    if (backstitch) {
+      let index = this.backstitches.indexOf(backstitch);
+      this.backstitches[index].marked = true;
+    }
     this.disposeMarkers();
   }
 
@@ -55,14 +59,15 @@ class BackstitchesLayer extends BaseLayer {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
     let tapCoords = [];
-    for (let i = 0; i <= 2; i++)
-      for (let j = 0; j <= 2; j++)
-        tapCoords.push({ x: (x - 1) + i, y: (y - 1) + j });
+    for (let i = 0; i <= 1; i++)
+      for (let j = 0; j <= 1; j++)
+        tapCoords.push({ x: x + i, y: y + j });
 
     tapCoords.forEach(p => {
       const point = this.backstitchesMap[p.x * this.scene.pattern.height + p.y];
       if (point) {
         point.forEach(backstitch => {
+          backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, backstitch.marked ? "grey" : backstitch.config.hexColor);
           this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, p.x, p.y));
         });
         for (const type in this.markerEventListeners) {
@@ -78,7 +83,7 @@ class BackstitchesLayer extends BaseLayer {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.scene.x + 0.5, this.scene.y + 0.5);
     this.backstitches.forEach(backstitch => {
-      backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
+      backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, backstitch.marked ? "grey" : backstitch.config.hexColor);
     });
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
@@ -90,7 +95,7 @@ class BackstitchesLayer extends BaseLayer {
     this.scene.pattern.backstitches.forEach(bs => {
       const config = this.scene.pattern.configurations[bs.configurationIndex];
       const strands = config.strands || this.scene.pattern.strands;
-      const backstitch = new Backstitch(config, strands, bs, this.scene.scale);
+      const backstitch = new Backstitch(config, strands, bs, this.scene.scale, false);
       [
         { x: backstitch.x1, y: backstitch.y1 },
         { x: backstitch.x2, y: backstitch.y2 }
