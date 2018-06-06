@@ -47,16 +47,10 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   draw(x, y, x1, y1, x2, y2) {
+    this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, this.backstitch.config.hexColor);
     let distanceToEnd = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
     if (distanceToEnd < this.epsilon) {
-      this.ctx.beginPath();
-      this.ctx.lineCap = 'round';
-      this.ctx.moveTo(x1, y1);
-      this.ctx.lineTo(x2, y2);
-      this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = "grey";
-      this.ctx.stroke();
-      this.ctx.closePath();
+      this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, "grey");
       this.finalize();
     } else {
       //we dont need here abort. just need to redraw bs

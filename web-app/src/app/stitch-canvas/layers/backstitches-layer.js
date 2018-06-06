@@ -58,25 +58,27 @@ class BackstitchesLayer extends BaseLayer {
   touchStart(e) {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
-    let tapCoords = [];
-    for (let i = 0; i <= 1; i++)
-      for (let j = 0; j <= 1; j++)
-        tapCoords.push({ x: x + i, y: y + j });
 
-    tapCoords.forEach(p => {
-      const point = this.backstitchesMap[p.x * this.scene.pattern.height + p.y];
-      if (point) {
-        point.forEach(backstitch => {
-          backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, backstitch.marked ? "grey" : backstitch.config.hexColor);
-          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, p.x, p.y));
-        });
-        for (const type in this.markerEventListeners) {
-          this.markers.forEach(marker => {
-            marker.addEventListener(type, this.markerEventListeners[type]);
-          });
-        }
-      }
-    });
+    for (let i = 0; i <= 1; i++)
+      for (let j = 0; j <= 1; j++) {
+        let xCoord = x + i;
+        let yCoord = y + j;
+
+        let point = this.backstitchesMap[xCoord * this.scene.pattern.height + yCoord];
+        if (point) {
+          let distToPoint = Math.sqrt(Math.pow((xCoord * this.scene.stitchSize / 2) - e.detail.x, 2) + Math.pow((yCoord * this.scene.stitchSize / 2) - e.detail.y, 2));
+          if (distToPoint < this.scene.stitchSize / 2 - 1) {
+            point.forEach(backstitch => {
+              this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, xCoord, yCoord));
+            });
+            for (const type in this.markerEventListeners) {
+              this.markers.forEach(marker => {
+                marker.addEventListener(type, this.markerEventListeners[type]);
+              });
+            }
+          };
+        };
+      };
   }
 
   render() {
