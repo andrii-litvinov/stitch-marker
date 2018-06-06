@@ -40,13 +40,30 @@ class BackstitchesLayer extends BaseLayer {
     this.disposeMarkers();
   }
 
-  backstitchComplete(backstitch) {
+  backstitchComplete(detail) {
     //set flag for backstitch that bs is complete in marker
-    if (backstitch) {
-      let index = this.backstitches.indexOf(backstitch);
+    if (detail.backstitch) {
+      let index = this.backstitches.indexOf(detail.backstitch);
       this.backstitches[index].marked = true;
     }
+
     this.disposeMarkers();
+
+    let point = this.backstitchesMap[detail.x * this.scene.pattern.height + detail.y];
+    if (point) {
+      point.forEach(backstitch => {
+        if (backstitch != detail.backstitch) {
+          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, detail.x, detail.y));
+        }
+      });
+      for (const type in this.markerEventListeners) {
+        this.markers.forEach(marker => {
+          marker.addEventListener(type, this.markerEventListeners[type]);
+        });
+      }
+    };
+
+    this.render();
   }
 
   progress(e) {

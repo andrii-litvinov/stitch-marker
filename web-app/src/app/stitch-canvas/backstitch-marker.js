@@ -86,7 +86,7 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   finalize() {
-    this.dispatchEvent(new CustomEvent("complete", { detail: this.backstitch }));
+    this.dispatchEvent(new CustomEvent("complete", { detail: { backstitch: this.backstitch, x: this.endPoint.x, y: this.endPoint.y } }));
   }
 
   stopDrawing() {
