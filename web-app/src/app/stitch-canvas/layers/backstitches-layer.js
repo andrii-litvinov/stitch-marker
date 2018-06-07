@@ -15,7 +15,7 @@ class BackstitchesLayer extends BaseLayer {
     };
 
     this.markerEventListeners = {
-      progress: this.progress.bind(this),
+      progress: function (e) { this.progress(e.detail); }.bind(this),
       complete: function (e) { this.backstitchComplete(e.detail); }.bind(this),
       abort: this.abort.bind(this)
     };
@@ -37,15 +37,13 @@ class BackstitchesLayer extends BaseLayer {
   }
 
   abort() {
+    this.render();
     this.disposeMarkers();
   }
 
   backstitchComplete(detail) {
-    //set flag for backstitch that bs is complete in marker
-    if (detail.backstitch) {
-      let index = this.backstitches.indexOf(detail.backstitch);
-      this.backstitches[index].marked = true;
-    }
+    let index = this.backstitches.indexOf(detail.backstitch);
+    this.backstitches[index].marked = true;
 
     this.disposeMarkers();
 
@@ -66,10 +64,9 @@ class BackstitchesLayer extends BaseLayer {
     this.render();
   }
 
-  progress(e) {
-    // if (this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y]) {
-    //   //set flag for this backstitch in bsMap but we're rendering backstitches Array
-    // }
+  progress(detail) {
+    let index = this.backstitches.indexOf(detail.backstitch);
+    this.backstitches[index].marked = false;
   }
 
   touchStart(e) {

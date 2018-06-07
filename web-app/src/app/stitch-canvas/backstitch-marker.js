@@ -40,7 +40,6 @@ class BackstitchMarker extends EventDispatcher {
     if (distanceToBackstitch < this.epsilon) {
       const inbetween = Math.min(x1, x2) <= backstitchX && backstitchX <= Math.max(x1, x2) && Math.min(y1, y2) <= backstitchY && backstitchY <= Math.max(y1, y2);
       if (inbetween) {
-        this.dispatchEvent(new CustomEvent("progress"));
         this.draw(backstitchX, backstitchY, x1, y1, x2, y2);
       }
     }
@@ -49,6 +48,9 @@ class BackstitchMarker extends EventDispatcher {
   draw(x, y, x1, y1, x2, y2) {
     this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, this.backstitch.config.hexColor);
     let distanceToEnd = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+
+    this.distanceToEndTemp && this.distanceToEndTemp > distanceToEnd ? this.dispatchEvent(new CustomEvent("progress", { detail: { backstitch: this.backstitch } })) : this.distanceToEndTemp = distanceToEnd;
+
     if (distanceToEnd < this.epsilon) {
       this.backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, "grey");
       this.finalize();
@@ -90,7 +92,7 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   stopDrawing() {
-    // this.dispatchEvent(new CustomEvent("abort"));
+    this.dispatchEvent(new CustomEvent("abort"));
   }
 
   dispose() {
