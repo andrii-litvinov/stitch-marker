@@ -42,15 +42,15 @@ class BackstitchesLayer extends BaseLayer {
   }
 
   backstitchComplete(detail) {
-    let index = this.backstitches.indexOf(detail.backstitch);
-    this.backstitches[index].marked = true;
+    let index = this.backstitches.indexOf(this.activeBackstitch);
+    this.backstitches[index].marked = !this.backstitches[index].marked;
 
     this.disposeMarkers();
 
     let point = this.backstitchesMap[detail.x * this.scene.pattern.height + detail.y];
     if (point) {
       point.forEach(backstitch => {
-        if (backstitch != detail.backstitch) {
+        if (backstitch != this.activeBackstitch) {
           this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, detail.x, detail.y));
         }
       });
@@ -65,8 +65,9 @@ class BackstitchesLayer extends BaseLayer {
   }
 
   progress(detail) {
-    let index = this.backstitches.indexOf(detail.backstitch);
-    this.backstitches[index].marked = false;
+    if (this.activeBackstitch != detail.backstitch) {
+      this.activeBackstitch = detail.backstitch;
+    }
   }
 
   touchStart(e) {
