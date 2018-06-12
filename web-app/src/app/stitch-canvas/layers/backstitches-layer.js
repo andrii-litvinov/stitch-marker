@@ -15,8 +15,8 @@ class BackstitchesLayer extends BaseLayer {
     };
 
     this.markerEventListeners = {
-      progress: function (e) { this.progress(e.detail); }.bind(this),
-      complete: function (e) { this.backstitchComplete(e.detail); }.bind(this),
+      progress: this.progress.bind(this),
+      complete: this.backstitchComplete.bind(this),
       abort: this.abort.bind(this)
     };
 
@@ -41,17 +41,17 @@ class BackstitchesLayer extends BaseLayer {
     this.disposeMarkers();
   }
 
-  backstitchComplete(detail) {
+  backstitchComplete(e) {
     let index = this.backstitches.indexOf(this.activeBackstitch);
     this.backstitches[index].marked = !this.backstitches[index].marked;
 
     this.disposeMarkers();
 
-    let point = this.backstitchesMap[detail.x * this.scene.pattern.height + detail.y];
+    let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
     if (point) {
       point.forEach(backstitch => {
         if (backstitch != this.activeBackstitch) {
-          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, detail.x, detail.y));
+          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, e.detail.x, e.detail.y));
         }
       });
       for (const type in this.markerEventListeners) {
@@ -64,9 +64,9 @@ class BackstitchesLayer extends BaseLayer {
     this.render();
   }
 
-  progress(detail) {
-    if (this.activeBackstitch != detail.backstitch) {
-      this.activeBackstitch = detail.backstitch;
+  progress(e) {
+    if (this.activeBackstitch != e.detail.backstitch) {
+      this.activeBackstitch = e.detail.backstitch;
     }
   }
 
