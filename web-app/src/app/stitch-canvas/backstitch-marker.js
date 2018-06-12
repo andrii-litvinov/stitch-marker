@@ -5,7 +5,15 @@ class BackstitchMarker extends EventDispatcher {
     this.ctx = ctx;
     this.scene = scene;
     this.backstitch = backstitch;
-    this.epsilon = backstitch.width + 3;
+    this.epsilon = backstitch.width;
+    if (!backstitch.marked) {
+      this.markerColor = "grey";
+      this.backstitchColor = backstitch.config.hexColor;
+    } else {
+      this.markerColor = backstitch.config.hexColor;
+      this.backstitchColor = "grey";
+    }
+
     this.setBackstitchPoints(backstitch, touchX, touchY);
     const sceneEventListeners = {
       move: this.move.bind(this),
@@ -40,33 +48,30 @@ class BackstitchMarker extends EventDispatcher {
     if (distanceToBackstitch < this.epsilon) {
       const inbetween = Math.min(x1, x2) <= backstitchX && backstitchX <= Math.max(x1, x2) && Math.min(y1, y2) <= backstitchY && backstitchY <= Math.max(y1, y2);
       if (inbetween) {
-        this.dispatchEvent(new CustomEvent("progress"));
-        this.draw(backstitchX, backstitchY, x1, y1, x2, y2);
+        let distanceToEnd = Math.sqrt(Math.pow(x2 - backstitchX, 2) + Math.pow(y2 - backstitchY, 2));
+
+        // TODO: Consider how to solve issue when both backstitches have same direction and distance to end decreased for both.
+        if (this.distanceToEndPrev && this.distanceToEndPrev > distanceToEnd) {
+          this.dispatchEvent(new CustomEvent("progress", { detail: { backstitch: this.backstitch } }));
+          this.draw(backstitchX, backstitchY, x1, y1, x2, y2, distanceToEnd);
+        }
+        else {
+          this.distanceToEndPrev = distanceToEnd;
+        }
       }
     }
   }
 
-  draw(x, y, x1, y1, x2, y2) {
-    let distanceToEnd = Math.sqrt(Math.pow(x2 - x, 2) + Math.pow(y2 - y, 2));
+  draw(x, y, x1, y1, x2, y2, distanceToEnd) {
     if (distanceToEnd < this.epsilon) {
-      this.ctx.beginPath();
-      this.ctx.lineCap = 'round';
-      this.ctx.moveTo(x1, y1);
-      this.ctx.lineTo(x2, y2);
-      this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = "grey";
-      this.ctx.stroke();
-      this.ctx.closePath();
       this.finalize();
     } else {
-      //we dont need here abort. just need to redraw bs
-      // this.dispatchEvent(new CustomEvent("abort"));
       this.ctx.beginPath();
       this.ctx.lineCap = 'round';
       this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x, y);
       this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = "grey";
+      this.ctx.strokeStyle = this.markerColor;
       this.ctx.stroke();
       this.ctx.closePath();
 
@@ -75,7 +80,7 @@ class BackstitchMarker extends EventDispatcher {
       this.ctx.moveTo(x, y);
       this.ctx.lineTo(x2, y2);
       this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = this.backstitch.config.hexColor;
+      this.ctx.strokeStyle = this.backstitchColor;
       this.ctx.stroke();
       this.ctx.closePath();
     }
@@ -92,11 +97,11 @@ class BackstitchMarker extends EventDispatcher {
   }
 
   finalize() {
-    this.dispatchEvent(new CustomEvent("complete"));
+    this.dispatchEvent(new CustomEvent("complete", { detail: this.endPoint }));
   }
 
   stopDrawing() {
-    // this.dispatchEvent(new CustomEvent("abort"));
+    this.dispatchEvent(new CustomEvent("abort"));
   }
 
   dispose() {
