@@ -49,16 +49,7 @@ class BackstitchesLayer extends BaseLayer {
 
     let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
     if (point) {
-      point.forEach(backstitch => {
-        if (backstitch != this.activeBackstitch) {
-          this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, e.detail.x, e.detail.y));
-        }
-      });
-      for (const type in this.markerEventListeners) {
-        this.markers.forEach(marker => {
-          marker.addEventListener(type, this.markerEventListeners[type]);
-        });
-      }
+      this.createBackstitchMarkers(point, e.detail.x, e.detail.y);
     };
 
     this.render();
@@ -74,6 +65,7 @@ class BackstitchesLayer extends BaseLayer {
     const x = Math.floor((e.detail.x - this.scene.x) / this.scene.stitchSize * 2);
     const y = Math.floor((e.detail.y - this.scene.y) / this.scene.stitchSize * 2);
 
+    // check 4 points, near user tap, for available backstitches
     for (let i = 0; i <= 1; i++)
       for (let j = 0; j <= 1; j++) {
         let xCoord = x + i;
@@ -83,24 +75,28 @@ class BackstitchesLayer extends BaseLayer {
         if (point) {
           let distToPoint = Math.sqrt(Math.pow((xCoord * this.scene.stitchSize / 2) - e.detail.x, 2) + Math.pow((yCoord * this.scene.stitchSize / 2) - e.detail.y, 2));
           if (distToPoint < this.scene.stitchSize / 2 - 1) {
-            point.forEach(backstitch => {
-              this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, xCoord, yCoord));
-            });
-            for (const type in this.markerEventListeners) {
-              this.markers.forEach(marker => {
-                marker.addEventListener(type, this.markerEventListeners[type]);
-              });
-            }
-          };
+            this.createBackstitchMarkers(point, xCoord, yCoord);
+          }
         };
       };
+  }
+
+  createBackstitchMarkers(point, touchX, touchY) {
+    point.forEach(backstitch => {
+      this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, touchX, touchY));
+    });
+    for (const type in this.markerEventListeners) {
+      this.markers.forEach(marker => {
+        marker.addEventListener(type, this.markerEventListeners[type]);
+      });
+    }
   }
 
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.scene.x + 0.5, this.scene.y + 0.5);
     this.backstitches.forEach(backstitch => {
-      backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale, backstitch.marked ? "grey" : backstitch.config.hexColor);
+      backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
     });
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
