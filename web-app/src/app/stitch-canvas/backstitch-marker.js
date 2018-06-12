@@ -83,6 +83,15 @@ class BackstitchMarker extends EventDispatcher {
       this.ctx.strokeStyle = this.backstitchColor;
       this.ctx.stroke();
       this.ctx.closePath();
+
+      this.ctx.beginPath();
+      this.ctx.lineCap = 'round';
+      this.ctx.moveTo(x2, y2);
+      this.ctx.lineTo(x2, y2);
+      this.ctx.lineWidth = this.backstitch.width;
+      this.ctx.strokeStyle = this.backstitchColor;
+      this.ctx.stroke();
+      this.ctx.closePath();
     }
   }
 

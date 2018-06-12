@@ -19,5 +19,6 @@ class Backstitch extends EventDispatcher {
     ctx.moveTo(this.x1 * stitchSize / 2, this.y1 * stitchSize / 2);
     ctx.lineTo(this.x2 * stitchSize / 2, this.y2 * stitchSize / 2);
     ctx.stroke();
+    ctx.closePath();
   }
 }
