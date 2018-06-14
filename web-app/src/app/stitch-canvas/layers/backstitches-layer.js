@@ -59,8 +59,8 @@ class BackstitchesLayer extends BaseLayer {
   progress(e) {
     if (this.activeBackstitch != e.detail.backstitch) {
       this.activeBackstitch = e.detail.backstitch;
-      this.render();
     }
+    this.render();
   }
 
   touchStart(e) {

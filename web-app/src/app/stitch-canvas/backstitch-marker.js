@@ -69,7 +69,7 @@ class BackstitchMarker extends EventDispatcher {
       if (this.backstitch.width / 2 != 0) this.ctx.setTransform(1, 0, 0, 1, 0.5, 0.5);
 
       this.ctx.beginPath();
-      this.ctx.lineCap = 'round';
+      this.ctx.lineCap = 'none';
       this.ctx.moveTo(x1, y1);
       this.ctx.lineTo(x, y);
       this.ctx.lineWidth = this.backstitch.width;
@@ -78,17 +78,8 @@ class BackstitchMarker extends EventDispatcher {
       this.ctx.closePath();
 
       this.ctx.beginPath();
-      this.ctx.lineCap = 'butt';
+      this.ctx.lineCap = 'none';
       this.ctx.moveTo(x, y);
-      this.ctx.lineTo(x2, y2);
-      this.ctx.lineWidth = this.backstitch.width;
-      this.ctx.strokeStyle = this.backstitchColor;
-      this.ctx.stroke();
-      this.ctx.closePath();
-
-      this.ctx.beginPath();
-      this.ctx.lineCap = 'round';
-      this.ctx.moveTo(x2, y2);
       this.ctx.lineTo(x2, y2);
       this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = this.backstitchColor;
