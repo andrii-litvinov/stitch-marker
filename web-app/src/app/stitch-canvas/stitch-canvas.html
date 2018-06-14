@@ -97,7 +97,7 @@
             position = newPosition;
             //change translate params to dx, dy to make previous tranlsate
             //this one is used to "move"
-            requestAnimationFrame(() => this.scene.translate(event.clientX, event.clientY));
+            requestAnimationFrame(() => this.scene.translate(position.x, position.y));
           }
         };
 
