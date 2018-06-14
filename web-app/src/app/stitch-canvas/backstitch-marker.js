@@ -6,7 +6,6 @@ class BackstitchMarker extends EventDispatcher {
     this.scene = scene;
     this.backstitch = backstitch;
     this.epsilon = backstitch.width;
-    this.aliasingCorrection = backstitch.width / 2 == 0 ? 0 : 0.5;
     if (!backstitch.marked) {
       this.markerColor = "grey";
       this.backstitchColor = backstitch.config.hexColor;
@@ -67,10 +66,12 @@ class BackstitchMarker extends EventDispatcher {
     if (distanceToEnd < this.epsilon) {
       this.finalize();
     } else {
+      if (this.backstitch.width / 2 != 0) this.ctx.setTransform(1, 0, 0, 1, 0.5, 0.5);
+
       this.ctx.beginPath();
       this.ctx.lineCap = 'round';
-      this.ctx.moveTo(x1 + this.aliasingCorrection, y1 + this.aliasingCorrection);
-      this.ctx.lineTo(x + this.aliasingCorrection, y + this.aliasingCorrection);
+      this.ctx.moveTo(x1, y1);
+      this.ctx.lineTo(x, y);
       this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = this.markerColor;
       this.ctx.stroke();
@@ -78,8 +79,8 @@ class BackstitchMarker extends EventDispatcher {
 
       this.ctx.beginPath();
       this.ctx.lineCap = 'butt';
-      this.ctx.moveTo(x + this.aliasingCorrection, y + this.aliasingCorrection);
-      this.ctx.lineTo(x2 + this.aliasingCorrection, y2 + this.aliasingCorrection);
+      this.ctx.moveTo(x, y);
+      this.ctx.lineTo(x2, y2);
       this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = this.backstitchColor;
       this.ctx.stroke();
@@ -87,12 +88,14 @@ class BackstitchMarker extends EventDispatcher {
 
       this.ctx.beginPath();
       this.ctx.lineCap = 'round';
-      this.ctx.moveTo(x2 + this.aliasingCorrection, y2 + this.aliasingCorrection);
-      this.ctx.lineTo(x2 + this.aliasingCorrection, y2 + this.aliasingCorrection);
+      this.ctx.moveTo(x2, y2);
+      this.ctx.lineTo(x2, y2);
       this.ctx.lineWidth = this.backstitch.width;
       this.ctx.strokeStyle = this.backstitchColor;
       this.ctx.stroke();
       this.ctx.closePath();
+
+      this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     }
   }
 
