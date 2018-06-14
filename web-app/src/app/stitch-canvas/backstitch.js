@@ -12,7 +12,7 @@ class Backstitch extends EventDispatcher {
 
   draw(ctx, stitchSize, scale) {
     ctx.strokeStyle = this.marked ? "grey" : this.config.hexColor;
-    ctx.lineCap = "round";
+    ctx.lineCap = "none";
     ctx.lineWidth = Math.round(Math.sqrt(this.strands.backstitch * Backstitch.scaleFactor) * scale);
     this.width = ctx.lineWidth;
     ctx.beginPath();

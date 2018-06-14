@@ -37,6 +37,7 @@ class BackstitchesLayer extends BaseLayer {
   }
 
   abort() {
+    this.activeBackstitch = null;
     this.render();
     this.disposeMarkers();
   }
@@ -46,19 +47,20 @@ class BackstitchesLayer extends BaseLayer {
     this.backstitches[index].marked = !this.backstitches[index].marked;
 
     this.disposeMarkers();
+    this.activeBackstitch = null;
+    this.render();
 
     let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
     if (point) {
       this.createBackstitchMarkers(point, e.detail.x, e.detail.y);
     };
-
-    this.render();
   }
 
   progress(e) {
     if (this.activeBackstitch != e.detail.backstitch) {
       this.activeBackstitch = e.detail.backstitch;
     }
+    this.render();
   }
 
   touchStart(e) {
@@ -96,7 +98,9 @@ class BackstitchesLayer extends BaseLayer {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.scene.x + 0.5, this.scene.y + 0.5);
     this.backstitches.forEach(backstitch => {
-      backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
+      if (this.activeBackstitch != backstitch) {
+        backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
+      }
     });
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
