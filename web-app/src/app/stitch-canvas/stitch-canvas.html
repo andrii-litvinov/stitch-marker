@@ -68,6 +68,7 @@
         super.connectedCallback();
 
         let position = null;
+        let dblTriger = false;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -88,6 +89,10 @@
           this.scene.touchEnd();
         }
 
+        const onDblclick = event => {
+          dblTriger = !dblTriger;
+        }
+
         const onMove = event => {
           event.preventDefault();
           if (position) {
@@ -95,14 +100,13 @@
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
             position = newPosition;
-            //change translate params to dx, dy to make previous tranlsate
-            //this one is used to "move"
-            requestAnimationFrame(() => this.scene.translate(position.x, position.y));
+            requestAnimationFrame(dblTriger ? () => this.scene.translate(position.x, position.y, false) : () => this.scene.translate(dx, dy, true));
           }
         };
 
         window.addEventListener('resize', event => this.resize());
         this.addEventListener('tap', e => this.scene.tap(e.detail.x, e.detail.y));
+        this.addEventListener("dblclick", onDblclick);
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
           this.addEventListener(type, onStart);

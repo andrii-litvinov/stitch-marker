@@ -34,10 +34,10 @@ class BackstitchMarker extends EventDispatcher {
     const x = e.detail.x;
     const y = e.detail.y;
 
-    const x1 = this.startPoint.x * this.scene.stitchSize / 2;
-    const x2 = this.endPoint.x * this.scene.stitchSize / 2;
-    const y1 = this.startPoint.y * this.scene.stitchSize / 2;
-    const y2 = this.endPoint.y * this.scene.stitchSize / 2;
+    const x1 = this.startPoint.x * this.scene.stitchSize / 2 + this.scene.x;
+    const x2 = this.endPoint.x * this.scene.stitchSize / 2 + this.scene.x;
+    const y1 = this.startPoint.y * this.scene.stitchSize / 2 + this.scene.y;
+    const y2 = this.endPoint.y * this.scene.stitchSize / 2 + this.scene.y;
 
     // http://www.cyberforum.ru/cpp-beginners/thread1503781.html
     const k = ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / (Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));

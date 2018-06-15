@@ -75,7 +75,7 @@ class BackstitchesLayer extends BaseLayer {
 
         let point = this.backstitchesMap[xCoord * this.scene.pattern.height + yCoord];
         if (point) {
-          let distToPoint = Math.sqrt(Math.pow((xCoord * this.scene.stitchSize / 2) - e.detail.x, 2) + Math.pow((yCoord * this.scene.stitchSize / 2) - e.detail.y, 2));
+          let distToPoint = Math.sqrt(Math.pow((xCoord * this.scene.stitchSize / 2) - (e.detail.x - this.scene.x), 2) + Math.pow((yCoord * this.scene.stitchSize / 2) - (e.detail.y - this.scene.y), 2));
           if (distToPoint < this.scene.stitchSize / 2 - 1) {
             this.createBackstitchMarkers(point, xCoord, yCoord);
           }

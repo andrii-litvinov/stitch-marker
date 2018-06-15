@@ -46,11 +46,14 @@ class Scene extends EventDispatcher {
     this.translate(point.x - newPoint.x, point.y - newPoint.y);
   }
 
-  translate(x, y) {
+  translate(x, y, move) {
     this.dispatchEvent(new CustomEvent("move", { detail: { x, y } }));
-    // this.x += x;
-    // this.y += y;
-    // this.render();
+    
+    if (move) {
+      this.x += x;
+      this.y += y;
+      this.render();
+    }
   }
 
   tap(x, y) {
