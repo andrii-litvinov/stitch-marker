@@ -84,7 +84,7 @@
             this.scene.touchStart(position.x, position.y);
           }
 
-          if (prevPos && prevPos.x == position.x && prevPos.y == position.y || event.touches && event.touches.length > 1) {
+          if (prevPos && prevPos.x == position.x && prevPos.y == position.y || event.touches && event.touches.length == 2) {
             moveCanvas = true;
             this.scene.tap(position.x, position.y);
           }
