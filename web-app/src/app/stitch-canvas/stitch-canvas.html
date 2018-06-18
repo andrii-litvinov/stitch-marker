@@ -69,7 +69,7 @@
 
         let position = null;
         let prevPos = null;
-        let moveCanvas = true;
+        let moveCanvas = false;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -85,7 +85,7 @@
           }
 
           if (prevPos && prevPos.x == position.x && prevPos.y == position.y) {
-            moveCanvas = false;
+            moveCanvas = true;
             this.scene.tap(position.x, position.y);
           }
           prevPos = position;
@@ -93,7 +93,7 @@
 
         const onEnd = event => {
           position = null;
-          moveCanvas = true;
+          moveCanvas = false;
           this.scene.touchEnd();
         }
 
