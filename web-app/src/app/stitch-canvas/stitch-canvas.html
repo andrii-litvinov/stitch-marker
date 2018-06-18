@@ -68,7 +68,8 @@
         super.connectedCallback();
 
         let position = null;
-        let dblTriger = false;
+        let prevPos = null;
+        let moveCanvas = true;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -82,15 +83,18 @@
           if (event.type !== "mouseenter") {
             this.scene.touchStart(position.x, position.y);
           }
+
+          if (prevPos && prevPos.x == position.x && prevPos.y == position.y) {
+            moveCanvas = false;
+            this.scene.tap(position.x, position.y);
+          }
+          prevPos = position;
         };
 
         const onEnd = event => {
           position = null;
+          moveCanvas = true;
           this.scene.touchEnd();
-        }
-
-        const onDblclick = event => {
-          dblTriger = !dblTriger;
         }
 
         const onMove = event => {
@@ -99,14 +103,13 @@
             const newPosition = getPosition(event);
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
+            requestAnimationFrame(moveCanvas ? () => this.scene.translate(dx, dy, moveCanvas) : () => this.scene.translate(newPosition.x, newPosition.y, moveCanvas));
             position = newPosition;
-            requestAnimationFrame(dblTriger ? () => this.scene.translate(position.x, position.y, false) : () => this.scene.translate(dx, dy, true));
           }
         };
 
         window.addEventListener('resize', event => this.resize());
         this.addEventListener('tap', e => this.scene.tap(e.detail.x, e.detail.y));
-        this.addEventListener("dblclick", onDblclick);
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
           this.addEventListener(type, onStart);
