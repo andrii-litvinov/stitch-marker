@@ -79,11 +79,11 @@
         const onClick = event => {
           if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
             position = getPosition(event);
-            this.scene.touchStart(position.x, position.y);
+            let startResult = this.scene.touchStart(position.x, position.y);
             sceneTapTimeout = setTimeout(() => {
               this.scene.tap(event.clientX, event.clientY);
               sceneTapTimeout = null
-            }, 100);
+            }, 50);
           }
         };
 
@@ -103,13 +103,21 @@
 
         const onMove = event => {
           event.preventDefault();
-          if (position) {
+          if (sceneTapTimeout) {
             sceneTapTimeout = clearTimeout(sceneTapTimeout);
+          }
+
+          if (position) {
             const newPosition = getPosition(event);
-            const dx = newPosition.x - position.x;
-            const dy = newPosition.y - position.y;
-            requestAnimationFrame(moveCanvas ? () => this.scene.translate(dx, dy) : () => this.scene.move(newPosition.x, newPosition.y));
-            position = newPosition;
+
+            if (moveCanvas) {
+              const dx = newPosition.x - position.x;
+              const dy = newPosition.y - position.y;
+              requestAnimationFrame(() => this.scene.translate(dx, dy));
+              position = newPosition;
+            } else {
+              requestAnimationFrame(() => this.scene.move(newPosition.x, newPosition.y));
+            }
           }
         };
 
