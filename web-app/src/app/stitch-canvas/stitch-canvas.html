@@ -68,27 +68,31 @@
         super.connectedCallback();
 
         let position = null;
-        let prevPos = null;
         let moveCanvas = false;
+        let sceneTapTimeout = null;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
           return { x: Math.round(e.clientX), y: Math.round(e.clientY) };
         };
 
-        const onStart = event => {
+        const onClick = event => {
           if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
             position = getPosition(event);
+            this.scene.touchStart(position.x, position.y);
+            sceneTapTimeout = setTimeout(() => {
+              this.scene.tap(event.clientX, event.clientY);
+              sceneTapTimeout = null
+            }, 100);
           }
+        };
+
+        const onDblClick = event => {
           if (event.type !== "mouseenter") {
+            position = getPosition(event);
             this.scene.touchStart(position.x, position.y);
           }
-
-          if (prevPos && prevPos.x == position.x && prevPos.y == position.y || event.touches && event.touches.length == 2) {
-            moveCanvas = true;
-            this.scene.tap(position.x, position.y);
-          }
-          prevPos = position;
+          moveCanvas = true;
         };
 
         const onEnd = event => {
@@ -100,19 +104,19 @@
         const onMove = event => {
           event.preventDefault();
           if (position) {
+            sceneTapTimeout = clearTimeout(sceneTapTimeout);
             const newPosition = getPosition(event);
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
-            requestAnimationFrame(moveCanvas ? () => this.scene.translate(dx, dy, moveCanvas) : () => this.scene.translate(newPosition.x, newPosition.y, moveCanvas));
+            requestAnimationFrame(moveCanvas ? () => this.scene.translate(dx, dy) : () => this.scene.move(newPosition.x, newPosition.y));
             position = newPosition;
           }
         };
 
         window.addEventListener('resize', event => this.resize());
-        this.addEventListener('tap', e => this.scene.tap(e.detail.x, e.detail.y));
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
-          this.addEventListener(type, onStart);
+          this.addEventListener(type, this.getClickHandler(onClick, onDblClick));
         });
 
         ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
@@ -137,6 +141,21 @@
       async resize() {
         await this.fontLoad;
         this.scene.resize(this.offsetWidth, this.offsetHeight);
+      }
+
+      getClickHandler(onClick, onDblClick) {
+        let timeoutID = null;
+        return (event) => {
+          if (!timeoutID) {
+            timeoutID = setTimeout(() => {
+              onClick(event);
+              timeoutID = null
+            }, 250);
+          } else {
+            timeoutID = clearTimeout(timeoutID);
+            onDblClick(event);
+          }
+        };
       }
     }
     customElements.define(Canvas.is, Canvas);
