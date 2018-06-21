@@ -85,7 +85,7 @@
             this.scene.touchStart(position.x, position.y);
           }
 
-          if (event.type !== "mouseenter" && (event.buttons == 3)) {
+          if (event.type !== "mouseenter" && (event.buttons == 3) || (event.touches && event.touches.length == 2)) {
             moveCanvas = true;
           }
         };
@@ -96,7 +96,7 @@
             moveCanvas = false;
             this.scene.touchEnd();
           }
-        }
+        };
 
         const onMove = event => {
           event.preventDefault();
@@ -116,6 +116,7 @@
 
         window.addEventListener('resize', event => this.resize());
         this.addEventListener('tap', onTap);
+        this.addEventListener('contextmenu', event => event.preventDefault());
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
           this.addEventListener(type, onClick);
