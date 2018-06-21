@@ -68,34 +68,28 @@
         super.connectedCallback();
 
         let position = null;
-        let moveCanvas = false;
+        let drawBackstitch = true;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
           return { x: Math.round(e.clientX), y: Math.round(e.clientY) };
         };
 
-        const onTap = event => {
-          this.scene.tap(event.detail.x, event.detail.y);
-        };
-
-        const onClick = event => {
+        const onStart = event => {
           if (event.type !== "mouseenter") {
             position = getPosition(event);
             this.scene.touchStart(position.x, position.y);
           }
 
           if (event.type !== "mouseenter" && (event.buttons == 3) || (event.touches && event.touches.length == 2)) {
-            moveCanvas = true;
+            drawBackstitch = false;
           }
         };
 
         const onEnd = event => {
-          if (event.type !== "mouseleave") {
-            position = null;
-            moveCanvas = false;
-            this.scene.touchEnd();
-          }
+          position = null;
+          drawBackstitch = true;
+          this.scene.touchEnd();
         };
 
         const onMove = event => {
@@ -103,23 +97,25 @@
 
           if (position) {
             const newPosition = getPosition(event);
-            if (moveCanvas) {
-              const dx = newPosition.x - position.x;
-              const dy = newPosition.y - position.y;
-              requestAnimationFrame(() => this.scene.translate(dx, dy));
-              position = newPosition;
-            } else {
+
+            if (drawBackstitch) {
               requestAnimationFrame(() => this.scene.draw(newPosition.x, newPosition.y));
+              return;
             }
+
+            const dx = newPosition.x - position.x;
+            const dy = newPosition.y - position.y;
+            requestAnimationFrame(() => this.scene.translate(dx, dy));
+            position = newPosition;
           }
         };
 
         window.addEventListener('resize', event => this.resize());
-        this.addEventListener('tap', onTap);
+        this.addEventListener('tap', e => this.scene.tap(e.detail.x, e.detail.y));
         this.addEventListener('contextmenu', event => event.preventDefault());
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
-          this.addEventListener(type, onClick);
+          this.addEventListener(type, onStart);
         });
 
         ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach(type => {
