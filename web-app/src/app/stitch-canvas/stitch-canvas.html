@@ -68,7 +68,7 @@
         super.connectedCallback();
 
         let position = null;
-        let wasDoubleClick = false;
+        let moveCanvas = false;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -79,11 +79,11 @@
           if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
             position = getPosition(event);
             this.scene.touchStart(position.x, position.y);
-            wasDoubleClick = false;
+            moveCanvas = false;
           }
 
           if (event.type !== "mouseenter" && (event.buttons == 3) || (event.touches && event.touches.length == 2)) {
-            wasDoubleClick = true;
+            moveCanvas = true;
             return;
           }
         };
@@ -94,7 +94,7 @@
         };
 
         const onTap = event => {
-          if (!wasDoubleClick) this.scene.tap(event.detail.x, event.detail.y);
+          if (!moveCanvas) this.scene.tap(event.detail.x, event.detail.y);
         };
 
         const onMove = event => {
@@ -103,7 +103,7 @@
           if (position) {
             const newPosition = getPosition(event);
 
-            if (!wasDoubleClick) {
+            if (!moveCanvas) {
               requestAnimationFrame(() => this.scene.draw(newPosition.x, newPosition.y));
               return;
             }
