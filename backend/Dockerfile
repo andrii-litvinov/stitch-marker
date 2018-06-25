@@ -1,7 +1,7 @@
-FROM microsoft/aspnetcore-build AS build-env
+FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /app
 
-# Copy csproj and restore as distinct layers to cache
+# Copy csproj and restore as distinct layers
 COPY src/SM.Service/*.csproj ./
 RUN dotnet restore -r linux-x64
 
@@ -9,12 +9,13 @@ RUN dotnet restore -r linux-x64
 COPY src/SM.Service ./
 RUN dotnet publish -r linux-x64 -c Release -o out
 
-# Build runtime image
-FROM microsoft/dotnet:2-runtime-jessie
 
-# Install libfontconfig1 dependency for SkiaSharp and cache
+
+FROM microsoft/dotnet:2.1-aspnetcore-runtime AS runtime
+
+# Install libfontconfig1 dependency for SkiaSharp
 RUN apt-get update && apt-get install -y libfontconfig1
 
 WORKDIR /app
-COPY --from=build-env /app/out .
-ENTRYPOINT ["./SM.Service"]
+COPY --from=build /app/out ./
+ENTRYPOINT ["dotnet", "SM.Service.dll"]
