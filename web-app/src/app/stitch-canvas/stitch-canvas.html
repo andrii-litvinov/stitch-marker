@@ -68,6 +68,7 @@
         super.connectedCallback();
 
         let position = null;
+        let moveCanvas = false;
 
         const getPosition = event => {
           const e = (event.touches && event.touches[0] || event);
@@ -77,32 +78,46 @@
         const onStart = event => {
           if ((event.type === "mouseenter" && event.buttons & 1 === 1) || event.type !== "mouseenter") {
             position = getPosition(event);
-          }
-          if (event.type !== "mouseenter") {
             this.scene.touchStart(position.x, position.y);
+            moveCanvas = false;
+          }
+
+          if (event.type !== "mouseenter" && (event.buttons == 3) || (event.touches && event.touches.length == 2)) {
+            moveCanvas = true;
+            return;
           }
         };
 
         const onEnd = event => {
           position = null;
           this.scene.touchEnd();
-        }
+        };
+
+        const onTap = event => {
+          if (!moveCanvas) this.scene.tap(event.detail.x, event.detail.y);
+        };
 
         const onMove = event => {
           event.preventDefault();
+
           if (position) {
             const newPosition = getPosition(event);
+
+            if (!moveCanvas) {
+              requestAnimationFrame(() => this.scene.draw(newPosition.x, newPosition.y));
+              return;
+            }
+
             const dx = newPosition.x - position.x;
             const dy = newPosition.y - position.y;
+            requestAnimationFrame(() => this.scene.translate(dx, dy));
             position = newPosition;
-            //change translate params to dx, dy to make previous tranlsate
-            //this one is used to "move"
-            requestAnimationFrame(() => this.scene.translate(position.x, position.y));
           }
         };
 
         window.addEventListener('resize', event => this.resize());
-        this.addEventListener('tap', e => this.scene.tap(e.detail.x, e.detail.y));
+        window.addEventListener('tap', onTap);
+        this.addEventListener('contextmenu', event => event.preventDefault());
 
         ["mousedown", "mouseenter", "touchstart"].forEach(type => {
           this.addEventListener(type, onStart);

@@ -1,11 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="*.ncrunchproject" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\SM.Service\SM.Service.csproj" />
   </ItemGroup>
