@@ -27,6 +27,9 @@ namespace SM.Service
                 services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
                 services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
                     provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
+                services.AddSingleton<IEventStore, Infrastructure.EventStore.AllEventsReader>();
+                services.AddSingleton<ISubscriptionEventStoreConnection, StreamSubscriberConnection>(
+                    provider => new StreamSubscriberConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
                 services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
