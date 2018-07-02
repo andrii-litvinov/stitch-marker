@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
@@ -16,6 +14,17 @@ namespace SM.Service.Infrastructure.EventStore
         {
             this.connectionString = connectionString;
             Reconnect();
+        }
+
+        public async Task<AllEventsSlice> ReadAllEventsForwardAsync(Position position, int maxCount, bool resolveLinkTos)
+        {
+            return await (await connection.Value).ReadAllEventsForwardAsync(position, 200, false);
+        }
+
+        public async Task<EventStoreSubscription> SubscribeToAllAsync(bool resolveLinkTos, Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared,
+            Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, UserCredentials userCredentials = null)
+        {
+            return await (await connection.Value).SubscribeToAllAsync(resolveLinkTos, eventAppeared, subscriptionDropped, userCredentials);
         }
 
         private void Reconnect()
@@ -34,11 +43,6 @@ namespace SM.Service.Infrastructure.EventStore
         public void Dispose()
         {
             connection.Value.Result.Dispose();
-        }
-
-        public async Task<EventStoreSubscription> SubscribeToStream(string stream, bool resolveLinkTos, Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, UserCredentials userCredentials = null)
-        {
-            return await (await connection.Value).SubscribeToStreamAsync(stream, resolveLinkTos, eventAppeared, subscriptionDropped, userCredentials);
         }
     }
 }

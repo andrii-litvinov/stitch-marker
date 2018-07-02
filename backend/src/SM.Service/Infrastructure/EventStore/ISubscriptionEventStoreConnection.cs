@@ -7,9 +7,9 @@ namespace SM.Service.Infrastructure.EventStore
 {
     public interface ISubscriptionEventStoreConnection
     {
-        Task<EventStoreSubscription> SubscribeToStream(string stream, bool resolveLinkTos,
-            Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared,
-            Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null,
-            UserCredentials userCredentials = null);
+        Task<AllEventsSlice> ReadAllEventsForwardAsync(Position position, int maxCount, bool resolveLinkTos);
+
+        Task<EventStoreSubscription> SubscribeToAllAsync(bool resolveLinkTos, Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared,
+            Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, UserCredentials userCredentials = null);
     }
 }
