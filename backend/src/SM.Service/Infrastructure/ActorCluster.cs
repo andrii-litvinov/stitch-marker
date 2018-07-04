@@ -11,6 +11,7 @@ using Proto.Remote;
 using SM.Service.EventReader;
 using SM.Service.Infrastructure.EventStore;
 using SM.Service.Patterns;
+using SM.Service.UserPatterns;
 
 namespace SM.Service.Infrastructure
 {
@@ -31,8 +32,11 @@ namespace SM.Service.Infrastructure
             var props = Actor.FromProducer(() => new PatternActor(eventStore));
             Remote.RegisterKnownKind("pattern", props);
 
+            props = Actor.FromProducer(() => new UserPatternsActor());
+            Remote.RegisterKnownKind("user", props);
+
             props = Actor.FromProducer(() => new EventReaderActor(new StreamSubscriberConnection(configuration["EVENTSTORE_CONNECTION"])));
-            var pid = Actor.Spawn(props);
+            var pid = Actor.SpawnNamed(props, "eventReader");
 
             var provider = new ConsulProvider(new ConsulProviderOptions(),
                 configuration1 => configuration1.Address = new Uri(configuration["CONSUL_URL"]));
