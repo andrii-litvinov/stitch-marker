@@ -24,15 +24,16 @@ namespace SM.Service.UserPatterns
                     context.Self.Stop();
                     break;
                 case GetUserPatternsMessage _:
-                    // var (user, _) = await Cluster.GetAsync($"auth0|5ad7b04a5fb3bc1b6d7a98d8", "user");
-                    // var response = await user.RequestAsync<GetUserPatternsMessage>(new GetUserPatternsMessage(), 10.Seconds());
                     context.Sender.Tell(new GetUserPatternsMessage
                     {
                         PatternIds = {patternIds}
                     });
                     break;
                 case AddUserPatternMessage m:
-                    if (!patternIds.Contains(m.MessageId)) patternIds.Add(m.MessageId);
+                    if (!patternIds.Contains(m.PatternId)) patternIds.Add(m.PatternId);
+                    break;
+                case DeleteUserPatternMessage m:
+                    if (!patternIds.Contains(m.PatternId)) patternIds.Remove(m.PatternId);
                     break;
                 default:
                     break;

@@ -86,5 +86,20 @@ namespace SM.Service.Patterns
 
             return Created(patternId.ToString(), resource);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUserPatterns()
+        {
+            var userId = User.GetUserId();
+            if (userId == null) return BadRequest();
+
+            var (user, _) = await Cluster.GetAsync($"{userId}", "user");
+            var response = await user.RequestAsync<GetUserPatternsMessage>(new GetUserPatternsMessage(), 10.Seconds());
+
+            return Ok(new
+            {
+                response.PatternIds
+            });
+        }
     }
 }

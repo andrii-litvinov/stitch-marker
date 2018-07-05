@@ -25,6 +25,8 @@ namespace SM.Service
                 services.AddCors();
                 services.AddSingleton<IHostedService, ActorCluster>();
                 services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
+                services.AddSingleton<ISubscriptionEventStoreConnection, StreamSubscriberConnection>(
+                    provider => new StreamSubscriberConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
                 services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
                     provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
                 services.AddAuthentication(options =>

@@ -19,13 +19,15 @@ namespace SM.Service.Infrastructure
     {
         private readonly IConfiguration configuration;
         private readonly IEventStore eventStore;
+        private readonly ISubscriptionEventStoreConnection subscriptionEventStoreConnection;
 
-        public ActorCluster(IConfiguration configuration, IEventStore eventStore)
+        public ActorCluster(IConfiguration configuration, IEventStore eventStore, ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
             this.configuration = configuration;
             this.eventStore = eventStore;
+            this.subscriptionEventStoreConnection = subscriptionEventStoreConnection;
         }
-        
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             // TODO: Register all known actors in a generic way 
@@ -35,8 +37,8 @@ namespace SM.Service.Infrastructure
             props = Actor.FromProducer(() => new UserPatternsActor());
             Remote.RegisterKnownKind("user", props);
 
-            props = Actor.FromProducer(() => new EventReaderActor(new StreamSubscriberConnection(configuration["EVENTSTORE_CONNECTION"])));
-            var pid = Actor.SpawnNamed(props, "eventReader");
+            props = Actor.FromProducer(() => new EventReaderActor(subscriptionEventStoreConnection));
+            Actor.SpawnNamed(props, "eventReader");
 
             var provider = new ConsulProvider(new ConsulProviderOptions(),
                 configuration1 => configuration1.Address = new Uri(configuration["CONSUL_URL"]));

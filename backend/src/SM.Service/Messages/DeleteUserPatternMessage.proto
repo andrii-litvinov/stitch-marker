@@ -3,7 +3,7 @@ package user;
 
 option csharp_namespace = "SM.Service.Messages";
 
-message AddUserPatternMessage {
+message DeleteUserPatternMessage {
     string id = 1;
     string patternId = 2;
 }

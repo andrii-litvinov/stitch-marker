@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
@@ -19,8 +20,7 @@ namespace SM.Service.EventReader
         public EventReaderActor(ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
             connection = subscriptionEventStoreConnection;
-
-            var result = connection.SubscribeToAllAsync(false, EventAppeared).Result;
+            SubscribeToAll();
         }
 
         public async Task ReceiveAsync(IContext context)
@@ -29,24 +29,7 @@ namespace SM.Service.EventReader
             {
                 case Started _:
                     var createdList = FilterEvents(ReadAllEvents());
-                    foreach (var resolvedEvent in createdList)
-                    {
-                        var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
-                        var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
-                        var (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
-
-                        if (user == null)
-                        {
-                            var props = Actor.FromProducer(() => new UserPatternsActor());
-                            Actor.SpawnNamed(props, response.OwnerId);
-                            (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
-                        }
-
-                        user.Tell(new AddUserPatternMessage
-                        {
-                            MessageId = resolvedEvent.OriginalStreamId
-                        });
-                    }
+                    foreach (var resolvedEvent in createdList) await AddUsersPattern(resolvedEvent);
 
                     break;
                 case ReceiveTimeout _:
@@ -57,18 +40,47 @@ namespace SM.Service.EventReader
             }
         }
 
+        private async Task AddUsersPattern(ResolvedEvent resolvedEvent)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
+            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
+            var (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
+
+            if (user == null)
+            {
+                var props = Actor.FromProducer(() => new UserPatternsActor());
+                Actor.SpawnNamed(props, response.OwnerId);
+                (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
+            }
+
+            user.Tell(new AddUserPatternMessage
+            {
+                PatternId = resolvedEvent.OriginalStreamId
+            });
+        }
+
+        private async Task DeleteUsersPattern(ResolvedEvent resolvedEvent)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
+            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
+            var (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
+
+            user.Tell(new DeleteUserPatternMessage
+            {
+                PatternId = resolvedEvent.OriginalStreamId
+            });
+        }
+
         private List<ResolvedEvent> FilterEvents(List<ResolvedEvent> resolvedEvents)
         {
-            var d = resolvedEvents.Where(i => i.OriginalEvent.EventType == "PatternDeleted").ToList();
-            var c = resolvedEvents.Where(i => i.OriginalEvent.EventType == "PatternCreated").ToList();
+            var deletedList = resolvedEvents.Where(i => i.OriginalEvent.EventType == "PatternDeleted").ToList();
 
-            resolvedEvents.Clear();
+            var result = resolvedEvents
+                .Where(i => i.OriginalEvent.EventType == "PatternCreated")
+                .Where(j => deletedList.Where(k => k.OriginalStreamId == j.OriginalStreamId).ToList().Count == 0)
+                .ToList();
 
-            foreach (var item in c)
-                if (d.Where(i => i.OriginalStreamId.Equals(item.OriginalStreamId)).ToList().Count == 0)
-                    resolvedEvents.Add(item);
-
-            return resolvedEvents;
+            return result;
         }
 
         private List<ResolvedEvent> ReadAllEvents()
@@ -92,9 +104,21 @@ namespace SM.Service.EventReader
             return allEvents;
         }
 
-        private Task EventAppeared(EventStoreSubscription arg1, ResolvedEvent arg2)
+        private async Task EventAppeared(EventStoreSubscription eventStoreSubscription, ResolvedEvent resolvedEvent)
         {
-            return null;
+            if (resolvedEvent.OriginalEvent.EventType == "PatternCreated") await AddUsersPattern(resolvedEvent);
+
+            if (resolvedEvent.OriginalEvent.EventType == "PatternDeleted") await DeleteUsersPattern(resolvedEvent);
+        }
+
+        private void SubscriptionDropped(EventStoreSubscription eventStoreSubscription, SubscriptionDropReason subscriptionDropReason, Exception exception)
+        {
+            SubscribeToAll();
+        }
+
+        private void SubscribeToAll()
+        {
+            var result = connection.SubscribeToAllAsync(false, EventAppeared, SubscriptionDropped).Result;
         }
     }
 }
