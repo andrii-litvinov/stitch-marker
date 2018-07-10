@@ -15,12 +15,10 @@ namespace SM.Service.EventReader
     public class EventReaderActor : IActor
     {
         private readonly ISubscriptionEventStoreConnection connection;
-        private List<ResolvedEvent> events;
 
         public EventReaderActor(ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
             connection = subscriptionEventStoreConnection;
-            SubscribeToAll();
         }
 
         public async Task ReceiveAsync(IContext context)
@@ -28,9 +26,9 @@ namespace SM.Service.EventReader
             switch (context.Message)
             {
                 case Started _:
-                    var createdList = FilterEvents(ReadAllEvents());
-                    foreach (var resolvedEvent in createdList) await AddUsersPattern(resolvedEvent);
-
+                    await SubscribeToAllEvents();
+                    var eventsList = FilterEvents(ReadAllEvents());
+                    foreach (var resolvedEvent in eventsList) await AddUsersPattern(resolvedEvent);
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
@@ -44,13 +42,13 @@ namespace SM.Service.EventReader
         {
             var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
             var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
-            var (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
+            var (user, _) = await Cluster.GetAsync($"user-{response.OwnerId}", "user");
 
             if (user == null)
             {
                 var props = Actor.FromProducer(() => new UserPatternsActor());
-                Actor.SpawnNamed(props, response.OwnerId);
-                (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
+                Actor.SpawnNamed(props, $"user-{response.OwnerId}");
+                (user, _) = await Cluster.GetAsync($"user-{response.OwnerId}", "user");
             }
 
             user.Tell(new AddUserPatternMessage
@@ -63,7 +61,7 @@ namespace SM.Service.EventReader
         {
             var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
             var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
-            var (user, _) = await Cluster.GetAsync($"{response.OwnerId}", "user");
+            var (user, _) = await Cluster.GetAsync($"user-{response.OwnerId}", "user");
 
             user.Tell(new DeleteUserPatternMessage
             {
@@ -111,14 +109,14 @@ namespace SM.Service.EventReader
             if (resolvedEvent.OriginalEvent.EventType == "PatternDeleted") await DeleteUsersPattern(resolvedEvent);
         }
 
-        private void SubscriptionDropped(EventStoreSubscription eventStoreSubscription, SubscriptionDropReason subscriptionDropReason, Exception exception)
+        private async void SubscriptionDropped(EventStoreSubscription eventStoreSubscription, SubscriptionDropReason subscriptionDropReason, Exception exception)
         {
-            SubscribeToAll();
+            await SubscribeToAllEvents();
         }
 
-        private void SubscribeToAll()
+        private async Task SubscribeToAllEvents()
         {
-            var result = connection.SubscribeToAllAsync(false, EventAppeared, SubscriptionDropped).Result;
+            await connection.SubscribeToAllAsync(false, EventAppeared, SubscriptionDropped);
         }
     }
 }
