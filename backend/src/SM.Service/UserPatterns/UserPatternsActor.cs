@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Proto;
 using SM.Service.Messages;
@@ -7,11 +8,11 @@ namespace SM.Service.UserPatterns
 {
     public class UserPatternsActor : IActor
     {
-        private readonly List<string> patternIds;
+        private readonly List<Pattern> patterns;
 
         public UserPatternsActor()
         {
-            patternIds = new List<string>();
+            patterns = new List<Pattern>();
         }
 
         public async Task ReceiveAsync(IContext context)
@@ -23,17 +24,12 @@ namespace SM.Service.UserPatterns
                 case ReceiveTimeout _:
                     context.Self.Stop();
                     break;
-                case GetUserPatternsMessage _:
-                    context.Sender.Tell(new GetUserPatternsMessage
-                    {
-                        PatternIds = {patternIds}
-                    });
+                case PatternCreated m:
+                    patterns.Add(m.Pattern);
                     break;
-                case AddUserPatternMessage m:
-                    if (!patternIds.Contains(m.PatternId)) patternIds.Add(m.PatternId);
-                    break;
-                case DeleteUserPatternMessage m:
-                    if (!patternIds.Contains(m.PatternId)) patternIds.Remove(m.PatternId);
+                case PatternDeleted m:
+                    var pattern = patterns.First(p => p.Id == m.OwnerId);
+                    if (pattern != null) patterns.Remove(pattern);
                     break;
                 default:
                     break;

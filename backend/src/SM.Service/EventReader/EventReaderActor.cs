@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.IO;
+using System.IO.Compression;
+using System.Text;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
+using Google.Protobuf;
+using Newtonsoft.Json.Linq;
 using Proto;
 using Proto.Cluster;
-using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
-using SM.Service.Messages;
-using SM.Service.UserPatterns;
 
 namespace SM.Service.EventReader
 {
@@ -26,9 +26,7 @@ namespace SM.Service.EventReader
             switch (context.Message)
             {
                 case Started _:
-                    await SubscribeToAllEvents();
-                    var eventsList = FilterEvents(ReadAllEvents());
-                    foreach (var resolvedEvent in eventsList) await AddUsersPattern(resolvedEvent);
+                    SubscribeToAllEvents();
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
@@ -38,85 +36,54 @@ namespace SM.Service.EventReader
             }
         }
 
-        private async Task AddUsersPattern(ResolvedEvent resolvedEvent)
+        private void SubscribeToAllEvents()
         {
-            var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
-            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
-            var (user, _) = await Cluster.GetAsync($"user-{response.OwnerId}", "user");
+            var settings = new CatchUpSubscriptionSettings(10, 500, false, false, "");
+            connection.SubscribeToAllFrom(Position.Start, settings, EventAppeared, LiveProcessingStarted, SubscriptionDropped, null);
+        }
 
-            if (user == null)
+        private void SubscriptionDropped(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, SubscriptionDropReason subscriptionDropReason,
+            Exception exception)
+        {
+        }
+
+        private void LiveProcessingStarted(EventStoreCatchUpSubscription eventStoreCatchUpSubscription)
+        {
+        }
+
+        private void EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
+        {
+            if (resolvedEvent.OriginalStreamId.StartsWith("$")) return;
+
+            var data = resolvedEvent.Event.Data;
+            if (resolvedEvent.Event.Metadata.Length > 0)
             {
-                var props = Actor.FromProducer(() => new UserPatternsActor());
-                Actor.SpawnNamed(props, $"user-{response.OwnerId}");
-                (user, _) = await Cluster.GetAsync($"user-{response.OwnerId}", "user");
+                var metadata = JObject.Parse(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata));
+                if (metadata["encoding"].Value<string>() == "gzip")
+                    using (var originalStream = new MemoryStream())
+                    {
+                        using (var compressedStream = new MemoryStream(data))
+                        using (var gZipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
+                        {
+                            gZipStream.CopyTo(originalStream);
+                        }
+
+                        data = originalStream.ToArray();
+                    }
             }
 
-            user.Tell(new AddUserPatternMessage
+            var eventType = Type.GetType($"SM.Service.Messages.{resolvedEvent.Event.EventType}");
+            var instance = Activator.CreateInstance(eventType);
+            var message = (IMessage) instance;
+
+            message.MergeFrom(data);
+
+            var ownerId = message as IOwnerId;
+            if (ownerId != null)
             {
-                PatternId = resolvedEvent.OriginalStreamId
-            });
-        }
-
-        private async Task DeleteUsersPattern(ResolvedEvent resolvedEvent)
-        {
-            var (pattern, _) = await Cluster.GetAsync($"{resolvedEvent.OriginalStreamId}", "pattern");
-            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = resolvedEvent.OriginalStreamId}, 10.Seconds());
-            var (user, _) = await Cluster.GetAsync($"user-{response.OwnerId}", "user");
-
-            user.Tell(new DeleteUserPatternMessage
-            {
-                PatternId = resolvedEvent.OriginalStreamId
-            });
-        }
-
-        private List<ResolvedEvent> FilterEvents(List<ResolvedEvent> resolvedEvents)
-        {
-            var deletedList = resolvedEvents.Where(i => i.OriginalEvent.EventType == "PatternDeleted").ToList();
-
-            var result = resolvedEvents
-                .Where(i => i.OriginalEvent.EventType == "PatternCreated")
-                .Where(j => deletedList.Where(k => k.OriginalStreamId == j.OriginalStreamId).ToList().Count == 0)
-                .ToList();
-
-            return result;
-        }
-
-        private List<ResolvedEvent> ReadAllEvents()
-        {
-            var allEvents = new List<ResolvedEvent>();
-
-            AllEventsSlice currentSlice;
-            var nextSliceStart = Position.Start;
-
-            do
-            {
-                currentSlice = connection.ReadAllEventsForwardAsync(nextSliceStart, 200, false).Result;
-
-                nextSliceStart = currentSlice.NextPosition;
-
-                foreach (var currentSliceEvent in currentSlice.Events)
-                    if (currentSliceEvent.OriginalStreamId.StartsWith("pattern"))
-                        allEvents.Add(currentSliceEvent);
-            } while (!currentSlice.IsEndOfStream);
-
-            return allEvents;
-        }
-
-        private async Task EventAppeared(EventStoreSubscription eventStoreSubscription, ResolvedEvent resolvedEvent)
-        {
-            if (resolvedEvent.OriginalEvent.EventType == "PatternCreated") await AddUsersPattern(resolvedEvent);
-
-            if (resolvedEvent.OriginalEvent.EventType == "PatternDeleted") await DeleteUsersPattern(resolvedEvent);
-        }
-
-        private async void SubscriptionDropped(EventStoreSubscription eventStoreSubscription, SubscriptionDropReason subscriptionDropReason, Exception exception)
-        {
-            await SubscribeToAllEvents();
-        }
-
-        private async Task SubscribeToAllEvents()
-        {
-            await connection.SubscribeToAllAsync(false, EventAppeared, SubscriptionDropped);
+                var (user, _) = Cluster.GetAsync($"user-{ownerId}", "user").Result;
+                user.Tell(message);
+            }
         }
     }
 }

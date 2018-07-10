@@ -16,15 +16,12 @@ namespace SM.Service.Infrastructure.EventStore
             Reconnect();
         }
 
-        public async Task<AllEventsSlice> ReadAllEventsForwardAsync(Position position, int maxCount, bool resolveLinkTos)
+        public EventStoreAllCatchUpSubscription SubscribeToAllFrom(Position? lastCheckpoint, CatchUpSubscriptionSettings settings,
+            Action<EventStoreCatchUpSubscription, ResolvedEvent> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
+            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, UserCredentials userCredentials = null)
         {
-            return await (await connection.Value).ReadAllEventsForwardAsync(position, 200, false);
-        }
-
-        public async Task<EventStoreSubscription> SubscribeToAllAsync(bool resolveLinkTos, Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared,
-            Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, UserCredentials userCredentials = null)
-        {
-            return await (await connection.Value).SubscribeToAllAsync(resolveLinkTos, eventAppeared, subscriptionDropped, userCredentials);
+            return connection.Value.Result.SubscribeToAllFrom(lastCheckpoint, settings, eventAppeared, liveProcessingStarted, subscriptionDropped,
+                userCredentials);
         }
 
         private void Reconnect()

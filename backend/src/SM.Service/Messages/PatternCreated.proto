@@ -6,5 +6,6 @@ import public "Pattern.proto";
 
 message PatternCreated {
     string id = 1;
-    Pattern pattern = 5;
+    Pattern pattern = 2;
+    string owner_id = 3;
 }

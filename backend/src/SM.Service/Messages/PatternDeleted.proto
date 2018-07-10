@@ -5,4 +5,5 @@ option csharp_namespace = "SM.Service.Messages";
 
 message PatternDeleted {
     string id = 1;
+    string owner_id = 2;
 }

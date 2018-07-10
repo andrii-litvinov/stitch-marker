@@ -1,9 +1,0 @@
-syntax = "proto3";
-package user;
-
-option csharp_namespace = "SM.Service.Messages";
-
-message GetUserPatternsMessage {
-    string id = 1;
-    repeated string patternIds = 2;
-}
