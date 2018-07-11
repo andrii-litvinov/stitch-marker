@@ -2,6 +2,6 @@
 {
     public interface IOwnerId
     {
-        string OwnerId { get; set; }
+        string GetOwnerId { get; }
     }
 }

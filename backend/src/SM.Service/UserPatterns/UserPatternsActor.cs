@@ -31,6 +31,12 @@ namespace SM.Service.UserPatterns
                     var pattern = patterns.First(p => p.Id == m.OwnerId);
                     if (pattern != null) patterns.Remove(pattern);
                     break;
+                case GetPatterns _:
+                    context.Sender.Tell(new GetPatterns
+                    {
+                        Patterns = { patterns }
+                    });
+                    break;
                 default:
                     break;
             }

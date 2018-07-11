@@ -37,12 +37,12 @@ namespace SM.Service.Infrastructure
             props = Actor.FromProducer(() => new UserPatternsActor());
             Remote.RegisterKnownKind("user", props);
 
-            props = Actor.FromProducer(() => new EventReaderActor(subscriptionEventStoreConnection));
-            Actor.SpawnNamed(props, "eventReader");
-
             var provider = new ConsulProvider(new ConsulProviderOptions(),
                 configuration1 => configuration1.Address = new Uri(configuration["CONSUL_URL"]));
             Cluster.Start("PatternCluster", "127.0.0.1", 12001, provider);
+
+            props = Actor.FromProducer(() => new EventReaderActor(subscriptionEventStoreConnection));
+            Actor.SpawnNamed(props, "eventReader");
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

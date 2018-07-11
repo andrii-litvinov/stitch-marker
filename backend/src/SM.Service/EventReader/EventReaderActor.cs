@@ -1,13 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
-using Google.Protobuf;
-using Newtonsoft.Json.Linq;
 using Proto;
 using Proto.Cluster;
+using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
 
 namespace SM.Service.EventReader
@@ -15,6 +11,7 @@ namespace SM.Service.EventReader
     public class EventReaderActor : IActor
     {
         private readonly ISubscriptionEventStoreConnection connection;
+        private Position? lastPosition;
 
         public EventReaderActor(ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
@@ -26,7 +23,7 @@ namespace SM.Service.EventReader
             switch (context.Message)
             {
                 case Started _:
-                    SubscribeToAllEvents();
+                    SubscribeToAllEvents(Position.Start);
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
@@ -36,52 +33,28 @@ namespace SM.Service.EventReader
             }
         }
 
-        private void SubscribeToAllEvents()
+        private void SubscribeToAllEvents(Position position)
         {
-            var settings = new CatchUpSubscriptionSettings(10, 500, false, false, "");
-            connection.SubscribeToAllFrom(Position.Start, settings, EventAppeared, LiveProcessingStarted, SubscriptionDropped, null);
+            var settings = new CatchUpSubscriptionSettings(100, 100, false, false, "");
+            connection.SubscribeToAllFrom(position, settings, EventAppeared, null, SubscriptionDropped, null);
         }
 
         private void SubscriptionDropped(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, SubscriptionDropReason subscriptionDropReason,
             Exception exception)
         {
-        }
-
-        private void LiveProcessingStarted(EventStoreCatchUpSubscription eventStoreCatchUpSubscription)
-        {
+            SubscribeToAllEvents(lastPosition.Value);
         }
 
         private void EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
         {
+            lastPosition = resolvedEvent.OriginalPosition;
             if (resolvedEvent.OriginalStreamId.StartsWith("$")) return;
 
-            var data = resolvedEvent.Event.Data;
-            if (resolvedEvent.Event.Metadata.Length > 0)
+            var message = resolvedEvent.Event.ReadMessage();
+
+            if (message is IOwnerId ownerId)
             {
-                var metadata = JObject.Parse(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata));
-                if (metadata["encoding"].Value<string>() == "gzip")
-                    using (var originalStream = new MemoryStream())
-                    {
-                        using (var compressedStream = new MemoryStream(data))
-                        using (var gZipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
-                        {
-                            gZipStream.CopyTo(originalStream);
-                        }
-
-                        data = originalStream.ToArray();
-                    }
-            }
-
-            var eventType = Type.GetType($"SM.Service.Messages.{resolvedEvent.Event.EventType}");
-            var instance = Activator.CreateInstance(eventType);
-            var message = (IMessage) instance;
-
-            message.MergeFrom(data);
-
-            var ownerId = message as IOwnerId;
-            if (ownerId != null)
-            {
-                var (user, _) = Cluster.GetAsync($"user-{ownerId}", "user").Result;
+                var (user, _) = Cluster.GetAsync($"user-{ownerId.GetOwnerId}", "user").Result;
                 user.Tell(message);
             }
         }
