@@ -1,3 +1,11 @@
-"facebook|1704003716315913"
+syntax = "proto3";
+package pattern;
 
-{b487e037-3cd8-4376-9fd7-0104d47b8e44}
+option csharp_namespace = "SM.Service.Messages";
+import public "Pattern.proto";
+
+message GetPatterns {
+    string id = 1;
+    repeated Pattern patterns = 2;
+}
+
