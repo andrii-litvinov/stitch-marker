@@ -1,7 +1,10 @@
-﻿using SM.Service.EventReader;
-
-namespace SM.Service.Messages
+﻿namespace SM.Service.Messages
 {
+    public interface IOwnerId
+    {
+        string GetOwnerId { get; }
+    }
+
     public sealed partial class PatternCreated : IOwnerId
     {
         public string GetOwnerId => ownerId_;

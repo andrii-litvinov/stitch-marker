@@ -5,6 +5,7 @@ using Proto;
 using Proto.Cluster;
 using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
+using SM.Service.Messages;
 
 namespace SM.Service.EventReader
 {
