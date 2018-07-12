@@ -16,6 +16,7 @@ namespace SM.Service.EventReader
         public EventReaderActor(ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
             connection = subscriptionEventStoreConnection;
+            lastPosition = Position.Start;
         }
 
         public async Task ReceiveAsync(IContext context)
@@ -23,31 +24,30 @@ namespace SM.Service.EventReader
             switch (context.Message)
             {
                 case Started _:
-                    SubscribeToAllEvents(Position.Start);
+                    Subscribe();
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
                     break;
-                default:
-                    break;
             }
         }
 
-        private void SubscribeToAllEvents(Position position)
+        private void Subscribe()
         {
-            var settings = new CatchUpSubscriptionSettings(100, 100, false, false, "");
-            connection.SubscribeToAllFrom(position, settings, EventAppeared, null, SubscriptionDropped, null);
+            connection.SubscribeToAllFrom(lastPosition, new CatchUpSubscriptionSettings(100, 100, false, false, ""), EventAppeared, null, SubscriptionDropped,
+                null);
         }
 
         private void SubscriptionDropped(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, SubscriptionDropReason subscriptionDropReason,
             Exception exception)
         {
-            SubscribeToAllEvents(lastPosition.Value);
+            Subscribe();
         }
 
         private void EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
         {
             lastPosition = resolvedEvent.OriginalPosition;
+
             if (resolvedEvent.OriginalStreamId.StartsWith("$")) return;
 
             var message = resolvedEvent.Event.ReadMessage();

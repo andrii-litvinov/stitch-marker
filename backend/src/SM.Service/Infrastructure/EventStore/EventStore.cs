@@ -8,6 +8,7 @@ using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Proto.Persistence;
+using SM.Service.Extensions;
 
 namespace SM.Service.Infrastructure.EventStore
 {
@@ -30,33 +31,13 @@ namespace SM.Service.Infrastructure.EventStore
             {
                 var count = (int) Math.Min(indexEnd - start, 199) + 1;
                 slice = await connection.ReadStreamEventsForward(actorName, start, count, false);
-                
+
                 foreach (var resolvedEvent in slice.Events)
                 {
-                    var data = resolvedEvent.Event.Data;
-                    if (resolvedEvent.Event.Metadata.Length > 0)
-                    {
-                        var metadata = JObject.Parse(Encoding.UTF8.GetString(resolvedEvent.Event.Metadata));
-                        if (metadata["encoding"].Value<string>() == "gzip")
-                            using (var originalStream = new MemoryStream())
-                            {
-                                using (var compressedStream = new MemoryStream(data))
-                                using (var gZipStream = new GZipStream(compressedStream, CompressionMode.Decompress))
-                                {
-                                    gZipStream.CopyTo(originalStream);
-                                }
-
-                                data = originalStream.ToArray();
-                            }
-                    }
-
-                    var eventType = Type.GetType($"SM.Service.Messages.{resolvedEvent.Event.EventType}");
-                    var message = (IMessage) Activator.CreateInstance(eventType);
-
-                    message.MergeFrom(data);
+                    var message = resolvedEvent.Event.ReadMessage();
                     callback(message);
                 }
-                
+
                 start = slice.NextEventNumber;
             } while (start <= indexEnd && !slice.IsEndOfStream);
 

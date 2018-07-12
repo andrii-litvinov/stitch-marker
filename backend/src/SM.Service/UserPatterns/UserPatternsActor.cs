@@ -34,10 +34,8 @@ namespace SM.Service.UserPatterns
                 case GetPatterns _:
                     context.Sender.Tell(new GetPatterns
                     {
-                        Patterns = { patterns }
+                        Patterns = {patterns}
                     });
-                    break;
-                default:
                     break;
             }
         }
