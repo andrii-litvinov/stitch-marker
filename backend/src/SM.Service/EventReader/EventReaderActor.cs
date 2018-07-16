@@ -5,7 +5,6 @@ using Proto;
 using Proto.Cluster;
 using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
-using SM.Service.Messages;
 
 namespace SM.Service.EventReader
 {
@@ -53,11 +52,8 @@ namespace SM.Service.EventReader
 
             var message = resolvedEvent.Event.ReadMessage();
 
-            if (message is IOwnerId ownerId)
-            {
-                var (user, _) = Cluster.GetAsync($"user-{ownerId.GetOwnerId}", "user").Result;
-                user.Tell(message);
-            }
+            var (patternsManager, _) = Cluster.GetAsync($"patternsManager", "patternsManager").Result;
+            patternsManager.Tell(message);
         }
     }
 }

@@ -7,5 +7,6 @@ import public "Pattern.proto";
 message GetPatterns {
     string id = 1;
     repeated Pattern patterns = 2;
+	string ownerId = 3;
 }
 

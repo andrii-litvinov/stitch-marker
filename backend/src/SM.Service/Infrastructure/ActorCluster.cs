@@ -11,6 +11,7 @@ using Proto.Remote;
 using SM.Service.EventReader;
 using SM.Service.Infrastructure.EventStore;
 using SM.Service.Patterns;
+using SM.Service.PatternsManager;
 using SM.Service.UserPatterns;
 
 namespace SM.Service.Infrastructure
@@ -36,6 +37,9 @@ namespace SM.Service.Infrastructure
 
             props = Actor.FromProducer(() => new UserPatternsActor());
             Remote.RegisterKnownKind("user", props);
+
+            props = Actor.FromProducer(() => new PatternsManagerActor());
+            Remote.RegisterKnownKind("patternsManager", props);
 
             var provider = new ConsulProvider(new ConsulProviderOptions(),
                 configuration1 => configuration1.Address = new Uri(configuration["CONSUL_URL"]));

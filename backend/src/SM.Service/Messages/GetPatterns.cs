@@ -24,14 +24,14 @@ namespace SM.Service.Messages {
     static GetPatternsReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFHZXRQYXR0ZXJucy5wcm90bxIHcGF0dGVybhoNUGF0dGVybi5wcm90byI9",
+            "ChFHZXRQYXR0ZXJucy5wcm90bxIHcGF0dGVybhoNUGF0dGVybi5wcm90byJO",
             "CgtHZXRQYXR0ZXJucxIKCgJpZBgBIAEoCRIiCghwYXR0ZXJucxgCIAMoCzIQ",
-            "LnBhdHRlcm4uUGF0dGVybkIWqgITU00uU2VydmljZS5NZXNzYWdlc1AAYgZw",
-            "cm90bzM="));
+            "LnBhdHRlcm4uUGF0dGVybhIPCgdvd25lcklkGAMgASgJQhaqAhNTTS5TZXJ2",
+            "aWNlLk1lc3NhZ2VzUABiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::SM.Service.Messages.PatternReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.GetPatterns), global::SM.Service.Messages.GetPatterns.Parser, new[]{ "Id", "Patterns" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.GetPatterns), global::SM.Service.Messages.GetPatterns.Parser, new[]{ "Id", "Patterns", "OwnerId" }, null, null, null)
           }));
     }
     #endregion
@@ -65,6 +65,7 @@ namespace SM.Service.Messages {
     public GetPatterns(GetPatterns other) : this() {
       id_ = other.id_;
       patterns_ = other.patterns_.Clone();
+      ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -94,6 +95,17 @@ namespace SM.Service.Messages {
       get { return patterns_; }
     }
 
+    /// <summary>Field number for the "ownerId" field.</summary>
+    public const int OwnerIdFieldNumber = 3;
+    private string ownerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string OwnerId {
+      get { return ownerId_; }
+      set {
+        ownerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as GetPatterns);
@@ -109,6 +121,7 @@ namespace SM.Service.Messages {
       }
       if (Id != other.Id) return false;
       if(!patterns_.Equals(other.patterns_)) return false;
+      if (OwnerId != other.OwnerId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -117,6 +130,7 @@ namespace SM.Service.Messages {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
       hash ^= patterns_.GetHashCode();
+      if (OwnerId.Length != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -135,6 +149,10 @@ namespace SM.Service.Messages {
         output.WriteString(Id);
       }
       patterns_.WriteTo(output, _repeated_patterns_codec);
+      if (OwnerId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(OwnerId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -147,6 +165,9 @@ namespace SM.Service.Messages {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
       }
       size += patterns_.CalculateSize(_repeated_patterns_codec);
+      if (OwnerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnerId);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -162,6 +183,9 @@ namespace SM.Service.Messages {
         Id = other.Id;
       }
       patterns_.Add(other.patterns_);
+      if (other.OwnerId.Length != 0) {
+        OwnerId = other.OwnerId;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -179,6 +203,10 @@ namespace SM.Service.Messages {
           }
           case 18: {
             patterns_.AddEntriesFrom(input, _repeated_patterns_codec);
+            break;
+          }
+          case 26: {
+            OwnerId = input.ReadString();
             break;
           }
         }
