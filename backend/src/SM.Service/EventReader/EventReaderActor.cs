@@ -44,7 +44,7 @@ namespace SM.Service.EventReader
             Subscribe();
         }
 
-        private void EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
+        private async Task EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
         {
             lastPosition = resolvedEvent.OriginalPosition;
 
@@ -52,7 +52,7 @@ namespace SM.Service.EventReader
 
             var message = resolvedEvent.Event.ReadMessage();
 
-            var (patternsManager, _) = Cluster.GetAsync($"patternsManager", "patternsManager").Result;
+            var (patternsManager, _) = await Cluster.GetAsync($"patternsManager", "patternsManager");
             patternsManager.Tell(message);
         }
     }
