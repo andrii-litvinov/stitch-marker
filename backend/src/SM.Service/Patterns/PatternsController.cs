@@ -11,12 +11,10 @@ using SM.Service.Resources;
 
 namespace SM.Service.Patterns
 {
-    [Authorize]
-    [Route("api/patterns")]
+    [Authorize, Route("api/patterns")]
     public class PatternsController : Controller
     {
-        [HttpGet]
-        [Route("{patternId}")]
+        [HttpGet, Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
@@ -29,8 +27,7 @@ namespace SM.Service.Patterns
             return Ok(response);
         }
 
-        [HttpDelete]
-        [Route("{patternId}")]
+        [HttpDelete, Route("{patternId}")]
         public async Task<IActionResult> Delete(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
@@ -43,8 +40,7 @@ namespace SM.Service.Patterns
             return Ok();
         }
 
-        [HttpGet]
-        [Route("{patternId}/thumbnail")]
+        [HttpGet, Route("{patternId}/thumbnail")]
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
