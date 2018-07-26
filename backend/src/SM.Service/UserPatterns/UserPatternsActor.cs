@@ -21,14 +21,11 @@ namespace SM.Service.UserPatterns
             {
                 case Started _:
                     break;
-                case ReceiveTimeout _:
-                    context.Self.Stop();
-                    break;
                 case PatternCreated m:
                     patterns.Add(m.Pattern);
                     break;
                 case PatternDeleted m:
-                    var pattern = patterns.First(p => p.Id == m.OwnerId);
+                    var pattern = patterns.FirstOrDefault(p => p.Id == m.OwnerId);
                     if (pattern != null) patterns.Remove(pattern);
                     break;
                 case GetPatterns _:

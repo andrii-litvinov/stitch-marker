@@ -1,20 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Cluster;
 using SM.Service.Extensions;
 using SM.Service.Messages;
+using SM.Service.UserPatterns;
 
 namespace SM.Service.PatternsManager
 {
     public class PatternsManagerActor : IActor
     {
         private readonly Dictionary<string, string> ownerIds;
+        private readonly MemoryCache senders;
 
         public PatternsManagerActor()
         {
             ownerIds = new Dictionary<string, string>();
+            senders = new MemoryCache(new MemoryCacheOptions());
         }
 
         public async Task ReceiveAsync(IContext context)
@@ -23,31 +28,24 @@ namespace SM.Service.PatternsManager
             {
                 case Started _:
                     break;
-                case ReceiveTimeout _:
-                    context.Self.Stop();
-                    break;
                 case PatternCreated m:
                     if (!ownerIds.ContainsKey(m.OwnerId))
+                    {
                         ownerIds.Add(m.OwnerId, $"user-{Guid.NewGuid()}");
+                    }
 
-                    var (user, _) = await Cluster.GetAsync(ownerIds[m.OwnerId], "user");
+                    var user = context.GetChild<UserPatternsActor>(ownerIds[m.OwnerId]);
                     user.Tell(m);
                     break;
                 case PatternDeleted m:
-                    (user, _) = await Cluster.GetAsync(ownerIds[m.OwnerId], "user");
+                    user = context.GetChild<UserPatternsActor>(ownerIds[m.OwnerId]);
                     user.Tell(m);
                     break;
                 case GetPatterns m:
-                    if (!ownerIds.ContainsKey(m.OwnerId))
-                        ownerIds.Add(m.OwnerId, $"user-{Guid.NewGuid()}");
-                    (user, _) = await Cluster.GetAsync(ownerIds[m.OwnerId], "user");
+                    senders.Set(m.Id, context.Sender, 30.Seconds());
 
-                    var patterns = await user.RequestAsync<GetPatterns>(new GetPatterns(), 10.Seconds());
-
-                    context.Sender.Tell(new GetPatterns
-                    {
-                        Patterns = {patterns.Patterns}
-                    });
+                    user = context.GetChild<UserPatternsActor>(ownerIds[m.OwnerId]);
+                    user.Tell(m);
                     break;
             }
         }

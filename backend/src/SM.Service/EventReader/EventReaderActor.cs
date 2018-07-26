@@ -5,6 +5,7 @@ using Proto;
 using Proto.Cluster;
 using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
+using SM.Service.PatternsManager;
 
 namespace SM.Service.EventReader
 {
@@ -12,6 +13,7 @@ namespace SM.Service.EventReader
     {
         private readonly ISubscriptionEventStoreConnection connection;
         private Position? lastPosition;
+        private IContext context;
 
         public EventReaderActor(ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
@@ -24,10 +26,9 @@ namespace SM.Service.EventReader
             switch (context.Message)
             {
                 case Started _:
+                    this.context = context;
+                    context.Spawn(Actor.FromProducer(() => new PatternsManagerActor()));
                     Subscribe();
-                    break;
-                case ReceiveTimeout _:
-                    context.Self.Stop();
                     break;
             }
         }
@@ -52,7 +53,7 @@ namespace SM.Service.EventReader
 
             var message = resolvedEvent.Event.ReadMessage();
 
-            var (patternsManager, _) = await Cluster.GetAsync($"patternsManager", "patternsManager");
+            var patternsManager = context.GetChild<PatternsManagerActor>();
             patternsManager.Tell(message);
         }
     }

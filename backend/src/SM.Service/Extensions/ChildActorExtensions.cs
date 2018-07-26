@@ -11,5 +11,11 @@ namespace SM.Service.Extensions
             return context.Children.FirstOrDefault(pid => pid.Id.EndsWith(name)) ??
                    context.SpawnNamed(Actor.FromProducer(() => new T()), name);
         }
+
+        public static PID GetChild<T>(this IContext context, string name) where T : IActor, new()
+        {
+            return context.Children.FirstOrDefault(pid => pid.Id.EndsWith(name)) ??
+                   context.SpawnNamed(Actor.FromProducer(() => new T()), name);
+        }
     }
 }
