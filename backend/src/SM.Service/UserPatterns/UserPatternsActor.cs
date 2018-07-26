@@ -8,11 +8,11 @@ namespace SM.Service.UserPatterns
 {
     public class UserPatternsActor : IActor
     {
-        private readonly List<Pattern> patterns;
+        private readonly List<PatternBaseInfo> patternInfos;
 
         public UserPatternsActor()
         {
-            patterns = new List<Pattern>();
+            patternInfos = new List<PatternBaseInfo>();
         }
 
         public async Task ReceiveAsync(IContext context)
@@ -22,16 +22,26 @@ namespace SM.Service.UserPatterns
                 case Started _:
                     break;
                 case PatternCreated m:
-                    patterns.Add(m.Pattern);
+                    patternInfos.Add(new PatternBaseInfo
+                    {
+                        Author = m.Pattern.Info.Author,
+                        Company = m.Pattern.Info.Company,
+                        Copyright = m.Pattern.Info.Copyright,
+                        Title = m.Pattern.Info.Title,
+                        Height = m.Pattern.Height,
+                        Width = m.Pattern.Width,
+                        Id = m.Pattern.Id
+                    });
                     break;
                 case PatternDeleted m:
-                    var pattern = patterns.FirstOrDefault(p => p.Id == m.OwnerId);
-                    if (pattern != null) patterns.Remove(pattern);
+                    var patternInfo = patternInfos.FirstOrDefault(p => p.Id == m.Id);
+                    if (patternInfo != null) patternInfos.Remove(patternInfo);
                     break;
-                case GetPatterns _:
-                    context.Sender.Tell(new GetPatterns
+                case GetPatternsInfo _:
+                    context.Parent.Tell(new UserPatternsInfo
                     {
-                        Patterns = {patterns}
+                        OwnerId = context.Self.Id,
+                        PatternBaseInfo = {patternInfos}
                     });
                     break;
             }

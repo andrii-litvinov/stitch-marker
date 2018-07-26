@@ -2,18 +2,16 @@
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using Proto;
-using Proto.Cluster;
 using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
-using SM.Service.PatternsManager;
 
 namespace SM.Service.EventReader
 {
     public class EventReaderActor : IActor
     {
         private readonly ISubscriptionEventStoreConnection connection;
-        private Position? lastPosition;
         private IContext context;
+        private Position? lastPosition;
 
         public EventReaderActor(ISubscriptionEventStoreConnection subscriptionEventStoreConnection)
         {
@@ -27,7 +25,6 @@ namespace SM.Service.EventReader
             {
                 case Started _:
                     this.context = context;
-                    context.Spawn(Actor.FromProducer(() => new PatternsManagerActor()));
                     Subscribe();
                     break;
             }
@@ -53,8 +50,7 @@ namespace SM.Service.EventReader
 
             var message = resolvedEvent.Event.ReadMessage();
 
-            var patternsManager = context.GetChild<PatternsManagerActor>();
-            patternsManager.Tell(message);
+            context.Parent.Tell(message);
         }
     }
 }

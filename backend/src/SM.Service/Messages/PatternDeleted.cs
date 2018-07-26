@@ -24,13 +24,13 @@ namespace SM.Service.Messages {
     static PatternDeletedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChRQYXR0ZXJuRGVsZXRlZC5wcm90bxIHcGF0dGVybiIuCg5QYXR0ZXJuRGVs",
-            "ZXRlZBIKCgJpZBgBIAEoCRIQCghvd25lcl9pZBgCIAEoCUIWqgITU00uU2Vy",
-            "dmljZS5NZXNzYWdlc2IGcHJvdG8z"));
+            "ChRQYXR0ZXJuRGVsZXRlZC5wcm90bxIHcGF0dGVybiIcCg5QYXR0ZXJuRGVs",
+            "ZXRlZBIKCgJpZBgBIAEoCUIWqgITU00uU2VydmljZS5NZXNzYWdlc2IGcHJv",
+            "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternDeleted), global::SM.Service.Messages.PatternDeleted.Parser, new[]{ "Id", "OwnerId" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternDeleted), global::SM.Service.Messages.PatternDeleted.Parser, new[]{ "Id" }, null, null, null)
           }));
     }
     #endregion
@@ -63,7 +63,6 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PatternDeleted(PatternDeleted other) : this() {
       id_ = other.id_;
-      ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -83,17 +82,6 @@ namespace SM.Service.Messages {
       }
     }
 
-    /// <summary>Field number for the "owner_id" field.</summary>
-    public const int OwnerIdFieldNumber = 2;
-    private string ownerId_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string OwnerId {
-      get { return ownerId_; }
-      set {
-        ownerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as PatternDeleted);
@@ -108,7 +96,6 @@ namespace SM.Service.Messages {
         return true;
       }
       if (Id != other.Id) return false;
-      if (OwnerId != other.OwnerId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -116,7 +103,6 @@ namespace SM.Service.Messages {
     public override int GetHashCode() {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (OwnerId.Length != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -134,10 +120,6 @@ namespace SM.Service.Messages {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (OwnerId.Length != 0) {
-        output.WriteRawTag(18);
-        output.WriteString(OwnerId);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -148,9 +130,6 @@ namespace SM.Service.Messages {
       int size = 0;
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
-      }
-      if (OwnerId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnerId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -166,9 +145,6 @@ namespace SM.Service.Messages {
       if (other.Id.Length != 0) {
         Id = other.Id;
       }
-      if (other.OwnerId.Length != 0) {
-        OwnerId = other.OwnerId;
-      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -182,10 +158,6 @@ namespace SM.Service.Messages {
             break;
           case 10: {
             Id = input.ReadString();
-            break;
-          }
-          case 18: {
-            OwnerId = input.ReadString();
             break;
           }
         }

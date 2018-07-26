@@ -4,9 +4,7 @@ package pattern;
 option csharp_namespace = "SM.Service.Messages";
 import public "Pattern.proto";
 
-message GetPatterns {
-    string id = 1;
-    repeated Pattern patterns = 2;
-	string ownerId = 3;
+message GetPatternsInfo {
+	string ownerId = 1;
 }
 

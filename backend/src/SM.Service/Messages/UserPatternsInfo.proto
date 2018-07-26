@@ -1,0 +1,20 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service.Messages";
+
+message UserPatternsInfo {
+	string ownerId = 1;
+    repeated PatternBaseInfo patternBaseInfo = 2;
+}
+
+message PatternBaseInfo {
+	string id = 1;
+	uint32 width = 2;
+    uint32 height = 3;
+    string title = 4;
+    string author = 5;
+    string company = 6;
+    string copyright = 7;
+}
+

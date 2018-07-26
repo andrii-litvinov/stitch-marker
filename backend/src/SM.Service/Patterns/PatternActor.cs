@@ -78,7 +78,7 @@ namespace SM.Service.Patterns
                     senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
                 case DeletePattern command:
-                    var patternDeleted = new PatternDeleted {Id = command.Id, OwnerId = pattern.OwnerId};
+                    var patternDeleted = new PatternDeleted {Id = command.Id};
                     await persistence.PersistEventAsync(patternDeleted);
                     context.Sender.Tell(patternDeleted);
                     break;
