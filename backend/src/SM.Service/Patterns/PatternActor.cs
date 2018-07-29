@@ -11,17 +11,13 @@ namespace SM.Service.Patterns
 {
     public class PatternActor : IActor
     {
-        private readonly Behavior behavior;
+        private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
         private Pattern pattern;
         private Persistence persistence;
 
-        public PatternActor(IEventStore eventStore)
-        {
-            this.eventStore = eventStore;
-            behavior = new Behavior();
-        }
+        public PatternActor(IEventStore eventStore) => this.eventStore = eventStore;
 
         public async Task ReceiveAsync(IContext context)
         {

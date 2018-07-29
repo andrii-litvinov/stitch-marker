@@ -4,23 +4,24 @@ using EventStore.ClientAPI;
 using Proto;
 using SM.Service.Extensions;
 using SM.Service.Infrastructure.EventStore;
+using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {
     public class EventSubscriptionActor : IActor
     {
         private readonly ISubscriptionEventStoreConnection connection;
-        private IContext context;
+        private IContext cts;
         private Position? position = Position.Start;
 
         public EventSubscriptionActor(ISubscriptionEventStoreConnection connection) => this.connection = connection;
 
-        public async Task ReceiveAsync(IContext ctx)
+        public async Task ReceiveAsync(IContext context)
         {
-            switch (ctx.Message)
+            switch (context.Message)
             {
                 case Started _:
-                    context = ctx;
+                    cts = context;
                     Subscribe();
                     break;
             }
@@ -34,10 +35,8 @@ namespace SM.Service.Patterns
                 LiveProcessingStarted,
                 SubscriptionDropped);
 
-        private void LiveProcessingStarted(EventStoreCatchUpSubscription subscription)
-        {
-            // TODO: Send response to parent actor that all existing events were read from store.  
-        }
+        private void LiveProcessingStarted(EventStoreCatchUpSubscription subscription) =>
+            cts.Parent.Tell(new LiveProcessingStarted());
 
         private void SubscriptionDropped(
             EventStoreCatchUpSubscription eventStoreCatchUpSubscription,
@@ -46,10 +45,9 @@ namespace SM.Service.Patterns
 
         private async Task EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
         {
-            position = resolvedEvent.OriginalPosition;
-
             if (!resolvedEvent.OriginalStreamId.StartsWith("$"))
-                context.Parent.Tell(resolvedEvent.Event.ReadMessage());
+                cts.Parent.Tell(resolvedEvent.Event.ReadMessage());
+            position = resolvedEvent.OriginalPosition;
         }
     }
 }

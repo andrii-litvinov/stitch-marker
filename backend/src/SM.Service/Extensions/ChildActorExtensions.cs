@@ -21,5 +21,8 @@ namespace SM.Service.Extensions
 
         public static PID SpawnPrefix<T>(this IContext context, IActorFactory factory) where T : IActor =>
             context.SpawnPrefix(Actor.FromProducer(() => factory.Create<T>()), typeof(T).Name);
+        
+        public static PID Spawn<T>(this IContext context, IActorFactory factory) where T : IActor =>
+            context.Spawn(Actor.FromProducer(() => factory.Create<T>()));
     }
 }
