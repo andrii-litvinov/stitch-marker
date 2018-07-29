@@ -22,11 +22,16 @@ namespace SM.Service.Patterns
                     // TODO: Spawn event subscriber actor and ignore all incoming messages until subscription switched to reading new messages.
                     break;
                 case IEvent @event:
-                    if (@event is PatternCreated created)
+                    switch (@event)
                     {
-                        var name = $"patternsByOwner-{Guid.NewGuid()}";
-                        namesByOwner.TryAdd(created.OwnerId, name);
-                        namesBySource.TryAdd(created.SourceId, name);
+                        case PatternCreated created:
+                            var name = $"patternsByOwner-{Guid.NewGuid()}";
+                            namesByOwner.TryAdd(created.OwnerId, name);
+                            namesBySource.TryAdd(created.SourceId, name);
+                            break;
+                        case PatternDeleted deleted:
+                            namesBySource.Remove(deleted.SourceId);
+                            break;
                     }
 
                     context.GetChild<PatternsByOwnerActor>(namesBySource[@event.SourceId]).Tell(@event);
