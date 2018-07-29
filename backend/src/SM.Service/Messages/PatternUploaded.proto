@@ -4,7 +4,7 @@ package pattern;
 option csharp_namespace = "SM.Service.Messages";
 
 message PatternUploaded {
-    string id = 1;
+    string source_id = 1;
     string file_name = 2;
     bytes content = 3;
 	string owner_id = 4;

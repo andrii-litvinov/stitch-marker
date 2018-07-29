@@ -48,8 +48,13 @@ namespace SM.Service.Patterns
             switch (context.Message)
             {
                 case CreatePattern command:
-                    await persistence.PersistEventAsync(
-                        new PatternUploaded {Id = command.Id, FileName = command.FileName, Content = command.Content, OwnerId = command.OwnerId});
+                    await persistence.PersistEventAsync(new PatternUploaded
+                    {
+                        SourceId = command.Id,
+                        FileName = command.FileName,
+                        Content = command.Content,
+                        OwnerId = command.OwnerId
+                    });
                     var parser = context.GetChild<XsdPatternActor>();
                     senders.Set(command.Id, context.Sender, 30.Seconds());
                     parser.Tell(command);
@@ -78,7 +83,7 @@ namespace SM.Service.Patterns
                     senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
                 case DeletePattern command:
-                    var patternDeleted = new PatternDeleted {Id = command.Id};
+                    var patternDeleted = new PatternDeleted {SourceId = command.Id};
                     await persistence.PersistEventAsync(patternDeleted);
                     context.Sender.Tell(patternDeleted);
                     break;
@@ -89,10 +94,7 @@ namespace SM.Service.Patterns
             }
         }
 
-        private Task Deleted(IContext context)
-        {
-            return Actor.Done;
-        }
+        private Task Deleted(IContext context) => Actor.Done;
 
         private void ApplyEvent(Event @event)
         {

@@ -73,7 +73,7 @@ namespace SM.Service.Patterns
                 OwnerId = userId
             };
             var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
-            var preview = new {@event.Id, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
+            var preview = new {Id = @event.SourceId, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
             var resource = new Resource(preview)
             {
                 Links =

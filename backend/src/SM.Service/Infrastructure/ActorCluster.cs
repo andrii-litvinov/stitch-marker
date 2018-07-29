@@ -28,12 +28,12 @@ namespace SM.Service.Infrastructure
             T CreateInstance<T>() => ActivatorUtilities.CreateInstance<T>(serviceProvider);
 
             Remote.RegisterKnownKind(ActorKind.Pattern, Actor.FromProducer(CreateInstance<PatternActor>));
-            Remote.RegisterKnownKind(ActorKind.PatternsPerOwner, Actor.FromProducer(CreateInstance<PatternsPerOwnerActor>));
+            Remote.RegisterKnownKind(ActorKind.PatternsByOwnerProjection, Actor.FromProducer(CreateInstance<PatternsByOwnerProjectionActor>));
 
             var provider = new ConsulProvider(new ConsulProviderOptions(), c => c.Address = new Uri(configuration["CONSUL_URL"]));
             Cluster.Start("PatternCluster", "127.0.0.1", 12001, provider);
 
-            await Cluster.GetAsync(ActorKind.PatternsPerOwner, ActorKind.PatternsPerOwner, cancellationToken);
+            await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection, cancellationToken);
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

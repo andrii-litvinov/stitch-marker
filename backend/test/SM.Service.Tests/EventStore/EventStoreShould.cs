@@ -27,7 +27,7 @@ namespace SM.Service.Tests.EventStore
             // Arrange
             var event1 = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern1.xsd",
                 Content = ByteString.CopyFrom(
                     Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
@@ -35,7 +35,7 @@ namespace SM.Service.Tests.EventStore
 
             var event2 = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern2.xsd",
                 Content = ByteString.CopyFrom(
                     Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
@@ -68,7 +68,7 @@ namespace SM.Service.Tests.EventStore
             // Arrange
             var @event = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern.xsd",
                 Content = ByteString.CopyFrom(
                     Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
@@ -88,7 +88,7 @@ namespace SM.Service.Tests.EventStore
             // Arrange
             var @event = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern.xsd",
                 Content = ByteString.CopyFrom(Encoding.UTF8.GetBytes(new string('c', 512 * 1024)))
             };

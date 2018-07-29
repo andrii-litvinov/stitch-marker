@@ -5,7 +5,7 @@ option csharp_namespace = "SM.Service.Messages";
 import public "Pattern.proto";
 
 message PatternCreated {
-    string id = 1;
+    string source_id = 1;
     Pattern pattern = 2;
     string owner_id = 3;
 }

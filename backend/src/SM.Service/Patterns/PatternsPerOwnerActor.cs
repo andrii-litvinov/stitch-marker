@@ -8,45 +8,35 @@ using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {
-    public class PatternsPerOwnerActor : IActor
+    public class PatternsByOwnerProjectionActor : IActor
     {
-        private readonly Dictionary<string, string> ownerPatterns;
-        private readonly Dictionary<string, string> patternOwner;
-        private readonly MemoryCache senders;
-
-        public PatternsPerOwnerActor()
-        {
-            ownerPatterns = new Dictionary<string, string>();
-            patternOwner = new Dictionary<string, string>();
-            senders = new MemoryCache(new MemoryCacheOptions());
-        }
+        private readonly Dictionary<string, string> namesByOwner = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> namesBySource = new Dictionary<string, string>();
+        private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
 
         public async Task ReceiveAsync(IContext context)
         {
             switch (context.Message)
             {
                 case Started _:
-                    context.GetChild<UserPatternsActor>();
+                    // TODO: Spawn event subscriber actor and ignore all incoming messages until subscription switched to reading new messages.
                     break;
-                case PatternCreated m:
-                    var userPatternsName = $"user-{Guid.NewGuid()}";
-                    ownerPatterns.TryAdd(ownerPatterns[m.OwnerId], userPatternsName);
-                    patternOwner.TryAdd(m.Id, userPatternsName);
+                case IEvent @event:
+                    if (@event is PatternCreated created)
+                    {
+                        var name = $"patternsByOwner-{Guid.NewGuid()}";
+                        namesByOwner.TryAdd(created.OwnerId, name);
+                        namesBySource.TryAdd(created.SourceId, name);
+                    }
 
-                    var user = context.GetChild<UserPatternsActor>(ownerPatterns[m.OwnerId]);
-                    user.Tell(m);
+                    context.GetChild<PatternsByOwnerActor>(namesBySource[@event.SourceId]).Tell(@event);
                     break;
-                case PatternDeleted m:
-                    user = context.GetChild<UserPatternsActor>(patternOwner[m.Id]);
-                    user.Tell(m);
+                case GetPatternItems query:
+                    senders.Set(query.RequestId, context.Sender, 30.Seconds());
+                    context.GetChild<PatternsByOwnerActor>(namesByOwner[query.OwnerId]).Tell(query);
                     break;
-                case GetPatternItems m:
-                    senders.Set(m.RequestId, context.Sender, 30.Seconds());
-                    user = context.GetChild<UserPatternsActor>(ownerPatterns[m.OwnerId]);
-                    user.Tell(m);
-                    break;
-                case PatternItems m:
-                    senders.Get<PID>(patternOwner[m.RequestId])?.Tell(m);
+                case PatternItems items:
+                    senders.Get<PID>(namesBySource[items.RequestId])?.Tell(items);
                     break;
             }
         }

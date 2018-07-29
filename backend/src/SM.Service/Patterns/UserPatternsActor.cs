@@ -6,7 +6,7 @@ using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {
-    public class UserPatternsActor : IActor
+    public class PatternsByOwnerActor : IActor
     {
         private readonly Dictionary<string, PatternItem> patterns = new Dictionary<string, PatternItem>();
 
@@ -17,7 +17,7 @@ namespace SM.Service.Patterns
                 case Started _:
                     break;
                 case PatternCreated m:
-                    patterns[m.Id] = new PatternItem
+                    patterns[m.SourceId] = new PatternItem
                     {
                         Author = m.Pattern.Info.Author,
                         Company = m.Pattern.Info.Company,
@@ -29,7 +29,7 @@ namespace SM.Service.Patterns
                     };
                     break;
                 case PatternDeleted m:
-                    patterns.Remove(m.Id);
+                    patterns.Remove(m.SourceId);
                     break;
                 case GetPatternItems m:
                     context.Parent.Tell(new PatternItems {RequestId = m.RequestId, Items = {patterns.Values.Skip(m.Skip).Take(m.Take)}});
