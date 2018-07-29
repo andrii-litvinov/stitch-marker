@@ -17,5 +17,8 @@ namespace SM.Service.Extensions
             return context.Children.FirstOrDefault(pid => pid.Id.EndsWith(name)) ??
                    context.SpawnNamed(Actor.FromProducer(() => new T()), name);
         }
+
+        public static PID SpawnPrefix<T>(this IContext context) where T : IActor, new() =>
+            context.SpawnPrefix(Actor.FromProducer(() => new T()), typeof(T).Name);
     }
 }

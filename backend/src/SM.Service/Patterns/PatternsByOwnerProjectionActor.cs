@@ -10,8 +10,8 @@ namespace SM.Service.Patterns
 {
     public class PatternsByOwnerProjectionActor : IActor
     {
-        private readonly Dictionary<string, string> namesByOwner = new Dictionary<string, string>();
-        private readonly Dictionary<string, string> namesBySource = new Dictionary<string, string>();
+        private readonly Dictionary<string, PID> childByOwner = new Dictionary<string, PID>();
+        private readonly Dictionary<string, PID> childBySource = new Dictionary<string, PID>();
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
 
         public async Task ReceiveAsync(IContext context)
@@ -25,23 +25,23 @@ namespace SM.Service.Patterns
                     switch (@event)
                     {
                         case PatternCreated created:
-                            var name = $"patternsByOwner-{Guid.NewGuid()}";
-                            namesByOwner.TryAdd(created.OwnerId, name);
-                            namesBySource.TryAdd(created.SourceId, name);
+                            var pid = context.SpawnPrefix<PatternsByOwnerActor>();
+                            childByOwner.TryAdd(created.OwnerId, pid);
+                            childBySource.TryAdd(created.SourceId, pid);
                             break;
                         case PatternDeleted deleted:
-                            namesBySource.Remove(deleted.SourceId);
+                            childBySource.Remove(deleted.SourceId);
                             break;
                     }
 
-                    context.GetChild<PatternsByOwnerActor>(namesBySource[@event.SourceId]).Tell(@event);
+                    childBySource[@event.SourceId].Tell(@event);
                     break;
                 case GetPatternItems query:
                     senders.Set(query.RequestId, context.Sender, 30.Seconds());
-                    context.GetChild<PatternsByOwnerActor>(namesByOwner[query.OwnerId]).Tell(query);
+                    childByOwner[query.OwnerId].Tell(query);
                     break;
                 case PatternItems items:
-                    senders.Get<PID>(namesBySource[items.RequestId])?.Tell(items);
+                    senders.Get<PID>(items.RequestId)?.Tell(items);
                     break;
             }
         }
