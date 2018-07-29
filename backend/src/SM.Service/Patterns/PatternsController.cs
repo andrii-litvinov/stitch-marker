@@ -18,7 +18,8 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            dynamic response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
+            dynamic response = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 
@@ -31,7 +32,8 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Delete(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
+            var response = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 
@@ -44,7 +46,8 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
+            var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
+            var response = await pattern.RequestAsync<PatternOwner>(queryOwner, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 

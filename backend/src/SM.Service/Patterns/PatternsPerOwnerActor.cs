@@ -5,9 +5,8 @@ using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using SM.Service.Extensions;
 using SM.Service.Messages;
-using SM.Service.UserPatterns;
 
-namespace SM.Service.OwnerPatterns
+namespace SM.Service.Patterns
 {
     public class PatternsPerOwnerActor : IActor
     {
@@ -41,13 +40,13 @@ namespace SM.Service.OwnerPatterns
                     user = context.GetChild<UserPatternsActor>(patternOwner[m.Id]);
                     user.Tell(m);
                     break;
-                case GetPatternsInfo m:
-                    senders.Set(m.OwnerId, context.Sender, 30.Seconds());
+                case GetPatternItems m:
+                    senders.Set(m.RequestId, context.Sender, 30.Seconds());
                     user = context.GetChild<UserPatternsActor>(ownerPatterns[m.OwnerId]);
                     user.Tell(m);
                     break;
-                case UserPatternsInfo m:
-                    senders.Get<PID>(patternOwner[m.OwnerId])?.Tell(m);
+                case PatternItems m:
+                    senders.Get<PID>(patternOwner[m.RequestId])?.Tell(m);
                     break;
             }
         }

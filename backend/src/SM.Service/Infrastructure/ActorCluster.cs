@@ -8,7 +8,6 @@ using Proto;
 using Proto.Cluster;
 using Proto.Cluster.Consul;
 using Proto.Remote;
-using SM.Service.OwnerPatterns;
 using SM.Service.Patterns;
 
 namespace SM.Service.Infrastructure

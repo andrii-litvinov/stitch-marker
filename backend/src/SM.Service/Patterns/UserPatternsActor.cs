@@ -4,16 +4,11 @@ using System.Threading.Tasks;
 using Proto;
 using SM.Service.Messages;
 
-namespace SM.Service.UserPatterns
+namespace SM.Service.Patterns
 {
     public class UserPatternsActor : IActor
     {
-        private readonly List<PatternBaseInfo> patternInfos;
-
-        public UserPatternsActor()
-        {
-            patternInfos = new List<PatternBaseInfo>();
-        }
+        private readonly Dictionary<string, PatternItem> patterns = new Dictionary<string, PatternItem>();
 
         public async Task ReceiveAsync(IContext context)
         {
@@ -22,7 +17,7 @@ namespace SM.Service.UserPatterns
                 case Started _:
                     break;
                 case PatternCreated m:
-                    patternInfos.Add(new PatternBaseInfo
+                    patterns[m.Id] = new PatternItem
                     {
                         Author = m.Pattern.Info.Author,
                         Company = m.Pattern.Info.Company,
@@ -31,18 +26,13 @@ namespace SM.Service.UserPatterns
                         Height = m.Pattern.Height,
                         Width = m.Pattern.Width,
                         Id = m.Pattern.Id
-                    });
+                    };
                     break;
                 case PatternDeleted m:
-                    var patternInfo = patternInfos.FirstOrDefault(p => p.Id == m.Id);
-                    if (patternInfo != null) patternInfos.Remove(patternInfo);
+                    patterns.Remove(m.Id);
                     break;
-                case GetPatternsInfo _:
-                    context.Parent.Tell(new UserPatternsInfo
-                    {
-                        OwnerId = context.Self.Id,
-                        PatternBaseInfo = {patternInfos}
-                    });
+                case GetPatternItems m:
+                    context.Parent.Tell(new PatternItems {RequestId = m.RequestId, Items = {patterns.Values.Skip(m.Skip).Take(m.Take)}});
                     break;
             }
         }

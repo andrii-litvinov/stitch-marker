@@ -4,5 +4,6 @@ package pattern;
 option csharp_namespace = "SM.Service.Messages";
 
 message GetPatternOwner {
-	string id = 1;
+    string request_id = 1;
+    string pattern_id = 2;
 }
