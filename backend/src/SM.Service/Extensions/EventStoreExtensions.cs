@@ -30,11 +30,17 @@ namespace SM.Service.Extensions
             }
 
             var eventType = Type.GetType($"SM.Service.Messages.{recordedEvent.EventType}");
-            var message = (IMessage) Activator.CreateInstance(eventType);
+            if (eventType != null)
+            {
+                var instance = Activator.CreateInstance(eventType);
+                if (instance is IMessage message)
+                {
+                    message.MergeFrom(data);
+                    return message;
+                }
+            }
 
-            message.MergeFrom(data);
-
-            return message;
+            return null;
         }
     }
 }

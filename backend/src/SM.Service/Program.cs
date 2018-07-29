@@ -29,6 +29,8 @@ namespace SM.Service
                     provider => new StreamSubscriberConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
                 services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
                     provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
+                services.AddSingleton<IActorFactory, ActorFactory>();
+
                 services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

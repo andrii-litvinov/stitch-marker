@@ -32,17 +32,18 @@ namespace SM.Service.Patterns
                 case IEvent @event:
                     switch (@event)
                     {
-                        case PatternCreated created:
-                            var pid = context.SpawnPrefix<PatternsByOwnerActor>(factory);
-                            childByOwner.TryAdd(created.OwnerId, pid);
-                            childBySource.TryAdd(created.SourceId, pid);
+                        case PatternUploaded uploaded:
+                            CreateChild(context, uploaded.OwnerId, uploaded.SourceId);
                             break;
-                        case PatternDeleted deleted:
-                            childBySource.Remove(deleted.SourceId);
+                        case PatternCreated created:
+                            CreateChild(context, created.OwnerId, created.SourceId);
                             break;
                     }
 
                     childBySource[@event.SourceId].Tell(@event);
+
+                    if (@event is PatternDeleted deleted) childBySource.Remove(deleted.SourceId);
+
                     break;
                 default:
                     await behavior.ReceiveAsync(context);
@@ -51,7 +52,7 @@ namespace SM.Service.Patterns
         }
 
         private static async Task CatchingUp(IContext context) =>
-            context.Sender.Tell(new CatchingUp());
+            context.Sender?.Tell(new CatchingUp());
 
         private async Task LiveProcessing(IContext context)
         {
@@ -65,6 +66,17 @@ namespace SM.Service.Patterns
                     senders.Get<PID>(items.RequestId)?.Tell(items);
                     break;
             }
+        }
+
+        private void CreateChild(IContext context, string ownerId, string sourceId)
+        {
+            if (!childByOwner.TryGetValue(ownerId, out var pid))
+            {
+                pid = context.SpawnPrefix<PatternsByOwnerActor>(factory);
+                childByOwner.Add(ownerId, pid);
+            }
+
+            childBySource.TryAdd(sourceId, pid);
         }
     }
 }

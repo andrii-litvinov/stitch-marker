@@ -46,7 +46,11 @@ namespace SM.Service.Patterns
         private async Task EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
         {
             if (!resolvedEvent.OriginalStreamId.StartsWith("$"))
-                cts.Parent.Tell(resolvedEvent.Event.ReadMessage());
+            {
+                var message = resolvedEvent.Event.ReadMessage();
+                if (message != null) cts.Parent.Tell(message);
+            }
+
             position = resolvedEvent.OriginalPosition;
         }
     }

@@ -17,16 +17,18 @@ namespace SM.Service.Patterns
                 case Started _:
                     break;
                 case PatternCreated m:
-                    patterns[m.SourceId] = new PatternItem
-                    {
-                        Author = m.Pattern.Info.Author,
-                        Company = m.Pattern.Info.Company,
-                        Copyright = m.Pattern.Info.Copyright,
-                        Title = m.Pattern.Info.Title,
-                        Height = m.Pattern.Height,
-                        Width = m.Pattern.Width,
-                        Id = m.Pattern.Id
-                    };
+                    if (m.Pattern != null) // TODO: Remove after EventStore cleanup.
+                        patterns[m.SourceId] = new PatternItem
+                        {
+                            Author = m.Pattern.Info.Author,
+                            Company = m.Pattern.Info.Company,
+                            Copyright = m.Pattern.Info.Copyright,
+                            Title = m.Pattern.Info.Title,
+                            Height = m.Pattern.Height,
+                            Width = m.Pattern.Width,
+                            Id = m.Pattern.Id
+                        };
+
                     break;
                 case PatternDeleted m:
                     patterns.Remove(m.SourceId);
