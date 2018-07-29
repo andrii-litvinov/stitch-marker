@@ -8,9 +8,8 @@ using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Proto.Persistence;
-using SM.Service.Extensions;
 
-namespace SM.Service.Infrastructure.EventStore
+namespace SM.Service
 {
     public class EventStore : IEventStore
     {

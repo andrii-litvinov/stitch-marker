@@ -1,4 +1,4 @@
-namespace SM.Service.Messages
+namespace SM.Service
 {
     public partial class PatternUploaded : IEvent
     {

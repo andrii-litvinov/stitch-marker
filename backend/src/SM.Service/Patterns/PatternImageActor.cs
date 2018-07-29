@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Proto;
 using SkiaSharp;
-using SM.Service.Extensions;
-using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {
@@ -32,7 +30,7 @@ namespace SM.Service.Patterns
             return Actor.Done;
         }
 
-        private static byte[] CreateThumbnail(Pattern pattern, int thumbnailWidth, int thumbnailHeight)
+        private static byte[] CreateThumbnail(Service.Pattern pattern, int thumbnailWidth, int thumbnailHeight)
         {
             var size = GetStitchSize((int) pattern.Width, (int) pattern.Height, thumbnailWidth, thumbnailHeight);
             var width = pattern.Width * size;

@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Proto;
-using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {

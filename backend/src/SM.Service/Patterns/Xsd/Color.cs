@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SM.Service.Patterns.Xsd
+namespace SM.Service.Patterns
 {
     public class Color
     {

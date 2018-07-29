@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using FluentAssertions;
 using Google.Protobuf;
-using SM.Service.Infrastructure.EventStore;
-using SM.Service.Messages;
 using Xunit;
 
 namespace SM.Service.Tests.EventStore
@@ -15,11 +13,11 @@ namespace SM.Service.Tests.EventStore
     {
         public EventStoreShould()
         {
-            eventStore = new Infrastructure.EventStore.EventStore(
+            eventStore = new Service.EventStore(
                 new ReadWriteEventStoreConnection("ConnectTo=tcp://admin:changeit@localhost:1113"));
         }
 
-        private readonly Infrastructure.EventStore.EventStore eventStore;
+        private readonly Service.EventStore eventStore;
 
         [Fact]
         public async Task GetEvents()

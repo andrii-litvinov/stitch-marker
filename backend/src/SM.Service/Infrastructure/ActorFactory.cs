@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Proto;
 
-namespace SM.Service.Infrastructure
+namespace SM.Service
 {
     public interface IActorFactory
     {

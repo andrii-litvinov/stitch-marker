@@ -2,9 +2,6 @@
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using Proto;
-using SM.Service.Extensions;
-using SM.Service.Infrastructure.EventStore;
-using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {

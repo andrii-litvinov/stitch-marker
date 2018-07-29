@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from PatternCreated.proto</summary>
   public static partial class PatternCreatedReflection {
@@ -27,11 +27,11 @@ namespace SM.Service.Messages {
             "ChRQYXR0ZXJuQ3JlYXRlZC5wcm90bxIHcGF0dGVybhoNUGF0dGVybi5wcm90",
             "byJYCg5QYXR0ZXJuQ3JlYXRlZBIRCglzb3VyY2VfaWQYASABKAkSIQoHcGF0",
             "dGVybhgCIAEoCzIQLnBhdHRlcm4uUGF0dGVybhIQCghvd25lcl9pZBgDIAEo",
-            "CUIWqgITU00uU2VydmljZS5NZXNzYWdlc1AAYgZwcm90bzM="));
+            "CUINqgIKU00uU2VydmljZVAAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.Messages.PatternReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::SM.Service.PatternReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternCreated), global::SM.Service.Messages.PatternCreated.Parser, new[]{ "SourceId", "Pattern", "OwnerId" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.PatternCreated), global::SM.Service.PatternCreated.Parser, new[]{ "SourceId", "Pattern", "OwnerId" }, null, null, null)
           }));
     }
     #endregion
@@ -46,7 +46,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternCreatedReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.PatternCreatedReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -87,9 +87,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "pattern" field.</summary>
     public const int PatternFieldNumber = 2;
-    private global::SM.Service.Messages.Pattern pattern_;
+    private global::SM.Service.Pattern pattern_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Pattern Pattern {
+    public global::SM.Service.Pattern Pattern {
       get { return pattern_; }
       set {
         pattern_ = value;
@@ -190,7 +190,7 @@ namespace SM.Service.Messages {
       }
       if (other.pattern_ != null) {
         if (pattern_ == null) {
-          pattern_ = new global::SM.Service.Messages.Pattern();
+          pattern_ = new global::SM.Service.Pattern();
         }
         Pattern.MergeFrom(other.Pattern);
       }
@@ -214,7 +214,7 @@ namespace SM.Service.Messages {
           }
           case 18: {
             if (pattern_ == null) {
-              pattern_ = new global::SM.Service.Messages.Pattern();
+              pattern_ = new global::SM.Service.Pattern();
             }
             input.ReadMessage(pattern_);
             break;

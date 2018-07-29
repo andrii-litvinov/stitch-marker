@@ -2,9 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
-using SM.Service.Extensions;
-using SM.Service.Infrastructure;
-using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {

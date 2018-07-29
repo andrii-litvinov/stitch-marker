@@ -1,7 +1,7 @@
 syntax = "proto3";
 package pattern;
 
-option csharp_namespace = "SM.Service.Messages";
+option csharp_namespace = "SM.Service";
 
 message GetPatternOwner {
     string request_id = 1;

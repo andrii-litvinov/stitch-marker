@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from PatternItems.proto</summary>
   public static partial class PatternItemsReflection {
@@ -29,12 +29,12 @@ namespace SM.Service.Messages {
             "LlBhdHRlcm5JdGVtInsKC1BhdHRlcm5JdGVtEgoKAmlkGAEgASgJEg0KBXdp",
             "ZHRoGAIgASgNEg4KBmhlaWdodBgDIAEoDRINCgV0aXRsZRgEIAEoCRIOCgZh",
             "dXRob3IYBSABKAkSDwoHY29tcGFueRgGIAEoCRIRCgljb3B5cmlnaHQYByAB",
-            "KAlCFqoCE1NNLlNlcnZpY2UuTWVzc2FnZXNiBnByb3RvMw=="));
+            "KAlCDaoCClNNLlNlcnZpY2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternItems), global::SM.Service.Messages.PatternItems.Parser, new[]{ "RequestId", "Items" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternItem), global::SM.Service.Messages.PatternItem.Parser, new[]{ "Id", "Width", "Height", "Title", "Author", "Company", "Copyright" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.PatternItems), global::SM.Service.PatternItems.Parser, new[]{ "RequestId", "Items" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.PatternItem), global::SM.Service.PatternItem.Parser, new[]{ "Id", "Width", "Height", "Title", "Author", "Company", "Copyright" }, null, null, null)
           }));
     }
     #endregion
@@ -49,7 +49,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternItemsReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.PatternItemsReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -89,11 +89,11 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "items" field.</summary>
     public const int ItemsFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::SM.Service.Messages.PatternItem> _repeated_items_codec
-        = pb::FieldCodec.ForMessage(18, global::SM.Service.Messages.PatternItem.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Messages.PatternItem> items_ = new pbc::RepeatedField<global::SM.Service.Messages.PatternItem>();
+    private static readonly pb::FieldCodec<global::SM.Service.PatternItem> _repeated_items_codec
+        = pb::FieldCodec.ForMessage(18, global::SM.Service.PatternItem.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.PatternItem> items_ = new pbc::RepeatedField<global::SM.Service.PatternItem>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Messages.PatternItem> Items {
+    public pbc::RepeatedField<global::SM.Service.PatternItem> Items {
       get { return items_; }
     }
 
@@ -198,7 +198,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternItemsReflection.Descriptor.MessageTypes[1]; }
+      get { return global::SM.Service.PatternItemsReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

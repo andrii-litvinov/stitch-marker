@@ -5,9 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Proto.Cluster;
-using SM.Service.Extensions;
-using SM.Service.Messages;
-using SM.Service.Resources;
 
 namespace SM.Service.Patterns
 {
@@ -23,7 +20,7 @@ namespace SM.Service.Patterns
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 
-            response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+            response = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
 
             return Ok(response);
         }

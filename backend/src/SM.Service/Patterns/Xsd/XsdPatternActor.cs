@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Proto;
-using SM.Service.Extensions;
-using SM.Service.Messages;
 
-namespace SM.Service.Patterns.Xsd
+namespace SM.Service.Patterns
 {
     public class XsdPatternActor : IActor
     {

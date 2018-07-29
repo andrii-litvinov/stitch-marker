@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using Proto;
-using SM.Service.Infrastructure;
 
-namespace SM.Service.Extensions
+namespace SM.Service
 {
     public static class ChildActorExtensions
     {

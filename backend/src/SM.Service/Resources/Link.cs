@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Resources
+﻿namespace SM.Service
 {
     public class Link
     {

@@ -2,7 +2,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using AutoFixture.Xunit2;
-using SM.Service.Resources;
 using Xunit;
 using Xunit.Abstractions;
 

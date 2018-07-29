@@ -5,12 +5,11 @@ using System.Text;
 using AutoFixture.Xunit2;
 using Google.Protobuf;
 using Newtonsoft.Json;
-using SM.Service.Messages;
-using SM.Service.Patterns.Xsd;
+using SM.Service.Patterns;
 using Xunit;
 using Xunit.Abstractions;
-using Stitch = SM.Service.Messages.Stitch;
-using Pattern = SM.Service.Messages.Pattern;
+using Stitch = SM.Service.Stitch;
+using Pattern = SM.Service.Pattern;
 
 namespace SM.Service.Tests
 {

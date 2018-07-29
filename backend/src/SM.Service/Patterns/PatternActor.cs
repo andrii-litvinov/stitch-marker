@@ -2,10 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using SM.Service.Extensions;
-using SM.Service.Messages;
-using SM.Service.Patterns.Xsd;
-using Pattern = SM.Service.Messages.Pattern;
+using Pattern = SM.Service.Pattern;
 
 namespace SM.Service.Patterns
 {
@@ -14,7 +11,7 @@ namespace SM.Service.Patterns
         private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
-        private Pattern pattern;
+        private Service.Pattern pattern;
         private Persistence persistence;
 
         public PatternActor(IEventStore eventStore) => this.eventStore = eventStore;

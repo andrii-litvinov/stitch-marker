@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from Thumbnail.proto</summary>
   public static partial class ThumbnailReflection {
@@ -25,12 +25,11 @@ namespace SM.Service.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "Cg9UaHVtYm5haWwucHJvdG8SB3BhdHRlcm4iJgoJVGh1bWJuYWlsEgoKAmlk",
-            "GAEgASgJEg0KBWltYWdlGAIgASgMQhaqAhNTTS5TZXJ2aWNlLk1lc3NhZ2Vz",
-            "YgZwcm90bzM="));
+            "GAEgASgJEg0KBWltYWdlGAIgASgMQg2qAgpTTS5TZXJ2aWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Thumbnail), global::SM.Service.Messages.Thumbnail.Parser, new[]{ "Id", "Image" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Thumbnail), global::SM.Service.Thumbnail.Parser, new[]{ "Id", "Image" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +44,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.ThumbnailReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.ThumbnailReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
