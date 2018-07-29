@@ -9,13 +9,13 @@ using SM.Service.UserPatterns;
 
 namespace SM.Service.OwnerPatterns
 {
-    public class OwnerPatternsActor : IActor
+    public class PatternsPerOwnerActor : IActor
     {
         private readonly Dictionary<string, string> ownerPatterns;
         private readonly Dictionary<string, string> patternOwner;
         private readonly MemoryCache senders;
 
-        public OwnerPatternsActor()
+        public PatternsPerOwnerActor()
         {
             ownerPatterns = new Dictionary<string, string>();
             patternOwner = new Dictionary<string, string>();

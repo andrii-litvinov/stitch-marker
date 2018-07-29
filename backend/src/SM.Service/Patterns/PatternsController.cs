@@ -17,7 +17,7 @@ namespace SM.Service.Patterns
         [HttpGet, Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             dynamic response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
@@ -30,7 +30,7 @@ namespace SM.Service.Patterns
         [HttpDelete, Route("{patternId}")]
         public async Task<IActionResult> Delete(Guid patternId)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
@@ -43,7 +43,7 @@ namespace SM.Service.Patterns
         [HttpGet, Route("{patternId}/thumbnail")]
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
@@ -60,7 +60,7 @@ namespace SM.Service.Patterns
             if (userId == null) return BadRequest();
 
             var patternId = Guid.NewGuid();
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", ActorKind.Pattern);
             var content = await file.ReadAllBytes();
             var command = new CreatePattern
             {
