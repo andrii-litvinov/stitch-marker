@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using SM.Service.Extensions;
+using SM.Service.Infrastructure;
 using SM.Service.Messages;
 
 namespace SM.Service.Patterns
 {
     public class PatternsByOwnerProjectionActor : IActor
     {
+        private readonly IActorFactory factory;
         private readonly Dictionary<string, PID> childByOwner = new Dictionary<string, PID>();
         private readonly Dictionary<string, PID> childBySource = new Dictionary<string, PID>();
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
+
+        public PatternsByOwnerProjectionActor(IActorFactory factory) => this.factory = factory;
 
         public async Task ReceiveAsync(IContext context)
         {
@@ -25,7 +28,7 @@ namespace SM.Service.Patterns
                     switch (@event)
                     {
                         case PatternCreated created:
-                            var pid = context.SpawnPrefix<PatternsByOwnerActor>();
+                            var pid = context.SpawnPrefix<PatternsByOwnerActor>(factory);
                             childByOwner.TryAdd(created.OwnerId, pid);
                             childBySource.TryAdd(created.SourceId, pid);
                             break;

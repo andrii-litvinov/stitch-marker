@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Proto;
+using SM.Service.Infrastructure;
 
 namespace SM.Service.Extensions
 {
@@ -18,7 +19,7 @@ namespace SM.Service.Extensions
                    context.SpawnNamed(Actor.FromProducer(() => new T()), name);
         }
 
-        public static PID SpawnPrefix<T>(this IContext context) where T : IActor, new() =>
-            context.SpawnPrefix(Actor.FromProducer(() => new T()), typeof(T).Name);
+        public static PID SpawnPrefix<T>(this IContext context, IActorFactory factory) where T : IActor =>
+            context.SpawnPrefix(Actor.FromProducer(() => factory.Create<T>()), typeof(T).Name);
     }
 }
