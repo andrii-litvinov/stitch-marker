@@ -11,6 +11,31 @@ namespace SM.Service.Patterns
     [Authorize, Route("api/patterns")]
     public class PatternsController : Controller
     {
+        [HttpGet, Route("getall")]
+        public async Task<IActionResult> GetAll()
+        {
+            var userId = User.GetUserId();
+            if (userId == null) return BadRequest();
+
+            var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
+
+            var query = new GetPatternItems { RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = 0, Take = 100 };
+            var response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
+
+
+            if (response is PatternItems)
+            {
+                return Ok((response as PatternItems).Items);
+            }
+
+            if (response is CatchingUp)
+            {
+
+            }
+
+            return Ok();
+        }
+
         [HttpGet, Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {

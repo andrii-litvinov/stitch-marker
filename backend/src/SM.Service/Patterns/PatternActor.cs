@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using Pattern = SM.Service.Pattern;
 
 namespace SM.Service.Patterns
 {
