@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from CreatePattern.proto</summary>
   public static partial class CreatePatternReflection {
@@ -26,12 +26,12 @@ namespace SM.Service.Messages {
           string.Concat(
             "ChNDcmVhdGVQYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIlEKDUNyZWF0ZVBhdHRl",
             "cm4SCgoCaWQYASABKAkSEQoJZmlsZV9uYW1lGAIgASgJEg8KB2NvbnRlbnQY",
-            "AyABKAwSEAoIb3duZXJfaWQYBCABKAlCFqoCE1NNLlNlcnZpY2UuTWVzc2Fn",
-            "ZXNiBnByb3RvMw=="));
+            "AyABKAwSEAoIb3duZXJfaWQYBCABKAlCDaoCClNNLlNlcnZpY2ViBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.CreatePattern), global::SM.Service.Messages.CreatePattern.Parser, new[]{ "Id", "FileName", "Content", "OwnerId" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.CreatePattern), global::SM.Service.CreatePattern.Parser, new[]{ "Id", "FileName", "Content", "OwnerId" }, null, null, null)
           }));
     }
     #endregion
@@ -46,7 +46,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.CreatePatternReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.CreatePatternReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

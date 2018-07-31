@@ -6,37 +6,34 @@ using Microsoft.Extensions.Hosting;
 using Proto;
 using Proto.Cluster;
 using Proto.Cluster.Consul;
-using Proto.Persistence;
 using Proto.Remote;
 using SM.Service.Patterns;
 
-namespace SM.Service.Infrastructure
+namespace SM.Service
 {
     public class ActorCluster : IHostedService
     {
         private readonly IConfiguration configuration;
-        private readonly IEventStore eventStore;
+        private readonly IActorFactory factory;
 
-        public ActorCluster(IConfiguration configuration, IEventStore eventStore)
-        {
-            this.configuration = configuration;
-            this.eventStore = eventStore;
-        }
-        
+        public ActorCluster(IConfiguration configuration, IActorFactory factory) => (this.configuration, this.factory) = (configuration, factory);
+
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            // TODO: Register all known actors in a generic way 
-            var props = Actor.FromProducer(() => new PatternActor(eventStore));
-            Remote.RegisterKnownKind("pattern", props);
-            
-            var provider = new ConsulProvider(new ConsulProviderOptions(),
-                configuration1 => configuration1.Address = new Uri(configuration["CONSUL_URL"]));
+            Remote.RegisterKnownKind(ActorKind.Pattern, Actor.FromProducer(factory.Create<PatternActor>));
+            Remote.RegisterKnownKind(ActorKind.PatternsByOwnerProjection, Actor.FromProducer(factory.Create<PatternsByOwnerProjectionActor>));
+
+            var provider = new ConsulProvider(new ConsulProviderOptions(), c => c.Address = new Uri(configuration["CONSUL_URL"]));
             Cluster.Start("PatternCluster", "127.0.0.1", 12001, provider);
+
+            while (true)
+            {
+                var (_, status) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection, cancellationToken);
+                if (status is ResponseStatusCode.OK || status is ResponseStatusCode.ProcessNameAlreadyExist) break;
+                await Task.Delay(100, cancellationToken);
+            }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-    }
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    }    
 }

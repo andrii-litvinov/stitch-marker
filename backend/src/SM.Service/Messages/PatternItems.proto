@@ -1,0 +1,20 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service";
+
+message PatternItems {
+    string request_id = 1;
+    repeated PatternItem items = 2;
+}
+
+message PatternItem {
+	string id = 1;
+	uint32 width = 2;
+    uint32 height = 3;
+    string title = 4;
+    string author = 5;
+    string company = 6;
+    string copyright = 7;
+}
+

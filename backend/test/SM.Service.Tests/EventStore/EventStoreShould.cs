@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using FluentAssertions;
 using Google.Protobuf;
-using SM.Service.Infrastructure.EventStore;
-using SM.Service.Messages;
 using Xunit;
 
 namespace SM.Service.Tests.EventStore
@@ -15,11 +13,11 @@ namespace SM.Service.Tests.EventStore
     {
         public EventStoreShould()
         {
-            eventStore = new Infrastructure.EventStore.EventStore(
+            eventStore = new Service.EventStore(
                 new ReadWriteEventStoreConnection("ConnectTo=tcp://admin:changeit@localhost:1113"));
         }
 
-        private readonly Infrastructure.EventStore.EventStore eventStore;
+        private readonly Service.EventStore eventStore;
 
         [Fact]
         public async Task GetEvents()
@@ -27,7 +25,7 @@ namespace SM.Service.Tests.EventStore
             // Arrange
             var event1 = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern1.xsd",
                 Content = ByteString.CopyFrom(
                     Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
@@ -35,7 +33,7 @@ namespace SM.Service.Tests.EventStore
 
             var event2 = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern2.xsd",
                 Content = ByteString.CopyFrom(
                     Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
@@ -68,7 +66,7 @@ namespace SM.Service.Tests.EventStore
             // Arrange
             var @event = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern.xsd",
                 Content = ByteString.CopyFrom(
                     Encoding.UTF8.GetBytes("Lorem ipsum dolor sit amet, consectetur adipiscing elit."))
@@ -88,7 +86,7 @@ namespace SM.Service.Tests.EventStore
             // Arrange
             var @event = new PatternUploaded
             {
-                Id = Guid.NewGuid().ToString(),
+                SourceId = Guid.NewGuid().ToString(),
                 FileName = "pattern.xsd",
                 Content = ByteString.CopyFrom(Encoding.UTF8.GetBytes(new string('c', 512 * 1024)))
             };

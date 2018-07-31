@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using AutoFixture.Xunit2;
 using Proto;
-using SM.Service.Messages;
 using SM.Service.Patterns;
-using SM.Service.Patterns.Xsd;
 using Xunit;
-using Pattern = SM.Service.Messages.Pattern;
+using Pattern = SM.Service.Pattern;
 
 namespace SM.Service.Tests
 {

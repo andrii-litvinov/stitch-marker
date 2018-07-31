@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Patterns.Xsd
+﻿namespace SM.Service.Patterns
 {
     public class Node
     {

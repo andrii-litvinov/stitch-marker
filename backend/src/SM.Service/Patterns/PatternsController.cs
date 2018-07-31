@@ -5,36 +5,32 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Proto.Cluster;
-using SM.Service.Extensions;
-using SM.Service.Messages;
-using SM.Service.Resources;
 
 namespace SM.Service.Patterns
 {
-    [Authorize]
-    [Route("api/patterns")]
+    [Authorize, Route("api/patterns")]
     public class PatternsController : Controller
     {
-        [HttpGet]
-        [Route("{patternId}")]
+        [HttpGet, Route("{patternId}")]
         public async Task<IActionResult> Get(Guid patternId)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            dynamic response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
+            dynamic response = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 
-            response = await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
+            response = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
 
             return Ok(response);
         }
 
-        [HttpDelete]
-        [Route("{patternId}")]
+        [HttpDelete, Route("{patternId}")]
         public async Task<IActionResult> Delete(Guid patternId)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
+            var response = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 
@@ -43,12 +39,12 @@ namespace SM.Service.Patterns
             return Ok();
         }
 
-        [HttpGet]
-        [Route("{patternId}/thumbnail")]
+        [HttpGet, Route("{patternId}/thumbnail")]
         public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", "pattern");
-            var response = await pattern.RequestAsync<PatternOwner>(new GetPatternOwner {Id = patternId.ToString()}, 10.Seconds());
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
+            var response = await pattern.RequestAsync<PatternOwner>(queryOwner, 10.Seconds());
 
             if (response.OwnerId != User.GetUserId()) return Forbid();
 
@@ -64,7 +60,7 @@ namespace SM.Service.Patterns
             if (userId == null) return BadRequest();
 
             var patternId = Guid.NewGuid();
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", "pattern");
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", ActorKind.Pattern);
             var content = await file.ReadAllBytes();
             var command = new CreatePattern
             {
@@ -74,7 +70,7 @@ namespace SM.Service.Patterns
                 OwnerId = userId
             };
             var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
-            var preview = new {@event.Id, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
+            var preview = new {Id = @event.SourceId, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
             var resource = new Resource(preview)
             {
                 Links =

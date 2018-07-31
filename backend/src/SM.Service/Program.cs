@@ -4,8 +4,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Proto.Persistence;
-using SM.Service.Infrastructure;
-using SM.Service.Infrastructure.EventStore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace SM.Service
@@ -24,9 +22,13 @@ namespace SM.Service
                 services.AddMvc();
                 services.AddCors();
                 services.AddSingleton<IHostedService, ActorCluster>();
-                services.AddSingleton<IEventStore, Infrastructure.EventStore.EventStore>();
+                services.AddSingleton<IEventStore, EventStore>();
+                services.AddSingleton<ISubscriptionEventStoreConnection, StreamSubscriberConnection>(
+                    provider => new StreamSubscriberConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
                 services.AddSingleton<IReadWriteEventStoreConnection, ReadWriteEventStoreConnection>(
                     provider => new ReadWriteEventStoreConnection(context.Configuration["EVENTSTORE_CONNECTION"]));
+                services.AddSingleton<IActorFactory, ActorFactory>();
+
                 services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

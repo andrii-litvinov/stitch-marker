@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from PatternDeleted.proto</summary>
   public static partial class PatternDeletedReflection {
@@ -24,13 +24,13 @@ namespace SM.Service.Messages {
     static PatternDeletedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChRQYXR0ZXJuRGVsZXRlZC5wcm90bxIHcGF0dGVybiIcCg5QYXR0ZXJuRGVs",
-            "ZXRlZBIKCgJpZBgBIAEoCUIWqgITU00uU2VydmljZS5NZXNzYWdlc2IGcHJv",
-            "dG8z"));
+            "ChRQYXR0ZXJuRGVsZXRlZC5wcm90bxIHcGF0dGVybiIjCg5QYXR0ZXJuRGVs",
+            "ZXRlZBIRCglzb3VyY2VfaWQYASABKAlCDaoCClNNLlNlcnZpY2ViBnByb3Rv",
+            "Mw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternDeleted), global::SM.Service.Messages.PatternDeleted.Parser, new[]{ "Id" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.PatternDeleted), global::SM.Service.PatternDeleted.Parser, new[]{ "SourceId" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +45,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternDeletedReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.PatternDeletedReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62,7 +62,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PatternDeleted(PatternDeleted other) : this() {
-      id_ = other.id_;
+      sourceId_ = other.sourceId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -71,14 +71,14 @@ namespace SM.Service.Messages {
       return new PatternDeleted(this);
     }
 
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
+    /// <summary>Field number for the "source_id" field.</summary>
+    public const int SourceIdFieldNumber = 1;
+    private string sourceId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Id {
-      get { return id_; }
+    public string SourceId {
+      get { return sourceId_; }
       set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        sourceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -95,14 +95,14 @@ namespace SM.Service.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Id != other.Id) return false;
+      if (SourceId != other.SourceId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (SourceId.Length != 0) hash ^= SourceId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -116,9 +116,9 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Id.Length != 0) {
+      if (SourceId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Id);
+        output.WriteString(SourceId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -128,8 +128,8 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      if (SourceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SourceId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -142,8 +142,8 @@ namespace SM.Service.Messages {
       if (other == null) {
         return;
       }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
+      if (other.SourceId.Length != 0) {
+        SourceId = other.SourceId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -157,7 +157,7 @@ namespace SM.Service.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Id = input.ReadString();
+            SourceId = input.ReadString();
             break;
           }
         }

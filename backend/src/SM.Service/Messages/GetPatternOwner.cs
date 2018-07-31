@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from GetPatternOwner.proto</summary>
   public static partial class GetPatternOwnerReflection {
@@ -24,13 +24,13 @@ namespace SM.Service.Messages {
     static GetPatternOwnerReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChVHZXRQYXR0ZXJuT3duZXIucHJvdG8SB3BhdHRlcm4iHQoPR2V0UGF0dGVy",
-            "bk93bmVyEgoKAmlkGAEgASgJQhaqAhNTTS5TZXJ2aWNlLk1lc3NhZ2VzYgZw",
-            "cm90bzM="));
+            "ChVHZXRQYXR0ZXJuT3duZXIucHJvdG8SB3BhdHRlcm4iOQoPR2V0UGF0dGVy",
+            "bk93bmVyEhIKCnJlcXVlc3RfaWQYASABKAkSEgoKcGF0dGVybl9pZBgCIAEo",
+            "CUINqgIKU00uU2VydmljZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.GetPatternOwner), global::SM.Service.Messages.GetPatternOwner.Parser, new[]{ "Id" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.GetPatternOwner), global::SM.Service.GetPatternOwner.Parser, new[]{ "RequestId", "PatternId" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +45,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.GetPatternOwnerReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.GetPatternOwnerReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -62,7 +62,8 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetPatternOwner(GetPatternOwner other) : this() {
-      id_ = other.id_;
+      requestId_ = other.requestId_;
+      patternId_ = other.patternId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -71,14 +72,25 @@ namespace SM.Service.Messages {
       return new GetPatternOwner(this);
     }
 
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
+    /// <summary>Field number for the "request_id" field.</summary>
+    public const int RequestIdFieldNumber = 1;
+    private string requestId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Id {
-      get { return id_; }
+    public string RequestId {
+      get { return requestId_; }
       set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        requestId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "pattern_id" field.</summary>
+    public const int PatternIdFieldNumber = 2;
+    private string patternId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string PatternId {
+      get { return patternId_; }
+      set {
+        patternId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -95,14 +107,16 @@ namespace SM.Service.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Id != other.Id) return false;
+      if (RequestId != other.RequestId) return false;
+      if (PatternId != other.PatternId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (RequestId.Length != 0) hash ^= RequestId.GetHashCode();
+      if (PatternId.Length != 0) hash ^= PatternId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -116,9 +130,13 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Id.Length != 0) {
+      if (RequestId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Id);
+        output.WriteString(RequestId);
+      }
+      if (PatternId.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(PatternId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -128,8 +146,11 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      if (RequestId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RequestId);
+      }
+      if (PatternId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(PatternId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -142,8 +163,11 @@ namespace SM.Service.Messages {
       if (other == null) {
         return;
       }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
+      if (other.RequestId.Length != 0) {
+        RequestId = other.RequestId;
+      }
+      if (other.PatternId.Length != 0) {
+        PatternId = other.PatternId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -157,7 +181,11 @@ namespace SM.Service.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Id = input.ReadString();
+            RequestId = input.ReadString();
+            break;
+          }
+          case 18: {
+            PatternId = input.ReadString();
             break;
           }
         }

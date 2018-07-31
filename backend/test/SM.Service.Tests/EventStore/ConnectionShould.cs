@@ -1,7 +1,6 @@
 ﻿using System;
 using EventStore.ClientAPI;
 using FluentAssertions;
-using SM.Service.Infrastructure.EventStore;
 using Xunit;
 
 namespace SM.Service.Tests.EventStore

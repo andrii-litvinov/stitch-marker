@@ -1,10 +1,11 @@
 syntax = "proto3";
 package pattern;
 
-option csharp_namespace = "SM.Service.Messages";
+option csharp_namespace = "SM.Service";
 import public "Pattern.proto";
 
 message PatternCreated {
-    string id = 1;
-    Pattern pattern = 5;
+    string source_id = 1;
+    Pattern pattern = 2;
+    string owner_id = 3;
 }

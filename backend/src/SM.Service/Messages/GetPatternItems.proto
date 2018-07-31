@@ -1,0 +1,12 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service";
+import public "Pattern.proto";
+
+message GetPatternItems {
+    string request_id = 1;
+    string owner_id = 2;
+    int32 skip = 3;
+    int32 take = 4;
+}

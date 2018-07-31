@@ -1,9 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Proto;
-using SM.Service.Extensions;
-using SM.Service.Messages;
 
-namespace SM.Service.Patterns.Xsd
+namespace SM.Service.Patterns
 {
     public class XsdPatternActor : IActor
     {
@@ -21,13 +19,14 @@ namespace SM.Service.Patterns.Xsd
                     pattern.Id = command.Id;
                     pattern.Info.Title = command.FileName;
                     pattern.OwnerId = command.OwnerId;
-                    var @event = new PatternCreated { Id = pattern.Id, Pattern = pattern };
+                    var @event = new PatternCreated {SourceId = pattern.Id, Pattern = pattern, OwnerId = pattern.OwnerId};
                     context.Parent.Tell(@event);
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
                     break;
             }
+
             return Actor.Done;
         }
     }

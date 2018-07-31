@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from PatternCreated.proto</summary>
   public static partial class PatternCreatedReflection {
@@ -25,13 +25,13 @@ namespace SM.Service.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChRQYXR0ZXJuQ3JlYXRlZC5wcm90bxIHcGF0dGVybhoNUGF0dGVybi5wcm90",
-            "byI/Cg5QYXR0ZXJuQ3JlYXRlZBIKCgJpZBgBIAEoCRIhCgdwYXR0ZXJuGAUg",
-            "ASgLMhAucGF0dGVybi5QYXR0ZXJuQhaqAhNTTS5TZXJ2aWNlLk1lc3NhZ2Vz",
-            "UABiBnByb3RvMw=="));
+            "byJYCg5QYXR0ZXJuQ3JlYXRlZBIRCglzb3VyY2VfaWQYASABKAkSIQoHcGF0",
+            "dGVybhgCIAEoCzIQLnBhdHRlcm4uUGF0dGVybhIQCghvd25lcl9pZBgDIAEo",
+            "CUINqgIKU00uU2VydmljZVAAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.Messages.PatternReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::SM.Service.PatternReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.PatternCreated), global::SM.Service.Messages.PatternCreated.Parser, new[]{ "Id", "Pattern" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.PatternCreated), global::SM.Service.PatternCreated.Parser, new[]{ "SourceId", "Pattern", "OwnerId" }, null, null, null)
           }));
     }
     #endregion
@@ -46,7 +46,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternCreatedReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.PatternCreatedReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -63,8 +63,9 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PatternCreated(PatternCreated other) : this() {
-      id_ = other.id_;
+      sourceId_ = other.sourceId_;
       Pattern = other.pattern_ != null ? other.Pattern.Clone() : null;
+      ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -73,25 +74,36 @@ namespace SM.Service.Messages {
       return new PatternCreated(this);
     }
 
-    /// <summary>Field number for the "id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private string id_ = "";
+    /// <summary>Field number for the "source_id" field.</summary>
+    public const int SourceIdFieldNumber = 1;
+    private string sourceId_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string Id {
-      get { return id_; }
+    public string SourceId {
+      get { return sourceId_; }
       set {
-        id_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        sourceId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
     /// <summary>Field number for the "pattern" field.</summary>
-    public const int PatternFieldNumber = 5;
-    private global::SM.Service.Messages.Pattern pattern_;
+    public const int PatternFieldNumber = 2;
+    private global::SM.Service.Pattern pattern_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Pattern Pattern {
+    public global::SM.Service.Pattern Pattern {
       get { return pattern_; }
       set {
         pattern_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "owner_id" field.</summary>
+    public const int OwnerIdFieldNumber = 3;
+    private string ownerId_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string OwnerId {
+      get { return ownerId_; }
+      set {
+        ownerId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -108,16 +120,18 @@ namespace SM.Service.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Id != other.Id) return false;
+      if (SourceId != other.SourceId) return false;
       if (!object.Equals(Pattern, other.Pattern)) return false;
+      if (OwnerId != other.OwnerId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Id.Length != 0) hash ^= Id.GetHashCode();
+      if (SourceId.Length != 0) hash ^= SourceId.GetHashCode();
       if (pattern_ != null) hash ^= Pattern.GetHashCode();
+      if (OwnerId.Length != 0) hash ^= OwnerId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -131,13 +145,17 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Id.Length != 0) {
+      if (SourceId.Length != 0) {
         output.WriteRawTag(10);
-        output.WriteString(Id);
+        output.WriteString(SourceId);
       }
       if (pattern_ != null) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(18);
         output.WriteMessage(Pattern);
+      }
+      if (OwnerId.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(OwnerId);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -147,11 +165,14 @@ namespace SM.Service.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Id.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
+      if (SourceId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SourceId);
       }
       if (pattern_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Pattern);
+      }
+      if (OwnerId.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(OwnerId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -164,14 +185,17 @@ namespace SM.Service.Messages {
       if (other == null) {
         return;
       }
-      if (other.Id.Length != 0) {
-        Id = other.Id;
+      if (other.SourceId.Length != 0) {
+        SourceId = other.SourceId;
       }
       if (other.pattern_ != null) {
         if (pattern_ == null) {
-          pattern_ = new global::SM.Service.Messages.Pattern();
+          pattern_ = new global::SM.Service.Pattern();
         }
         Pattern.MergeFrom(other.Pattern);
+      }
+      if (other.OwnerId.Length != 0) {
+        OwnerId = other.OwnerId;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -185,14 +209,18 @@ namespace SM.Service.Messages {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 10: {
-            Id = input.ReadString();
+            SourceId = input.ReadString();
             break;
           }
-          case 42: {
+          case 18: {
             if (pattern_ == null) {
-              pattern_ = new global::SM.Service.Messages.Pattern();
+              pattern_ = new global::SM.Service.Pattern();
             }
             input.ReadMessage(pattern_);
+            break;
+          }
+          case 26: {
+            OwnerId = input.ReadString();
             break;
           }
         }

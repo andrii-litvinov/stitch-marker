@@ -2,26 +2,19 @@
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using SM.Service.Extensions;
-using SM.Service.Messages;
-using SM.Service.Patterns.Xsd;
-using Pattern = SM.Service.Messages.Pattern;
+using Pattern = SM.Service.Pattern;
 
 namespace SM.Service.Patterns
 {
     public class PatternActor : IActor
     {
-        private readonly Behavior behavior;
+        private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
-        private Pattern pattern;
+        private Service.Pattern pattern;
         private Persistence persistence;
 
-        public PatternActor(IEventStore eventStore)
-        {
-            this.eventStore = eventStore;
-            behavior = new Behavior();
-        }
+        public PatternActor(IEventStore eventStore) => this.eventStore = eventStore;
 
         public async Task ReceiveAsync(IContext context)
         {
@@ -48,8 +41,13 @@ namespace SM.Service.Patterns
             switch (context.Message)
             {
                 case CreatePattern command:
-                    await persistence.PersistEventAsync(
-                        new PatternUploaded {Id = command.Id, FileName = command.FileName, Content = command.Content, OwnerId = command.OwnerId});
+                    await persistence.PersistEventAsync(new PatternUploaded
+                    {
+                        SourceId = command.Id,
+                        FileName = command.FileName,
+                        Content = command.Content,
+                        OwnerId = command.OwnerId
+                    });
                     var parser = context.GetChild<XsdPatternActor>();
                     senders.Set(command.Id, context.Sender, 30.Seconds());
                     parser.Tell(command);
@@ -78,7 +76,7 @@ namespace SM.Service.Patterns
                     senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
                 case DeletePattern command:
-                    var patternDeleted = new PatternDeleted {Id = command.Id};
+                    var patternDeleted = new PatternDeleted {SourceId = command.Id};
                     await persistence.PersistEventAsync(patternDeleted);
                     context.Sender.Tell(patternDeleted);
                     break;
@@ -89,10 +87,7 @@ namespace SM.Service.Patterns
             }
         }
 
-        private Task Deleted(IContext context)
-        {
-            return Actor.Done;
-        }
+        private Task Deleted(IContext context) => Actor.Done;
 
         private void ApplyEvent(Event @event)
         {

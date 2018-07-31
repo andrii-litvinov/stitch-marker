@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service.Messages {
+namespace SM.Service {
 
   /// <summary>Holder for reflection information generated from Pattern.proto</summary>
   public static partial class PatternReflection {
@@ -48,19 +48,19 @@ namespace SM.Service.Messages {
             "IgoEdHlwZRgEIAEoDjIULnBhdHRlcm4uRWxlbWVudFR5cGUqVAoKU3RpdGNo",
             "VHlwZRIICgROT05FEAASCAoERlVMTBABEggKBEhBTEYQAhILCgdRVUFSVEVS",
             "EAMSEAoMVEhSRUVRVUFSVEVSEAQSCQoFUEVUSVQQBSo2CgtFbGVtZW50VHlw",
-            "ZRINCglVTkRFRklORUQQABIOCgpGUkVOQ0hLTk9UEAESCAoEQkVBRBACQhaq",
-            "AhNTTS5TZXJ2aWNlLk1lc3NhZ2VzYgZwcm90bzM="));
+            "ZRINCglVTkRFRklORUQQABIOCgpGUkVOQ0hLTk9UEAESCAoEQkVBRBACQg2q",
+            "AgpTTS5TZXJ2aWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.Messages.StitchType), typeof(global::SM.Service.Messages.ElementType), }, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Pattern), global::SM.Service.Messages.Pattern.Parser, new[]{ "Id", "Info", "Canvas", "Strands", "Width", "Height", "Configurations", "Stitches", "Backstitches", "Elements", "OwnerId" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Info), global::SM.Service.Messages.Info.Parser, new[]{ "Title", "Author", "Company", "Copyright" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Canvas), global::SM.Service.Messages.Canvas.Parser, new[]{ "Title" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Strands), global::SM.Service.Messages.Strands.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.StitchConfiguration), global::SM.Service.Messages.StitchConfiguration.Parser, new[]{ "Symbol", "HexColor", "Strands" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Stitch), global::SM.Service.Messages.Stitch.Parser, new[]{ "X", "Y", "Type", "ConfigurationIndex" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Backstitch), global::SM.Service.Messages.Backstitch.Parser, new[]{ "X1", "Y1", "X2", "Y2", "ConfigurationIndex" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Messages.Element), global::SM.Service.Messages.Element.Parser, new[]{ "X", "Y", "ConfigurationIndex", "Type" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.StitchType), typeof(global::SM.Service.ElementType), }, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Pattern), global::SM.Service.Pattern.Parser, new[]{ "Id", "Info", "Canvas", "Strands", "Width", "Height", "Configurations", "Stitches", "Backstitches", "Elements", "OwnerId" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Info), global::SM.Service.Info.Parser, new[]{ "Title", "Author", "Company", "Copyright" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Canvas), global::SM.Service.Canvas.Parser, new[]{ "Title" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Strands), global::SM.Service.Strands.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.StitchConfiguration), global::SM.Service.StitchConfiguration.Parser, new[]{ "Symbol", "HexColor", "Strands" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Stitch), global::SM.Service.Stitch.Parser, new[]{ "X", "Y", "Type", "ConfigurationIndex" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Backstitch), global::SM.Service.Backstitch.Parser, new[]{ "X1", "Y1", "X2", "Y2", "ConfigurationIndex" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Element), global::SM.Service.Element.Parser, new[]{ "X", "Y", "ConfigurationIndex", "Type" }, null, null, null)
           }));
     }
     #endregion
@@ -93,7 +93,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[0]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -142,9 +142,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "info" field.</summary>
     public const int InfoFieldNumber = 2;
-    private global::SM.Service.Messages.Info info_;
+    private global::SM.Service.Info info_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Info Info {
+    public global::SM.Service.Info Info {
       get { return info_; }
       set {
         info_ = value;
@@ -153,9 +153,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "canvas" field.</summary>
     public const int CanvasFieldNumber = 3;
-    private global::SM.Service.Messages.Canvas canvas_;
+    private global::SM.Service.Canvas canvas_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Canvas Canvas {
+    public global::SM.Service.Canvas Canvas {
       get { return canvas_; }
       set {
         canvas_ = value;
@@ -164,9 +164,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "strands" field.</summary>
     public const int StrandsFieldNumber = 4;
-    private global::SM.Service.Messages.Strands strands_;
+    private global::SM.Service.Strands strands_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Strands Strands {
+    public global::SM.Service.Strands Strands {
       get { return strands_; }
       set {
         strands_ = value;
@@ -197,41 +197,41 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "configurations" field.</summary>
     public const int ConfigurationsFieldNumber = 7;
-    private static readonly pb::FieldCodec<global::SM.Service.Messages.StitchConfiguration> _repeated_configurations_codec
-        = pb::FieldCodec.ForMessage(58, global::SM.Service.Messages.StitchConfiguration.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Messages.StitchConfiguration> configurations_ = new pbc::RepeatedField<global::SM.Service.Messages.StitchConfiguration>();
+    private static readonly pb::FieldCodec<global::SM.Service.StitchConfiguration> _repeated_configurations_codec
+        = pb::FieldCodec.ForMessage(58, global::SM.Service.StitchConfiguration.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.StitchConfiguration> configurations_ = new pbc::RepeatedField<global::SM.Service.StitchConfiguration>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Messages.StitchConfiguration> Configurations {
+    public pbc::RepeatedField<global::SM.Service.StitchConfiguration> Configurations {
       get { return configurations_; }
     }
 
     /// <summary>Field number for the "stitches" field.</summary>
     public const int StitchesFieldNumber = 8;
-    private static readonly pb::FieldCodec<global::SM.Service.Messages.Stitch> _repeated_stitches_codec
-        = pb::FieldCodec.ForMessage(66, global::SM.Service.Messages.Stitch.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Messages.Stitch> stitches_ = new pbc::RepeatedField<global::SM.Service.Messages.Stitch>();
+    private static readonly pb::FieldCodec<global::SM.Service.Stitch> _repeated_stitches_codec
+        = pb::FieldCodec.ForMessage(66, global::SM.Service.Stitch.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.Stitch> stitches_ = new pbc::RepeatedField<global::SM.Service.Stitch>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Messages.Stitch> Stitches {
+    public pbc::RepeatedField<global::SM.Service.Stitch> Stitches {
       get { return stitches_; }
     }
 
     /// <summary>Field number for the "backstitches" field.</summary>
     public const int BackstitchesFieldNumber = 9;
-    private static readonly pb::FieldCodec<global::SM.Service.Messages.Backstitch> _repeated_backstitches_codec
-        = pb::FieldCodec.ForMessage(74, global::SM.Service.Messages.Backstitch.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Messages.Backstitch> backstitches_ = new pbc::RepeatedField<global::SM.Service.Messages.Backstitch>();
+    private static readonly pb::FieldCodec<global::SM.Service.Backstitch> _repeated_backstitches_codec
+        = pb::FieldCodec.ForMessage(74, global::SM.Service.Backstitch.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.Backstitch> backstitches_ = new pbc::RepeatedField<global::SM.Service.Backstitch>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Messages.Backstitch> Backstitches {
+    public pbc::RepeatedField<global::SM.Service.Backstitch> Backstitches {
       get { return backstitches_; }
     }
 
     /// <summary>Field number for the "elements" field.</summary>
     public const int ElementsFieldNumber = 10;
-    private static readonly pb::FieldCodec<global::SM.Service.Messages.Element> _repeated_elements_codec
-        = pb::FieldCodec.ForMessage(82, global::SM.Service.Messages.Element.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Messages.Element> elements_ = new pbc::RepeatedField<global::SM.Service.Messages.Element>();
+    private static readonly pb::FieldCodec<global::SM.Service.Element> _repeated_elements_codec
+        = pb::FieldCodec.ForMessage(82, global::SM.Service.Element.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.Element> elements_ = new pbc::RepeatedField<global::SM.Service.Element>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Messages.Element> Elements {
+    public pbc::RepeatedField<global::SM.Service.Element> Elements {
       get { return elements_; }
     }
 
@@ -381,19 +381,19 @@ namespace SM.Service.Messages {
       }
       if (other.info_ != null) {
         if (info_ == null) {
-          info_ = new global::SM.Service.Messages.Info();
+          info_ = new global::SM.Service.Info();
         }
         Info.MergeFrom(other.Info);
       }
       if (other.canvas_ != null) {
         if (canvas_ == null) {
-          canvas_ = new global::SM.Service.Messages.Canvas();
+          canvas_ = new global::SM.Service.Canvas();
         }
         Canvas.MergeFrom(other.Canvas);
       }
       if (other.strands_ != null) {
         if (strands_ == null) {
-          strands_ = new global::SM.Service.Messages.Strands();
+          strands_ = new global::SM.Service.Strands();
         }
         Strands.MergeFrom(other.Strands);
       }
@@ -427,21 +427,21 @@ namespace SM.Service.Messages {
           }
           case 18: {
             if (info_ == null) {
-              info_ = new global::SM.Service.Messages.Info();
+              info_ = new global::SM.Service.Info();
             }
             input.ReadMessage(info_);
             break;
           }
           case 26: {
             if (canvas_ == null) {
-              canvas_ = new global::SM.Service.Messages.Canvas();
+              canvas_ = new global::SM.Service.Canvas();
             }
             input.ReadMessage(canvas_);
             break;
           }
           case 34: {
             if (strands_ == null) {
-              strands_ = new global::SM.Service.Messages.Strands();
+              strands_ = new global::SM.Service.Strands();
             }
             input.ReadMessage(strands_);
             break;
@@ -488,7 +488,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[1]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -701,7 +701,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[2]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -830,7 +830,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[3]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1127,7 +1127,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[4]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1179,9 +1179,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "strands" field.</summary>
     public const int StrandsFieldNumber = 3;
-    private global::SM.Service.Messages.Strands strands_;
+    private global::SM.Service.Strands strands_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.Strands Strands {
+    public global::SM.Service.Strands Strands {
       get { return strands_; }
       set {
         strands_ = value;
@@ -1274,7 +1274,7 @@ namespace SM.Service.Messages {
       }
       if (other.strands_ != null) {
         if (strands_ == null) {
-          strands_ = new global::SM.Service.Messages.Strands();
+          strands_ = new global::SM.Service.Strands();
         }
         Strands.MergeFrom(other.Strands);
       }
@@ -1299,7 +1299,7 @@ namespace SM.Service.Messages {
           }
           case 26: {
             if (strands_ == null) {
-              strands_ = new global::SM.Service.Messages.Strands();
+              strands_ = new global::SM.Service.Strands();
             }
             input.ReadMessage(strands_);
             break;
@@ -1318,7 +1318,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[5]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1371,9 +1371,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "type" field.</summary>
     public const int TypeFieldNumber = 3;
-    private global::SM.Service.Messages.StitchType type_ = 0;
+    private global::SM.Service.StitchType type_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.StitchType Type {
+    public global::SM.Service.StitchType Type {
       get { return type_; }
       set {
         type_ = value;
@@ -1510,7 +1510,7 @@ namespace SM.Service.Messages {
             break;
           }
           case 24: {
-            type_ = (global::SM.Service.Messages.StitchType) input.ReadEnum();
+            type_ = (global::SM.Service.StitchType) input.ReadEnum();
             break;
           }
           case 32: {
@@ -1531,7 +1531,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[6]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1772,7 +1772,7 @@ namespace SM.Service.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Messages.PatternReflection.Descriptor.MessageTypes[7]; }
+      get { return global::SM.Service.PatternReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1836,9 +1836,9 @@ namespace SM.Service.Messages {
 
     /// <summary>Field number for the "type" field.</summary>
     public const int TypeFieldNumber = 4;
-    private global::SM.Service.Messages.ElementType type_ = 0;
+    private global::SM.Service.ElementType type_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Messages.ElementType Type {
+    public global::SM.Service.ElementType Type {
       get { return type_; }
       set {
         type_ = value;
@@ -1968,7 +1968,7 @@ namespace SM.Service.Messages {
             break;
           }
           case 32: {
-            type_ = (global::SM.Service.Messages.ElementType) input.ReadEnum();
+            type_ = (global::SM.Service.ElementType) input.ReadEnum();
             break;
           }
         }

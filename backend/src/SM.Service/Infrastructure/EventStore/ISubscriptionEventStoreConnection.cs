@@ -3,13 +3,12 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
 
-namespace SM.Service.Infrastructure.EventStore
+namespace SM.Service
 {
     public interface ISubscriptionEventStoreConnection
     {
-        Task<EventStoreSubscription> SubscribeToStream(string stream, bool resolveLinkTos,
-            Func<EventStoreSubscription, ResolvedEvent, Task> eventAppeared,
-            Action<EventStoreSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null,
-            UserCredentials userCredentials = null);
+        EventStoreAllCatchUpSubscription SubscribeToAllFrom(Position? lastCheckpoint, CatchUpSubscriptionSettings settings,
+            Func<EventStoreCatchUpSubscription, ResolvedEvent, Task> eventAppeared, Action<EventStoreCatchUpSubscription> liveProcessingStarted = null,
+            Action<EventStoreCatchUpSubscription, SubscriptionDropReason, Exception> subscriptionDropped = null, UserCredentials userCredentials = null);
     }
 }

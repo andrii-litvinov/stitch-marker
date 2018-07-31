@@ -1,6 +1,6 @@
 using System.IO;
 using FluentAssertions;
-using SM.Service.Patterns.Xsd;
+using SM.Service.Patterns;
 using Xunit;
 
 namespace SM.Service.Tests

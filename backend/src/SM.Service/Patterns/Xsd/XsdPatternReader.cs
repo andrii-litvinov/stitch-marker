@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using SM.Service.Messages;
 
-namespace SM.Service.Patterns.Xsd
+namespace SM.Service.Patterns
 {
     public class XsdPatternReader
     {
-        public Messages.Pattern Read(byte[] content)
+        public Service.Pattern Read(byte[] content)
         {
             using (var stream = new MemoryStream(content) {Position = 0})
             {
@@ -586,25 +585,25 @@ namespace SM.Service.Patterns.Xsd
             }
         }
 
-        private static Messages.Pattern Convert(Pattern pattern)
+        private static Service.Pattern Convert(Pattern pattern)
         {
             // TODO: Cover property mapping with tests.
-            var result = new Messages.Pattern
+            var result = new Service.Pattern
             {
                 Width = pattern.Width,
                 Height = pattern.Height,
-                Canvas = new Messages.Canvas
+                Canvas = new Service.Canvas
                 {
                     Title = pattern.Canvas.Title
                 },
-                Info = new Messages.Info
+                Info = new Service.Info
                 {
                     Title = pattern.Info.Title,
                     Author = pattern.Info.Author,
                     Company = pattern.Info.Company,
                     Copyright = pattern.Info.Copyright
                 },
-                Strands= new Messages.Strands
+                Strands= new Service.Strands
                 {
                     Backstitch = pattern.Strands.BackStitch,
                     FrenchKnot = pattern.Strands.FrenchKnot,
@@ -625,7 +624,7 @@ namespace SM.Service.Patterns.Xsd
                                color.Rgb.B.ToString("x2")
                 });
                 if (!color.Strands.Equals(default(Strands)))
-                    result.Configurations[color.Index].Strands = new Messages.Strands
+                    result.Configurations[color.Index].Strands = new Service.Strands
                     {
                         Backstitch = color.Strands.BackStitch,
                         FrenchKnot = color.Strands.FrenchKnot,
@@ -638,7 +637,7 @@ namespace SM.Service.Patterns.Xsd
             }
 
             foreach (var stitch in pattern.Stitches)
-                result.Stitches.Add(new Messages.Stitch
+                result.Stitches.Add(new Service.Stitch
                 {
                     X = stitch.Offset / pattern.Height,
                     Y = stitch.Offset % pattern.Height,
@@ -647,7 +646,7 @@ namespace SM.Service.Patterns.Xsd
                 });
 
             foreach (var backstitch in pattern.Backstitches)
-                result.Backstitches.Add(new Messages.Backstitch
+                result.Backstitches.Add(new Service.Backstitch
                 {
                     X1 = backstitch.X1,
                     X2 = backstitch.X2,
