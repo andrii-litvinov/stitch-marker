@@ -25,6 +25,8 @@
         prompt: 'none'
       });
 
+      var baba;
+
       class Auth extends Polymer.Element {
         static get is() { return 'stitch-auth'; }
 
@@ -58,7 +60,6 @@
             });
             localStorage.removeItem('authData');
             clearTimeout(this.timeoutId);
-            await this.redirect();
           } else {
             webAuth.authorize();
           }
