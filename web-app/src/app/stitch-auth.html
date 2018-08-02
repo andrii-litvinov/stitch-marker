@@ -21,8 +21,11 @@
         responseType: 'token id_token',
         audience: 'http://localhost:5000/api/',
         scope: 'openid email profile',
-        redirectUri: `${location.origin}/auth`
+        redirectUri: `${location.origin}/auth`,
+        prompt: 'none'
       });
+
+      var baba;
 
       class Auth extends Polymer.Element {
         static get is() { return 'stitch-auth'; }
@@ -51,11 +54,26 @@
               await this.redirect();
             });
           } else if (this.isAuthenticated()) {
+            webAuth.logout({
+              returnTo: `${location.origin}`,
+              clientID: 'AZHrqJ4Qu2tfZ0F4oxljBtaLSv3cJQD1'
+            });
             localStorage.removeItem('authData');
-            await this.redirect();
+            clearTimeout(this.timeoutId);
           } else {
             webAuth.authorize();
           }
+        }
+
+        async redirect() {
+          await Promise.yield();
+          window.location.hash = '';
+          this.set("route.path", "/");
+        }
+
+        isAuthenticated() {
+          const authData = JSON.parse(localStorage.getItem("authData"));
+          return authData && authData.expiresOn > new Date().getTime();
         }
 
         saveAuthData(authResult) {
@@ -68,17 +86,25 @@
           };
 
           localStorage.setItem('authData', JSON.stringify(authData));
+          this.scheduleRenewal();
         }
 
-        isAuthenticated() {
-          const authData = JSON.parse(localStorage.getItem("authData"));
-          return authData && authData.expiresOn > new Date().getTime();
+        renewToken() {
+          webAuth.checkSession({},
+            (error, authResult) => {
+              if (error) {
+                this.$.toast.text = `Error occurred while checking session: ${error}`;
+                this.$.toast.open();
+              } else {
+                this.saveAuthData(authResult);
+              }
+            }
+          );
         }
 
-        async redirect() {
-          await Promise.yield();
-          window.location.hash = '';
-          this.set("route.path", "/");
+        scheduleRenewal() {
+          const delay = JSON.parse(localStorage.getItem('authData')).expiresOn - Date.now();
+          this.timeoutId = setTimeout(() => { this.renewToken(); }, delay);
         }
       }
       customElements.define(Auth.is, Auth);
