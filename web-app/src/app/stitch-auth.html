@@ -52,6 +52,7 @@
             });
           } else if (this.isAuthenticated()) {
             localStorage.removeItem('authData');
+            localStorage.removeItem('patternInfos');
             await this.redirect();
           } else {
             webAuth.authorize();

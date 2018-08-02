@@ -33,13 +33,15 @@ namespace SM.Service.Patterns
             var result = new List<Resource>();
             foreach (var item in (response as PatternItems).Items)
             {
+                var patternId = new Guid(item.Id);
+
                 var preview = new {item.Id, item.Title, item.Height, item.Width};
                 var resource = new Resource(preview)
                 {
                     Links =
                     {
-                        new Link {Rel = "self", Href = Url.Action("Get", new {item.Id})},
-                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {item.Id})}
+                        new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
+                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})}
                     }
                 };
 

@@ -79,8 +79,16 @@
 
       constructor() {
         super();
-        const json = localStorage.getItem("patternInfos");
-        if (json) this.patternInfos = JSON.parse(json);
+        this.uploadPatterns();
+      }
+
+      async uploadPatterns() {
+        debugger
+        const response = await http.get(`${SM.apiUrl}/api/patterns/getall/`);
+        if (response.status === 200) {
+          this.patternInfos = await response.json();
+          localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
+        }
       }
 
       delete(event) {
