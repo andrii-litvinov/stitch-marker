@@ -15,7 +15,6 @@
   <script src="https://cdn.auth0.com/js/auth0/9.3.1/auth0.min.js"></script>
   <script>
     (function () {
-      var timeoutID;
       const webAuth = new auth0.WebAuth({
         domain: 'stitch-marker.auth0.com',
         clientID: 'AZHrqJ4Qu2tfZ0F4oxljBtaLSv3cJQD1',
@@ -53,8 +52,12 @@
               await this.redirect();
             });
           } else if (this.isAuthenticated()) {
+            webAuth.logout({
+              returnTo: `${location.origin}`,
+              clientID: 'AZHrqJ4Qu2tfZ0F4oxljBtaLSv3cJQD1'
+            });
             localStorage.removeItem('authData');
-            clearTimeout(timeoutID);
+            clearTimeout(this.timeoutId);
             await this.redirect();
           } else {
             webAuth.authorize();
@@ -100,11 +103,7 @@
 
         scheduleRenewal() {
           const delay = JSON.parse(localStorage.getItem('authData')).expiresOn - Date.now();
-          if (delay > 0) {
-            timeoutID = setTimeout(() => {
-              this.renewToken();
-            }, delay);
-          }
+          this.timeoutId = setTimeout(() => { this.renewToken(); }, delay);
         }
       }
       customElements.define(Auth.is, Auth);
