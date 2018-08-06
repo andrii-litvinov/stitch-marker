@@ -56,9 +56,9 @@
       </paper-tabs>
     </div>
 
-    <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}"></app-route>
+    <app-route id="route" route="{{route}}" pattern="/:view" data="{{routeData}}" active="{{active}}"></app-route>
     <iron-pages role="main" selected="[[routeData.view]]" attr-for-selected="name">
-      <stitch-patterns name="patterns"></stitch-patterns>
+      <stitch-patterns name="patterns" active="{{active}}"></stitch-patterns>
       <stitch-library name="library"></stitch-library>
     </iron-pages>
   </template>

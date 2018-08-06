@@ -73,17 +73,25 @@
           patternInfos: {
             type: Array,
             value: []
-          }
+          },
+          active: {
+              type: Boolean,
+              reflectToAttribute: true,
+              observer: 'activeChanged'
+            }
         }
       }
 
-      constructor() {
-        super();
-        this.uploadPatterns();
+      activeChanged() {
+          if (!this.active) {
+            this.patternInfos = [];
+          }
+          else {
+            this.uploadPatterns();
+          }
       }
 
       async uploadPatterns() {
-        debugger
         const response = await http.get(`${SM.apiUrl}/api/patterns/getall/`);
         if (response.status === 200) {
           this.patternInfos = await response.json();
