@@ -2,9 +2,11 @@
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using Google.Protobuf;
 using Newtonsoft.Json.Linq;
+using Proto.Cluster;
 
 namespace SM.Service
 {
@@ -41,6 +43,29 @@ namespace SM.Service
             }
 
             return null;
+        }
+
+        public static async Task<PatternItems> GetUserPatterns(this string userId)
+        {
+            var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
+
+            var query = new GetPatternItems {RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = 0, Take = 100};
+
+            while (true)
+            {
+//                if (some timeout condition) throw new TimeoutException();
+                var response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
+                switch (response)
+                {
+                    case PatternItems items:
+                        return items;
+                    case CatchingUp _:
+                        await Task.Delay(100);
+                        break;
+                    default:
+                        throw new Exception("Unknown response type.");
+                }
+            }
         }
     }
 }

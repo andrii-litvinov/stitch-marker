@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
@@ -18,35 +17,9 @@ namespace SM.Service.Patterns
             var userId = User.GetUserId();
             if (userId == null) return BadRequest();
 
-            var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
+            var patterns = await userId.GetUserPatterns();
 
-            var query = new GetPatternItems {RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = 0, Take = 100};
-
-            object response;
-
-            do
-            {
-                response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
-                if (response is CatchingUp) await Task.Delay(100);
-            } while (!(response is PatternItems));
-
-            var result = new List<Resource>();
-            foreach (var item in (response as PatternItems).Items)
-            {
-                var patternId = new Guid(item.Id);
-
-                var preview = new {item.Id, item.Title, item.Height, item.Width};
-                var resource = new Resource(preview)
-                {
-                    Links =
-                    {
-                        new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
-                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})}
-                    }
-                };
-
-                result.Add(resource);
-            }
+            var result = patterns.ToResourseList();
 
             return Ok(result);
         }
