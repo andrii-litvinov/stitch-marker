@@ -74,19 +74,19 @@
   </template>
 
   <script>
-    'use strict';
-
-    Marker.hotKey = {
-      82: 'ruler',  // r
-      71: 'grid',   // g
-      83: 'symbol', // s
-      67: 'color'   // c
-    };
-
-    Marker.zoomLevels = [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
-
     class Marker extends Polymer.Element {
-      static get is() { return 'stitch-marker'; }
+      static get is() { 'stitch-marker'; }
+
+      static get zoomLevels() { [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5]; }
+
+      static get hotKey() {
+        return {
+          82: 'ruler',  // r
+          71: 'grid',   // g
+          83: 'symbol', // s
+          67: 'color'   // c
+        }
+      };
 
       static get properties() {
         return {
@@ -151,19 +151,19 @@
 
       zoomIn() {
         // TODO: Handle zoom on swipe when value is not predefined.
-        let zoomIndex = Math.min(zoomLevels.indexOf(this.zoom) + 1, zoomLevels.length - 1);
-        this.zoom = zoomLevels[zoomIndex];
+        let zoomIndex = Math.min(Marker.zoomLevels.indexOf(this.zoom) + 1, Marker.zoomLevels.length - 1);
+        this.zoom = Marker.zoomLevels[zoomIndex];
       }
 
       zoomOut() {
         // TODO: Handle zoom on swipe when value is not predefined.
-        let zoomIndex = Math.max(zoomLevels.indexOf(this.zoom) - 1, 0);
-        this.zoom = zoomLevels[zoomIndex];
+        let zoomIndex = Math.max(Marker.zoomLevels.indexOf(this.zoom) - 1, 0);
+        this.zoom = Marker.zoomLevels[zoomIndex];
       }
 
       _handleKeyUp(event) {
         if (event.altKey) {
-          const element = hotKey[event.which];
+          const element = Marker.hotKey[event.which];
 
           if (element) {
             this.set(`display.${element}`, !this.display[element])
