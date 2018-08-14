@@ -51,7 +51,7 @@ namespace SM.Service.Patterns
             stopWatch.Start();
             while (true)
             {
-                if (stopWatch.Elapsed > 30.Seconds()) throw new TimeoutException("Retrieving user pattern items");
+                if (stopWatch.Elapsed > 30.Seconds()) throw new TimeoutException();
                 var response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
                 switch (response)
                 {
