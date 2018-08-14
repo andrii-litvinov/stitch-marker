@@ -76,14 +76,14 @@
   <script>
     'use strict';
 
-    const hotKey = {
+    Marker.hotKey = {
       82: 'ruler',  // r
       71: 'grid',   // g
       83: 'symbol', // s
       67: 'color'   // c
     };
 
-    const zoomLevels = [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
+    Marker.zoomLevels = [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5];
 
     class Marker extends Polymer.Element {
       static get is() { return 'stitch-marker'; }
