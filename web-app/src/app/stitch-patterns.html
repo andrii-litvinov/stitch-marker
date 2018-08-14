@@ -73,26 +73,41 @@
           patternInfos: {
             type: Array,
             value: []
+          },
+          active: {
+            type: Boolean,
+            reflectToAttribute: true,
+            observer: 'activeChanged'
           }
         }
       }
 
-      constructor() {
-        super();
-        const json = localStorage.getItem("patternInfos");
-        if (json) this.patternInfos = JSON.parse(json);
+      activeChanged() {
+        const authData = JSON.parse(localStorage.getItem("authData"));
+        if (!authData && this.patternInfos.length > 0) {
+          this.patternInfos = [];
+          return;
+        }
+        if (this.active) {
+          this.getPatterns();
+        }
+      }
+
+      async getPatterns() {
+        const response = await http.get(`${SM.apiUrl}/api/patterns/getall/`);
+        if (response.status === 200) {
+          this.patternInfos = await response.json();
+        }
       }
 
       delete(event) {
         var index = this.patternInfos.indexOf(event.target.patternInfo);
         this.splice('patternInfos', index, 1);
-        localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
       }
 
       async upload(event) {
         const patternInfo = event.detail;
         this.push('patternInfos', patternInfo);
-        localStorage.setItem('patternInfos', JSON.stringify(this.patternInfos));
 
         await Promise.yield();
 
