@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
@@ -10,19 +12,19 @@ using Proto.Cluster;
 
 namespace SM.Service.Patterns
 {
+    [ApiController]
     [Authorize, Route("api/patterns")]
     public class PatternsController : Controller
     {
         [HttpGet, Route("getall")]
-        public async Task<IActionResult> GetAllPatternItems()
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<IEnumerable<PatternItem>>> GetAllPatternItems()
         {
-            var userId = User.GetUserId();
-            if (userId == null) return BadRequest();
-
-            var patterns = await GetUserPatternItems(userId);
+            var patternItems = await GetUserPatternItems(User.GetUserId());
 
             var result = new List<Resource>();
-            foreach (var item in patterns.Items)
+            foreach (var item in patternItems.Items)
             {
                 var patternId = new Guid(item.Id);
 
@@ -44,6 +46,8 @@ namespace SM.Service.Patterns
 
         private async Task<PatternItems> GetUserPatternItems(string userId)
         {
+            if (userId == null) return null;
+            
             var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
             var query = new GetPatternItems {RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = 0, Take = 100};
 
@@ -68,7 +72,9 @@ namespace SM.Service.Patterns
         }
 
         [HttpGet, Route("{patternId}")]
-        public async Task<IActionResult> Get(Guid patternId)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)]
+        public async Task<ActionResult<Pattern>> Get(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
@@ -78,11 +84,13 @@ namespace SM.Service.Patterns
 
             response = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
 
-            return Ok(response);
+            return response;
         }
 
         [HttpDelete, Route("{patternId}")]
-        public async Task<IActionResult> Delete(Guid patternId)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)]
+        public async Task<ActionResult<HttpStatusCode>> Delete(Guid patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
@@ -96,7 +104,9 @@ namespace SM.Service.Patterns
         }
 
         [HttpGet, Route("{patternId}/thumbnail")]
-        public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
+        [ProducesResponseType(200)]
+        [ProducesResponseType(403)]
+        public async Task<ActionResult<ByteArrayContent>> GetThumbnail(Guid patternId, int width = 300, int height = 200)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
@@ -110,7 +120,9 @@ namespace SM.Service.Patterns
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(IFormFile file)
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<Resource>> Post([FromForm]IFormFile file)
         {
             var userId = User.GetUserId();
             if (userId == null) return BadRequest();
