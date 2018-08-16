@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
@@ -10,75 +10,42 @@ using Proto.Cluster;
 
 namespace SM.Service.Patterns
 {
-    [Authorize, Route("api/patterns")]
-    public class PatternsController : Controller
+    [ApiController, Authorize, Route("api/patterns")]
+    public class PatternsController : ControllerBase
     {
-        [HttpGet, Route("getall")]
-        public async Task<IActionResult> GetAllPatternItems()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
         {
-            var userId = User.GetUserId();
-            if (userId == null) return BadRequest();
+            var patternItems = await GetUserPatternItems(User.GetUserId(), skip, take);
+            var result = new List<Resource<PatternItem>>();
 
-            var patterns = await GetUserPatternItems(userId);
-
-            var result = new List<Resource>();
-            foreach (var item in patterns.Items)
+            foreach (var item in patternItems.Items)
             {
-                var patternId = new Guid(item.Id);
-
-                var preview = new {item.Id, item.Title, item.Height, item.Width};
-                var resource = new Resource(preview)
+                var resource = new Resource<PatternItem>(item)
                 {
                     Links =
                     {
-                        new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
-                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})}
+                        new Link {Rel = "self", Href = Url.Action("Get", new {patternId = new Guid(item.Id)})},
+                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})}
                     }
                 };
 
                 result.Add(resource);
             }
 
-            return Ok(result);
-        }
-
-        private async Task<PatternItems> GetUserPatternItems(string userId)
-        {
-            var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
-            var query = new GetPatternItems {RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = 0, Take = 100};
-
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
-            while (true)
-            {
-                if (stopWatch.Elapsed > 30.Seconds()) throw new TimeoutException();
-                var response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
-                switch (response)
-                {
-                    case PatternItems items:
-                        stopWatch.Stop();
-                        return items;
-                    case CatchingUp _:
-                        await Task.Delay(100);
-                        break;
-                    default:
-                        throw new Exception("Unknown response type.");
-                }
-            }
+            return result;
         }
 
         [HttpGet, Route("{patternId}")]
-        public async Task<IActionResult> Get(Guid patternId)
+        public async Task<ActionResult<Service.Pattern>> Get(string patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
-            dynamic response = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
+            var owner = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
 
-            if (response.OwnerId != User.GetUserId()) return Forbid();
+            if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            response = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId.ToString()}, 10.Seconds());
-
-            return Ok(response);
+            return await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
         }
 
         [HttpDelete, Route("{patternId}")]
@@ -86,9 +53,9 @@ namespace SM.Service.Patterns
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
-            var response = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
+            var owner = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
 
-            if (response.OwnerId != User.GetUserId()) return Forbid();
+            if (owner.OwnerId != User.GetUserId()) return Forbid();
 
             await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
 
@@ -100,9 +67,9 @@ namespace SM.Service.Patterns
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
-            var response = await pattern.RequestAsync<PatternOwner>(queryOwner, 10.Seconds());
+            var owner = await pattern.RequestAsync<PatternOwner>(queryOwner, 10.Seconds());
 
-            if (response.OwnerId != User.GetUserId()) return Forbid();
+            if (owner.OwnerId != User.GetUserId()) return Forbid();
 
             var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
             var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 10.Seconds());
@@ -110,7 +77,7 @@ namespace SM.Service.Patterns
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(IFormFile file)
+        public async Task<ActionResult<Resource<PatternItem>>> Post(IFormFile file)
         {
             var userId = User.GetUserId();
             if (userId == null) return BadRequest();
@@ -126,8 +93,17 @@ namespace SM.Service.Patterns
                 OwnerId = userId
             };
             var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
-            var preview = new {Id = @event.SourceId, @event.Pattern.Info.Title, @event.Pattern.Height, @event.Pattern.Width};
-            var resource = new Resource(preview)
+            var item = new PatternItem
+            {
+                Id = @event.SourceId,
+                Title = @event.Pattern.Info.Title,
+                Height = @event.Pattern.Height,
+                Width = @event.Pattern.Width,
+                Author = @event.Pattern.Info.Author,
+                Company = @event.Pattern.Info.Company,
+                Copyright = @event.Pattern.Info.Copyright
+            };
+            var resource = new Resource<PatternItem>(item)
             {
                 Links =
                 {
@@ -137,6 +113,30 @@ namespace SM.Service.Patterns
             };
 
             return Created(patternId.ToString(), resource);
+        }
+
+        private static async Task<PatternItems> GetUserPatternItems(string userId, int skip, int take)
+        {
+            var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
+            var query = new GetPatternItems {RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = skip, Take = take};
+            var cts = new CancellationTokenSource(1.Minutes());
+
+            while (!cts.IsCancellationRequested)
+            {
+                var response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
+                switch (response)
+                {
+                    case PatternItems items:
+                        return items;
+                    case CatchingUp _:
+                        await Task.Delay(100, cts.Token);
+                        break;
+                    default:
+                        throw new Exception($"Unexpected Response of type {response.GetType().Name} received.");
+                }
+            }
+
+            throw new TimeoutException("Request didn't receive expected Response within the expected time.");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace SM.Service
 
             writer.WriteStartObject();
 
-            foreach (var jToken in JToken.FromObject(resource.Value))
+            foreach (var jToken in JToken.FromObject(resource.GetValue()))
             {
                 var item = (JProperty) jToken;
                 writer.WritePropertyName(namingStrategy.GetPropertyName(item.Name, false));
@@ -31,15 +31,9 @@ namespace SM.Service
             writer.WriteEndObject();
         }
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue,
-            JsonSerializer serializer)
-        {
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) =>
             throw new NotImplementedException();
-        }
 
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(Resource);
-        }
+        public override bool CanConvert(Type objectType) => objectType == typeof(Resource);
     }
 }

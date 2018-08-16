@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Proto.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SM.Service
 {
@@ -19,7 +20,7 @@ namespace SM.Service
             .ConfigureAppConfiguration(builder => { builder.AddEnvironmentVariables("STITCH_MARKER:"); })
             .ConfigureServices((context, services) =>
             {
-                services.AddMvc();
+                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
                 services.AddCors();
                 services.AddSingleton<IHostedService, ActorCluster>();
                 services.AddSingleton<IEventStore, EventStore>();

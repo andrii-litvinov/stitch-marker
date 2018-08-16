@@ -94,7 +94,7 @@
       }
 
       async getPatterns() {
-        const response = await http.get(`${SM.apiUrl}/api/patterns/getall/`);
+        const response = await http.get(`${SM.apiUrl}/api/patterns`);
         if (response.status === 200) {
           this.patternInfos = await response.json();
         }
