@@ -4,15 +4,18 @@ using Newtonsoft.Json;
 namespace SM.Service
 {
     [JsonConverter(typeof(ResourceJsonConverter))]
-    public class Resource
+    public abstract class Resource
     {
-        public Resource(object value)
-        {
-            Value = value;
-            Links = new List<Link>();
-        }
+        public List<Link> Links { get; } = new List<Link>();
+        public abstract object GetValue();
+    }
 
-        public object Value { get; }
-        public List<Link> Links { get; }
+    public class Resource<T> : Resource
+    {
+        public Resource(T value) => Value = value;
+
+        public T Value { get; }
+
+        public override object GetValue() => Value;
     }
 }
