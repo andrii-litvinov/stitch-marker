@@ -154,10 +154,10 @@ class Header extends PolymerElement {
   }
 
   toggleMenu() {
-    const authData = JSON.parse(localStorage.getItem("authData"));
-    const authorized = authData && authData.expiresOn > new Date().getTime();
-    this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
-    this.$.drawer.toggle();
+    // const authData = JSON.parse(localStorage.getItem("authData"));
+    // const authorized = authData && authData.expiresOn > new Date().getTime();
+    // this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
+    // this.$.drawer.toggle();
   }
 }
 customElements.define(Header.is, Header);

@@ -2,7 +2,9 @@ import './stitch-header.js';
 import './stitch-landing.js';
 import './stitch-social.js';
 
-import {PolymerElement, html} from '@polymer/polymer'
+import { PolymerElement, html } from '@polymer/polymer'
+import '/node_modules/@polymer/app-route/app-route.js'
+import '/node_modules/@polymer/app-route/app-location.js'
 
 class App extends PolymerElement {
   static get template() {
@@ -49,9 +51,8 @@ class App extends PolymerElement {
     this.view = view || 'landing';
   }
 
-  viewChanged(view) {
-    let resolvedUrl = this.resolveUrl(`stitch-${view}.html`);
-    Polymer.importHref(resolvedUrl, null, null, true);
+  async viewChanged(view) {
+    await import(`./stitch-${view}.js`);
     this.$.header.hidden = view === "marker";
   }
 }
