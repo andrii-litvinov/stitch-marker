@@ -1,4 +1,5 @@
 import { PolymerElement, html } from '@polymer/polymer';
+import '@polymer/paper-card';
 
 class PatternCard extends PolymerElement {
   static get template() {

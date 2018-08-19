@@ -53,7 +53,6 @@ class Patterns extends PolymerElement {
         margin: 0 15px 30px 15px;
       }
     </style>
-    <app-location id="location" path="[[path]]"></app-location>
     <div id="container">
       <template is="dom-repeat" items="[[patternInfos]]" as="pattern">
         <stitch-pattern-card pattern-info="[[pattern]]" on-delete="delete"></stitch-pattern-card>
