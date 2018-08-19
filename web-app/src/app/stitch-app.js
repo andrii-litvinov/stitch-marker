@@ -1,11 +1,10 @@
-import './stitch-header.js';
-import './stitch-landing.js';
-import './stitch-social.js';
-
-import { PolymerElement, html } from '@polymer/polymer'
-import '/node_modules/@polymer/app-route/app-route.js'
-import '/node_modules/@polymer/app-route/app-location.js'
+import { PolymerElement, html } from '@polymer/polymer';
+import '@polymer/app-route/app-route.js';
+import '@polymer/app-route/app-location.js';
 import '@polymer/iron-pages'
+
+import './stitch-header.js';
+import './stitch-social.js';
 
 class App extends PolymerElement {
   static get template() {
