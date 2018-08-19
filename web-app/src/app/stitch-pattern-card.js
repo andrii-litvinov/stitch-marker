@@ -1,6 +1,8 @@
-class PatternCard extends Polymer.Element {
+import { PolymerElement, html } from '@polymer/polymer';
+
+class PatternCard extends PolymerElement {
   static get template() {
-    return Polymer.html`
+    return html`
     <style>
       :host {
         display: block;

@@ -1,9 +1,14 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<script type="module" src="./stitch-patterns.js"></script>
+import { PolymerElement, html } from '@polymer/polymer';
+import '@polymer/paper-tabs';
+import './stitch-patterns.js';
 
-<dom-module id="stitch-home">
-  <template>
+class Home extends PolymerElement {
+  static get is() {
+    return "stitch-home";
+  }
+
+  static get template() {
+    return html`
     <style>
       :host {
         display: block;
@@ -34,10 +39,10 @@
         margin-bottom: 20px;
       }
 
-      .link {
+      /* .link {
         @apply --layout-horizontal;
         @apply --layout-center-center;
-      }
+      } */
 
       paper-tab {
         --paper-tab-ink: black;
@@ -61,22 +66,7 @@
       <stitch-patterns name="patterns" active="{{active}}"></stitch-patterns>
       <stitch-library name="library"></stitch-library>
     </iron-pages>
-  </template>
-  <script>
-    class Home extends Polymer.Element {
-      static get is() {
-        return "stitch-home";
-      }
-    }
-    customElements.define(Home.is, Home);
-  </script>
-</dom-module>
-<script type="module">
-import './stitch-patterns.js';
-class Home extends Polymer.Element {
-  static get is() {
-    return "stitch-home";
-  }
+    `
+  };
 }
 customElements.define(Home.is, Home);
-</script>

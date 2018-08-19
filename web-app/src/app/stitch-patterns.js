@@ -1,8 +1,11 @@
+import {PolymerElement, html} from '@polymer/polymer'
+
 import './stitch-pattern-card.js';
 import './stitch-upload.js';
-class Patterns extends Polymer.mixinBehaviors([Polymer.IronAutoScrollBehavior], Polymer.Element) {
+
+class Patterns extends PolymerElement {
   static get template() {
-    return Polymer.html`
+    return html`
     <style>
       :host {
         display: block;

@@ -32,7 +32,8 @@
     }
 
     function getAuthHeaders() {
-      JSON.parse(localStorage.getItem("authData")) && { authorization: "Bearer " + authData.accessToken }
+      var authData = JSON.parse(localStorage.getItem("authData"));
+      return authData && { authorization: "Bearer " + authData.accessToken };
     }
 
     if (typeof fetch === 'undefined') {
