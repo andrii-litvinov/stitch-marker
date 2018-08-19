@@ -4,7 +4,7 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 
-<link rel="import" href="./stitch-canvas/stitch-canvas.html">
+<script type="module" src="./stitch-canvas/stitch-canvas.js"></script>
 
 <dom-module id="stitch-marker">
   <template>
@@ -89,89 +89,105 @@
       };
 
       static get properties() {
-        return {
-          active: {
-            type: Boolean,
-            reflectToAttribute: true,
-            observer: '_activeChanged'
-          },
-          zoom: {
-            type: Number,
-            value: 1
-          },
-          loading: {
-            type: Boolean
-          }
-        };
+  <script type="module">
+import './stitch-canvas/stitch-canvas.js';
+class Marker extends Polymer.Element {
+  static get is() { 'stitch-marker'; }
+
+  static get zoomLevels() { [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5]; }
+
+  static get hotKey() {
+    return {
+      82: 'ruler',  // r
+      71: 'grid',   // g
+      83: 'symbol', // s
+      67: 'color'   // c
+    }
+  };
+
+  static get properties() {
+    return {
+      active: {
+        type: Boolean,
+        reflectToAttribute: true,
+        observer: '_activeChanged'
+      },
+      zoom: {
+        type: Number,
+        value: 1
+      },
+      loading: {
+        type: Boolean
       }
+    };
+  }
 
-      constructor() {
-        super();
+  constructor() {
+    super();
 
-        this.events = {
-          keyup: (e) => this._handleKeyUp(e),
-        }
-      }
+    this.events = {
+      keyup: (e) => this._handleKeyUp(e),
+    }
+  }
 
-      _setUpEvents() {
-        document.addEventListener('keyup', this.events.keyup);
-      }
+  _setUpEvents() {
+    document.addEventListener('keyup', this.events.keyup);
+  }
 
-      _removeEvents() {
-        document.removeEventListener('keyup', this.events.keyup);
-      }
+  _removeEvents() {
+    document.removeEventListener('keyup', this.events.keyup);
+  }
 
-      _activeChanged() {
-        if (this.active) {
-          this._fetchData();
-          this._setUpEvents();
-          this.zoom = 1;
-        } else {
-          this._removeEvents();
-        }
-      }
+  _activeChanged() {
+    if (this.active) {
+      this._fetchData();
+      this._setUpEvents();
+      this.zoom = 1;
+    } else {
+      this._removeEvents();
+    }
+  }
 
-      async _fetchData() {
-        this.loading = true;
+  async _fetchData() {
+    this.loading = true;
 
-        try {
-          const json = localStorage.getItem("patternInfo");
-          if (!json) return;
-          const patternInfo = JSON.parse(json);
-          const response = await http.get(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
-          this.$.canvas.pattern = await response.json();
-          this.$.canvas.enabled = true;
-        } catch (error) {
-          this.$.toast.text = error;
-          this.$.toast.open();
-        }
-
-        this.loading = false;
-      }
-
-      zoomIn() {
-        // TODO: Handle zoom on swipe when value is not predefined.
-        let zoomIndex = Math.min(Marker.zoomLevels.indexOf(this.zoom) + 1, Marker.zoomLevels.length - 1);
-        this.zoom = Marker.zoomLevels[zoomIndex];
-      }
-
-      zoomOut() {
-        // TODO: Handle zoom on swipe when value is not predefined.
-        let zoomIndex = Math.max(Marker.zoomLevels.indexOf(this.zoom) - 1, 0);
-        this.zoom = Marker.zoomLevels[zoomIndex];
-      }
-
-      _handleKeyUp(event) {
-        if (event.altKey) {
-          const element = Marker.hotKey[event.which];
-
-          if (element) {
-            this.set(`display.${element}`, !this.display[element])
-          }
-        }
-      }
+    try {
+      const json = localStorage.getItem("patternInfo");
+      if (!json) return;
+      const patternInfo = JSON.parse(json);
+      const response = await http.get(SM.apiUrl + patternInfo.links.find(link => link.rel === 'self').href);
+      this.$.canvas.pattern = await response.json();
+      this.$.canvas.enabled = true;
+    } catch (error) {
+      this.$.toast.text = error;
+      this.$.toast.open();
     }
 
-    customElements.define(Marker.is, Marker);
-  </script>
-</dom-module>
+    this.loading = false;
+  }
+
+  zoomIn() {
+    // TODO: Handle zoom on swipe when value is not predefined.
+    let zoomIndex = Math.min(Marker.zoomLevels.indexOf(this.zoom) + 1, Marker.zoomLevels.length - 1);
+    this.zoom = Marker.zoomLevels[zoomIndex];
+  }
+
+  zoomOut() {
+    // TODO: Handle zoom on swipe when value is not predefined.
+    let zoomIndex = Math.max(Marker.zoomLevels.indexOf(this.zoom) - 1, 0);
+    this.zoom = Marker.zoomLevels[zoomIndex];
+  }
+
+  _handleKeyUp(event) {
+    if (event.altKey) {
+      const element = Marker.hotKey[event.which];
+
+      if (element) {
+        this.set(`display.${element}`, !this.display[element])
+      }
+    }
+  }
+}
+
+customElements.define(Marker.is, Marker);
+</script>

@@ -6,13 +6,14 @@
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>Stitch marker</title>
   <script>
-    var SM = {
-      apiUrl: 'http://localhost:5000',
-      identityUrl: 'http://localhost:5000/account/'
-    };
-  </script>
-  <link rel="import" href="/bower_components/polymer/polymer.html">
-  <link rel="import" href="/app/stitch-app.html">
+  <script type="module">
+import '/app/stitch-app.js';
+var SM = {
+  apiUrl: 'http://localhost:5000',
+  identityUrl: 'http://localhost:5000/account/'
+};
+</script>="import" href="/bower_components/polymer/polymer.html">
+  <script type="module" src="/app/stitch-app.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
   <link rel="import" href="/bower_components/font-roboto/roboto.html">
   <script src="/bower_components/js-throttle-debounce/build/js-throttle-debounce.min.js"></script>
@@ -27,47 +28,44 @@
   <stitch-app></stitch-app>
   <script>
 
-    Promise.delay = delay => new Promise(resolve => setTimeout(resolve, delay));
-    Promise.yield = () => new Promise(resolve => setTimeout(resolve, 0));
+<script type="module">
+import '/app/stitch-app.js';
 
-    const http = {
-      get: (url) => {
-        return fetch(url,
-          {
-            headers: getAuthHeaders()
-          });
-      },
-      delete: (url) => {
-        return fetch(url,
-          {
-            method: 'DELETE',
-            headers: getAuthHeaders()
-          });
-      }
-    }
+Promise.delay = delay => new Promise(resolve => setTimeout(resolve, delay));
+Promise.yield = () => new Promise(resolve => setTimeout(resolve, 0));
 
-    function getAuthHeaders() {
-      const authData = JSON.parse(localStorage.getItem("authData"));
-      if (!authData) return null;
-      return {
-        "authorization": "Bearer " + authData.accessToken
-      }
-    }
+const http = {
+  get: (url) => {
+    return fetch(url,
+      {
+        headers: getAuthHeaders()
+      });
+  },
+  delete: (url) => {
+    return fetch(url,
+      {
+        method: 'DELETE',
+        headers: getAuthHeaders()
+      });
+  }
+}
 
-    (function () {
-      if (typeof fetch === 'undefined') {
-        [
-          'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js',
-          'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.js'
-        ].forEach(src => {
-          const script = document.createElement('script');
-          script.src = src;
-          document.write(script.outerHTML);
-        });
-      }
-    })();
-  </script>
-  <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-</body>
+function getAuthHeaders() {
+  const authData = JSON.parse(localStorage.getItem("authData"));
+  if (!authData) return null;
+  return {
+    "authorization": "Bearer " + authData.accessToken
+  }
+}
 
-</html>
+if (typeof fetch === 'undefined') {
+  [
+    'https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/6.23.0/polyfill.js'
+  ].forEach(src => {
+    const script = document.createElement('script');
+    script.src = src;
+    document.write(script.outerHTML);
+  });
+}
+</script>

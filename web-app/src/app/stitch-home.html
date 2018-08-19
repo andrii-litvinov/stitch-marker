@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="stitch-patterns.html">
+<script type="module" src="./stitch-patterns.js"></script>
 
 <dom-module id="stitch-home">
   <template>
@@ -71,3 +71,12 @@
     customElements.define(Home.is, Home);
   </script>
 </dom-module>
+<script type="module">
+import './stitch-patterns.js';
+class Home extends Polymer.Element {
+  static get is() {
+    return "stitch-home";
+  }
+}
+customElements.define(Home.is, Home);
+</script>

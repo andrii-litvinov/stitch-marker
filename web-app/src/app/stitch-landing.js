@@ -1,7 +1,6 @@
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-
-<dom-module id="stitch-landing">
-  <template>
+class Landing extends Polymer.Element {
+  static get template() {
+    return Polymer.html`
     <style>
       :host {
         display: block;
@@ -56,35 +55,30 @@
 
     <main>
       <div>
-        <img src="/images/landing/add-icon.svg" alt="add" />
+        <img src="/images/landing/add-icon.svg" alt="add">
         <h4>Добавляйте схемы</h4>
         <p>Возможность добавлять схемы любым удобным для Вас способом.</p>
       </div>
       <div>
-        <img src="/images/landing/marker-icon.svg" alt="mark" />
+        <img src="/images/landing/marker-icon.svg" alt="mark">
         <h4>Отмечайте вышитое</h4>
         <p>Функция, которая облегчает процесс всем, кто любит вышивать.</p>
       </div>
       <div>
-        <img src="/images/landing/enjoy-icon.svg" alt="enjoy" />
+        <img src="/images/landing/enjoy-icon.svg" alt="enjoy">
         <h4>Наслаждайтесь процессом</h4>
         <p>Процесс вышивания становится намного удобнее вместе со Stitch&nbsp;Marker.</p>
       </div>
     </main>
 
     <div id="buttons">
-      <paper-button raised id="Start">Начать вышивать</paper-button>
+      <paper-button raised="" id="Start">Начать вышивать</paper-button>
     </div>
 
     <stitch-social> </stitch-social>
+`;
+  }
 
-  </template>
-
-  <script>
-    class Landing extends Polymer.Element {
-      static get is() { return "stitch-landing"; }
-    }
-    customElements.define(Landing.is, Landing);
-  </script>
-
-</dom-module>
+  static get is() { return "stitch-landing"; }
+}
+customElements.define(Landing.is, Landing);
