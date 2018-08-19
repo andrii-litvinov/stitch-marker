@@ -1,5 +1,6 @@
 import { PolymerElement, html } from '@polymer/polymer';
 import '@vaadin/vaadin-upload/vaadin-upload.js';
+import '@polymer/paper-fab';
 
 class Upload extends PolymerElement {
   static get template() {
@@ -21,8 +22,8 @@ class Upload extends PolymerElement {
       }
     </style>
     <vaadin-upload id="upload" target="[[uploadUrl]]" max-files="1" nodrop="" on-upload-response="onUploadResponse" on-upload-progress="onUploadProgress" on-upload-error="onUploadError" headers="[[authHeader]]">
-      <!-- <paper-fab slot="add-button" icon="add" title="Upload pattern"></paper-fab>
-      <div slot="file-list"></div> -->
+      <paper-fab slot="add-button" icon="add" title="Upload pattern"></paper-fab>
+      <div slot="file-list"></div>
     </vaadin-upload>
 `;
   }
