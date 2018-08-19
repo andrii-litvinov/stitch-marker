@@ -26,7 +26,8 @@
     "@polymer/paper-tabs": "^3.0.0-pre.18",
     "@polymer/paper-card": "^3.0.0-pre.18",
     "@polymer/paper-progress": "^3.0.0-pre.18",
-    "@polymer/paper-fab": "^3.0.0-pre.18"
+    "@polymer/paper-fab": "^3.0.0-pre.18",
+    "@webcomponents/webcomponentsjs": "^2.0.0"
   },
   "devDependencies": {
     "lr-http-server": "^0.1.5"
