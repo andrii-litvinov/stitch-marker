@@ -1,4 +1,15 @@
-import {PolymerElement, html} from '@polymer/polymer'
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-layout/app-layout.js';
+import '@polymer/app-layout/app-header/app-header.js';
+import '@polymer/app-layout/app-drawer/app-drawer.js';
+import '@polymer/iron-selector/iron-selector.js';
+import '@polymer/paper-progress';
+import '@polymer/paper-button';
+import '@polymer/iron-icons/iron-icons.js';
+import '@polymer/iron-icons/image-icons.js';
+import '@polymer/iron-icons/editor-icons.js';
+import '@polymer/paper-icon-button';
+import '@polymer/paper-item/paper-item.js';
 
 class Header extends PolymerElement {
   static get template() {
@@ -154,10 +165,10 @@ class Header extends PolymerElement {
   }
 
   toggleMenu() {
-    // const authData = JSON.parse(localStorage.getItem("authData"));
-    // const authorized = authData && authData.expiresOn > new Date().getTime();
-    // this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
-    // this.$.drawer.toggle();
+    const authData = JSON.parse(localStorage.getItem("authData"));
+    const authorized = authData && authData.expiresOn > new Date().getTime();
+    this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
+    this.$.drawer.toggle();
   }
 }
 customElements.define(Header.is, Header);

@@ -1,7 +1,5 @@
-{/* <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html"> */}
-
 import { PolymerElement, html } from '@polymer/polymer'
+import '@polymer/paper-toast'
 import { WebAuth } from 'auth0-js'
 
 const webAuth = new WebAuth({
