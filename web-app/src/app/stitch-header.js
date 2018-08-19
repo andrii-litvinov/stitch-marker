@@ -1,6 +1,8 @@
-class Header extends Polymer.Element {
+import {PolymerElement, html} from '@polymer/polymer'
+
+class Header extends PolymerElement {
   static get template() {
-    return Polymer.html`
+    return html`
     <style>
       :host {
         display: block;

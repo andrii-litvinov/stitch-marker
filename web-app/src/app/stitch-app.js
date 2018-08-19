@@ -1,9 +1,12 @@
 import './stitch-header.js';
 import './stitch-landing.js';
 import './stitch-social.js';
-class App extends Polymer.Element {
+
+import {PolymerElement, html} from '@polymer/polymer'
+
+class App extends PolymerElement {
   static get template() {
-    return Polymer.html`
+    return html`
     <style>
       :host {
         display: block;
