@@ -5,6 +5,7 @@ import './stitch-social.js';
 import { PolymerElement, html } from '@polymer/polymer'
 import '/node_modules/@polymer/app-route/app-route.js'
 import '/node_modules/@polymer/app-route/app-location.js'
+import '@polymer/iron-pages'
 
 class App extends PolymerElement {
   static get template() {
@@ -22,9 +23,9 @@ class App extends PolymerElement {
     
     <iron-pages role="main" selected="[[view]]" attr-for-selected="name" selected-attribute="active">
       <stitch-landing name="landing"></stitch-landing>
-      <stitch-marker name="marker" route="{{subroute}}"></stitch-marker>
-      <stitch-home name="home" route="{{subroute}}"></stitch-home>
       <stitch-auth name="auth"></stitch-auth>
+      <stitch-home name="home" route="{{subroute}}"></stitch-home>
+      <stitch-marker name="marker" route="{{subroute}}"></stitch-marker>
     </iron-pages>
 `;
   }
