@@ -1,13 +1,17 @@
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+{/* <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html"> */}
 
-<script type="module" src="./stitch-canvas/stitch-canvas.js"></script>
+import { PolymerElement, html } from '@polymer/polymer';
+import './stitch-canvas/stitch-canvas.js';
 
-<dom-module id="stitch-marker">
-  <template>
+class Marker extends PolymerElement {
+  static get is() { return 'stitch-marker'; }
+
+  static get template() {
+    return html`
     <style>
       :host {
         display: none;
@@ -70,29 +74,8 @@
 
     <paper-spinner active=[[loading]]></paper-spinner>
     <paper-toast id="toast"></paper-toast>
-
-  </template>
-
-  <script>
-    class Marker extends Polymer.Element {
-      static get is() { 'stitch-marker'; }
-
-      static get zoomLevels() { [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5]; }
-
-      static get hotKey() {
-        return {
-          82: 'ruler',  // r
-          71: 'grid',   // g
-          83: 'symbol', // s
-          67: 'color'   // c
-        }
-      };
-
-      static get properties() {
-  <script type="module">
-import './stitch-canvas/stitch-canvas.js';
-class Marker extends Polymer.Element {
-  static get is() { 'stitch-marker'; }
+    `
+  };
 
   static get zoomLevels() { [.1, .15, .25, .33, .5, .67, .75, .8, .9, 1, 1.1, 1.25, 1.5, 1.75, 2, 3, 4, 5]; }
 
@@ -190,4 +173,3 @@ class Marker extends Polymer.Element {
 }
 
 customElements.define(Marker.is, Marker);
-</script>
