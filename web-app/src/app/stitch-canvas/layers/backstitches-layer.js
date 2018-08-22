@@ -1,5 +1,6 @@
 import BaseLayer from './base-layer.js';
 import Backstitch from '../backstitch.js';
+import BackstitchMarker from '../backstitch-marker.js';
 
 export default class BackstitchesLayer extends BaseLayer {
   constructor(scene) {
