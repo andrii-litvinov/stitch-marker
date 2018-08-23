@@ -114,6 +114,7 @@ class Patterns extends PolymerElement {
     var latestCard = cards[cards.length - 1];
     var boundingRect = latestCard.getBoundingClientRect();
     if (!(boundingRect.top >= 0 && boundingRect.bottom <= window.innerHeight)) {
+      // TODO: Get SmoothScroll behavior back if not working.
       this.smoothScroll(latestCard.offsetTop, 1000);
     }
   }
