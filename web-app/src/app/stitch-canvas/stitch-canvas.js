@@ -1,6 +1,6 @@
 import {PolymerElement, html} from '@polymer/polymer';
 import Scene from './scene.js';
-import * as WebFont from 'webfontloader'
+import * as _ from 'webfontloader'
 
 class Canvas extends PolymerElement {
   static get template() {
@@ -43,7 +43,7 @@ class Canvas extends PolymerElement {
   constructor() {
     super();
     this.fontLoad = new Promise((resolve, reject) => {
-      window.WebFont.load({
+      WebFont.load({
         custom: {
           families: ['CrossStitch3'],
           urls: ['../../fonts/cross-stitch-3.css']
