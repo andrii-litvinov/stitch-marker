@@ -88,7 +88,7 @@ class Header extends PolymerElement {
         z-index: 1;
       }
     </style>
-    <app-header reveals="">
+    <app-header style="height: 96px;" reveals>
       <paper-progress id="progress"></paper-progress>
       <app-toolbar>
         <stitch-logo main-title=""></stitch-logo>
