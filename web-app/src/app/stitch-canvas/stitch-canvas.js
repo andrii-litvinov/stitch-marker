@@ -1,16 +1,6 @@
-import { PolymerElement, html } from '@polymer/polymer';
-// import './event-dispatcher.js';
-// import './colors.js';
-// import './config.js';
-// import './stitch.js';
-// import './backstitch.js';
-// import './backstitch-marker.js';
-// import './tile.js';
-// import './layers/base-layer.js';
-// import './layers/stitches-layer.js';
-// import './layers/grid-layer.js';
-// import './layers/backstitches-layer.js';
+import {PolymerElement, html} from '@polymer/polymer';
 import Scene from './scene.js';
+import * as WebFont from 'webfontloader'
 
 class Canvas extends PolymerElement {
   static get template() {
@@ -53,14 +43,14 @@ class Canvas extends PolymerElement {
   constructor() {
     super();
     this.fontLoad = new Promise((resolve, reject) => {
-      // WebFont.load({
-      //   custom: {
-      //     families: ['CrossStitch3'],
-      //     urls: ['../../fonts/cross-stitch-3.css']
-      //   },
-      //   active: () => resolve(),
-      //   inactive: () => reject()
-      // });
+      window.WebFont.load({
+        custom: {
+          families: ['CrossStitch3'],
+          urls: ['../../fonts/cross-stitch-3.css']
+        },
+        active: () => resolve(),
+        inactive: () => reject()
+      });
       resolve();
     });
   }
@@ -89,7 +79,7 @@ class Canvas extends PolymerElement {
       }
     };
 
-    const onEnd = event => {
+    const onEnd = () => {
       position = null;
       this.scene.touchEnd();
     };
@@ -148,4 +138,5 @@ class Canvas extends PolymerElement {
     this.scene.resize(this.offsetWidth, this.offsetHeight);
   }
 }
+
 customElements.define(Canvas.is, Canvas);
