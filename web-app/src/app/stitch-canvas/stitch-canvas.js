@@ -1,8 +1,10 @@
-import {PolymerElement, html} from '@polymer/polymer';
+import { PolymerElement, html } from '@polymer/polymer';
+import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event-listeners.js';
+import * as Gestures from '@polymer/polymer/lib/utils/gestures.js';
 import Scene from './scene.js';
 import * as _ from 'webfontloader'
 
-class Canvas extends PolymerElement {
+class Canvas extends GestureEventListeners(PolymerElement) {
   static get template() {
     return html`
     <style>
@@ -106,8 +108,8 @@ class Canvas extends PolymerElement {
       }
     };
 
-    window.addEventListener('resize', event => this.resize());
-    window.addEventListener('tap', onTap);
+    window.addEventListener('resize', () => this.resize());
+    Gestures.addListener(this, 'tap', onTap);
     this.addEventListener('contextmenu', event => event.preventDefault());
 
     ["mousedown", "mouseenter", "touchstart"].forEach(type => {
