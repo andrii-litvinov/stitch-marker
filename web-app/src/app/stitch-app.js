@@ -6,17 +6,8 @@ import '@polymer/iron-pages'
 import './stitch-header.js';
 import './stitch-social.js';
 
-import { createStore, applyMiddleware } from 'redux'
-import createSagaMiddleware from 'redux-saga'
-
-import reducer from './reducers'
-import rootSaga from './sagas'
-
-const sagaMiddleware = createSagaMiddleware({ sagaMonitor })
-const store = createStore(reducer, applyMiddleware(sagaMiddleware))
-sagaMiddleware.run(rootSaga)
-
-const action = type => store.dispatch({ type })
+// This element is connected to the Redux store.
+import { store } from './store.js';
 
 class App extends PolymerElement {
   static get template() {

@@ -23,6 +23,8 @@
       apiUrl: 'http://localhost:5000',
     };
 
+    window.process = { env: { NODE_ENV: 'production' } };
+
     Promise.delay = delay => new Promise(resolve => setTimeout(resolve, delay));
     Promise.yield = () => new Promise(resolve => setTimeout(resolve, 0));
 
