@@ -6,6 +6,9 @@ import '@polymer/iron-pages'
 import './stitch-header.js';
 import './stitch-social.js';
 
+import { createStore, applyMiddleware } from 'redux'
+import createSagaMiddleware from 'redux-saga'
+
 import reducer from './reducers'
 import rootSaga from './sagas'
 
