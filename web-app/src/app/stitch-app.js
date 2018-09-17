@@ -6,6 +6,15 @@ import '@polymer/iron-pages'
 import './stitch-header.js';
 import './stitch-social.js';
 
+import reducer from './reducers'
+import rootSaga from './sagas'
+
+const sagaMiddleware = createSagaMiddleware({ sagaMonitor })
+const store = createStore(reducer, applyMiddleware(sagaMiddleware))
+sagaMiddleware.run(rootSaga)
+
+const action = type => store.dispatch({ type })
+
 class App extends PolymerElement {
   static get template() {
     return html`
