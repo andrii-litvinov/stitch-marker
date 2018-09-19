@@ -11,6 +11,10 @@ import '@polymer/iron-icons/editor-icons.js';
 import '@polymer/paper-icon-button';
 import '@polymer/paper-item/paper-item.js';
 
+// This element is connected to the Redux store.
+import { store } from './store.js';
+import { increment, decrement } from './actions/index.js';
+
 class Header extends PolymerElement {
   static get template() {
     return html`
@@ -120,6 +124,17 @@ class Header extends PolymerElement {
               <iron-icon icon="editor:border-color"></iron-icon>Marker
             </paper-item>
           </a>
+
+          <a href="#" on-click="inc">
+            <paper-item>
+              <iron-icon icon="editor:border-color"></iron-icon>inc
+            </paper-item>
+          </a>
+          <a href="#" on-click="dec">
+            <paper-item>
+              <iron-icon icon="editor:border-color"></iron-icon>dec
+            </paper-item>
+          </a>
         </div>
       </iron-selector>
     </app-drawer>
@@ -169,6 +184,16 @@ class Header extends PolymerElement {
     const authorized = authData && authData.expiresOn > new Date().getTime();
     this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
     this.$.drawer.toggle();
+  }
+
+  inc() {
+    store.dispatch(increment());
+    console.log(store.getState());
+  }
+
+  dec() {
+    store.dispatch(decrement())
+    console.log(store.getState());
   }
 }
 customElements.define(Header.is, Header);
