@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using AutoFixture.Xunit2;
@@ -21,30 +22,33 @@ namespace SM.Service.Tests
         public void ConvertToJsonInExpectedFormat()
         {
             //Arrange
-            string expectedJson = @"{
-  ""patternId"": 1,
-  ""patternName"": ""M198_Seaside beauty"",
-  ""height"": 300,
+            var expectedJson = @"{
+  ""id"": ""48316e9c-fa8c-45b7-9b95-b747d53fcb86"",
   ""width"": 300,
+  ""height"": 300,
+  ""title"": ""M198_Seaside beauty"",
+  ""author"": """",
+  ""company"": """",
+  ""copyright"": """",
   ""links"": [
     {
       ""rel"": ""self"",
-      ""href"": ""/api/patterns/1""
+      ""href"": ""/api/patterns/48316e9c-fa8c-45b7-9b95-b747d53fcb86""
     },
     {
       ""rel"": ""thumbnail"",
-      ""href"": ""/api/patterns/1/thumbnail""
+      ""href"": ""/api/patterns/48316e9c-fa8c-45b7-9b95-b747d53fcb86/thumbnail""
     }
   ]
 }".Replace("\r\n", "\n");
             var settings = new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()};
             var resource =
-                new Resource(new {PatternId = 1, PatternName = "M198_Seaside beauty", Height = 300, Width = 300})
+                new Resource<PatternItem>(new PatternItem {Id = "48316e9c-fa8c-45b7-9b95-b747d53fcb86", Title = "M198_Seaside beauty", Height = 300, Width = 300})
                 {
                     Links =
                     {
-                        new Link {Rel = "self", Href = "/api/patterns/1"},
-                        new Link {Rel = "thumbnail", Href = "/api/patterns/1/thumbnail"}
+                        new Link {Rel = "self", Href = "/api/patterns/48316e9c-fa8c-45b7-9b95-b747d53fcb86"},
+                        new Link {Rel = "thumbnail", Href = "/api/patterns/48316e9c-fa8c-45b7-9b95-b747d53fcb86/thumbnail"}
                     }
                 };
 
