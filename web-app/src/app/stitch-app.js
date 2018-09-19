@@ -6,9 +6,6 @@ import '@polymer/iron-pages'
 import './stitch-header.js';
 import './stitch-social.js';
 
-// This element is connected to the Redux store.
-import { store } from './store.js';
-
 class App extends PolymerElement {
   static get template() {
     return html`
