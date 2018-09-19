@@ -13,7 +13,7 @@ import '@polymer/paper-item/paper-item.js';
 
 // This element is connected to the Redux store.
 import { store } from './store.js';
-import { increment, decrement } from './actions/index.js';
+import { increment, decrementAsync } from './actions/index.js';
 
 class Header extends PolymerElement {
   static get template() {
@@ -192,7 +192,7 @@ class Header extends PolymerElement {
   }
 
   dec() {
-    store.dispatch(decrement())
+    store.dispatch(decrementAsync())
     console.log(store.getState());
   }
 }
