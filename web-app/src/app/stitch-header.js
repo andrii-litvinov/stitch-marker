@@ -11,10 +11,6 @@ import '@polymer/iron-icons/editor-icons.js';
 import '@polymer/paper-icon-button';
 import '@polymer/paper-item/paper-item.js';
 
-// This element is connected to the Redux store.
-import { store } from './store.js';
-import { increment, decrementAsync } from './actions/index.js';
-
 class Header extends PolymerElement {
   static get template() {
     return html`
@@ -184,16 +180,6 @@ class Header extends PolymerElement {
     const authorized = authData && authData.expiresOn > new Date().getTime();
     this.$.loginText.innerText = authorized ? 'Logout' : 'Login';
     this.$.drawer.toggle();
-  }
-
-  inc() {
-    store.dispatch(increment());
-    console.log(store.getState());
-  }
-
-  dec() {
-    store.dispatch(decrementAsync())
-    console.log(store.getState());
   }
 }
 customElements.define(Header.is, Header);

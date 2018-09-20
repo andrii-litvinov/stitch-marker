@@ -1,21 +1,25 @@
-export const INCREMENT = 'INCREMENT';
-export const DECREMENT = 'DECREMENT';
-export const DECREMENT_ASYNC = 'DECREMENT_ASYNC';
+export const INIT_STORE = 'INIT_STORE';
+export const UPDATE_BACKSTITCHES = 'UPDATE_BACKSTITCHES';
+export const UPDATE_STITCH_TILES = 'UPDATE_STITCH_TILES';
 
-export const increment = () => {
+export const initStore = (scene) => {
   return {
-    type: INCREMENT
+    type: INIT_STORE,
+    scene
   };
 };
 
-export const decrement = () => {
+export const updateBackstitches = (backstitches) => {
   return {
-    type: DECREMENT
+    type: UPDATE_BACKSTITCHES,
+    backstitches
   };
 };
 
-export const decrementAsync = () => {
+export const updateStitchTiles = (stitchTiles) => {
   return {
-    type: DECREMENT_ASYNC
+    type: UPDATE_STITCH_TILES,
+    stitchTiles
   };
 };
+

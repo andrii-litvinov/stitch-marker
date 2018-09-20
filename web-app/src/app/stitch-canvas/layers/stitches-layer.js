@@ -1,6 +1,8 @@
 import BaseLayer from './base-layer.js';
 import Stitch from '../stitch.js';
 import Tile from '../tile.js';
+import { store } from '../../store.js';
+import { updateStitchTiles } from '../../actions/index.js';
 
 export default class StitchesLayer extends BaseLayer {
   constructor(scene) {
@@ -69,6 +71,9 @@ export default class StitchesLayer extends BaseLayer {
     let coordY = Math.floor((event.detail.y - this.scene.y) / this.scene.stitchSize);
     let stitch = this.stitches[coordX * this.scene.pattern.height + coordY];
     if (stitch) stitch.tap();
+
+    store.dispatch(updateStitchTiles(this.stitches));
+    console.log(store.getState());
   }
 
   render(bounds) {

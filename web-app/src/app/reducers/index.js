@@ -1,19 +1,23 @@
-import { INCREMENT, DECREMENT } from '../actions';
+import { UPDATE_BACKSTITCHES, UPDATE_STITCH_TILES, INIT_STORE } from '../actions';
 
-const initialState = { clicks: 0, value: 0 };
-
-const reducer = (state = initialState, action) => {
+const reducer = (state = { backstitches: {}, stitchTiles: {} }, action) => {
   switch (action.type) {
-    case INCREMENT:
+    case INIT_STORE:
       return {
-        'clicks': state.clicks + 1,
-        'value': state.value + 1
+        backstitches: action.backstitches,
+        stitchTiles: action.stitchTiles
       };
-    case DECREMENT:
+    case UPDATE_BACKSTITCHES:
       return {
-        'clicks': state.clicks + 1,
-        'value': state.value - 1
+        ...state,
+        backstitches: action.backstitches
       };
+    case UPDATE_STITCH_TILES:
+      return {
+        ...state,
+        stitchTiles: action.stitchTiles
+      };
+
     default:
       return state;
   }

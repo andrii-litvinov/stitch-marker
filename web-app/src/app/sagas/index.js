@@ -1,24 +1,24 @@
 import { call, put, takeEvery, takeLatest, all } from 'redux-saga/effects'
-import { INCREMENT, DECREMENT, DECREMENT_ASYNC } from '../actions';
+import { INIT_STORE } from '../actions';
 import { delay } from 'redux-saga';
 
 function* saga() {
-  yield takeEvery(DECREMENT, mark);
+  // yield takeEvery(DECREMENT, mark);
 }
 
 function mark() {
   console.log('saga');
 }
 
-function* decrementAsync() {
-  yield delay(1000);
-  yield put({ type: DECREMENT });
-}
+// function* decrementAsync() {
+//   yield delay(1000);
+//   yield put({ type: DECREMENT });
+// }
 
 
-function* watchIncrementAsync() {
-  yield takeEvery('DECREMENT_ASYNC', decrementAsync);
-}
+// function* watchIncrementAsync() {
+//   yield takeEvery('DECREMENT_ASYNC', decrementAsync);
+// }
 
 // function* fetchDogAsync() {
 //   try {
@@ -36,8 +36,7 @@ function* watchIncrementAsync() {
 
 function* rootSaga() {
   yield all([
-    saga(),
-    watchIncrementAsync()
+    saga()
   ])
 }
 
