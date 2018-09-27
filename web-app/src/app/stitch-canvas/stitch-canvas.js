@@ -132,7 +132,7 @@ class Canvas extends GestureEventListeners(PolymerElement) {
     this.scene = new Scene(this, pattern);
 
     /// update scene data here
-    store.dispatch(fetchInitState());
+    store.dispatch(fetchInitState(pattern.id));
 
     await this.resize();
   }

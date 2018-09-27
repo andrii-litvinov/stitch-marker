@@ -11,9 +11,10 @@ export const initStore = (backstitches, stitchTiles) => {
   };
 };
 
-export const fetchInitState = () => {
+export const fetchInitState = (patternId) => {
   return {
-    type: FETCH_INIT_STATE
+    type: FETCH_INIT_STATE,
+    patternId
   };
 };
 
