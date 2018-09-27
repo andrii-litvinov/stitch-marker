@@ -1,43 +1,59 @@
 import { call, put, takeEvery, takeLatest, all } from 'redux-saga/effects'
-import { INIT_STORE } from '../actions';
+import { UPDATE_BACKSTITCHES, UPDATE_STITCH_TILES, FETCH_INIT_STATE, INIT_STORE } from '../actions';
 import { delay } from 'redux-saga';
+import { store } from '../stitch-store';
 
-function* saga() {
-  // yield takeEvery(DECREMENT, mark);
+export function* watchUpdateBackstichesAsync() {
+  yield takeLatest(UPDATE_BACKSTITCHES, PostDataAsync);
 }
 
-function mark() {
-  console.log('saga');
+export function* watchUpdateStitchTilesAsync() {
+  yield takeLatest(UPDATE_STITCH_TILES, PostDataAsync);
 }
 
-// function* decrementAsync() {
-//   yield delay(1000);
-//   yield put({ type: DECREMENT });
-// }
+export function* watchInitStoreAsync() {
+  yield takeEvery(FETCH_INIT_STATE, InitStoreAsync);
+}
 
+export function* PostDataAsync() {
+  yield call((async () => {
+    const rawResponse = await fetch(`${SM.apiUrl}/api/patterns/store`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + JSON.parse(localStorage.getItem("authData")).accessToken
+      },
+      body: JSON.stringify({
+        backstitches: store.getState().backstitches,
+        stitchTiles: store.getState().stitchTiles
+      })
+    });
+  }));
+}
 
-// function* watchIncrementAsync() {
-//   yield takeEvery('DECREMENT_ASYNC', decrementAsync);
-// }
+export function* InitStoreAsync() {
+  yield call((async () => {
+    const rawResponse = await fetch(`${SM.apiUrl}/api/patterns/store`, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer " + JSON.parse(localStorage.getItem("authData")).accessToken
+      }
+    });
 
-// function* fetchDogAsync() {
-//   try {
-//     yield put(requestDog());
-//     const data = yield call(() => {
-//       return fetch('https://dog.ceo/api/breeds/image/random')
-//               .then(res => res.json())
-//       }
-//     );
-//     yield put(requestDogSuccess(data));
-//   } catch (error) {
-//     yield put(requestDogError());
-//   }
-// }
+    const content = await rawResponse.json();
+    // yield put({ type: 'INIT_STORE', content });
+    console.log(content);
+    // dispatch({ type: 'INIT_STORE', content });
+  }));
+}
 
-function* rootSaga() {
+export function* rootSaga() {
   yield all([
-    saga()
+    watchUpdateStitchTilesAsync(),
+    watchUpdateBackstichesAsync(),
+    watchInitStoreAsync()
   ])
 }
-
-export default rootSaga;

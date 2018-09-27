@@ -6,6 +6,8 @@ using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Proto.Cluster;
 
 namespace SM.Service.Patterns
@@ -13,6 +15,23 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
+        [Produces("application/json")]
+        [HttpPost, Route("store")]
+        public async Task<IActionResult> Store(JObject data)
+        {
+            var stiches = data.SelectToken("stitchTiles");
+            var bstiches = data.SelectToken("backstitches");
+            return Ok();
+        }
+        
+        [Produces("application/json")]
+        [HttpGet, Route("store")]
+        public async Task<IActionResult> Store(int id)
+        {
+            return Ok(JsonConvert.SerializeObject(new { s = stiches, b = bstiches}));
+        }
+        
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
         {
