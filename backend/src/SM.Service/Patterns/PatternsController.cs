@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -19,18 +20,17 @@ namespace SM.Service.Patterns
         [HttpPost, Route("store")]
         public async Task<IActionResult> Store(JObject data)
         {
-            var stiches = data.SelectToken("stitchTiles");
-            var bstiches = data.SelectToken("backstitches");
+            var stiches = data.SelectToken("stitchTiles").ToArray();
+            var bstiches = data.SelectToken("backstitches").ToArray();
             return Ok();
         }
         
         [Produces("application/json")]
-        [HttpGet, Route("store")]
-        public async Task<IActionResult> Store(int id)
+        [HttpGet, Route("store/{id}")]
+        public async Task<IActionResult> Store(string id)
         {
-            return Ok(JsonConvert.SerializeObject(new { s = stiches, b = bstiches}));
+            return Ok(JsonConvert.SerializeObject(new { }));
         }
-        
         
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)

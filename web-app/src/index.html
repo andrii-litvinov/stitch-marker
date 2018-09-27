@@ -30,7 +30,16 @@
 
     const http = {
       get: (url) => fetch(url, { headers: getAuthHeaders() }),
-      delete: (url) => fetch(url, { method: 'DELETE', headers: getAuthHeaders() })
+      delete: (url) => fetch(url, { method: 'DELETE', headers: getAuthHeaders() }),
+      post: (url, data) => fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': getAuthHeaders().authorization
+        },
+        body: data
+      })
     }
 
     function getAuthHeaders() {

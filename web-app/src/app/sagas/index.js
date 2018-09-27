@@ -17,36 +17,20 @@ export function* watchInitStoreAsync() {
 
 export function* PostDataAsync() {
   yield call((async () => {
-    const rawResponse = await fetch(`${SM.apiUrl}/api/patterns/store`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + JSON.parse(localStorage.getItem("authData")).accessToken
-      },
-      body: JSON.stringify({
-        backstitches: store.getState().backstitches,
-        stitchTiles: store.getState().stitchTiles
-      })
+    const data = JSON.stringify({
+      patternId: store.getState().patternId,
+      backstitches: store.getState().backstitches,
+      stitchTiles: store.getState().stitchTiles
     });
+    const response = await http.post(`${SM.apiUrl}/api/patterns/store`, data);
   }));
 }
 
 export function* InitStoreAsync() {
   yield call((async () => {
-    const rawResponse = await fetch(`${SM.apiUrl}/api/patterns/store`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer " + JSON.parse(localStorage.getItem("authData")).accessToken
-      }
-    });
-
-    const content = await rawResponse.json();
-    // yield put({ type: 'INIT_STORE', content });
-    console.log(content);
-    // dispatch({ type: 'INIT_STORE', content });
+    const response = await http.get(`${SM.apiUrl}/api/patterns/store/${store.getState().patternId}`);
+    const content = await response.json();
+    put({ type: 'INIT_STORE', content });
   }));
 }
 

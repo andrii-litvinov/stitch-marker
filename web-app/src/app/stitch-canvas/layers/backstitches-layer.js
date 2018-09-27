@@ -52,8 +52,10 @@ export default class BackstitchesLayer extends BaseLayer {
     let index = this.backstitches.indexOf(this.activeBackstitch);
     this.backstitches[index].marked = !this.backstitches[index].marked;
 
-    store.dispatch(updateBackstitches(this.backstitches));
-    
+    let marked = [];
+    this.backstitches.forEach(item => { if (item.marked) marked.push(item) });
+    store.dispatch(updateBackstitches(marked));
+
     this.disposeMarkers();
     this.activeBackstitch = null;
     this.render();

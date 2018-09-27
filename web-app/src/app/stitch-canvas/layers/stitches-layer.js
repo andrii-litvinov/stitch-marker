@@ -72,7 +72,9 @@ export default class StitchesLayer extends BaseLayer {
     let stitch = this.stitches[coordX * this.scene.pattern.height + coordY];
     if (stitch) stitch.tap();
 
-    store.dispatch(updateStitchTiles(this.stitches));
+    let marked = [];
+    this.stitches.forEach(item => { if (item.marked) marked.push(item) });
+    store.dispatch(updateStitchTiles(marked));
   }
 
   render(bounds) {
@@ -82,7 +84,7 @@ export default class StitchesLayer extends BaseLayer {
     const startColumn = bounds.column;
     const rowCount = bounds.row + bounds.rowCount;
     const columnCount = bounds.column + bounds.columnCount;
-    const patternHeight =  this.scene.pattern.height;
+    const patternHeight = this.scene.pattern.height;
 
     for (let row = startRow; row < rowCount; row++) {
       for (let column = startColumn; column < columnCount; column++) {
