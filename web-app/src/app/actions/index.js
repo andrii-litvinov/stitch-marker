@@ -1,11 +1,19 @@
 export const INIT_STORE = 'INIT_STORE';
+export const FETCH_INIT_STATE = 'FETCH_INIT_STATE';
 export const UPDATE_BACKSTITCHES = 'UPDATE_BACKSTITCHES';
 export const UPDATE_STITCH_TILES = 'UPDATE_STITCH_TILES';
 
-export const initStore = (scene) => {
+export const initStore = (backstitches, stitchTiles) => {
   return {
     type: INIT_STORE,
-    scene
+    backstitches,
+    stitchTiles
+  };
+};
+
+export const fetchInitState = () => {
+  return {
+    type: FETCH_INIT_STATE
   };
 };
 

@@ -1,7 +1,7 @@
 import BaseLayer from './base-layer.js';
 import Stitch from '../stitch.js';
 import Tile from '../tile.js';
-import { store } from '../../store.js';
+import { store } from '../../stitch-store.js';
 import { updateStitchTiles } from '../../actions/index.js';
 
 export default class StitchesLayer extends BaseLayer {
@@ -73,7 +73,6 @@ export default class StitchesLayer extends BaseLayer {
     if (stitch) stitch.tap();
 
     store.dispatch(updateStitchTiles(this.stitches));
-    console.log(store.getState());
   }
 
   render(bounds) {
