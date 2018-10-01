@@ -16,22 +16,42 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
-        [Produces("application/json")]
-        [HttpPost, Route("store")]
+        [Produces("application/json"), HttpPost, Route("store")]
         public async Task<IActionResult> Store(JObject data)
         {
-            var stiches = data.SelectToken("stitchTiles").ToArray();
-            var bstiches = data.SelectToken("backstitches").ToArray();
-            return Ok();
+            var patternId = data.SelectToken("patternId").ToString();
+
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
+            
+            if (data.SelectToken("stitchTiles").HasValues)
+            {
+                var stiches = data.GetValue("stitchTiles").ToObject<Service.Stitch[]>();
+                foreach (var stich in patternItem.Stitches)
+                {
+                    stich.Marked = true;
+//                    stich.Marked = stiches.Contains(stich);
+                }
+            }
+            
+            if (data.SelectToken("backstitches").HasValues)
+            {
+                var bstiches = data.GetValue("backstitches").ToObject<Service.Backstitch[]>();
+                foreach (var bstich in patternItem.Backstitches)
+                {
+                    bstich.Marked = bstiches.Contains(bstich);
+                }
+            }
+            
+            var command = new UpdatePattern {Id = patternId, Pattern = patternItem};
+            var result = await pattern.RequestAsync<Service.Pattern>(command, 10.Seconds());
+
+            return Ok(result);
         }
-        
-        [Produces("application/json")]
-        [HttpGet, Route("store/{id}")]
-        public async Task<IActionResult> Store(string id)
-        {
-            return Ok(JsonConvert.SerializeObject(new { }));
-        }
-        
+
+        [Produces("application/json"), HttpGet, Route("store/{id}")]
+        public async Task<IActionResult> Store(string id) => Ok(JsonConvert.SerializeObject(new { }));
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
         {

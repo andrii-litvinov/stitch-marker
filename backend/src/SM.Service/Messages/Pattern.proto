@@ -49,6 +49,7 @@ message Stitch {
     uint32 y = 2;
     StitchType type = 3;
     int32 configuration_index = 4;
+    bool marked = 5;
 }
 
 enum StitchType {
@@ -66,6 +67,7 @@ message Backstitch {
     uint32 x_2 = 3;
     uint32 y_2 = 4;
     int32 configuration_index = 5;
+    bool marked = 6;
 }
 
 message Element {
