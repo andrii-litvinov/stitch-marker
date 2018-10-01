@@ -83,6 +83,10 @@ namespace SM.Service.Patterns
                     var patternOwner = new PatternOwner {OwnerId = pattern.OwnerId};
                     context.Sender.Tell(patternOwner);
                     break;
+                case UpdatePattern msg:
+                    this.pattern = msg.Pattern;
+                    context.Sender.Tell(pattern);
+                    break;
             }
         }
 

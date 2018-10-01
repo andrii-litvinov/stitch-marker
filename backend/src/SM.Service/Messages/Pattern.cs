@@ -39,17 +39,18 @@ namespace SM.Service {
             "KAUSDQoFcGV0aXQYBSABKAUSEgoKYmFja3N0aXRjaBgGIAEoBRITCgtmcmVu",
             "Y2hfa25vdBgHIAEoBSJbChNTdGl0Y2hDb25maWd1cmF0aW9uEg4KBnN5bWJv",
             "bBgBIAEoCRIRCgloZXhfY29sb3IYAiABKAkSIQoHc3RyYW5kcxgDIAEoCzIQ",
-            "LnBhdHRlcm4uU3RyYW5kcyJeCgZTdGl0Y2gSCQoBeBgBIAEoDRIJCgF5GAIg",
+            "LnBhdHRlcm4uU3RyYW5kcyJuCgZTdGl0Y2gSCQoBeBgBIAEoDRIJCgF5GAIg",
             "ASgNEiEKBHR5cGUYAyABKA4yEy5wYXR0ZXJuLlN0aXRjaFR5cGUSGwoTY29u",
-            "ZmlndXJhdGlvbl9pbmRleBgEIAEoBSJdCgpCYWNrc3RpdGNoEgsKA3hfMRgB",
-            "IAEoDRILCgN5XzEYAiABKA0SCwoDeF8yGAMgASgNEgsKA3lfMhgEIAEoDRIb",
-            "ChNjb25maWd1cmF0aW9uX2luZGV4GAUgASgFImAKB0VsZW1lbnQSCQoBeBgB",
-            "IAEoDRIJCgF5GAIgASgNEhsKE2NvbmZpZ3VyYXRpb25faW5kZXgYAyABKAUS",
-            "IgoEdHlwZRgEIAEoDjIULnBhdHRlcm4uRWxlbWVudFR5cGUqVAoKU3RpdGNo",
-            "VHlwZRIICgROT05FEAASCAoERlVMTBABEggKBEhBTEYQAhILCgdRVUFSVEVS",
-            "EAMSEAoMVEhSRUVRVUFSVEVSEAQSCQoFUEVUSVQQBSo2CgtFbGVtZW50VHlw",
-            "ZRINCglVTkRFRklORUQQABIOCgpGUkVOQ0hLTk9UEAESCAoEQkVBRBACQg2q",
-            "AgpTTS5TZXJ2aWNlYgZwcm90bzM="));
+            "ZmlndXJhdGlvbl9pbmRleBgEIAEoBRIOCgZtYXJrZWQYBSABKAgibQoKQmFj",
+            "a3N0aXRjaBILCgN4XzEYASABKA0SCwoDeV8xGAIgASgNEgsKA3hfMhgDIAEo",
+            "DRILCgN5XzIYBCABKA0SGwoTY29uZmlndXJhdGlvbl9pbmRleBgFIAEoBRIO",
+            "CgZtYXJrZWQYBiABKAgiYAoHRWxlbWVudBIJCgF4GAEgASgNEgkKAXkYAiAB",
+            "KA0SGwoTY29uZmlndXJhdGlvbl9pbmRleBgDIAEoBRIiCgR0eXBlGAQgASgO",
+            "MhQucGF0dGVybi5FbGVtZW50VHlwZSpUCgpTdGl0Y2hUeXBlEggKBE5PTkUQ",
+            "ABIICgRGVUxMEAESCAoESEFMRhACEgsKB1FVQVJURVIQAxIQCgxUSFJFRVFV",
+            "QVJURVIQBBIJCgVQRVRJVBAFKjYKC0VsZW1lbnRUeXBlEg0KCVVOREVGSU5F",
+            "RBAAEg4KCkZSRU5DSEtOT1QQARIICgRCRUFEEAJCDaoCClNNLlNlcnZpY2Vi",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::SM.Service.StitchType), typeof(global::SM.Service.ElementType), }, new pbr::GeneratedClrTypeInfo[] {
@@ -58,8 +59,8 @@ namespace SM.Service {
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Canvas), global::SM.Service.Canvas.Parser, new[]{ "Title" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Strands), global::SM.Service.Strands.Parser, new[]{ "Full", "Half", "Quarter", "ThreeQuarter", "Petit", "Backstitch", "FrenchKnot" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.StitchConfiguration), global::SM.Service.StitchConfiguration.Parser, new[]{ "Symbol", "HexColor", "Strands" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Stitch), global::SM.Service.Stitch.Parser, new[]{ "X", "Y", "Type", "ConfigurationIndex" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Backstitch), global::SM.Service.Backstitch.Parser, new[]{ "X1", "Y1", "X2", "Y2", "ConfigurationIndex" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Stitch), global::SM.Service.Stitch.Parser, new[]{ "X", "Y", "Type", "ConfigurationIndex", "Marked" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Backstitch), global::SM.Service.Backstitch.Parser, new[]{ "X1", "Y1", "X2", "Y2", "ConfigurationIndex", "Marked" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Element), global::SM.Service.Element.Parser, new[]{ "X", "Y", "ConfigurationIndex", "Type" }, null, null, null)
           }));
     }
@@ -1339,6 +1340,7 @@ namespace SM.Service {
       y_ = other.y_;
       type_ = other.type_;
       configurationIndex_ = other.configurationIndex_;
+      marked_ = other.marked_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1391,6 +1393,17 @@ namespace SM.Service {
       }
     }
 
+    /// <summary>Field number for the "marked" field.</summary>
+    public const int MarkedFieldNumber = 5;
+    private bool marked_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Marked {
+      get { return marked_; }
+      set {
+        marked_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Stitch);
@@ -1408,6 +1421,7 @@ namespace SM.Service {
       if (Y != other.Y) return false;
       if (Type != other.Type) return false;
       if (ConfigurationIndex != other.ConfigurationIndex) return false;
+      if (Marked != other.Marked) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1418,6 +1432,7 @@ namespace SM.Service {
       if (Y != 0) hash ^= Y.GetHashCode();
       if (Type != 0) hash ^= Type.GetHashCode();
       if (ConfigurationIndex != 0) hash ^= ConfigurationIndex.GetHashCode();
+      if (Marked != false) hash ^= Marked.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1447,6 +1462,10 @@ namespace SM.Service {
         output.WriteRawTag(32);
         output.WriteInt32(ConfigurationIndex);
       }
+      if (Marked != false) {
+        output.WriteRawTag(40);
+        output.WriteBool(Marked);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1466,6 +1485,9 @@ namespace SM.Service {
       }
       if (ConfigurationIndex != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConfigurationIndex);
+      }
+      if (Marked != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1489,6 +1511,9 @@ namespace SM.Service {
       }
       if (other.ConfigurationIndex != 0) {
         ConfigurationIndex = other.ConfigurationIndex;
+      }
+      if (other.Marked != false) {
+        Marked = other.Marked;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1515,6 +1540,10 @@ namespace SM.Service {
           }
           case 32: {
             ConfigurationIndex = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            Marked = input.ReadBool();
             break;
           }
         }
@@ -1553,6 +1582,7 @@ namespace SM.Service {
       x2_ = other.x2_;
       y2_ = other.y2_;
       configurationIndex_ = other.configurationIndex_;
+      marked_ = other.marked_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1616,6 +1646,17 @@ namespace SM.Service {
       }
     }
 
+    /// <summary>Field number for the "marked" field.</summary>
+    public const int MarkedFieldNumber = 6;
+    private bool marked_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Marked {
+      get { return marked_; }
+      set {
+        marked_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as Backstitch);
@@ -1634,6 +1675,7 @@ namespace SM.Service {
       if (X2 != other.X2) return false;
       if (Y2 != other.Y2) return false;
       if (ConfigurationIndex != other.ConfigurationIndex) return false;
+      if (Marked != other.Marked) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1645,6 +1687,7 @@ namespace SM.Service {
       if (X2 != 0) hash ^= X2.GetHashCode();
       if (Y2 != 0) hash ^= Y2.GetHashCode();
       if (ConfigurationIndex != 0) hash ^= ConfigurationIndex.GetHashCode();
+      if (Marked != false) hash ^= Marked.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1678,6 +1721,10 @@ namespace SM.Service {
         output.WriteRawTag(40);
         output.WriteInt32(ConfigurationIndex);
       }
+      if (Marked != false) {
+        output.WriteRawTag(48);
+        output.WriteBool(Marked);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1700,6 +1747,9 @@ namespace SM.Service {
       }
       if (ConfigurationIndex != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(ConfigurationIndex);
+      }
+      if (Marked != false) {
+        size += 1 + 1;
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1726,6 +1776,9 @@ namespace SM.Service {
       }
       if (other.ConfigurationIndex != 0) {
         ConfigurationIndex = other.ConfigurationIndex;
+      }
+      if (other.Marked != false) {
+        Marked = other.Marked;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1756,6 +1809,10 @@ namespace SM.Service {
           }
           case 40: {
             ConfigurationIndex = input.ReadInt32();
+            break;
+          }
+          case 48: {
+            Marked = input.ReadBool();
             break;
           }
         }
