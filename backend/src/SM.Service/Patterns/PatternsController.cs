@@ -24,22 +24,33 @@ namespace SM.Service.Patterns
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
             
+            foreach (var patternItemBackstitch in patternItem.Backstitches)
+            {
+                patternItemBackstitch.Marked = false;
+            }
+            
+            foreach (var patternItemStitch in patternItem.Stitches)
+            {
+                patternItemStitch.Marked = false;
+            }
+
             if (data.SelectToken("stitchTiles").HasValues)
             {
                 var stiches = data.GetValue("stitchTiles").ToObject<Service.Stitch[]>();
-                foreach (var stich in patternItem.Stitches)
+                foreach (var stich in stiches)
                 {
-                    stich.Marked = true;
-//                    stich.Marked = stiches.Contains(stich);
+                    var oldStitch = patternItem.Stitches.FirstOrDefault(item => item.X == stich.X && item.Y == stich.Y);
+                    patternItem.Stitches[patternItem.Stitches.IndexOf(oldStitch)].Marked = true;
                 }
             }
             
             if (data.SelectToken("backstitches").HasValues)
             {
                 var bstiches = data.GetValue("backstitches").ToObject<Service.Backstitch[]>();
-                foreach (var bstich in patternItem.Backstitches)
+                foreach (var bstich in bstiches)
                 {
-                    bstich.Marked = bstiches.Contains(bstich);
+                    var oldBstitch = patternItem.Backstitches.FirstOrDefault(item => item.X1 == bstich.X1 && item.Y1 == bstich.Y1 && item.X2 == bstich.X2 && item.Y2 == bstich.Y2);
+                    patternItem.Backstitches[patternItem.Backstitches.IndexOf(oldBstitch)].Marked = true;
                 }
             }
             
