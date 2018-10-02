@@ -20,48 +20,37 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> Store(JObject data)
         {
             var patternId = data.SelectToken("patternId").ToString();
-
+            
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
-            
-            foreach (var patternItemBackstitch in patternItem.Backstitches)
-            {
-                patternItemBackstitch.Marked = false;
-            }
-            
-            foreach (var patternItemStitch in patternItem.Stitches)
-            {
-                patternItemStitch.Marked = false;
-            }
 
             if (data.SelectToken("stitchTiles").HasValues)
             {
                 var stiches = data.GetValue("stitchTiles").ToObject<Service.Stitch[]>();
-                foreach (var stich in stiches)
+                foreach (var patternItemStitch in patternItem.Stitches)
                 {
-                    var oldStitch = patternItem.Stitches.FirstOrDefault(item => item.X == stich.X && item.Y == stich.Y);
-                    patternItem.Stitches[patternItem.Stitches.IndexOf(oldStitch)].Marked = true;
+                    patternItemStitch.Marked = true;
+                    if (stiches.Contains(patternItemStitch)) continue;
+                    patternItemStitch.Marked = false;
                 }
             }
             
             if (data.SelectToken("backstitches").HasValues)
             {
                 var bstiches = data.GetValue("backstitches").ToObject<Service.Backstitch[]>();
-                foreach (var bstich in bstiches)
+                foreach (var patternItemBackstitch in patternItem.Backstitches)
                 {
-                    var oldBstitch = patternItem.Backstitches.FirstOrDefault(item => item.X1 == bstich.X1 && item.Y1 == bstich.Y1 && item.X2 == bstich.X2 && item.Y2 == bstich.Y2);
-                    patternItem.Backstitches[patternItem.Backstitches.IndexOf(oldBstitch)].Marked = true;
+                    patternItemBackstitch.Marked = true;
+                    if (bstiches.Contains(patternItemBackstitch)) continue;
+                    patternItemBackstitch.Marked = false;
                 }
             }
             
             var command = new UpdatePattern {Id = patternId, Pattern = patternItem};
             var result = await pattern.RequestAsync<Service.Pattern>(command, 10.Seconds());
 
-            return Ok(result);
+            return Ok();
         }
-
-        [Produces("application/json"), HttpGet, Route("store/{id}")]
-        public async Task<IActionResult> Store(string id) => Ok(JsonConvert.SerializeObject(new { }));
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)

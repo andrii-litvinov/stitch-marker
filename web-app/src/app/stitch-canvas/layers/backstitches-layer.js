@@ -122,7 +122,7 @@ export default class BackstitchesLayer extends BaseLayer {
     this.scene.pattern.backstitches.forEach(bs => {
       const config = this.scene.pattern.configurations[bs.configurationIndex];
       const strands = config.strands || this.scene.pattern.strands;
-      const backstitch = new Backstitch(config, strands, bs, this.scene.scale, false);
+      const backstitch = new Backstitch(config, strands, bs, this.scene.scale, bs.marked);
       [
         { x: backstitch.x1, y: backstitch.y1 },
         { x: backstitch.x2, y: backstitch.y2 }
