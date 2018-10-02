@@ -1,6 +1,5 @@
 import { call, put, takeEvery, takeLatest, all } from 'redux-saga/effects'
 import { UPDATE_BACKSTITCHES, UPDATE_STITCH_TILES, FETCH_INIT_STATE, INIT_STORE } from '../actions';
-import { delay } from 'redux-saga';
 import { store } from '../stitch-store';
 
 export function* watchUpdateBackstichesAsync() {
