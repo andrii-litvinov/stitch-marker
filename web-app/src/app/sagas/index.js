@@ -1,36 +1,36 @@
 import { call, put, takeEvery, takeLatest, all } from 'redux-saga/effects'
-import { UPDATE_BACKSTITCHES, UPDATE_STITCH_TILES, FETCH_INIT_STATE, INIT_STORE } from '../actions';
-import { store } from '../stitch-store';
+import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, INIT_STORE } from '../actions';
+import { patternStore } from '../stores/patternStore.js';
 
 export function* watchUpdateBackstichesAsync() {
-  yield takeLatest(UPDATE_BACKSTITCHES, PostDataAsync);
+  yield takeLatest(MARK_BACKSTITCHES, PostDataAsync);
 }
 
 export function* watchUpdateStitchTilesAsync() {
-  yield takeLatest(UPDATE_STITCH_TILES, PostDataAsync);
+  yield takeLatest(UNMARK_STITCHES, PostDataAsync);
 }
 
 export function* watchInitStoreAsync() {
-  yield takeEvery(FETCH_INIT_STATE, InitStoreAsync);
+  yield takeEvery(MARK_STITCHES, InitStoreAsync);
 }
 
 export function* PostDataAsync() {
-  yield call((async () => {
-    const data = JSON.stringify({
-      patternId: store.getState().patternId,
-      backstitches: store.getState().backstitches,
-      stitchTiles: store.getState().stitchTiles
-    });
-    const response = await http.post(`${SM.apiUrl}/api/patterns/store`, data);
-  }));
+  // yield call((async () => {
+  //   const data = JSON.stringify({
+  //     patternId: store.getState().patternId,
+  //     backstitches: store.getState().backstitches,
+  //     stitchTiles: store.getState().stitchTiles
+  //   });
+  //   const response = await http.post(`${SM.apiUrl}/api/patterns/store`, data);
+  // }));
 }
 
 export function* InitStoreAsync() {
-  yield call((async () => {
-    const response = await http.get(`${SM.apiUrl}/api/patterns/store/${store.getState().patternId}`);
-    const content = await response.json();
-    put({ type: 'INIT_STORE', content });
-  }));
+  // yield call((async () => {
+  //   const response = await http.get(`${SM.apiUrl}/api/patterns/store/${store.getState().patternId}`);
+  //   const content = await response.json();
+  //   put({ type: 'INIT_STORE', content });
+  // }));
 }
 
 export function* rootSaga() {

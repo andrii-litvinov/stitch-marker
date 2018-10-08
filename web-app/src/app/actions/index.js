@@ -1,34 +1,41 @@
 export const INIT_STORE = 'INIT_STORE';
-export const FETCH_INIT_STATE = 'FETCH_INIT_STATE';
-export const UPDATE_BACKSTITCHES = 'UPDATE_BACKSTITCHES';
-export const UPDATE_STITCH_TILES = 'UPDATE_STITCH_TILES';
+export const MARK_STITCHES = 'MARK_STITCHES';
+export const UNMARK_STITCHES = 'UNMARK_STITCHES';
+export const MARK_BACKSTITCHES = 'MARK_BACKSTITCHES';
+export const UNMARK_BACKSTITCHES = 'UNMARK_BACKSTITCHES';
 
-export const initStore = (backstitches, stitchTiles) => {
+export const initStore = (pattern) => {
   return {
     type: INIT_STORE,
-    backstitches,
-    stitchTiles
+    pattern
   };
 };
 
-export const fetchInitState = (patternId) => {
+export const markStitches = (x, y) => {
   return {
-    type: FETCH_INIT_STATE,
-    patternId
+    type: MARK_STITCHES,
+    x, y
   };
 };
 
-export const updateBackstitches = (backstitches) => {
+export const unmarkShitches = (x, y) => {
   return {
-    type: UPDATE_BACKSTITCHES,
+    type: UNMARK_STITCHES,
+    x, y
+  };
+};
+
+export const markBackstitches = (backstitches) => {
+  return {
+    type: MARK_BACKSTITCHES,
     backstitches
   };
 };
 
-export const updateStitchTiles = (stitchTiles) => {
+export const unmarkBackstitches = (backstitches) => {
   return {
-    type: UPDATE_STITCH_TILES,
-    stitchTiles
+    type: UNMARK_BACKSTITCHES,
+    backstitches
   };
 };
 

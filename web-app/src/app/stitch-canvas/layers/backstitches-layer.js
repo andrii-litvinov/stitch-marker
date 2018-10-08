@@ -1,8 +1,7 @@
 import BaseLayer from './base-layer.js';
 import Backstitch from '../backstitch.js';
 import BackstitchMarker from '../backstitch-marker.js';
-import { store } from '../../stitch-store.js';
-import { updateBackstitches } from '../../actions/index.js';
+import { patternStore } from '../../stores/patternStore.js';
 
 export default class BackstitchesLayer extends BaseLayer {
   constructor(scene) {
@@ -52,9 +51,9 @@ export default class BackstitchesLayer extends BaseLayer {
     let index = this.backstitches.indexOf(this.activeBackstitch);
     this.backstitches[index].marked = !this.backstitches[index].marked;
 
-    let marked = [];
-    this.backstitches.forEach(item => { if (item.marked) marked.push(item) });
-    store.dispatch(updateBackstitches(marked));
+    // let marked = [];
+    // this.backstitches.forEach(item => { if (item.marked) marked.push(item) });
+    // store.dispatch(updateBackstitches(marked));
 
     this.disposeMarkers();
     this.activeBackstitch = null;
