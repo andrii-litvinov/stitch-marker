@@ -25,17 +25,17 @@ export const unmarkShitches = (x, y) => {
   };
 };
 
-export const markBackstitches = (backstitches) => {
+export const markBackstitches = (x1, y1, x2, y2) => {
   return {
     type: MARK_BACKSTITCHES,
-    backstitches
+    x1, y1, x2, y2
   };
 };
 
-export const unmarkBackstitches = (backstitches) => {
+export const unmarkBackstitches = (x1, y1, x2, y2) => {
   return {
     type: UNMARK_BACKSTITCHES,
-    backstitches
+    x1, y1, x2, y2
   };
 };
 
