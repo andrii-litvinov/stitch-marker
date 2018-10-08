@@ -16,7 +16,7 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
-        [Produces("application/json"), HttpPost, Route("store")]
+        [HttpPost, Route("store")]
         public async Task<IActionResult> Store(JObject data)
         {
             var patternId = data.SelectToken("patternId").ToString();

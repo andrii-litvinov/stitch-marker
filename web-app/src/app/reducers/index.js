@@ -1,32 +1,77 @@
-import { UPDATE_BACKSTITCHES, UPDATE_STITCH_TILES, INIT_STORE, FETCH_INIT_STATE } from '../actions';
+import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES } from '../actions';
 
-const reducer = (state = { patternId: {}, backstitches: {}, stitchTiles: {} }, action) => {
+const reducer = (state = { pattern: {} }, action) => {
   switch (action.type) {
     case INIT_STORE:
       return {
         ...state,
-        stitchTiles: action.stitchTiles,
-        backstitches: action.backstitches
+        pattern: action.pattern,
       };
-    case UPDATE_BACKSTITCHES:
+    case UNMARK_BACKSTITCHES:
+    case MARK_BACKSTITCHES:
       return {
         ...state,
-        backstitches: action.backstitches
+        pattern: updateBackstitch(state.pattern, action)
       };
-    case UPDATE_STITCH_TILES:
+
+    case UNMARK_STITCHES:
+    case MARK_STITCHES:
       return {
         ...state,
-        stitchTiles: action.stitchTiles
-      };
-    case FETCH_INIT_STATE:
-      return {
-        ...state,
-        patternId: action.patternId
+        pattern: updateStitch(state.pattern, action)
       };
 
     default:
       return state;
   }
 };
+
+const updateBackstitch = (state, action) => {
+  switch (action.type) {
+    case MARK_BACKSTITCHES:
+      
+      return {
+        ...state
+      };
+
+    case UNMARK_BACKSTITCHES:
+     
+      return {
+        ...state
+      };
+
+    default:
+      return state;
+  }
+};
+
+const updateStitch = (state, action) => {
+  const stitch = state.stitches[action.x * state.height + action.y];
+  switch (action.type) {
+    case MARK_STITCHES:
+      state.stitches.forEach((element, index) => {
+        if (element === stitch) {
+          element.marked = true;
+        }
+      });
+      return {
+        ...state
+      };
+
+    case UNMARK_STITCHES:
+      state.stitches.forEach((element, index) => {
+        if (element === stitch) {
+          element.marked = false;
+        }
+      });
+      return {
+        ...state
+      };
+
+    default:
+      return state;
+  }
+};
+
 
 export default reducer;

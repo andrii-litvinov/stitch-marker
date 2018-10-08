@@ -3,8 +3,8 @@ import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event
 import * as Gestures from '@polymer/polymer/lib/utils/gestures.js';
 import Scene from './scene.js';
 import * as _ from 'webfontloader'
-import { store } from '../stitch-store.js';
-import { fetchInitState } from '../actions/index.js';
+import { patternStore } from '../stores/patternStore.js';
+import { initStore } from '../actions/index.js';
 
 class Canvas extends GestureEventListeners(PolymerElement) {
   static get template() {
@@ -132,7 +132,7 @@ class Canvas extends GestureEventListeners(PolymerElement) {
     this.scene = new Scene(this, pattern);
 
     /// update scene data here
-    store.dispatch(fetchInitState(pattern.id));
+    patternStore.dispatch(initStore(pattern));
 
     await this.resize();
   }

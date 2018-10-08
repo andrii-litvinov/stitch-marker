@@ -120,17 +120,6 @@ class Header extends PolymerElement {
               <iron-icon icon="editor:border-color"></iron-icon>Marker
             </paper-item>
           </a>
-
-          <a href="#" on-click="inc">
-            <paper-item>
-              <iron-icon icon="editor:border-color"></iron-icon>inc
-            </paper-item>
-          </a>
-          <a href="#" on-click="dec">
-            <paper-item>
-              <iron-icon icon="editor:border-color"></iron-icon>dec
-            </paper-item>
-          </a>
         </div>
       </iron-selector>
     </app-drawer>
