@@ -16,40 +16,26 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
-        [HttpPost, Route("store")]
-        public async Task<IActionResult> Store(JObject data)
+        [HttpPost, Route("markstitches")]
+        public async Task<IActionResult> MarkStitches(StitchActionData data)
         {
-            var patternId = data.SelectToken("patternId").ToString();
-            
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
+            var command = new MarkStitches();
+            command.Stitches.AddRange(data.Stitches);
+            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
 
-            if (data.SelectToken("stitchTiles").HasValues)
-            {
-                var stiches = data.GetValue("stitchTiles").ToObject<Service.Stitch[]>();
-                foreach (var patternItemStitch in patternItem.Stitches)
-                {
-                    patternItemStitch.Marked = true;
-                    if (stiches.Contains(patternItemStitch)) continue;
-                    patternItemStitch.Marked = false;
-                }
-            }
-            
-            if (data.SelectToken("backstitches").HasValues)
-            {
-                var bstiches = data.GetValue("backstitches").ToObject<Service.Backstitch[]>();
-                foreach (var patternItemBackstitch in patternItem.Backstitches)
-                {
-                    patternItemBackstitch.Marked = true;
-                    if (bstiches.Contains(patternItemBackstitch)) continue;
-                    patternItemBackstitch.Marked = false;
-                }
-            }
-            
-            var command = new UpdatePattern {Id = patternId, Pattern = patternItem};
-            var result = await pattern.RequestAsync<Service.Pattern>(command, 10.Seconds());
+            return Ok(result);
+        }
+        
+        [HttpPost, Route("unmarkstitches")]
+        public async Task<IActionResult> UnmarkStitches(StitchActionData data)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
+            var command = new UnmarkStitches();
+            command.Stitches.AddRange(data.Stitches);
+            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpGet]

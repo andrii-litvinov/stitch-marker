@@ -1,0 +1,26 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service";
+
+message BackstitchActionData {
+    string patternId = 1;
+    repeated BackstitchCoordinates backstitches = 2;
+}
+
+message MarkBackstitches {
+    repeated BackstitchCoordinates stitches = 1;
+}
+
+message UnmarkBackstitches {
+    repeated BackstitchCoordinates stitches = 1;
+}
+
+message BackstitchCoordinates {
+    uint32 X1 = 1;
+    uint32 Y1 = 2;
+    uint32 X2 = 3;
+    uint32 Y2 = 4;
+}
+
+
