@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
+using Proto.Cluster;
 
 namespace SM.Service.Patterns
 {
@@ -34,6 +36,9 @@ namespace SM.Service.Patterns
                             break;
                         case PatternCreated created:
                             CreateChild(context, created.OwnerId, created.SourceId);
+                            break;
+                        case StitchUpdated updated:
+                            await UpdateStitch(context, updated.SourceId, updated.Stitch, updated.Marked);
                             break;
                     }
 
@@ -74,6 +79,18 @@ namespace SM.Service.Patterns
             }
 
             childBySource.TryAdd(sourceId, pid);
+        }
+
+        private async Task UpdateStitch(IContext context, string patternId, StitchCoordinates stitch, bool marked)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
+
+            var patternsStitch = patternItem.Stitches
+                .FirstOrDefault(item =>
+                    item.X == stitch.X &&
+                    item.Y == stitch.Y);
+            if (patternsStitch != null) patternsStitch.Marked = marked;
         }
     }
 }

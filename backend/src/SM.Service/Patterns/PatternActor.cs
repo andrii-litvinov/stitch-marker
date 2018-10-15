@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
@@ -83,9 +84,13 @@ namespace SM.Service.Patterns
                     var patternOwner = new PatternOwner {OwnerId = pattern.OwnerId};
                     context.Sender.Tell(patternOwner);
                     break;
-                case UpdatePattern msg:
-                    this.pattern = msg.Pattern;
-                    context.Sender.Tell(pattern);
+                case MarkStitches command:
+                    await SetStitchMarked(command.Stitches, true);
+                    context.Sender.Tell(true);
+                    break;
+                case UnmarkStitches command:
+                    await SetStitchMarked(command.Stitches, false);
+                    context.Sender.Tell(true);
                     break;
             }
         }
@@ -104,6 +109,17 @@ namespace SM.Service.Patterns
                     behavior.Become(Deleted);
                     break;
             }
+        }
+        
+        private async Task SetStitchMarked(RepeatedField<StitchCoordinates> commandStitches, bool mark)
+        {
+            foreach (var stitch in commandStitches)
+                await persistence.PersistEventAsync(new StitchUpdated
+                {
+                    SourceId = pattern.Id,
+                    Stitch = stitch,
+                    Marked = mark
+                });
         }
     }
 }

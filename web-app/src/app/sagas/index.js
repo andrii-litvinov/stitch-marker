@@ -2,41 +2,55 @@ import { call, put, takeEvery, takeLatest, all } from 'redux-saga/effects'
 import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, INIT_STORE } from '../actions';
 import { patternStore } from '../stores/patternStore.js';
 
-export function* watchUpdateBackstichesAsync() {
-  yield takeLatest(MARK_BACKSTITCHES, PostDataAsync);
+export function* watchMarkBackstitch() {
+  // yield takeEvery(MARK_BACKSTITCHES, markBackstitch);
 }
 
-export function* watchUpdateStitchTilesAsync() {
-  yield takeLatest(UNMARK_STITCHES, PostDataAsync);
+export function* watchUnmarkBackstitch() {
+  // yield takeEvery(UNMARK_BACKSTITCHES, unmarkBackstitch);
 }
 
-export function* watchInitStoreAsync() {
-  yield takeEvery(MARK_STITCHES, InitStoreAsync);
+export function* watchUnmarkStitch() {
+  yield takeEvery(UNMARK_STITCHES, unmarkStitches);
 }
 
-export function* PostDataAsync() {
-  // yield call((async () => {
-  //   const data = JSON.stringify({
-  //     patternId: store.getState().patternId,
-  //     backstitches: store.getState().backstitches,
-  //     stitchTiles: store.getState().stitchTiles
-  //   });
-  //   const response = await http.post(`${SM.apiUrl}/api/patterns/store`, data);
-  // }));
+export function* watchMarkStitch() {
+  yield takeEvery(MARK_STITCHES, markStitches);
 }
 
-export function* InitStoreAsync() {
-  // yield call((async () => {
-  //   const response = await http.get(`${SM.apiUrl}/api/patterns/store/${store.getState().patternId}`);
-  //   const content = await response.json();
-  //   put({ type: 'INIT_STORE', content });
-  // }));
+function* markStitches(actionData) {
+  yield call((async () => {
+    const data = JSON.stringify({
+      patternId: patternStore.getState().pattern.id,
+      stitches: [{ x: actionData.x, y: actionData.y }]
+    });
+    try {
+      const response = await http.post(`${SM.apiUrl}/api/patterns/markstitches`, data);
+    }
+    catch (e) { console.log(`Error in fetch: ${e}`); }
+  }));
 }
+
+function* unmarkStitches(actionData) {
+  yield call((async () => {
+    const data = JSON.stringify({
+      patternId: patternStore.getState().pattern.id,
+      stitches: [{ x: actionData.x, y: actionData.y }]
+    });
+    try {
+      const response = await http.post(`${SM.apiUrl}/api/patterns/unmarkstitches`, data);
+    }
+    catch (e) { console.log(`Error in fetch: ${e}`); }
+  }));
+}
+
+
 
 export function* rootSaga() {
   yield all([
-    watchUpdateStitchTilesAsync(),
-    watchUpdateBackstichesAsync(),
-    watchInitStoreAsync()
+    watchMarkStitch(),
+    watchUnmarkStitch(),
+    watchUnmarkBackstitch(),
+    watchMarkBackstitch()
   ])
 }
