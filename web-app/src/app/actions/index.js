@@ -11,31 +11,31 @@ export const initStore = (pattern) => {
   };
 };
 
-export const markStitches = (x, y) => {
+export const markStitches = (stitches) => {
   return {
     type: MARK_STITCHES,
-    x, y
+    stitches
   };
 };
 
-export const unmarkShitches = (x, y) => {
+export const unmarkShitches = (stitches) => {
   return {
     type: UNMARK_STITCHES,
-    x, y
+    stitches
   };
 };
 
-export const markBackstitches = (x1, y1, x2, y2) => {
+export const markBackstitches = (backstitches) => {
   return {
     type: MARK_BACKSTITCHES,
-    x1, y1, x2, y2
+    backstitches
   };
 };
 
-export const unmarkBackstitches = (x1, y1, x2, y2) => {
+export const unmarkBackstitches = (backstitches) => {
   return {
     type: UNMARK_BACKSTITCHES,
-    x1, y1, x2, y2
+    backstitches
   };
 };
 

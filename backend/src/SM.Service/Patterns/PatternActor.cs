@@ -92,6 +92,14 @@ namespace SM.Service.Patterns
                     await SetStitchMarked(command.Stitches, false);
                     context.Sender.Tell(true);
                     break;
+                case MarkBackstitches command:
+                    await SetBackstitchMarked(command.Backstitches, true);
+                    context.Sender.Tell(true);
+                    break;
+                case UnmarkBackstitches command:
+                    await SetBackstitchMarked(command.Backstitches, false);
+                    context.Sender.Tell(true);
+                    break;
             }
         }
 
@@ -109,6 +117,17 @@ namespace SM.Service.Patterns
                     behavior.Become(Deleted);
                     break;
             }
+        }
+        
+        private async Task SetBackstitchMarked(RepeatedField<BackstitchCoordinates> commandBackstitches, bool mark)
+        {
+            foreach (var backstitch in commandBackstitches)
+                await persistence.PersistEventAsync(new BackstitchUpdated()
+                {
+                    SourceId = pattern.Id,
+                    Backstitch = backstitch,
+                    Marked = mark
+                });
         }
         
         private async Task SetStitchMarked(RepeatedField<StitchCoordinates> commandStitches, bool mark)

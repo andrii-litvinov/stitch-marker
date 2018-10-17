@@ -3,11 +3,37 @@ import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES,
 import { patternStore } from '../stores/patternStore.js';
 
 export function* watchMarkBackstitch() {
-  // yield takeEvery(MARK_BACKSTITCHES, markBackstitch);
+  yield takeEvery(MARK_BACKSTITCHES, markBackstitch);
 }
 
 export function* watchUnmarkBackstitch() {
-  // yield takeEvery(UNMARK_BACKSTITCHES, unmarkBackstitch);
+  yield takeEvery(UNMARK_BACKSTITCHES, unmarkBackstitch);
+}
+
+function* markBackstitch(actionData) {
+  yield call((async () => {
+    const data = JSON.stringify({
+      patternId: patternStore.getState().pattern.id,
+      backstitches: actionData.backstitches
+    });
+    try {
+      const response = await http.post(`${SM.apiUrl}/api/patterns/markbackstitches`, data);
+    }
+    catch (e) { console.log(`Error in fetch: ${e}`); }
+  }));
+}
+
+function* unmarkBackstitch(actionData) {
+  yield call((async () => {
+    const data = JSON.stringify({
+      patternId: patternStore.getState().pattern.id,
+      backstitches: actionData.backstitches
+    });
+    try {
+      const response = await http.post(`${SM.apiUrl}/api/patterns/unmarkbackstitches`, data);
+    }
+    catch (e) { console.log(`Error in fetch: ${e}`); }
+  }));
 }
 
 export function* watchUnmarkStitch() {
@@ -22,7 +48,7 @@ function* markStitches(actionData) {
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      stitches: [{ x: actionData.x, y: actionData.y }]
+      stitches: actionData.stitches
     });
     try {
       const response = await http.post(`${SM.apiUrl}/api/patterns/markstitches`, data);
@@ -35,7 +61,7 @@ function* unmarkStitches(actionData) {
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      stitches: [{ x: actionData.x, y: actionData.y }]
+      stitches: actionData.stitches
     });
     try {
       const response = await http.post(`${SM.apiUrl}/api/patterns/unmarkstitches`, data);

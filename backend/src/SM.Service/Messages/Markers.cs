@@ -15,4 +15,8 @@ namespace SM.Service
     public partial class StitchUpdated : IEvent
     {
     }
+    
+    public partial class BackstitchUpdated : IEvent
+    {
+    }
 }

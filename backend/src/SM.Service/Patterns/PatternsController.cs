@@ -16,6 +16,28 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
+        [HttpPost, Route("markbackstitches")]
+        public async Task<IActionResult> MarkBackstitches(BackstitchActionData data)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
+            var command = new MarkBackstitches();
+            command.Backstitches.AddRange(data.Backstitches);
+            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
+
+            return Ok(result);
+        }
+        
+        [HttpPost, Route("unmarkbackstitches")]
+        public async Task<IActionResult> UnmarkBackstitches(BackstitchActionData data)
+        {
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
+            var command = new UnmarkBackstitches();
+            command.Backstitches.AddRange(data.Backstitches);
+            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
+
+            return Ok(result);
+        }
+        
         [HttpPost, Route("markstitches")]
         public async Task<IActionResult> MarkStitches(StitchActionData data)
         {
