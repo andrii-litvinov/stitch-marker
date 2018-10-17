@@ -86,19 +86,15 @@ namespace SM.Service.Patterns
                     break;
                 case MarkStitches command:
                     await SetStitchMarked(command.Stitches, true);
-                    context.Sender.Tell(true);
                     break;
                 case UnmarkStitches command:
                     await SetStitchMarked(command.Stitches, false);
-                    context.Sender.Tell(true);
                     break;
                 case MarkBackstitches command:
                     await SetBackstitchMarked(command.Backstitches, true);
-                    context.Sender.Tell(true);
                     break;
                 case UnmarkBackstitches command:
                     await SetBackstitchMarked(command.Backstitches, false);
-                    context.Sender.Tell(true);
                     break;
             }
         }

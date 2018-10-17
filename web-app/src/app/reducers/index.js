@@ -30,7 +30,7 @@ const updateBackstitch = (state, action) => {
   switch (action.type) {
     case MARK_BACKSTITCHES:
       action.backstitches.forEach(actionBs => {
-        state.backstitches.forEach((bs, index) => {
+        state.backstitches.forEach(bs => {
           if (bs.X1 == actionBs.X1 &&
             bs.Y1 == actionBs.Y1 &&
             bs.X2 == actionBs.X2 &&
@@ -44,7 +44,7 @@ const updateBackstitch = (state, action) => {
 
     case UNMARK_BACKSTITCHES:
       action.backstitches.forEach(actionBs => {
-        state.backstitches.forEach((bs, index) => {
+        state.backstitches.forEach(bs => {
           if (bs.X1 == actionBs.X1 &&
             bs.Y1 == actionBs.Y1 &&
             bs.X2 == actionBs.X2 &&
@@ -64,11 +64,11 @@ const updateBackstitch = (state, action) => {
 const updateStitch = (state, action) => {
   switch (action.type) {
     case MARK_STITCHES:
-      action.stitches.forEach(actionS => {
-        state.stitches.forEach((s, index) => {
-          if (s.X == actionS.X &&
-            s.Y == actionS.Y)
-            s.marked = true;
+      action.stitches.forEach(actionStitch => {
+        state.stitches.forEach(stitch => {
+          if (stitch.X == actionStitch.X &&
+            stitch.Y == actionStitch.Y)
+            stitch.marked = true;
         })
       });
       return {
@@ -76,11 +76,11 @@ const updateStitch = (state, action) => {
       };
 
     case UNMARK_STITCHES:
-      action.stitches.forEach(actionS => {
-        state.stitches.forEach((s, index) => {
-          if (s.X == actionS.X &&
-            s.Y == actionS.Y)
-            s.marked = false;
+      action.stitches.forEach(actionStitch => {
+        state.stitches.forEach(stitch => {
+          if (stitch.X == actionStitch.X &&
+            stitch.Y == actionStitch.Y)
+            stitch.marked = false;
         })
       });
       return {

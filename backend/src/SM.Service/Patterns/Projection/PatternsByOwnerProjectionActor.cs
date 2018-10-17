@@ -38,10 +38,10 @@ namespace SM.Service.Patterns
                             CreateChild(context, created.OwnerId, created.SourceId);
                             break;
                         case StitchUpdated updated:
-                            await UpdateStitch(context, updated.SourceId, updated.Stitch, updated.Marked);
+                            await UpdateStitch(updated.SourceId, updated.Stitch, updated.Marked);
                             break;
                         case BackstitchUpdated updated:
-                            await UpdateBackstitch(context, updated.SourceId, updated.Backstitch, updated.Marked);
+                            await UpdateBackstitch(updated.SourceId, updated.Backstitch, updated.Marked);
                             break;
                     }
 
@@ -84,7 +84,7 @@ namespace SM.Service.Patterns
             childBySource.TryAdd(sourceId, pid);
         }
 
-        private async Task UpdateStitch(IContext context, string patternId, StitchCoordinates stitch, bool marked)
+        private async Task UpdateStitch(string patternId, StitchCoordinates stitch, bool marked)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
@@ -95,8 +95,8 @@ namespace SM.Service.Patterns
                     item.Y == stitch.Y);
             if (patternsStitch != null) patternsStitch.Marked = marked;
         }
-        
-        private async Task UpdateBackstitch(IContext context, string patternId, BackstitchCoordinates backstitch, bool marked)
+
+        private async Task UpdateBackstitch(string patternId, BackstitchCoordinates backstitch, bool marked)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());

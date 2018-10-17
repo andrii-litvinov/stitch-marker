@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Proto.Cluster;
 
 namespace SM.Service.Patterns
@@ -20,44 +17,36 @@ namespace SM.Service.Patterns
         public async Task<IActionResult> MarkBackstitches(BackstitchActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            var command = new MarkBackstitches();
-            command.Backstitches.AddRange(data.Backstitches);
-            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
+            await pattern.RequestAsync<bool>(new MarkBackstitches {Backstitches = {data.Backstitches}}, 10.Seconds());
 
-            return Ok(result);
+            return Ok();
         }
-        
+
         [HttpPost, Route("unmarkbackstitches")]
         public async Task<IActionResult> UnmarkBackstitches(BackstitchActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            var command = new UnmarkBackstitches();
-            command.Backstitches.AddRange(data.Backstitches);
-            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
+            await pattern.RequestAsync<bool>(new UnmarkBackstitches {Backstitches = {data.Backstitches}}, 10.Seconds());
 
-            return Ok(result);
+            return Ok();
         }
-        
+
         [HttpPost, Route("markstitches")]
         public async Task<IActionResult> MarkStitches(StitchActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            var command = new MarkStitches();
-            command.Stitches.AddRange(data.Stitches);
-            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
+            await pattern.RequestAsync<bool>(new MarkStitches {Stitches = {data.Stitches}}, 10.Seconds());
 
-            return Ok(result);
+            return Ok();
         }
-        
+
         [HttpPost, Route("unmarkstitches")]
         public async Task<IActionResult> UnmarkStitches(StitchActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            var command = new UnmarkStitches();
-            command.Stitches.AddRange(data.Stitches);
-            var result = await pattern.RequestAsync<bool>(command, 10.Seconds());
+            await pattern.RequestAsync<bool>(new UnmarkStitches {Stitches = {data.Stitches}}, 10.Seconds());
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpGet]
