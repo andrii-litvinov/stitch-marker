@@ -29,22 +29,28 @@ const reducer = (state = { pattern: {} }, action) => {
 const updateBackstitch = (state, action) => {
   switch (action.type) {
     case MARK_BACKSTITCHES:
-      state.backstitches.forEach(item => {
-        if (item.x1 == action.x1 &&
-          item.y1 == action.y1 &&
-          item.x2 == action.x2 &&
-          item.y2 == action.y2) item.marked = true;
+      action.backstitches.forEach(actionBs => {
+        state.backstitches.forEach((bs, index) => {
+          if (bs.X1 == actionBs.X1 &&
+            bs.Y1 == actionBs.Y1 &&
+            bs.X2 == actionBs.X2 &&
+            bs.Y2 == actionBs.Y2)
+            bs.marked = true;
+        })
       });
       return {
         ...state
       };
 
     case UNMARK_BACKSTITCHES:
-      state.backstitches.forEach(item => {
-        if (item.x1 == action.x1 &&
-          item.y1 == action.y1 &&
-          item.x2 == action.x2 &&
-          item.y2 == action.y2) item.marked = false;
+      action.backstitches.forEach(actionBs => {
+        state.backstitches.forEach((bs, index) => {
+          if (bs.X1 == actionBs.X1 &&
+            bs.Y1 == actionBs.Y1 &&
+            bs.X2 == actionBs.X2 &&
+            bs.Y2 == actionBs.Y2)
+            bs.marked = true;
+        })
       });
       return {
         ...state
@@ -56,23 +62,26 @@ const updateBackstitch = (state, action) => {
 };
 
 const updateStitch = (state, action) => {
-  const stitch = state.stitches[action.x * state.height + action.y];
   switch (action.type) {
     case MARK_STITCHES:
-      state.stitches.forEach((element, index) => {
-        if (element === stitch) {
-          element.marked = true;
-        }
+      action.stitches.forEach(actionS => {
+        state.stitches.forEach((s, index) => {
+          if (s.X == actionS.X &&
+            s.Y == actionS.Y)
+            s.marked = true;
+        })
       });
       return {
         ...state
       };
 
     case UNMARK_STITCHES:
-      state.stitches.forEach((element, index) => {
-        if (element === stitch) {
-          element.marked = false;
-        }
+      action.stitches.forEach(actionS => {
+        state.stitches.forEach((s, index) => {
+          if (s.X == actionS.X &&
+            s.Y == actionS.Y)
+            s.marked = false;
+        })
       });
       return {
         ...state

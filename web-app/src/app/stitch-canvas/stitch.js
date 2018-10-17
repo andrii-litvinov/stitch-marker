@@ -12,7 +12,9 @@ export default class Stitch extends EventDispatcher {
   }
 
   tap() {
-    patternStore.dispatch(this.marked ? unmarkShitches(this.x, this.y) : markStitches(this.x, this.y));
+    patternStore.dispatch(this.marked ?
+      unmarkShitches([{ x: this.x, y: this.y }]) :
+      markStitches([{ x: this.x, y: this.y }]));
     this.marked = !this.marked;
     this.dispatchEvent(new CustomEvent("change"));
   }

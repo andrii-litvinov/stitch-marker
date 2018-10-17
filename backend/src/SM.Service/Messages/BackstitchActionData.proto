@@ -9,11 +9,11 @@ message BackstitchActionData {
 }
 
 message MarkBackstitches {
-    repeated BackstitchCoordinates stitches = 1;
+    repeated BackstitchCoordinates backstitches = 1;
 }
 
 message UnmarkBackstitches {
-    repeated BackstitchCoordinates stitches = 1;
+    repeated BackstitchCoordinates backstitches = 1;
 }
 
 message BackstitchCoordinates {
