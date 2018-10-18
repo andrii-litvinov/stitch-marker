@@ -24,12 +24,12 @@ namespace SM.Service {
     static StitchUpdatedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChNTdGl0Y2hVcGRhdGVkLnByb3RvEgdwYXR0ZXJuGhZTdGl0Y2hBY3Rpb25E",
-            "YXRhLnByb3RvIl4KDVN0aXRjaFVwZGF0ZWQSEQoJc291cmNlX2lkGAEgASgJ",
-            "EioKBnN0aXRjaBgCIAEoCzIaLnBhdHRlcm4uU3RpdGNoQ29vcmRpbmF0ZXMS",
-            "DgoGbWFya2VkGAMgASgIQg2qAgpTTS5TZXJ2aWNlUABiBnByb3RvMw=="));
+            "ChNTdGl0Y2hVcGRhdGVkLnByb3RvEgdwYXR0ZXJuGhhTdGl0Y2hlc0FjdGlv",
+            "bkRhdGEucHJvdG8iXgoNU3RpdGNoVXBkYXRlZBIRCglzb3VyY2VfaWQYASAB",
+            "KAkSKgoGc3RpdGNoGAIgASgLMhoucGF0dGVybi5TdGl0Y2hDb29yZGluYXRl",
+            "cxIOCgZtYXJrZWQYAyABKAhCDaoCClNNLlNlcnZpY2VQAGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.StitchActionDataReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::SM.Service.StitchesActionDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.StitchUpdated), global::SM.Service.StitchUpdated.Parser, new[]{ "SourceId", "Stitch", "Marked" }, null, null, null)
           }));

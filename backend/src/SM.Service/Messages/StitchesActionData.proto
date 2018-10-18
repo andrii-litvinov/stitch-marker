@@ -3,7 +3,7 @@ package pattern;
 
 option csharp_namespace = "SM.Service";
 
-message StitchActionData {
+message StitchesActionData {
     string patternId = 1;
     repeated StitchCoordinates stitches = 2;
 }

@@ -2,7 +2,7 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "SM.Service";
-import public "BackstitchActionData.proto";
+import public "BackstitchesActionData.proto";
 
 message BackstitchUpdated {
     string source_id = 1;

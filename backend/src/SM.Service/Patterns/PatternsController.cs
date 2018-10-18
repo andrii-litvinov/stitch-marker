@@ -14,7 +14,7 @@ namespace SM.Service.Patterns
     public class PatternsController : ControllerBase
     {
         [HttpPost, Route("markbackstitches")]
-        public async Task<IActionResult> MarkBackstitches(BackstitchActionData data)
+        public async Task<IActionResult> MarkBackstitches(BackstitchesActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
             await pattern.RequestAsync<bool>(new MarkBackstitches {Backstitches = {data.Backstitches}}, 10.Seconds());
@@ -23,7 +23,7 @@ namespace SM.Service.Patterns
         }
 
         [HttpPost, Route("unmarkbackstitches")]
-        public async Task<IActionResult> UnmarkBackstitches(BackstitchActionData data)
+        public async Task<IActionResult> UnmarkBackstitches(BackstitchesActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
             await pattern.RequestAsync<bool>(new UnmarkBackstitches {Backstitches = {data.Backstitches}}, 10.Seconds());
@@ -32,7 +32,7 @@ namespace SM.Service.Patterns
         }
 
         [HttpPost, Route("markstitches")]
-        public async Task<IActionResult> MarkStitches(StitchActionData data)
+        public async Task<IActionResult> MarkStitches(StitchesActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
             await pattern.RequestAsync<bool>(new MarkStitches {Stitches = {data.Stitches}}, 10.Seconds());
@@ -41,7 +41,7 @@ namespace SM.Service.Patterns
         }
 
         [HttpPost, Route("unmarkstitches")]
-        public async Task<IActionResult> UnmarkStitches(StitchActionData data)
+        public async Task<IActionResult> UnmarkStitches(StitchesActionData data)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
             await pattern.RequestAsync<bool>(new UnmarkStitches {Stitches = {data.Stitches}}, 10.Seconds());
@@ -144,7 +144,11 @@ namespace SM.Service.Patterns
                 Links =
                 {
                     new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
-                    new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})}
+                    new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})},
+                    new Link {Rel = "markStitches", Href = Url.Action("MarkStitches")},
+                    new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches")},
+                    new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches")},
+                    new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches")}
                 }
             };
 

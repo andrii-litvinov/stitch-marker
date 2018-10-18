@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using Google.Protobuf.Collections;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
@@ -85,16 +85,16 @@ namespace SM.Service.Patterns
                     context.Sender.Tell(patternOwner);
                     break;
                 case MarkStitches command:
-                    await SetStitchMarked(command.Stitches, true);
+                    await SetStitchesMarked(command.Stitches, true);
                     break;
                 case UnmarkStitches command:
-                    await SetStitchMarked(command.Stitches, false);
+                    await SetStitchesMarked(command.Stitches, false);
                     break;
                 case MarkBackstitches command:
-                    await SetBackstitchMarked(command.Backstitches, true);
+                    await SetBackstitchesMarked(command.Backstitches, true);
                     break;
                 case UnmarkBackstitches command:
-                    await SetBackstitchMarked(command.Backstitches, false);
+                    await SetBackstitchesMarked(command.Backstitches, false);
                     break;
             }
         }
@@ -115,10 +115,10 @@ namespace SM.Service.Patterns
             }
         }
         
-        private async Task SetBackstitchMarked(RepeatedField<BackstitchCoordinates> commandBackstitches, bool mark)
+        private async Task SetBackstitchesMarked(IEnumerable<BackstitchCoordinates> commandBackstitches, bool mark)
         {
             foreach (var backstitch in commandBackstitches)
-                await persistence.PersistEventAsync(new BackstitchUpdated()
+                await persistence.PersistEventAsync(new BackstitchUpdated
                 {
                     SourceId = pattern.Id,
                     Backstitch = backstitch,
@@ -126,7 +126,7 @@ namespace SM.Service.Patterns
                 });
         }
         
-        private async Task SetStitchMarked(RepeatedField<StitchCoordinates> commandStitches, bool mark)
+        private async Task SetStitchesMarked(IEnumerable<StitchCoordinates> commandStitches, bool mark)
         {
             foreach (var stitch in commandStitches)
                 await persistence.PersistEventAsync(new StitchUpdated

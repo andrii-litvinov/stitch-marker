@@ -24,13 +24,13 @@ namespace SM.Service {
     static BackstitchUpdatedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChdCYWNrc3RpdGNoVXBkYXRlZC5wcm90bxIHcGF0dGVybhoaQmFja3N0aXRj",
-            "aEFjdGlvbkRhdGEucHJvdG8iagoRQmFja3N0aXRjaFVwZGF0ZWQSEQoJc291",
-            "cmNlX2lkGAEgASgJEjIKCmJhY2tzdGl0Y2gYAiABKAsyHi5wYXR0ZXJuLkJh",
-            "Y2tzdGl0Y2hDb29yZGluYXRlcxIOCgZtYXJrZWQYAyABKAhCDaoCClNNLlNl",
-            "cnZpY2VQAGIGcHJvdG8z"));
+            "ChdCYWNrc3RpdGNoVXBkYXRlZC5wcm90bxIHcGF0dGVybhocQmFja3N0aXRj",
+            "aGVzQWN0aW9uRGF0YS5wcm90byJqChFCYWNrc3RpdGNoVXBkYXRlZBIRCglz",
+            "b3VyY2VfaWQYASABKAkSMgoKYmFja3N0aXRjaBgCIAEoCzIeLnBhdHRlcm4u",
+            "QmFja3N0aXRjaENvb3JkaW5hdGVzEg4KBm1hcmtlZBgDIAEoCEINqgIKU00u",
+            "U2VydmljZVAAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.BackstitchActionDataReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::SM.Service.BackstitchesActionDataReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.BackstitchUpdated), global::SM.Service.BackstitchUpdated.Parser, new[]{ "SourceId", "Backstitch", "Marked" }, null, null, null)
           }));
