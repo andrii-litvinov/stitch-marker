@@ -101,13 +101,13 @@ namespace SM.Service.Patterns
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
 
-            var patternsStitch = patternItem.Backstitches
+            var patternsBackstitch = patternItem.Backstitches
                 .FirstOrDefault(item =>
                     item.X1 == backstitch.X1 &&
                     item.Y1 == backstitch.Y1 &&
                     item.X2 == backstitch.X2 &&
                     item.Y2 == backstitch.Y2);
-            if (patternsStitch != null) patternsStitch.Marked = marked;
+            if (patternsBackstitch != null) patternsBackstitch.Marked = marked;
         }
     }
 }

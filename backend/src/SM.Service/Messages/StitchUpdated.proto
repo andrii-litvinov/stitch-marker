@@ -2,7 +2,7 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "SM.Service";
-import public "StitchActionData.proto";
+import public "StitchesActionData.proto";
 
 message StitchUpdated {
     string source_id = 1;
