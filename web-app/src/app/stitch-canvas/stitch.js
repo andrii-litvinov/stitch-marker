@@ -1,7 +1,7 @@
 import EventDispatcher from './event-dispatcher.js';
 import { shadeBlendConvert, getContrastYIQ } from './colors.js';
 import { patternStore } from '../stores/patternStore.js';
-import { markStitches, unmarkShitches } from '../actions/index.js';
+import { markStitches, unmarkStitches } from '../actions/index.js';
 
 export default class Stitch extends EventDispatcher {
   constructor(config, data) {
@@ -13,7 +13,7 @@ export default class Stitch extends EventDispatcher {
 
   tap() {
     patternStore.dispatch(this.marked ?
-      unmarkShitches([{ x: this.x, y: this.y }]) :
+      unmarkStitches([{ x: this.x, y: this.y }]) :
       markStitches([{ x: this.x, y: this.y }]));
     this.marked = !this.marked;
     this.dispatchEvent(new CustomEvent("change"));
