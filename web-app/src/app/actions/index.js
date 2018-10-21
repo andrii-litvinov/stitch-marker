@@ -18,7 +18,7 @@ export const markStitches = (stitches) => {
   };
 };
 
-export const unmarkShitches = (stitches) => {
+export const unmarkStitches = (stitches) => {
   return {
     type: UNMARK_STITCHES,
     stitches
