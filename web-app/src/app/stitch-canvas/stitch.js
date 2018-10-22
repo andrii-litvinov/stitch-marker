@@ -1,7 +1,7 @@
 import EventDispatcher from './event-dispatcher.js';
 import { shadeBlendConvert, getContrastYIQ } from './colors.js';
-import { patternStore } from '../stores/patternStore.js';
-import { markStitches, unmarkStitches } from '../actions/index.js';
+import { patternStore } from '../pattern-store/pattern-store.js';
+import { markStitches, unmarkShitches } from '../pattern-store/pattern-actions.js';
 
 export default class Stitch extends EventDispatcher {
   constructor(config, data) {

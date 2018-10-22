@@ -1,4 +1,4 @@
-import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES } from '../actions';
+import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES } from './pattern-actions';
 
 const reducer = (state = { pattern: {} }, action) => {
   switch (action.type) {

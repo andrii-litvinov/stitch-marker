@@ -1,8 +1,8 @@
 import BaseLayer from './base-layer.js';
 import Backstitch from '../backstitch.js';
 import BackstitchMarker from '../backstitch-marker.js';
-import { patternStore } from '../../stores/patternStore.js';
-import { markBackstitches, unmarkBackstitches } from '../../actions/index.js';
+import { patternStore } from '../../pattern-store/pattern-store.js';
+import { markBackstitches, unmarkBackstitches } from '../../pattern-store/pattern-actions.js';
 
 export default class BackstitchesLayer extends BaseLayer {
   constructor(scene) {
