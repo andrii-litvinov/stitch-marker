@@ -1,96 +1,56 @@
 import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES } from './pattern-actions';
+import Backstitch from '../stitch-canvas/backstitch.js';
 
-const reducer = (state = { pattern: {} }, action) => {
+const reducer = (state = {}, action) => {
   switch (action.type) {
     case INIT_STORE:
+      const height = action.scene.pattern.height;
+      let backstitchesMap = [];
+      let backstitches = [];
+      action.scene.pattern.backstitches.forEach(bs => {
+        const config = action.scene.pattern.configurations[bs.configurationIndex];
+        const strands = config.strands || action.scene.pattern.strands;
+        const backstitch = new Backstitch(config, strands, bs, action.scene.scale, bs.marked);
+        [
+          { x: backstitch.x1, y: backstitch.y1 },
+          { x: backstitch.x2, y: backstitch.y2 }
+        ].forEach(point => {
+          const index = point.x * height + point.y;
+          backstitchesMap[index] = backstitchesMap[index] || [];
+          backstitchesMap[index].push(backstitch);
+          backstitches.push(backstitch);
+        });
+      });
+      action.scene.pattern.backstitches = backstitches;
       return {
         ...state,
-        pattern: action.pattern,
+        pattern: action.scene.pattern,
       };
     case UNMARK_BACKSTITCHES:
+      action.backstitches.forEach(actionBackstitch => {
+        state.pattern.backstitches[actionBackstitch].marked = false;
+      });
+      return { ...state };
     case MARK_BACKSTITCHES:
-      return {
-        ...state,
-        pattern: updateBackstitch(state.pattern, action)
-      };
-
-    case UNMARK_STITCHES:
-    case MARK_STITCHES:
-      return {
-        ...state,
-        pattern: updateStitch(state.pattern, action)
-      };
-
-    default:
-      return state;
-  }
-};
-
-const updateBackstitch = (state, action) => {
-  switch (action.type) {
-    case MARK_BACKSTITCHES:
-      action.backstitches.forEach(actionBs => {
-        state.backstitches.forEach(bs => {
-          if (bs.X1 == actionBs.X1 &&
-            bs.Y1 == actionBs.Y1 &&
-            bs.X2 == actionBs.X2 &&
-            bs.Y2 == actionBs.Y2)
-            bs.marked = true;
-        })
+      action.backstitches.forEach(actionBackstitch => {
+        state.pattern.backstitches[actionBackstitch].marked = true;
       });
-      return {
-        ...state
-      };
-
-    case UNMARK_BACKSTITCHES:
-      action.backstitches.forEach(actionBs => {
-        state.backstitches.forEach(bs => {
-          if (bs.X1 == actionBs.X1 &&
-            bs.Y1 == actionBs.Y1 &&
-            bs.X2 == actionBs.X2 &&
-            bs.Y2 == actionBs.Y2)
-            bs.marked = true;
-        })
-      });
-      return {
-        ...state
-      };
-
-    default:
-      return state;
-  }
-};
-
-const updateStitch = (state, action) => {
-  switch (action.type) {
-    case MARK_STITCHES:
-      action.stitches.forEach(actionStitch => {
-        state.stitches.forEach(stitch => {
-          if (stitch.X == actionStitch.X &&
-            stitch.Y == actionStitch.Y)
-            stitch.marked = true;
-        })
-      });
-      return {
-        ...state
-      };
+      return { ...state };
 
     case UNMARK_STITCHES:
       action.stitches.forEach(actionStitch => {
-        state.stitches.forEach(stitch => {
-          if (stitch.X == actionStitch.X &&
-            stitch.Y == actionStitch.Y)
-            stitch.marked = false;
-        })
+        state.pattern.stitches[actionStitch].marked = true;
       });
-      return {
-        ...state
-      };
+      return { ...state };
+    case MARK_STITCHES:
+      action.stitches.forEach(actionStitch => {
+        state.pattern.stitches[actionStitch].marked = true;
+      });
+      return { ...state };
 
     default:
       return state;
   }
 };
-
 
 export default reducer;

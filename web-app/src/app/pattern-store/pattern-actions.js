@@ -4,10 +4,10 @@ export const UNMARK_STITCHES = 'UNMARK_STITCHES';
 export const MARK_BACKSTITCHES = 'MARK_BACKSTITCHES';
 export const UNMARK_BACKSTITCHES = 'UNMARK_BACKSTITCHES';
 
-export const initStore = (pattern) => {
+export const initStore = (scene) => {
   return {
     type: INIT_STORE,
-    pattern
+    scene
   };
 };
 
