@@ -1,6 +1,8 @@
 import BaseLayer from './base-layer.js';
 import Stitch from '../stitch.js';
 import Tile from '../tile.js';
+import { patternStore } from '../../pattern-store/pattern-store.js';
+import { markStitches, unmarkShitches } from '../../pattern-store/pattern-actions.js';
 
 export default class StitchesLayer extends BaseLayer {
   constructor(scene) {
@@ -67,7 +69,13 @@ export default class StitchesLayer extends BaseLayer {
   tap(event) {
     let coordX = Math.floor((event.detail.x - this.scene.x) / this.scene.stitchSize);
     let coordY = Math.floor((event.detail.y - this.scene.y) / this.scene.stitchSize);
-    let stitch = this.stitches[coordX * this.scene.pattern.height + coordY];
+    let index = coordX * this.scene.pattern.height + coordY
+    let stitch = this.stitches[index];
+
+    patternStore.dispatch(this.marked
+      ? unmarkShitches([index])
+      : markStitches([index]));
+
     if (stitch) stitch.tap();
   }
 

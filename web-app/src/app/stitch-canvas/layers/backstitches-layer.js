@@ -51,19 +51,10 @@ export default class BackstitchesLayer extends BaseLayer {
   backstitchComplete(e) {
     let index = this.backstitches.indexOf(this.activeBackstitch);
     const backstitch = this.backstitches[index];
-    patternStore.dispatch(backstitch.marked ?
-      unmarkBackstitches([{
-        x1: this.activeBackstitch.x1,
-        y1: this.activeBackstitch.y1,
-        x2: this.activeBackstitch.x2,
-        y2: this.activeBackstitch.y2
-      }]) :
-      markBackstitches([{
-        x1: this.activeBackstitch.x1,
-        y1: this.activeBackstitch.y1,
-        x2: this.activeBackstitch.x2,
-        y2: this.activeBackstitch.y2
-      }]));
+    
+    patternStore.dispatch(backstitch.marked
+      ? unmarkBackstitches([index])
+      : markBackstitches([index]));
 
     backstitch.marked = !backstitch.marked;
 
