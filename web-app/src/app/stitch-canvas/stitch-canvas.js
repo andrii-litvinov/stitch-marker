@@ -3,8 +3,8 @@ import { GestureEventListeners } from '@polymer/polymer/lib/mixins/gesture-event
 import * as Gestures from '@polymer/polymer/lib/utils/gestures.js';
 import Scene from './scene.js';
 import * as _ from 'webfontloader'
-import { patternStore } from '../stores/patternStore.js';
-import { initStore } from '../actions/index.js';
+import { patternStore } from '../pattern-store/pattern-store.js';
+import { initStore } from '../pattern-store/pattern-actions.js';
 
 class Canvas extends GestureEventListeners(PolymerElement) {
   static get template() {
