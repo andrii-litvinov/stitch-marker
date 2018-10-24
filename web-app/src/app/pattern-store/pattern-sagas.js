@@ -14,7 +14,7 @@ function* markBackstitch(actionData) {
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      backstitches: actionData.backstitches
+      backstitches: getBackstitchCoordinates(actionData.backstitches)
     });
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
@@ -28,7 +28,7 @@ function* unmarkBackstitch(actionData) {
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      backstitches: actionData.backstitches
+      backstitches: getBackstitchCoordinates(actionData.backstitches)
     });
     try {
 
@@ -48,14 +48,10 @@ export function* watchMarkStitch() {
 }
 
 function* markStitches(actionData) {
-  const coordinates = actionData.stitches.map(index => {
-    let stitch = patternStore.getState().pattern.stitches[index];
-    return { x: stitch.x, y: stitch.y }
-  });
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      stitches: coordinates
+      stitches: getStitchCoordinates(actionData.stitches)
     });
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
@@ -66,14 +62,10 @@ function* markStitches(actionData) {
 }
 
 function* unmarkStitches(actionData) {
-  const coordinates = actionData.stitches.map(index => {
-    let stitch = patternStore.getState().pattern.stitches[index];
-    return { x: stitch.x, y: stitch.y }
-  });
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      stitches: coordinates
+      stitches: getStitchCoordinates(actionData.stitches)
     });
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
@@ -83,6 +75,19 @@ function* unmarkStitches(actionData) {
   }));
 }
 
+function getStitchCoordinates(indexes) {
+  return indexes.map(index => {
+    let stitch = patternStore.getState().pattern.stitches[index];
+    return { x: stitch.x, y: stitch.y }
+  });
+}
+
+function getBackstitchCoordinates(indexes) {
+  return indexes.map(index => {
+    let backstitch = patternStore.getState().pattern.backstitches[index];
+    return { x1: backstitch.x1, y1: backstitch.y1, x2: backstitch.x2, y2: backstitch.y2 }
+  });
+}
 
 
 export function* rootSaga() {

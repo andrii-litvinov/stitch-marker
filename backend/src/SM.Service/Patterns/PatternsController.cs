@@ -62,7 +62,11 @@ namespace SM.Service.Patterns
                     Links =
                     {
                         new Link {Rel = "self", Href = Url.Action("Get", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})}
+                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})},
+                        new Link {Rel = "markStitches", Href = Url.Action("MarkStitches")},
+                        new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches")},
+                        new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches")},
+                        new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches")}
                     }
                 };
 
