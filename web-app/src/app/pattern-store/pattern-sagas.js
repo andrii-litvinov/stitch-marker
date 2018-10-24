@@ -48,10 +48,14 @@ export function* watchMarkStitch() {
 }
 
 function* markStitches(actionData) {
+  const coordinates = actionData.stitches.map(index => {
+    let stitch = patternStore.getState().pattern.stitches[index];
+    return { x: stitch.x, y: stitch.y }
+  });
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      stitches: actionData.stitches
+      stitches: coordinates
     });
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
@@ -62,10 +66,14 @@ function* markStitches(actionData) {
 }
 
 function* unmarkStitches(actionData) {
+  const coordinates = actionData.stitches.map(index => {
+    let stitch = patternStore.getState().pattern.stitches[index];
+    return { x: stitch.x, y: stitch.y }
+  });
   yield call((async () => {
     const data = JSON.stringify({
       patternId: patternStore.getState().pattern.id,
-      stitches: actionData.stitches
+      stitches: coordinates
     });
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
