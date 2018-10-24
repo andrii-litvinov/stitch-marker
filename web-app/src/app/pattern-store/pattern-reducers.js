@@ -8,8 +8,6 @@ const reducer = (state = {}, action) => {
       let backstitches = [];
       let stitches = [];
 
-      const height = action.scene.pattern.height;
-      let backstitchesMap = [];
       action.scene.pattern.backstitches.forEach(bs => {
         const config = action.scene.pattern.configurations[bs.configurationIndex];
         const strands = config.strands || action.scene.pattern.strands;
@@ -18,9 +16,6 @@ const reducer = (state = {}, action) => {
           { x: backstitch.x1, y: backstitch.y1 },
           { x: backstitch.x2, y: backstitch.y2 }
         ].forEach(point => {
-          const index = point.x * height + point.y;
-          backstitchesMap[index] = backstitchesMap[index] || [];
-          backstitchesMap[index].push(backstitch);
           backstitches.push(backstitch);
         });
       });
@@ -30,7 +25,7 @@ const reducer = (state = {}, action) => {
         stitches[stitch.x * action.scene.pattern.height + stitch.y] = stitch;
       });
 
-      action.scene.pattern.backstitches = backstitchesMap;
+      action.scene.pattern.backstitches = backstitches;
       action.scene.pattern.stitches = stitches;
       return { ...state, pattern: action.scene.pattern };
 
