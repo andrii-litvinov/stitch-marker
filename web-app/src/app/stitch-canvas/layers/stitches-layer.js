@@ -9,8 +9,9 @@ export default class StitchesLayer extends BaseLayer {
     super(scene);
 
     this.tiles = [];
+    this.stitches = scene.pattern.stitches;
 
-    this.generateStitches();
+    // this.generateStitches();
     this.rearrangeTiles();
 
     const sceneEventListeners = {
@@ -25,13 +26,13 @@ export default class StitchesLayer extends BaseLayer {
     }
   }
 
-  generateStitches() {
-    this.stitches = [];
-    this.scene.pattern.stitches.forEach(s => {
-      const stitch = new Stitch(this.scene.pattern.configurations[s.configurationIndex], s);
-      this.stitches[stitch.x * this.scene.pattern.height + stitch.y] = stitch;
-    });
-  }
+  // generateStitches() {
+  //   this.stitches = [];
+  //   this.scene.pattern.stitches.forEach(s => {
+  //     const stitch = new Stitch(this.scene.pattern.configurations[s.configurationIndex], s);
+  //     this.stitches[stitch.x * this.scene.pattern.height + stitch.y] = stitch;
+  //   });
+  // }
 
   rearrangeTiles() {
     this.tiles.forEach(tile => tile.dispose());
