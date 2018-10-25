@@ -4,6 +4,7 @@ import GridLayer from './layers/grid-layer.js';
 import BackstitchesLayer from './layers/backstitches-layer.js';
 import Tile from './tile.js';
 import { config } from './config.js';
+import { patternStore } from '../pattern-store/pattern-store.js';
 
 export default class Scene extends EventDispatcher {
   constructor(component, pattern, scale = 1, x = 0, y = 0) {
@@ -20,6 +21,9 @@ export default class Scene extends EventDispatcher {
     this.layers.push(new StitchesLayer(this));
     this.layers.push(new GridLayer(this));
     this.layers.push(new BackstitchesLayer(this));
+
+    const unsubscribe = patternStore.subscribe(this.handleChange);
+
   }
 
   dispose() {
@@ -92,5 +96,9 @@ export default class Scene extends EventDispatcher {
     let count = Math.ceil((dimensionSize - Math.max(coordinate, 0)) / Tile.size);
     if (startCoordinate % Tile.size !== 0) count++;
     return { [name]: current, [name + "Count"]: Math.max(count, 0) };
+  }
+
+  handleChange() {
+    console.log('patternStore updated');
   }
 }

@@ -9,8 +9,10 @@ export default class BackstitchesLayer extends BaseLayer {
     super(scene)
 
     this.scene = scene;
+    this.backstitchesMap = scene.pattern.backstitchesMap;
+    this.backstitches = scene.pattern.backstitches;
     this.ctx = this.createContext();
-    this.generateBackstitches();
+    // this.generateBackstitches();
     this.markers = [];
 
     const sceneEventListeners = {
@@ -117,25 +119,25 @@ export default class BackstitchesLayer extends BaseLayer {
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
 
-  generateBackstitches() {
-    const height = this.scene.pattern.height;
-    this.backstitchesMap = [];
-    this.backstitches = [];
-    this.scene.pattern.backstitches.forEach(bs => {
-      const config = this.scene.pattern.configurations[bs.configurationIndex];
-      const strands = config.strands || this.scene.pattern.strands;
-      const backstitch = new Backstitch(config, strands, bs, this.scene.scale, bs.marked);
-      [
-        { x: backstitch.x1, y: backstitch.y1 },
-        { x: backstitch.x2, y: backstitch.y2 }
-      ].forEach(point => {
-        const index = point.x * height + point.y;
-        this.backstitchesMap[index] = this.backstitchesMap[index] || [];
-        this.backstitchesMap[index].push(backstitch);
-        this.backstitches.push(backstitch);
-      });
-    });
-  }
+  // generateBackstitches() {
+  //   const height = this.scene.pattern.height;
+  //   this.backstitchesMap = [];
+  //   this.backstitches = [];
+  //   this.scene.pattern.backstitches.forEach(bs => {
+  //     const config = this.scene.pattern.configurations[bs.configurationIndex];
+  //     const strands = config.strands || this.scene.pattern.strands;
+  //     const backstitch = new Backstitch(config, strands, bs, this.scene.scale, bs.marked);
+  //     [
+  //       { x: backstitch.x1, y: backstitch.y1 },
+  //       { x: backstitch.x2, y: backstitch.y2 }
+  //     ].forEach(point => {
+  //       const index = point.x * height + point.y;
+  //       this.backstitchesMap[index] = this.backstitchesMap[index] || [];
+  //       this.backstitchesMap[index].push(backstitch);
+  //       this.backstitches.push(backstitch);
+  //     });
+  //   });
+  // }
 
   createContext() {
     let canvas = document.createElement("canvas");
