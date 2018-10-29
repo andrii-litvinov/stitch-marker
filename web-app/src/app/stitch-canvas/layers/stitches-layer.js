@@ -1,5 +1,4 @@
 import BaseLayer from './base-layer.js';
-import Stitch from '../stitch.js';
 import Tile from '../tile.js';
 import { patternStore } from '../../pattern-store/pattern-store.js';
 import { markStitches, unmarkStitches } from '../../pattern-store/pattern-actions.js';
@@ -9,6 +8,7 @@ export default class StitchesLayer extends BaseLayer {
     super(scene);
 
     this.tiles = [];
+    this.stitches = patternStore.getState().pattern.stitches; 
 
     this.rearrangeTiles();
 
@@ -24,15 +24,13 @@ export default class StitchesLayer extends BaseLayer {
     }
   }
 
-  stitches() { return patternStore.getState().pattern.stitches;  }
-
   rearrangeTiles() {
     this.tiles.forEach(tile => tile.dispose());
     this.tiles.length = 0;
 
     let stitchesPerTile = Tile.size / this.scene.stitchSize;
 
-    this.stitches().forEach(stitch => {
+    this.stitches.forEach(stitch => {
       let column = Math.floor(stitch.x / stitchesPerTile);
       let row = Math.floor(stitch.y / stitchesPerTile);
       const spanMultipleTilesX = (stitch.x + 1) * this.scene.stitchSize > (column + 1) * Tile.size;
@@ -63,7 +61,7 @@ export default class StitchesLayer extends BaseLayer {
     let coordX = Math.floor((event.detail.x - this.scene.x) / this.scene.stitchSize);
     let coordY = Math.floor((event.detail.y - this.scene.y) / this.scene.stitchSize);
     let index = coordX * this.scene.pattern.height + coordY
-    let stitch = this.stitches()[index];
+    let stitch = this.stitches[index];
 
     patternStore.dispatch(stitch.marked ? unmarkStitches([index]) : markStitches([index]));
 

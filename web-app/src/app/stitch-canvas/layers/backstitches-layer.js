@@ -1,5 +1,4 @@
 import BaseLayer from './base-layer.js';
-import Backstitch from '../backstitch.js';
 import BackstitchMarker from '../backstitch-marker.js';
 import { patternStore } from '../../pattern-store/pattern-store.js';
 import { markBackstitches, unmarkBackstitches } from '../../pattern-store/pattern-actions.js';
@@ -9,6 +8,8 @@ export default class BackstitchesLayer extends BaseLayer {
     super(scene)
 
     this.scene = scene;
+    this.backstitchesMap = patternStore.getState().pattern.backstitchesMap;
+    this.backstitches = patternStore.getState().pattern.backstitches;
     this.ctx = this.createContext();
     this.markers = [];
 
@@ -30,10 +31,6 @@ export default class BackstitchesLayer extends BaseLayer {
     }
   }
 
-  backstitchesMap() { return patternStore.getState().pattern.backstitchesMap; }
-
-  backstitches() { return patternStore.getState().pattern.backstitches; }
-
   dispose() {
     this.scene.component.shadowRoot.removeChild(this.ctx.canvas);
   }
@@ -52,8 +49,8 @@ export default class BackstitchesLayer extends BaseLayer {
   }
 
   backstitchComplete(e) {
-    let index = this.backstitches().indexOf(this.activeBackstitch);
-    const backstitch = this.backstitches()[index];
+    let index = this.backstitches.indexOf(this.activeBackstitch);
+    const backstitch = this.backstitches[index];
 
     patternStore.dispatch(backstitch.marked
       ? unmarkBackstitches([index])
@@ -63,7 +60,7 @@ export default class BackstitchesLayer extends BaseLayer {
     this.activeBackstitch = null;
     this.render();
 
-    let point = this.backstitchesMap()[e.detail.x * this.scene.pattern.height + e.detail.y];
+    let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
     if (point) {
       this.createBackstitchMarkers(point, e.detail.x, e.detail.y);
     };
@@ -86,7 +83,7 @@ export default class BackstitchesLayer extends BaseLayer {
         let xCoord = x + i;
         let yCoord = y + j;
 
-        let point = this.backstitchesMap()[xCoord * this.scene.pattern.height + yCoord];
+        let point = this.backstitchesMap[xCoord * this.scene.pattern.height + yCoord];
         if (point) {
           let distToPoint = Math.sqrt(Math.pow((xCoord * this.scene.stitchSize / 2) - (e.detail.x - this.scene.x), 2) + Math.pow((yCoord * this.scene.stitchSize / 2) - (e.detail.y - this.scene.y), 2));
           if (distToPoint < this.scene.stitchSize / 2 - 1) {
@@ -110,7 +107,7 @@ export default class BackstitchesLayer extends BaseLayer {
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.scene.x + 0.5, this.scene.y + 0.5);
-    this.backstitches().forEach(backstitch => {
+    this.backstitches.forEach(backstitch => {
       if (this.activeBackstitch != backstitch) {
         backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
       }

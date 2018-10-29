@@ -1,5 +1,5 @@
-import { call, put, takeEvery, takeLatest, all } from 'redux-saga/effects'
-import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, INIT_STORE } from '../pattern-store/pattern-actions';
+import { call, takeEvery, all } from 'redux-saga/effects'
+import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES } from '../pattern-store/pattern-actions';
 import { patternStore } from '../pattern-store/pattern-store';
 
 export function* watchMarkBackstitch() {
