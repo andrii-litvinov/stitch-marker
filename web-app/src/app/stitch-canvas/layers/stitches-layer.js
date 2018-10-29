@@ -9,9 +9,7 @@ export default class StitchesLayer extends BaseLayer {
     super(scene);
 
     this.tiles = [];
-    this.stitches = scene.pattern.stitches;
 
-    // this.generateStitches();
     this.rearrangeTiles();
 
     const sceneEventListeners = {
@@ -26,13 +24,7 @@ export default class StitchesLayer extends BaseLayer {
     }
   }
 
-  // generateStitches() {
-  //   this.stitches = [];
-  //   this.scene.pattern.stitches.forEach(s => {
-  //     const stitch = new Stitch(this.scene.pattern.configurations[s.configurationIndex], s);
-  //     this.stitches[stitch.x * this.scene.pattern.height + stitch.y] = stitch;
-  //   });
-  // }
+  stitches() { return patternStore.getState().pattern.stitches;  }
 
   rearrangeTiles() {
     this.tiles.forEach(tile => tile.dispose());
@@ -40,7 +32,7 @@ export default class StitchesLayer extends BaseLayer {
 
     let stitchesPerTile = Tile.size / this.scene.stitchSize;
 
-    this.stitches.forEach(stitch => {
+    this.stitches().forEach(stitch => {
       let column = Math.floor(stitch.x / stitchesPerTile);
       let row = Math.floor(stitch.y / stitchesPerTile);
       const spanMultipleTilesX = (stitch.x + 1) * this.scene.stitchSize > (column + 1) * Tile.size;
@@ -71,7 +63,7 @@ export default class StitchesLayer extends BaseLayer {
     let coordX = Math.floor((event.detail.x - this.scene.x) / this.scene.stitchSize);
     let coordY = Math.floor((event.detail.y - this.scene.y) / this.scene.stitchSize);
     let index = coordX * this.scene.pattern.height + coordY
-    let stitch = this.stitches[index];
+    let stitch = this.stitches()[index];
 
     patternStore.dispatch(stitch.marked ? unmarkStitches([index]) : markStitches([index]));
 
