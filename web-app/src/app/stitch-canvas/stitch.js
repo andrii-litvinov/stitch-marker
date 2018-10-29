@@ -10,7 +10,6 @@ export default class Stitch extends EventDispatcher {
   }
 
   tap() {
-    this.marked = !this.marked;
     this.dispatchEvent(new CustomEvent("change"));
   }
 

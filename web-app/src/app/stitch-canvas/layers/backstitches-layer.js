@@ -9,10 +9,7 @@ export default class BackstitchesLayer extends BaseLayer {
     super(scene)
 
     this.scene = scene;
-    this.backstitchesMap = scene.pattern.backstitchesMap;
-    this.backstitches = scene.pattern.backstitches;
     this.ctx = this.createContext();
-    // this.generateBackstitches();
     this.markers = [];
 
     const sceneEventListeners = {
@@ -33,6 +30,10 @@ export default class BackstitchesLayer extends BaseLayer {
     }
   }
 
+  backstitchesMap() { return repatternStore.getState().pattern.backstitchesMap; }
+
+  backstitches() { return patternStore.getState().pattern.backstitches; }
+
   dispose() {
     this.scene.component.shadowRoot.removeChild(this.ctx.canvas);
   }
@@ -51,20 +52,18 @@ export default class BackstitchesLayer extends BaseLayer {
   }
 
   backstitchComplete(e) {
-    let index = this.backstitches.indexOf(this.activeBackstitch);
-    const backstitch = this.backstitches[index];
-    
+    let index = this.backstitches().indexOf(this.activeBackstitch);
+    const backstitch = this.backstitches()[index];
+
     patternStore.dispatch(backstitch.marked
       ? unmarkBackstitches([index])
       : markBackstitches([index]));
-
-    backstitch.marked = !backstitch.marked;
 
     this.disposeMarkers();
     this.activeBackstitch = null;
     this.render();
 
-    let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
+    let point = this.backstitchesMap()[e.detail.x * this.scene.pattern.height + e.detail.y];
     if (point) {
       this.createBackstitchMarkers(point, e.detail.x, e.detail.y);
     };
@@ -87,7 +86,7 @@ export default class BackstitchesLayer extends BaseLayer {
         let xCoord = x + i;
         let yCoord = y + j;
 
-        let point = this.backstitchesMap[xCoord * this.scene.pattern.height + yCoord];
+        let point = this.backstitchesMap()[xCoord * this.scene.pattern.height + yCoord];
         if (point) {
           let distToPoint = Math.sqrt(Math.pow((xCoord * this.scene.stitchSize / 2) - (e.detail.x - this.scene.x), 2) + Math.pow((yCoord * this.scene.stitchSize / 2) - (e.detail.y - this.scene.y), 2));
           if (distToPoint < this.scene.stitchSize / 2 - 1) {
@@ -111,33 +110,13 @@ export default class BackstitchesLayer extends BaseLayer {
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
     this.ctx.translate(this.scene.x + 0.5, this.scene.y + 0.5);
-    this.backstitches.forEach(backstitch => {
+    this.backstitches().forEach(backstitch => {
       if (this.activeBackstitch != backstitch) {
         backstitch.draw(this.ctx, this.scene.stitchSize, this.scene.scale);
       }
     });
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
   }
-
-  // generateBackstitches() {
-  //   const height = this.scene.pattern.height;
-  //   this.backstitchesMap = [];
-  //   this.backstitches = [];
-  //   this.scene.pattern.backstitches.forEach(bs => {
-  //     const config = this.scene.pattern.configurations[bs.configurationIndex];
-  //     const strands = config.strands || this.scene.pattern.strands;
-  //     const backstitch = new Backstitch(config, strands, bs, this.scene.scale, bs.marked);
-  //     [
-  //       { x: backstitch.x1, y: backstitch.y1 },
-  //       { x: backstitch.x2, y: backstitch.y2 }
-  //     ].forEach(point => {
-  //       const index = point.x * height + point.y;
-  //       this.backstitchesMap[index] = this.backstitchesMap[index] || [];
-  //       this.backstitchesMap[index].push(backstitch);
-  //       this.backstitches.push(backstitch);
-  //     });
-  //   });
-  // }
 
   createContext() {
     let canvas = document.createElement("canvas");
