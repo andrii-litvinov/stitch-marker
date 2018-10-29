@@ -30,7 +30,7 @@ export default class BackstitchesLayer extends BaseLayer {
     }
   }
 
-  backstitchesMap() { return repatternStore.getState().pattern.backstitchesMap; }
+  backstitchesMap() { return patternStore.getState().pattern.backstitchesMap; }
 
   backstitches() { return patternStore.getState().pattern.backstitches; }
 
