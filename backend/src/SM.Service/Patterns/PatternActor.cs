@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.Collections;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
+using SM.Service.Command;
 
 namespace SM.Service.Patterns
 {
@@ -85,16 +87,36 @@ namespace SM.Service.Patterns
                     context.Sender.Tell(patternOwner);
                     break;
                 case MarkStitches command:
-                    await SetStitchesMarked(command.Stitches, true);
+                    await persistence.PersistEventAsync(new StitchUpdated
+                    {
+                        SourceId = pattern.Id,
+                        Stitches = {command.Stitches},
+                        Marked = true
+                    });
                     break;
                 case UnmarkStitches command:
-                    await SetStitchesMarked(command.Stitches, false);
+                    await persistence.PersistEventAsync(new StitchUpdated
+                    {
+                        SourceId = pattern.Id,
+                        Stitches = {command.Stitches},
+                        Marked = false
+                    });
                     break;
                 case MarkBackstitches command:
-                    await SetBackstitchesMarked(command.Backstitches, true);
+                    await persistence.PersistEventAsync(new BackstitchUpdated
+                    {
+                        SourceId = pattern.Id,
+                        Backstitches = {command.Backstitches},
+                        Marked = true
+                    });
                     break;
                 case UnmarkBackstitches command:
-                    await SetBackstitchesMarked(command.Backstitches, false);
+                    await persistence.PersistEventAsync(new BackstitchUpdated
+                    {
+                        SourceId = pattern.Id,
+                        Backstitches = {command.Backstitches},
+                        Marked = false
+                    });
                     break;
             }
         }
@@ -112,29 +134,37 @@ namespace SM.Service.Patterns
                 case PatternDeleted _:
                     behavior.Become(Deleted);
                     break;
+                case StitchUpdated updated:
+                    UpdateStitch(updated.SourceId, updated.Stitches, updated.Marked);
+                    break;
+                case BackstitchUpdated updated:
+                    UpdateBackstitch(updated.SourceId, updated.Backstitches, updated.Marked);
+                    break;
             }
         }
-        
-        private async Task SetBackstitchesMarked(IEnumerable<BackstitchCoordinates> commandBackstitches, bool mark)
+
+        private void UpdateStitch(string patternId, RepeatedField<StitchCoordinates> stitches, bool marked)
         {
-            foreach (var backstitch in commandBackstitches)
-                await persistence.PersistEventAsync(new BackstitchUpdated
-                {
-                    SourceId = pattern.Id,
-                    Backstitch = backstitch,
-                    Marked = mark
-                });
+            foreach (var stitch in stitches)
+            {
+                var patternStitch = pattern.Stitches
+                    .FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
+                if (patternStitch != null) patternStitch.Marked = marked;
+            }
         }
-        
-        private async Task SetStitchesMarked(IEnumerable<StitchCoordinates> commandStitches, bool mark)
+
+        private void UpdateBackstitch(string patternId, RepeatedField<BackstitchCoordinates> backstitches, bool marked)
         {
-            foreach (var stitch in commandStitches)
-                await persistence.PersistEventAsync(new StitchUpdated
-                {
-                    SourceId = pattern.Id,
-                    Stitch = stitch,
-                    Marked = mark
-                });
+            foreach (var backstitch in backstitches)
+            {
+                var patternBackstitch = pattern.Backstitches
+                    .FirstOrDefault(item =>
+                        item.X1 == backstitch.X1 &&
+                        item.Y1 == backstitch.Y1 &&
+                        item.X2 == backstitch.X2 &&
+                        item.Y2 == backstitch.Y2);
+                if (patternBackstitch != null) patternBackstitch.Marked = marked;
+            }
         }
     }
 }

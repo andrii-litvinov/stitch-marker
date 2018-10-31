@@ -24,15 +24,15 @@ namespace SM.Service {
     static BackstitchUpdatedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChdCYWNrc3RpdGNoVXBkYXRlZC5wcm90bxIHcGF0dGVybhocQmFja3N0aXRj",
-            "aGVzQWN0aW9uRGF0YS5wcm90byJqChFCYWNrc3RpdGNoVXBkYXRlZBIRCglz",
-            "b3VyY2VfaWQYASABKAkSMgoKYmFja3N0aXRjaBgCIAEoCzIeLnBhdHRlcm4u",
-            "QmFja3N0aXRjaENvb3JkaW5hdGVzEg4KBm1hcmtlZBgDIAEoCEINqgIKU00u",
-            "U2VydmljZVAAYgZwcm90bzM="));
+            "ChdCYWNrc3RpdGNoVXBkYXRlZC5wcm90bxIHcGF0dGVybhoNQ29tbWFuZC5w",
+            "cm90byJsChFCYWNrc3RpdGNoVXBkYXRlZBIRCglzb3VyY2VfaWQYASABKAkS",
+            "NAoMYmFja3N0aXRjaGVzGAIgAygLMh4ucGF0dGVybi5CYWNrc3RpdGNoQ29v",
+            "cmRpbmF0ZXMSDgoGbWFya2VkGAMgASgIQg2qAgpTTS5TZXJ2aWNlUABiBnBy",
+            "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.BackstitchesActionDataReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::SM.Service.Command.CommandReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.BackstitchUpdated), global::SM.Service.BackstitchUpdated.Parser, new[]{ "SourceId", "Backstitch", "Marked" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.BackstitchUpdated), global::SM.Service.BackstitchUpdated.Parser, new[]{ "SourceId", "Backstitches", "Marked" }, null, null, null)
           }));
     }
     #endregion
@@ -65,7 +65,7 @@ namespace SM.Service {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public BackstitchUpdated(BackstitchUpdated other) : this() {
       sourceId_ = other.sourceId_;
-      Backstitch = other.backstitch_ != null ? other.Backstitch.Clone() : null;
+      backstitches_ = other.backstitches_.Clone();
       marked_ = other.marked_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -86,15 +86,14 @@ namespace SM.Service {
       }
     }
 
-    /// <summary>Field number for the "backstitch" field.</summary>
-    public const int BackstitchFieldNumber = 2;
-    private global::SM.Service.BackstitchCoordinates backstitch_;
+    /// <summary>Field number for the "backstitches" field.</summary>
+    public const int BackstitchesFieldNumber = 2;
+    private static readonly pb::FieldCodec<global::SM.Service.Command.BackstitchCoordinates> _repeated_backstitches_codec
+        = pb::FieldCodec.ForMessage(18, global::SM.Service.Command.BackstitchCoordinates.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.BackstitchCoordinates Backstitch {
-      get { return backstitch_; }
-      set {
-        backstitch_ = value;
-      }
+    public pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates> Backstitches {
+      get { return backstitches_; }
     }
 
     /// <summary>Field number for the "marked" field.</summary>
@@ -122,7 +121,7 @@ namespace SM.Service {
         return true;
       }
       if (SourceId != other.SourceId) return false;
-      if (!object.Equals(Backstitch, other.Backstitch)) return false;
+      if(!backstitches_.Equals(other.backstitches_)) return false;
       if (Marked != other.Marked) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -131,7 +130,7 @@ namespace SM.Service {
     public override int GetHashCode() {
       int hash = 1;
       if (SourceId.Length != 0) hash ^= SourceId.GetHashCode();
-      if (backstitch_ != null) hash ^= Backstitch.GetHashCode();
+      hash ^= backstitches_.GetHashCode();
       if (Marked != false) hash ^= Marked.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -150,10 +149,7 @@ namespace SM.Service {
         output.WriteRawTag(10);
         output.WriteString(SourceId);
       }
-      if (backstitch_ != null) {
-        output.WriteRawTag(18);
-        output.WriteMessage(Backstitch);
-      }
+      backstitches_.WriteTo(output, _repeated_backstitches_codec);
       if (Marked != false) {
         output.WriteRawTag(24);
         output.WriteBool(Marked);
@@ -169,9 +165,7 @@ namespace SM.Service {
       if (SourceId.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(SourceId);
       }
-      if (backstitch_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Backstitch);
-      }
+      size += backstitches_.CalculateSize(_repeated_backstitches_codec);
       if (Marked != false) {
         size += 1 + 1;
       }
@@ -189,12 +183,7 @@ namespace SM.Service {
       if (other.SourceId.Length != 0) {
         SourceId = other.SourceId;
       }
-      if (other.backstitch_ != null) {
-        if (backstitch_ == null) {
-          backstitch_ = new global::SM.Service.BackstitchCoordinates();
-        }
-        Backstitch.MergeFrom(other.Backstitch);
-      }
+      backstitches_.Add(other.backstitches_);
       if (other.Marked != false) {
         Marked = other.Marked;
       }
@@ -214,10 +203,7 @@ namespace SM.Service {
             break;
           }
           case 18: {
-            if (backstitch_ == null) {
-              backstitch_ = new global::SM.Service.BackstitchCoordinates();
-            }
-            input.ReadMessage(backstitch_);
+            backstitches_.AddEntriesFrom(input, _repeated_backstitches_codec);
             break;
           }
           case 24: {
