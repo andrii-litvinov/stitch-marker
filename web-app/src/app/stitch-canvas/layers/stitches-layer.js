@@ -1,7 +1,7 @@
 import BaseLayer from './base-layer.js';
 import Tile from '../tile.js';
-import { patternStore } from '../../pattern-store/pattern-store.js';
-import { markStitches, unmarkStitches } from '../../pattern-store/pattern-actions.js';
+import { patternStore } from '../../pattern/store.js';
+import { markStitches, unmarkStitches } from '../../pattern/actions.js';
 
 export default class StitchesLayer extends BaseLayer {
   constructor(scene) {

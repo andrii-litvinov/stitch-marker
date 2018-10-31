@@ -13,40 +13,30 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
-        [HttpPost, Route("markbackstitches")]
-        public async Task<IActionResult> MarkBackstitches(BackstitchesActionData data)
+        [HttpPost, Route("{patternId}/markbackstitches")]
+        public async Task<IActionResult> MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
+
+        [HttpPost, Route("{patternId}/unmarkbackstitches")]
+        public async Task<IActionResult> UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
+
+        [HttpPost, Route("{patternId}/markstitches")]
+        public async Task<IActionResult> MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
+
+        [HttpPost, Route("{patternId}/unmarkstitches")]
+        public async Task UnmarkStitches(Command.UnmarkStitches request) => await HandleOrThrow(request);
+
+        private async Task<IActionResult> HandleOrThrow<T>(T request) where T : Command.ICommand
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            await pattern.RequestAsync<bool>(new MarkBackstitches {Backstitches = {data.Backstitches}}, 10.Seconds());
-
-            return Ok();
-        }
-
-        [HttpPost, Route("unmarkbackstitches")]
-        public async Task<IActionResult> UnmarkBackstitches(BackstitchesActionData data)
-        {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            await pattern.RequestAsync<bool>(new UnmarkBackstitches {Backstitches = {data.Backstitches}}, 10.Seconds());
-
-            return Ok();
-        }
-
-        [HttpPost, Route("markstitches")]
-        public async Task<IActionResult> MarkStitches(StitchesActionData data)
-        {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            await pattern.RequestAsync<bool>(new MarkStitches {Stitches = {data.Stitches}}, 10.Seconds());
-
-            return Ok();
-        }
-
-        [HttpPost, Route("unmarkstitches")]
-        public async Task<IActionResult> UnmarkStitches(StitchesActionData data)
-        {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{data.PatternId}", ActorKind.Pattern);
-            await pattern.RequestAsync<bool>(new UnmarkStitches {Stitches = {data.Stitches}}, 10.Seconds());
-
-            return Ok();
+            try
+            {
+                var (pattern, _) = await Cluster.GetAsync($"pattern-{request.PatternId}", ActorKind.Pattern);
+                await pattern.RequestAsync<bool>(request, 10.Seconds());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]
@@ -63,10 +53,10 @@ namespace SM.Service.Patterns
                     {
                         new Link {Rel = "self", Href = Url.Action("Get", new {patternId = new Guid(item.Id)})},
                         new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "markStitches", Href = Url.Action("MarkStitches")},
-                        new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches")},
-                        new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches")},
-                        new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches")}
+                        new Link {Rel = "markStitches", Href = Url.Action("MarkStitches", new {patternId = new Guid(item.Id)})},
+                        new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches", new {patternId = new Guid(item.Id)})},
+                        new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches", new {patternId = new Guid(item.Id)})},
+                        new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
                     }
                 };
 
@@ -149,10 +139,10 @@ namespace SM.Service.Patterns
                 {
                     new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
                     new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})},
-                    new Link {Rel = "markStitches", Href = Url.Action("MarkStitches")},
-                    new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches")},
-                    new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches")},
-                    new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches")}
+                    new Link {Rel = "markStitches", Href = Url.Action("MarkStitches", new {patternId = new Guid(item.Id)})},
+                    new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches", new {patternId = new Guid(item.Id)})},
+                    new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches", new {patternId = new Guid(item.Id)})},
+                    new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
                 }
             };
 

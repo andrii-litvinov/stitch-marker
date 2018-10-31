@@ -2,10 +2,10 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "SM.Service";
-import public "BackstitchesActionData.proto";
+import public "Command.proto";
 
 message BackstitchUpdated {
     string source_id = 1;
-    BackstitchCoordinates backstitch = 2;
+    repeated BackstitchCoordinates backstitches = 2;
     bool marked = 3;
 }

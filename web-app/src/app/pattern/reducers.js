@@ -1,4 +1,4 @@
-import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES } from './pattern-actions';
+import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES } from './actions';
 import Backstitch from '../stitch-canvas/backstitch.js';
 import Stitch from '../stitch-canvas/stitch.js';
 

@@ -1,39 +1,39 @@
 import { call, takeEvery, all } from 'redux-saga/effects'
-import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES } from '../pattern-store/pattern-actions';
-import { patternStore } from '../pattern-store/pattern-store';
+import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES } from '../pattern/actions';
+import { patternStore } from '../pattern/store';
 
-export function* watchMarkBackstitch() {
+function* watchMarkBackstitch() {
   yield takeEvery(MARK_BACKSTITCHES, markBackstitch);
 }
 
-export function* watchUnmarkBackstitch() {
+function* watchUnmarkBackstitch() {
   yield takeEvery(UNMARK_BACKSTITCHES, unmarkBackstitch);
 }
 
-function* markBackstitch(actionData) {
+function* markBackstitch(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'markBackstitches').href, getBackstitchRequestData(actionData));
+        .links.find(link => link.rel === 'markBackstitches').href, getBackstitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function* unmarkBackstitch(actionData) {
+function* unmarkBackstitch(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'unmarkBackstitches').href, getBackstitchRequestData(actionData));
+        .links.find(link => link.rel === 'unmarkBackstitches').href, getBackstitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function getBackstitchRequestData(actionData) {
+function getBackstitchRequestData(action) {
   return JSON.stringify({
     patternId: patternStore.getState().pattern.id,
-    backstitches: getBackstitchCoordinates(actionData.backstitches)
+    backstitches: getBackstitchCoordinates(action.backstitches)
   });
 }
 
@@ -44,38 +44,38 @@ function getBackstitchCoordinates(indexes) {
   });
 }
 
-export function* watchUnmarkStitch() {
+function* watchUnmarkStitch() {
   yield takeEvery(UNMARK_STITCHES, unmarkStitches);
 }
 
-export function* watchMarkStitch() {
+function* watchMarkStitch() {
   yield takeEvery(MARK_STITCHES, markStitches);
 }
 
-function* markStitches(actionData) {
+function* markStitches(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'markStitches').href, getStitchRequestData(actionData));
+        .links.find(link => link.rel === 'markStitches').href, getStitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function* unmarkStitches(actionData) {
+function* unmarkStitches(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'unmarkStitches').href, getStitchRequestData(actionData));
+        .links.find(link => link.rel === 'unmarkStitches').href, getStitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function getStitchRequestData(actionData) {
+function getStitchRequestData(action) {
   return JSON.stringify({
     patternId: patternStore.getState().pattern.id,
-    stitches: getStitchCoordinates(actionData.stitches)
+    stitches: getStitchCoordinates(action.stitches)
   });
 }
 
