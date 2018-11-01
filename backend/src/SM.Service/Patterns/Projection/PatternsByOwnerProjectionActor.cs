@@ -39,13 +39,7 @@ namespace SM.Service.Patterns
                         case PatternCreated created:
                             CreateChild(context, created.OwnerId, created.SourceId);
                             break;
-                        case StitchUpdated updated:
-                            await UpdateStitch(updated.SourceId, updated.Stitches, updated.Marked);
-                            break;
-                        case BackstitchUpdated updated:
-                            await UpdateBackstitch(updated.SourceId, updated.Backstitches, updated.Marked);
-                            break;
-                    }
+                   }
 
                     childBySource[@event.SourceId].Tell(@event);
 
@@ -84,36 +78,6 @@ namespace SM.Service.Patterns
             }
 
             childBySource.TryAdd(sourceId, pid);
-        }
-
-        private async Task UpdateStitch(string patternId, RepeatedField<StitchCoordinates> stitches, bool marked)
-        {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
-
-            foreach (var stitch in stitches)
-            {
-                var patternStitch = patternItem.Stitches
-                    .FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
-                if (patternStitch != null) patternStitch.Marked = marked;
-            }
-        }
-
-        private async Task UpdateBackstitch(string patternId, RepeatedField<BackstitchCoordinates> backstitches, bool marked)
-        {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var patternItem = await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
-
-            foreach (var backstitch in backstitches)
-            {
-                var patternBackstitch = patternItem.Backstitches
-                    .FirstOrDefault(item =>
-                        item.X1 == backstitch.X1 &&
-                        item.Y1 == backstitch.Y1 &&
-                        item.X2 == backstitch.X2 &&
-                        item.Y2 == backstitch.Y2);
-                if (patternBackstitch != null) patternBackstitch.Marked = marked;
-            }
         }
     }
 }

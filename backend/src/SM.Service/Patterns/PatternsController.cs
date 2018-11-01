@@ -14,13 +14,13 @@ namespace SM.Service.Patterns
     public class PatternsController : ControllerBase
     {
         [HttpPost, Route("{patternId}/markbackstitches")]
-        public async Task<IActionResult> MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
+        public async Task MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
 
         [HttpPost, Route("{patternId}/unmarkbackstitches")]
-        public async Task<IActionResult> UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
+        public async Task UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
 
         [HttpPost, Route("{patternId}/markstitches")]
-        public async Task<IActionResult> MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
+        public async Task MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
 
         [HttpPost, Route("{patternId}/unmarkstitches")]
         public async Task UnmarkStitches(Command.UnmarkStitches request) => await HandleOrThrow(request);
