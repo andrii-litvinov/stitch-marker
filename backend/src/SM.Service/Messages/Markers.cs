@@ -11,12 +11,4 @@ namespace SM.Service
     public partial class PatternDeleted : IEvent
     {
     }
-    
-    public partial class StitchUpdated : IEvent
-    {
-    }
-    
-    public partial class BackstitchUpdated : IEvent
-    {
-    }
 }

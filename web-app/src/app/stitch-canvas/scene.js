@@ -4,7 +4,6 @@ import GridLayer from './layers/grid-layer.js';
 import BackstitchesLayer from './layers/backstitches-layer.js';
 import Tile from './tile.js';
 import { config } from './config.js';
-import { patternStore } from '../pattern-store/pattern-store.js';
 
 export default class Scene extends EventDispatcher {
   constructor(component, pattern, scale = 1, x = 0, y = 0) {

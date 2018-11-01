@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf.Collections;
 using Microsoft.Extensions.Caching.Memory;
@@ -87,36 +88,16 @@ namespace SM.Service.Patterns
                     context.Sender.Tell(patternOwner);
                     break;
                 case MarkStitches command:
-                    await persistence.PersistEventAsync(new StitchUpdated
-                    {
-                        SourceId = pattern.Id,
-                        Stitches = {command.Stitches},
-                        Marked = true
-                    });
+                    await persistence.PersistEventAsync(command);
                     break;
                 case UnmarkStitches command:
-                    await persistence.PersistEventAsync(new StitchUpdated
-                    {
-                        SourceId = pattern.Id,
-                        Stitches = {command.Stitches},
-                        Marked = false
-                    });
+                    await persistence.PersistEventAsync(command);
                     break;
                 case MarkBackstitches command:
-                    await persistence.PersistEventAsync(new BackstitchUpdated
-                    {
-                        SourceId = pattern.Id,
-                        Backstitches = {command.Backstitches},
-                        Marked = true
-                    });
+                    await persistence.PersistEventAsync(command);
                     break;
                 case UnmarkBackstitches command:
-                    await persistence.PersistEventAsync(new BackstitchUpdated
-                    {
-                        SourceId = pattern.Id,
-                        Backstitches = {command.Backstitches},
-                        Marked = false
-                    });
+                    await persistence.PersistEventAsync(command);
                     break;
             }
         }
@@ -134,31 +115,37 @@ namespace SM.Service.Patterns
                 case PatternDeleted _:
                     behavior.Become(Deleted);
                     break;
-                case StitchUpdated updated:
-                    UpdateStitch(updated.SourceId, updated.Stitches, updated.Marked);
+                case MarkBackstitches command:
+                    MarkBackstitches(command.Backstitches, true);
                     break;
-                case BackstitchUpdated updated:
-                    UpdateBackstitch(updated.SourceId, updated.Backstitches, updated.Marked);
+                case UnmarkBackstitches command:
+                    MarkBackstitches(command.Backstitches, false);
+                    break;
+                case MarkStitches command:
+                    MarkStitches(command.Stitches, true);
+                    break;
+                case UnmarkStitches command:
+                    MarkStitches(command.Stitches, false);
                     break;
             }
         }
 
-        private void UpdateStitch(string patternId, RepeatedField<StitchCoordinates> stitches, bool marked)
+        private void MarkStitches(IEnumerable<StitchCoordinates> stitches, bool marked)
         {
             foreach (var stitch in stitches)
             {
                 var patternStitch = pattern.Stitches
-                    .FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
+                    .SingleOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
                 if (patternStitch != null) patternStitch.Marked = marked;
             }
         }
 
-        private void UpdateBackstitch(string patternId, RepeatedField<BackstitchCoordinates> backstitches, bool marked)
+        private void MarkBackstitches(IEnumerable<BackstitchCoordinates> backstitches, bool marked)
         {
             foreach (var backstitch in backstitches)
             {
                 var patternBackstitch = pattern.Backstitches
-                    .FirstOrDefault(item =>
+                    .SingleOrDefault(item =>
                         item.X1 == backstitch.X1 &&
                         item.Y1 == backstitch.Y1 &&
                         item.X2 == backstitch.X2 &&
