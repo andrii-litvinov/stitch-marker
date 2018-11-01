@@ -1,0 +1,10 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service";
+import public "StitchCoordinates.proto";
+
+message StitchesUnmarked {
+    string source_id = 1;
+    repeated StitchCoordinates stitches = 2;
+}

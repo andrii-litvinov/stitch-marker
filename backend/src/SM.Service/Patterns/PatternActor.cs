@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Protobuf.Collections;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
@@ -88,16 +87,32 @@ namespace SM.Service.Patterns
                     context.Sender.Tell(patternOwner);
                     break;
                 case MarkStitches command:
-                    await persistence.PersistEventAsync(command);
+                    await persistence.PersistEventAsync(new StitchesMarked
+                    {
+                        SourceId = command.PatternId,
+                        Stitches = {command.Stitches}
+                    });
                     break;
                 case UnmarkStitches command:
-                    await persistence.PersistEventAsync(command);
+                    await persistence.PersistEventAsync(new StitchesUnmarked
+                    {
+                        SourceId = command.PatternId,
+                        Stitches = {command.Stitches}
+                    });
                     break;
                 case MarkBackstitches command:
-                    await persistence.PersistEventAsync(command);
+                    await persistence.PersistEventAsync(new BackstitchesMarked
+                    {
+                        SourceId = command.PatternId,
+                        Backstitches = {command.Backstitches}
+                    });
                     break;
                 case UnmarkBackstitches command:
-                    await persistence.PersistEventAsync(command);
+                    await persistence.PersistEventAsync(new BackstitchesUnmarked
+                    {
+                        SourceId = command.PatternId,
+                        Backstitches = {command.Backstitches}
+                    });
                     break;
             }
         }
@@ -115,16 +130,16 @@ namespace SM.Service.Patterns
                 case PatternDeleted _:
                     behavior.Become(Deleted);
                     break;
-                case MarkBackstitches command:
+                case BackstitchesMarked command:
                     MarkBackstitches(command.Backstitches, true);
                     break;
-                case UnmarkBackstitches command:
+                case BackstitchesUnmarked command:
                     MarkBackstitches(command.Backstitches, false);
                     break;
-                case MarkStitches command:
+                case StitchesMarked command:
                     MarkStitches(command.Stitches, true);
                     break;
-                case UnmarkStitches command:
+                case StitchesUnmarked command:
                     MarkStitches(command.Stitches, false);
                     break;
             }
