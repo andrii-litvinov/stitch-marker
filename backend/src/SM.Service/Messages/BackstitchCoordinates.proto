@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service";
+
+message BackstitchCoordinates {
+    uint32 X1 = 1;
+    uint32 Y1 = 2;
+    uint32 X2 = 3;
+    uint32 Y2 = 4;
+}
+
+
+

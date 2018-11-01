@@ -24,27 +24,24 @@ namespace SM.Service.Command {
     static CommandReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1Db21tYW5kLnByb3RvEgdwYXR0ZXJuIlwKEE1hcmtCYWNrc3RpdGNoZXMS",
-            "EgoKcGF0dGVybl9pZBgBIAEoCRI0CgxiYWNrc3RpdGNoZXMYAiADKAsyHi5w",
-            "YXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlcyJeChJVbm1hcmtCYWNrc3Rp",
-            "dGNoZXMSEgoKcGF0dGVybl9pZBgBIAEoCRI0CgxiYWNrc3RpdGNoZXMYAiAD",
-            "KAsyHi5wYXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlcyJQCgxNYXJrU3Rp",
-            "dGNoZXMSEgoKcGF0dGVybl9pZBgBIAEoCRIsCghzdGl0Y2hlcxgCIAMoCzIa",
-            "LnBhdHRlcm4uU3RpdGNoQ29vcmRpbmF0ZXMiUgoOVW5tYXJrU3RpdGNoZXMS",
-            "EgoKcGF0dGVybl9pZBgBIAEoCRIsCghzdGl0Y2hlcxgCIAMoCzIaLnBhdHRl",
-            "cm4uU3RpdGNoQ29vcmRpbmF0ZXMiRwoVQmFja3N0aXRjaENvb3JkaW5hdGVz",
-            "EgoKAlgxGAEgASgNEgoKAlkxGAIgASgNEgoKAlgyGAMgASgNEgoKAlkyGAQg",
-            "ASgNIikKEVN0aXRjaENvb3JkaW5hdGVzEgkKAVgYASABKA0SCQoBWRgCIAEo",
-            "DUIVqgISU00uU2VydmljZS5Db21tYW5kYgZwcm90bzM="));
+            "Cg1Db21tYW5kLnByb3RvEgdwYXR0ZXJuGhtCYWNrc3RpdGNoQ29vcmRpbmF0",
+            "ZXMucHJvdG8aF1N0aXRjaENvb3JkaW5hdGVzLnByb3RvIlwKEE1hcmtCYWNr",
+            "c3RpdGNoZXMSEgoKcGF0dGVybl9pZBgBIAEoCRI0CgxiYWNrc3RpdGNoZXMY",
+            "AiADKAsyHi5wYXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlcyJeChJVbm1h",
+            "cmtCYWNrc3RpdGNoZXMSEgoKcGF0dGVybl9pZBgBIAEoCRI0CgxiYWNrc3Rp",
+            "dGNoZXMYAiADKAsyHi5wYXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlcyJQ",
+            "CgxNYXJrU3RpdGNoZXMSEgoKcGF0dGVybl9pZBgBIAEoCRIsCghzdGl0Y2hl",
+            "cxgCIAMoCzIaLnBhdHRlcm4uU3RpdGNoQ29vcmRpbmF0ZXMiUgoOVW5tYXJr",
+            "U3RpdGNoZXMSEgoKcGF0dGVybl9pZBgBIAEoCRIsCghzdGl0Y2hlcxgCIAMo",
+            "CzIaLnBhdHRlcm4uU3RpdGNoQ29vcmRpbmF0ZXNCFaoCElNNLlNlcnZpY2Uu",
+            "Q29tbWFuZFAAUAFiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { },
+          new pbr::FileDescriptor[] { global::SM.Service.BackstitchCoordinatesReflection.Descriptor, global::SM.Service.StitchCoordinatesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.MarkBackstitches), global::SM.Service.Command.MarkBackstitches.Parser, new[]{ "PatternId", "Backstitches" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.UnmarkBackstitches), global::SM.Service.Command.UnmarkBackstitches.Parser, new[]{ "PatternId", "Backstitches" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.MarkStitches), global::SM.Service.Command.MarkStitches.Parser, new[]{ "PatternId", "Stitches" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.UnmarkStitches), global::SM.Service.Command.UnmarkStitches.Parser, new[]{ "PatternId", "Stitches" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.BackstitchCoordinates), global::SM.Service.Command.BackstitchCoordinates.Parser, new[]{ "X1", "Y1", "X2", "Y2" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.StitchCoordinates), global::SM.Service.Command.StitchCoordinates.Parser, new[]{ "X", "Y" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.Command.UnmarkStitches), global::SM.Service.Command.UnmarkStitches.Parser, new[]{ "PatternId", "Stitches" }, null, null, null)
           }));
     }
     #endregion
@@ -99,11 +96,11 @@ namespace SM.Service.Command {
 
     /// <summary>Field number for the "backstitches" field.</summary>
     public const int BackstitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::SM.Service.Command.BackstitchCoordinates> _repeated_backstitches_codec
-        = pb::FieldCodec.ForMessage(18, global::SM.Service.Command.BackstitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates>();
+    private static readonly pb::FieldCodec<global::SM.Service.BackstitchCoordinates> _repeated_backstitches_codec
+        = pb::FieldCodec.ForMessage(18, global::SM.Service.BackstitchCoordinates.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::SM.Service.BackstitchCoordinates>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates> Backstitches {
+    public pbc::RepeatedField<global::SM.Service.BackstitchCoordinates> Backstitches {
       get { return backstitches_; }
     }
 
@@ -248,11 +245,11 @@ namespace SM.Service.Command {
 
     /// <summary>Field number for the "backstitches" field.</summary>
     public const int BackstitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::SM.Service.Command.BackstitchCoordinates> _repeated_backstitches_codec
-        = pb::FieldCodec.ForMessage(18, global::SM.Service.Command.BackstitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates>();
+    private static readonly pb::FieldCodec<global::SM.Service.BackstitchCoordinates> _repeated_backstitches_codec
+        = pb::FieldCodec.ForMessage(18, global::SM.Service.BackstitchCoordinates.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::SM.Service.BackstitchCoordinates>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Command.BackstitchCoordinates> Backstitches {
+    public pbc::RepeatedField<global::SM.Service.BackstitchCoordinates> Backstitches {
       get { return backstitches_; }
     }
 
@@ -397,11 +394,11 @@ namespace SM.Service.Command {
 
     /// <summary>Field number for the "stitches" field.</summary>
     public const int StitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::SM.Service.Command.StitchCoordinates> _repeated_stitches_codec
-        = pb::FieldCodec.ForMessage(18, global::SM.Service.Command.StitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Command.StitchCoordinates> stitches_ = new pbc::RepeatedField<global::SM.Service.Command.StitchCoordinates>();
+    private static readonly pb::FieldCodec<global::SM.Service.StitchCoordinates> _repeated_stitches_codec
+        = pb::FieldCodec.ForMessage(18, global::SM.Service.StitchCoordinates.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.StitchCoordinates> stitches_ = new pbc::RepeatedField<global::SM.Service.StitchCoordinates>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Command.StitchCoordinates> Stitches {
+    public pbc::RepeatedField<global::SM.Service.StitchCoordinates> Stitches {
       get { return stitches_; }
     }
 
@@ -546,11 +543,11 @@ namespace SM.Service.Command {
 
     /// <summary>Field number for the "stitches" field.</summary>
     public const int StitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::SM.Service.Command.StitchCoordinates> _repeated_stitches_codec
-        = pb::FieldCodec.ForMessage(18, global::SM.Service.Command.StitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.Command.StitchCoordinates> stitches_ = new pbc::RepeatedField<global::SM.Service.Command.StitchCoordinates>();
+    private static readonly pb::FieldCodec<global::SM.Service.StitchCoordinates> _repeated_stitches_codec
+        = pb::FieldCodec.ForMessage(18, global::SM.Service.StitchCoordinates.Parser);
+    private readonly pbc::RepeatedField<global::SM.Service.StitchCoordinates> stitches_ = new pbc::RepeatedField<global::SM.Service.StitchCoordinates>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.Command.StitchCoordinates> Stitches {
+    public pbc::RepeatedField<global::SM.Service.StitchCoordinates> Stitches {
       get { return stitches_; }
     }
 
@@ -639,376 +636,6 @@ namespace SM.Service.Command {
           }
           case 18: {
             stitches_.AddEntriesFrom(input, _repeated_stitches_codec);
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  public sealed partial class BackstitchCoordinates : pb::IMessage<BackstitchCoordinates> {
-    private static readonly pb::MessageParser<BackstitchCoordinates> _parser = new pb::MessageParser<BackstitchCoordinates>(() => new BackstitchCoordinates());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<BackstitchCoordinates> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Command.CommandReflection.Descriptor.MessageTypes[4]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public BackstitchCoordinates() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public BackstitchCoordinates(BackstitchCoordinates other) : this() {
-      x1_ = other.x1_;
-      y1_ = other.y1_;
-      x2_ = other.x2_;
-      y2_ = other.y2_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public BackstitchCoordinates Clone() {
-      return new BackstitchCoordinates(this);
-    }
-
-    /// <summary>Field number for the "X1" field.</summary>
-    public const int X1FieldNumber = 1;
-    private uint x1_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint X1 {
-      get { return x1_; }
-      set {
-        x1_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Y1" field.</summary>
-    public const int Y1FieldNumber = 2;
-    private uint y1_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Y1 {
-      get { return y1_; }
-      set {
-        y1_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "X2" field.</summary>
-    public const int X2FieldNumber = 3;
-    private uint x2_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint X2 {
-      get { return x2_; }
-      set {
-        x2_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Y2" field.</summary>
-    public const int Y2FieldNumber = 4;
-    private uint y2_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Y2 {
-      get { return y2_; }
-      set {
-        y2_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as BackstitchCoordinates);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(BackstitchCoordinates other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (X1 != other.X1) return false;
-      if (Y1 != other.Y1) return false;
-      if (X2 != other.X2) return false;
-      if (Y2 != other.Y2) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (X1 != 0) hash ^= X1.GetHashCode();
-      if (Y1 != 0) hash ^= Y1.GetHashCode();
-      if (X2 != 0) hash ^= X2.GetHashCode();
-      if (Y2 != 0) hash ^= Y2.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (X1 != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(X1);
-      }
-      if (Y1 != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(Y1);
-      }
-      if (X2 != 0) {
-        output.WriteRawTag(24);
-        output.WriteUInt32(X2);
-      }
-      if (Y2 != 0) {
-        output.WriteRawTag(32);
-        output.WriteUInt32(Y2);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (X1 != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X1);
-      }
-      if (Y1 != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y1);
-      }
-      if (X2 != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X2);
-      }
-      if (Y2 != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y2);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(BackstitchCoordinates other) {
-      if (other == null) {
-        return;
-      }
-      if (other.X1 != 0) {
-        X1 = other.X1;
-      }
-      if (other.Y1 != 0) {
-        Y1 = other.Y1;
-      }
-      if (other.X2 != 0) {
-        X2 = other.X2;
-      }
-      if (other.Y2 != 0) {
-        Y2 = other.Y2;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            X1 = input.ReadUInt32();
-            break;
-          }
-          case 16: {
-            Y1 = input.ReadUInt32();
-            break;
-          }
-          case 24: {
-            X2 = input.ReadUInt32();
-            break;
-          }
-          case 32: {
-            Y2 = input.ReadUInt32();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  public sealed partial class StitchCoordinates : pb::IMessage<StitchCoordinates> {
-    private static readonly pb::MessageParser<StitchCoordinates> _parser = new pb::MessageParser<StitchCoordinates>(() => new StitchCoordinates());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<StitchCoordinates> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.Command.CommandReflection.Descriptor.MessageTypes[5]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public StitchCoordinates() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public StitchCoordinates(StitchCoordinates other) : this() {
-      x_ = other.x_;
-      y_ = other.y_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public StitchCoordinates Clone() {
-      return new StitchCoordinates(this);
-    }
-
-    /// <summary>Field number for the "X" field.</summary>
-    public const int XFieldNumber = 1;
-    private uint x_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint X {
-      get { return x_; }
-      set {
-        x_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "Y" field.</summary>
-    public const int YFieldNumber = 2;
-    private uint y_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Y {
-      get { return y_; }
-      set {
-        y_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as StitchCoordinates);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(StitchCoordinates other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (X != other.X) return false;
-      if (Y != other.Y) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (X != 0) hash ^= X.GetHashCode();
-      if (Y != 0) hash ^= Y.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (X != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(X);
-      }
-      if (Y != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(Y);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (X != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X);
-      }
-      if (Y != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Y);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(StitchCoordinates other) {
-      if (other == null) {
-        return;
-      }
-      if (other.X != 0) {
-        X = other.X;
-      }
-      if (other.Y != 0) {
-        Y = other.Y;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            X = input.ReadUInt32();
-            break;
-          }
-          case 16: {
-            Y = input.ReadUInt32();
             break;
           }
         }

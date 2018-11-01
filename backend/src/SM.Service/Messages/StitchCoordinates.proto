@@ -1,0 +1,11 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "SM.Service";
+
+message StitchCoordinates {
+    uint32 X = 1;
+    uint32 Y = 2;
+}
+
+

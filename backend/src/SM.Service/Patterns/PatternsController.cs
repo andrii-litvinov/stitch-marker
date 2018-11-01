@@ -14,30 +14,16 @@ namespace SM.Service.Patterns
     public class PatternsController : ControllerBase
     {
         [HttpPost, Route("{patternId}/markbackstitches")]
-        public async Task MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
 
         [HttpPost, Route("{patternId}/unmarkbackstitches")]
-        public async Task UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
 
         [HttpPost, Route("{patternId}/markstitches")]
-        public async Task MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
 
         [HttpPost, Route("{patternId}/unmarkstitches")]
-        public async Task UnmarkStitches(Command.UnmarkStitches request) => await HandleOrThrow(request);
-
-        private async Task<IActionResult> HandleOrThrow<T>(T request) where T : Command.ICommand
-        {
-            try
-            {
-                var (pattern, _) = await Cluster.GetAsync($"pattern-{request.PatternId}", ActorKind.Pattern);
-                await pattern.RequestAsync<bool>(request, 10.Seconds());
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return NotFound();
-            }
-        }
+        public async Task<IActionResult> UnmarkStitches(Command.UnmarkStitches request) => await HandleOrThrow(request);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
@@ -171,6 +157,20 @@ namespace SM.Service.Patterns
             }
 
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
+        }
+        
+        private async Task<IActionResult> HandleOrThrow<T>(T request) where T : Command.ICommand
+        {
+            try
+            {
+                var (pattern, _) = await Cluster.GetAsync($"pattern-{request.PatternId}", ActorKind.Pattern);
+                await pattern.RequestAsync<bool>(request, 10.Seconds());
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return NotFound();
+            }
         }
     }
 }
