@@ -1,24 +1,21 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Google.Protobuf.Collections;
 
 namespace SM.Service.Patterns
 {
     public class PatternAggregate
     {
         // TODO: [AL] Rename to Pattern.
-
+        private readonly Dictionary<(uint, uint, uint, uint), Backstitch> backstitches = new Dictionary<(uint, uint, uint, uint), Backstitch>();
+        private readonly List<StitchConfiguration> configuration = new List<StitchConfiguration>();
+        private readonly List<Element> elements = new List<Element>();
+        private readonly Dictionary<(uint, uint), Stitch> stitches = new Dictionary<(uint, uint), Stitch>();
+        private Canvas canvas;
         private string id;
+        private Info info;
         private string ownerId;
+        private Strands strands;
         private uint width;
         private uint height;
-        private Canvas canvas;
-        private Info info;
-        private Strands strands;
-        private readonly List<StitchConfiguration> configuration = new List<StitchConfiguration>();
-        private readonly List<Stitch> stitches = new List<Stitch>();
-        private readonly List<Backstitch> backstitches = new List<Backstitch>();
-        private readonly List<Element> elements = new List<Element>();
 
         public void Apply(PatternCreated @event)
         {
@@ -48,17 +45,15 @@ namespace SM.Service.Patterns
             };
 
             foreach (var config in pattern.Configurations)
-            {
                 configuration.Add(new StitchConfiguration
                 {
                     Symbol = config.Symbol,
                     HexColor = config.HexColor,
                     Strands = config.Strands
                 });
-            }
 
             foreach (var stitch in pattern.Stitches)
-                stitches.Add(new Stitch
+                stitches.Add((stitch.X, stitch.Y), new Stitch
                 {
                     X = stitch.X,
                     Y = stitch.Y,
@@ -67,7 +62,7 @@ namespace SM.Service.Patterns
                 });
 
             foreach (var backstitch in pattern.Backstitches)
-                backstitches.Add(new Backstitch
+                backstitches.Add((backstitch.X1, backstitch.Y1, backstitch.X2, backstitch.Y2), new Backstitch
                 {
                     X1 = backstitch.X1,
                     X2 = backstitch.X2,
@@ -88,45 +83,37 @@ namespace SM.Service.Patterns
 
         public void Apply(BackstitchesMarked @event)
         {
-            foreach (var backstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+            foreach (var eventBackstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
             {
-                var patternBackstitch = backstitches.SingleOrDefault(item =>
-                    item.X1 == backstitch.X1 &&
-                    item.Y1 == backstitch.Y1 &&
-                    item.X2 == backstitch.X2 &&
-                    item.Y2 == backstitch.Y2);
-                if (patternBackstitch != null) patternBackstitch.Marked = true;
+                backstitches.TryGetValue((eventBackstitch.X1, eventBackstitch.Y1, eventBackstitch.X2, eventBackstitch.Y2), out var backstitch);
+                if (backstitch != null) backstitch.Marked = true;
             }
         }
 
         public void Apply(BackstitchesUnmarked @event)
         {
-            foreach (var backstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+            foreach (var eventBackstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
             {
-                var patternBackstitch = backstitches.SingleOrDefault(item =>
-                    item.X1 == backstitch.X1 &&
-                    item.Y1 == backstitch.Y1 &&
-                    item.X2 == backstitch.X2 &&
-                    item.Y2 == backstitch.Y2);
-                if (patternBackstitch != null) patternBackstitch.Marked = false;
+                backstitches.TryGetValue((eventBackstitch.X1, eventBackstitch.Y1, eventBackstitch.X2, eventBackstitch.Y2), out var backstitch);
+                if (backstitch != null) backstitch.Marked = false;
             }
         }
 
         public void Apply(StitchesMarked @event)
         {
-            foreach (var stitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
+            foreach (var eventStitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
             {
-                var patternStitch = stitches.FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
-                if (patternStitch != null) patternStitch.Marked = true;
+                stitches.TryGetValue((eventStitch.X, eventStitch.Y), out var stitch);
+                if (stitch != null) stitch.Marked = true;
             }
         }
 
         public void Apply(StitchesUnmarked @event)
         {
-            foreach (var stitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
+            foreach (var eventStitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
             {
-                var patternStitch = stitches.FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
-                if (patternStitch != null) patternStitch.Marked = false;
+                stitches.TryGetValue((eventStitch.X, eventStitch.Y), out var stitch);
+                if (stitch != null) stitch.Marked = false;
             }
         }
 
@@ -159,32 +146,32 @@ namespace SM.Service.Patterns
             };
 
             foreach (var config in configuration)
-            {
                 result.Configurations.Add(new StitchConfiguration
                 {
                     Symbol = config.Symbol,
                     HexColor = config.HexColor,
                     Strands = config.Strands
                 });
-            }
 
             foreach (var stitch in stitches)
                 result.Stitches.Add(new Stitch
                 {
-                    X = stitch.X,
-                    Y = stitch.Y,
-                    Type = stitch.Type,
-                    ConfigurationIndex = stitch.ConfigurationIndex
+                    X = stitch.Value.X,
+                    Y = stitch.Value.Y,
+                    Marked = stitch.Value.Marked,
+                    Type = stitch.Value.Type,
+                    ConfigurationIndex = stitch.Value.ConfigurationIndex
                 });
 
             foreach (var backstitch in backstitches)
                 result.Backstitches.Add(new Backstitch
                 {
-                    X1 = backstitch.X1,
-                    X2 = backstitch.X2,
-                    Y1 = backstitch.Y1,
-                    Y2 = backstitch.Y2,
-                    ConfigurationIndex = backstitch.ConfigurationIndex
+                    X1 = backstitch.Value.X1,
+                    X2 = backstitch.Value.X2,
+                    Y1 = backstitch.Value.Y1,
+                    Y2 = backstitch.Value.Y2,
+                    Marked = backstitch.Value.Marked,
+                    ConfigurationIndex = backstitch.Value.ConfigurationIndex
                 });
 
             foreach (var element in elements)
