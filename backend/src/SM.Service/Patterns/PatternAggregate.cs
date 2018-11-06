@@ -205,5 +205,6 @@ namespace SM.Service.Patterns
         public StitchesUnmarked UnmarkStitches(IList<StitchCoordinates> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
         public BackstitchesMarked MarkBackstitches(IList<BackstitchCoordinates> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
         public BackstitchesUnmarked UnmarkBackstitches(IList<BackstitchCoordinates> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
+        public PatternDeleted Delete() => new PatternDeleted {SourceId = id};
     }
 }

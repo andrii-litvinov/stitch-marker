@@ -11,8 +11,8 @@ namespace SM.Service.Patterns
     {
         private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
-        private PatternAggregate pattern;
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
+        private PatternAggregate pattern;
         private Persistence persistence;
 
         public PatternActor(IEventStore eventStore) => this.eventStore = eventStore;
@@ -25,8 +25,9 @@ namespace SM.Service.Patterns
                     context.SetReceiveTimeout(5.Minutes());
                     persistence = Persistence.WithEventSourcing(eventStore, context.Self.Id, ApplyEvent);
                     await persistence.RecoverStateAsync();
-                    if (pattern == null) behavior.Become(New);
-                    else behavior.Become(Created);
+                    behavior.Become(Started);
+                    if (pattern != null)
+                        behavior.Become(Active);
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
@@ -37,7 +38,7 @@ namespace SM.Service.Patterns
             }
         }
 
-        private async Task New(IContext context)
+        private async Task Started(IContext context)
         {
             switch (context.Message)
             {
@@ -60,7 +61,7 @@ namespace SM.Service.Patterns
             }
         }
 
-        private async Task Created(IContext context)
+        private async Task Active(IContext context)
         {
             switch (context.Message)
             {
@@ -73,36 +74,26 @@ namespace SM.Service.Patterns
                     senders.Set(query.Id, context.Sender, 30.Seconds());
                     drawer.Tell(query);
                     break;
-                case Thumbnail thumbnail:
-                    senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
-                    break;
-                case DeletePattern command:
-                    var patternDeleted = new PatternDeleted {SourceId = command.Id};
-                    await persistence.PersistEventAsync(patternDeleted);
-                    context.Sender.Tell(patternDeleted);
-                    break;
                 case GetPatternOwner _:
                     context.Sender.Tell(pattern.GetPatternOwner());
                     break;
+                case Thumbnail thumbnail:
+                    senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
+                    break;
+                case DeletePattern _:
+                    await persistence.PersistEventAsync(pattern.Delete());
+                    break;
                 case MarkStitches command:
-                    var stitchesMarked = pattern.MarkStitches(command.Stitches);
-                    await persistence.PersistEventAsync(stitchesMarked);
-                    context.Sender.Tell(stitchesMarked);
+                    await PersistAndReply(context, pattern.MarkStitches(command.Stitches));
                     break;
                 case UnmarkStitches command:
-                    var stitchesUnmarked = pattern.UnmarkStitches(command.Stitches);
-                    await persistence.PersistEventAsync(stitchesUnmarked);
-                    context.Sender.Tell(stitchesUnmarked);
+                    await PersistAndReply(context, pattern.UnmarkStitches(command.Stitches));
                     break;
                 case MarkBackstitches command:
-                    var backstitchesMarked = pattern.MarkBackstitches(command.Backstitches);
-                    await persistence.PersistEventAsync(backstitchesMarked);
-                    context.Sender.Tell(backstitchesMarked);
+                    await PersistAndReply(context, pattern.MarkBackstitches(command.Backstitches));
                     break;
                 case UnmarkBackstitches command:
-                    var backstitchesUnmarked = pattern.UnmarkBackstitches(command.Backstitches);
-                    await persistence.PersistEventAsync(backstitchesUnmarked);
-                    context.Sender.Tell(backstitchesUnmarked);
+                    await PersistAndReply(context, pattern.UnmarkBackstitches(command.Backstitches));
                     break;
             }
         }
@@ -116,7 +107,7 @@ namespace SM.Service.Patterns
                 case PatternCreated e:
                     pattern = new PatternAggregate();
                     pattern.Apply(e);
-                    behavior.Become(Created);
+                    behavior.Become(Active);
                     break;
                 case PatternDeleted _:
                     behavior.Become(Deleted);
@@ -134,6 +125,12 @@ namespace SM.Service.Patterns
                     pattern.Apply(e);
                     break;
             }
+        }
+
+        private async Task PersistAndReply(IContext context, IEvent @event)
+        {
+            await persistence.PersistEventAsync(@event);
+            context.Sender.Tell(@event);
         }
     }
 }
