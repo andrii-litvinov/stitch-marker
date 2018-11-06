@@ -1,3 +1,9 @@
-bin/
-obj/
-test/
+# directories
+**/bin/
+**/obj/
+**/out/
+
+# files
+Dockerfile*
+**/*.trx
+**/*.md

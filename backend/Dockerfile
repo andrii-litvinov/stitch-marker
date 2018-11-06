@@ -9,9 +9,7 @@ RUN dotnet restore -r linux-x64
 COPY src/SM.Service ./
 RUN dotnet publish -r linux-x64 -c Release -o out
 
-
-
-FROM microsoft/dotnet:2.1-aspnetcore-runtime AS runtime
+FROM microsoft/dotnet:2.1-runtime AS runtime
 
 # Install libfontconfig1 dependency for SkiaSharp
 RUN apt-get update && apt-get install -y libfontconfig1
