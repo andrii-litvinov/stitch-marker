@@ -11,7 +11,7 @@ namespace SM.Service.Patterns
     {
         private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
-        private readonly PatternAggregate pattern = new PatternAggregate();
+        private PatternAggregate pattern;
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
         private Persistence persistence;
 
@@ -114,6 +114,7 @@ namespace SM.Service.Patterns
             switch (@event.Data)
             {
                 case PatternCreated e:
+                    pattern = new PatternAggregate();
                     pattern.Apply(e);
                     behavior.Become(Created);
                     break;
