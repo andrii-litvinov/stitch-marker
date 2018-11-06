@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Google.Protobuf.Collections;
 
 namespace SM.Service.Patterns
 {
@@ -6,6 +8,8 @@ namespace SM.Service.Patterns
     {
         // TODO: [AL] Rename to Pattern.
 
+        private string id;
+        private string ownerId;
         private uint width;
         private uint height;
         private Canvas canvas;
@@ -19,6 +23,9 @@ namespace SM.Service.Patterns
         public void Apply(PatternCreated @event)
         {
             var pattern = @event.Pattern;
+
+            id = pattern.Id;
+            ownerId = pattern.OwnerId;
             width = pattern.Width;
             height = pattern.Height;
             canvas = new Canvas {Title = pattern.Canvas.Title};
@@ -79,10 +86,56 @@ namespace SM.Service.Patterns
                 });
         }
 
+        public void Apply(BackstitchesMarked @event)
+        {
+            foreach (var backstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+            {
+                var patternBackstitch = backstitches.SingleOrDefault(item =>
+                    item.X1 == backstitch.X1 &&
+                    item.Y1 == backstitch.Y1 &&
+                    item.X2 == backstitch.X2 &&
+                    item.Y2 == backstitch.Y2);
+                if (patternBackstitch != null) patternBackstitch.Marked = true;
+            }
+        }
+
+        public void Apply(BackstitchesUnmarked @event)
+        {
+            foreach (var backstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+            {
+                var patternBackstitch = backstitches.SingleOrDefault(item =>
+                    item.X1 == backstitch.X1 &&
+                    item.Y1 == backstitch.Y1 &&
+                    item.X2 == backstitch.X2 &&
+                    item.Y2 == backstitch.Y2);
+                if (patternBackstitch != null) patternBackstitch.Marked = false;
+            }
+        }
+
+        public void Apply(StitchesMarked @event)
+        {
+            foreach (var stitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
+            {
+                var patternStitch = stitches.FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
+                if (patternStitch != null) patternStitch.Marked = true;
+            }
+        }
+
+        public void Apply(StitchesUnmarked @event)
+        {
+            foreach (var stitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
+            {
+                var patternStitch = stitches.FirstOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
+                if (patternStitch != null) patternStitch.Marked = false;
+            }
+        }
+
         public Pattern GetPattern()
         {
             var result = new Pattern
             {
+                Id = id,
+                OwnerId = ownerId,
                 Width = width,
                 Height = height,
                 Canvas = new Canvas {Title = canvas.Title},
@@ -145,5 +198,12 @@ namespace SM.Service.Patterns
 
             return result;
         }
+
+        public PatternOwner GetPatternOwner() => new PatternOwner {OwnerId = ownerId};
+
+        public StitchesMarked MarkStitches(IList<StitchCoordinates> items) => new StitchesMarked {SourceId = id, Stitches = {items}};
+        public StitchesUnmarked UnmarkStitches(IList<StitchCoordinates> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
+        public BackstitchesMarked MarkBackstitches(IList<BackstitchCoordinates> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
+        public BackstitchesUnmarked UnmarkBackstitches(IList<BackstitchCoordinates> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
     }
 }
