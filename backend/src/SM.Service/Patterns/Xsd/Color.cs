@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SM.Service.Patterns
+namespace SM.Service.Patterns.Xsd
 {
     public class Color
     {
@@ -9,7 +9,7 @@ namespace SM.Service.Patterns
         public string ColorTitle = "";
         public string Description;
         public string FontFamily = "";
-        public Pattern.ItemType HasItems;
+        public ItemType HasItems;
         public Rgb Rgb;
         public Strands Strands = default;
         public string Symbol = "";

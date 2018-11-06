@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Patterns
+﻿namespace SM.Service.Patterns.Xsd
 {
     public class Backstitch
     {
@@ -15,7 +15,7 @@
             set
             {
                 color = value;
-                Color.HasItems |= Pattern.ItemType.BackStitch;
+                Color.HasItems |= ItemType.BackStitch;
             }
         }
     }

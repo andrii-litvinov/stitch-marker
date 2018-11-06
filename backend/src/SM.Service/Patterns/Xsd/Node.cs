@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Patterns
+﻿namespace SM.Service.Patterns.Xsd
 {
     public class Node
     {
@@ -27,13 +27,13 @@
             }
         }
 
-        public Pattern.ItemType ItemType
+        public ItemType ItemType
         {
             get
             {
                 if (Type == NodeType.Bead)
-                    return Pattern.ItemType.Bead;
-                return Pattern.ItemType.FrenchKnot;
+                    return ItemType.Bead;
+                return ItemType.FrenchKnot;
             }
         }
 
@@ -53,10 +53,10 @@
                 return;
             if (Type == NodeType.Bead)
             {
-                Color.HasItems |= Pattern.ItemType.Bead;
+                Color.HasItems |= ItemType.Bead;
                 return;
             }
-            Color.HasItems |= Pattern.ItemType.FrenchKnot;
+            Color.HasItems |= ItemType.FrenchKnot;
         }
     }
 }
