@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -13,43 +14,23 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
-        [HttpPost, Route("{patternId}/markbackstitches")]
+        [Route("{patternId}/mark-backstitches"), HttpPost]
         public async Task<IActionResult> MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
 
-        [HttpPost, Route("{patternId}/unmarkbackstitches")]
+        [Route("{patternId}/unmark-backstitches"), HttpPost]
         public async Task<IActionResult> UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
 
-        [HttpPost, Route("{patternId}/markstitches")]
+        [Route("{patternId}/mark-stitches"), HttpPost]
         public async Task<IActionResult> MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
 
-        [HttpPost, Route("{patternId}/unmarkstitches")]
+        [Route("{patternId}/unmark-stitches"), HttpPost]
         public async Task<IActionResult> UnmarkStitches(Command.UnmarkStitches request) => await HandleOrThrow(request);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
         {
             var patternItems = await GetUserPatternItems(User.GetUserId(), skip, take);
-            var result = new List<Resource<PatternItem>>();
-
-            foreach (var item in patternItems.Items)
-            {
-                var resource = new Resource<PatternItem>(item)
-                {
-                    Links =
-                    {
-                        new Link {Rel = "self", Href = Url.Action("Get", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "markStitches", Href = Url.Action("MarkStitches", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches", new {patternId = new Guid(item.Id)})},
-                        new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
-                    }
-                };
-
-                result.Add(resource);
-            }
-
-            return result;
+            return patternItems.Items.Select(CreatePatternResource).ToList();
         }
 
         [HttpGet, Route("{patternId}")]
@@ -119,20 +100,8 @@ namespace SM.Service.Patterns
                 Company = @event.Pattern.Info.Company,
                 Copyright = @event.Pattern.Info.Copyright
             };
-            var resource = new Resource<PatternItem>(item)
-            {
-                Links =
-                {
-                    new Link {Rel = "self", Href = Url.Action("Get", new {patternId})},
-                    new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId})},
-                    new Link {Rel = "markStitches", Href = Url.Action("MarkStitches", new {patternId = new Guid(item.Id)})},
-                    new Link {Rel = "unmarkStitches", Href = Url.Action("UnmarkStitches", new {patternId = new Guid(item.Id)})},
-                    new Link {Rel = "markBackstitches", Href = Url.Action("MarkBackstitches", new {patternId = new Guid(item.Id)})},
-                    new Link {Rel = "unmarkBackstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
-                }
-            };
 
-            return Created(patternId.ToString(), resource);
+            return Created(patternId.ToString(), CreatePatternResource(item));
         }
 
         private static async Task<PatternItems> GetUserPatternItems(string userId, int skip, int take)
@@ -158,7 +127,7 @@ namespace SM.Service.Patterns
 
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
         }
-        
+
         private async Task<IActionResult> HandleOrThrow<T>(T request) where T : Command.ICommand
         {
             try
@@ -172,5 +141,18 @@ namespace SM.Service.Patterns
                 return NotFound();
             }
         }
+
+        private Resource<PatternItem> CreatePatternResource(PatternItem item) => new Resource<PatternItem>(item)
+        {
+            Links =
+            {
+                new Link {Rel = "self", Href = Url.Action("Get", new {patternId = new Guid(item.Id)})},
+                new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})},
+                new Link {Rel = "mark-stitches", Href = Url.Action("MarkStitches", new {patternId = new Guid(item.Id)})},
+                new Link {Rel = "unmark-stitches", Href = Url.Action("UnmarkStitches", new {patternId = new Guid(item.Id)})},
+                new Link {Rel = "mark-backstitches", Href = Url.Action("MarkBackstitches", new {patternId = new Guid(item.Id)})},
+                new Link {Rel = "unmark-backstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
+            }
+        };
     }
 }
