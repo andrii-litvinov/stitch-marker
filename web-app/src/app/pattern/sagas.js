@@ -14,7 +14,7 @@ function* markBackstitch(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'markBackstitches').href, getBackstitchRequestData(action));
+        .links.find(link => link.rel === 'mark-backstitches').href, getBackstitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
@@ -24,7 +24,7 @@ function* unmarkBackstitch(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'unmarkBackstitches').href, getBackstitchRequestData(action));
+        .links.find(link => link.rel === 'unmark-backstitches').href, getBackstitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
@@ -56,7 +56,7 @@ function* markStitches(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'markStitches').href, getStitchRequestData(action));
+        .links.find(link => link.rel === 'mark-stitches').href, getStitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
@@ -66,7 +66,7 @@ function* unmarkStitches(action) {
   yield call(async () => {
     try {
       await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'unmarkStitches').href, getStitchRequestData(action));
+        .links.find(link => link.rel === 'unmark-stitches').href, getStitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
