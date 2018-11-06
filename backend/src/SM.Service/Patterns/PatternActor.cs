@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
@@ -14,8 +11,8 @@ namespace SM.Service.Patterns
     {
         private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
+        private readonly PatternAggregate pattern = new PatternAggregate();
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
-        private Pattern pattern;
         private Persistence persistence;
 
         public PatternActor(IEventStore eventStore) => this.eventStore = eventStore;
@@ -58,7 +55,7 @@ namespace SM.Service.Patterns
                     break;
                 case PatternCreated @event:
                     await persistence.PersistEventAsync(@event);
-                    senders.Get<PID>(pattern.Id)?.Tell(@event);
+                    senders.Get<PID>(@event.SourceId)?.Tell(@event);
                     break;
             }
         }
@@ -68,10 +65,10 @@ namespace SM.Service.Patterns
             switch (context.Message)
             {
                 case GetPattern _:
-                    context.Respond(pattern);
+                    context.Respond(pattern.GetPattern());
                     break;
                 case GetThumbnail query:
-                    query.Pattern = pattern;
+                    query.Pattern = pattern.GetPattern();
                     var drawer = context.GetChild<PatternImageActor>();
                     senders.Set(query.Id, context.Sender, 30.Seconds());
                     drawer.Tell(query);
@@ -85,89 +82,56 @@ namespace SM.Service.Patterns
                     context.Sender.Tell(patternDeleted);
                     break;
                 case GetPatternOwner _:
-                    var patternOwner = new PatternOwner {OwnerId = pattern.OwnerId};
-                    context.Sender.Tell(patternOwner);
+                    context.Sender.Tell(pattern.GetPatternOwner());
                     break;
                 case MarkStitches command:
-                    await persistence.PersistEventAsync(new StitchesMarked
-                    {
-                        SourceId = command.PatternId,
-                        Stitches = {command.Stitches}
-                    });
+                    var stitchesMarked = pattern.MarkStitches(command.Stitches);
+                    await persistence.PersistEventAsync(stitchesMarked);
+                    context.Sender.Tell(stitchesMarked);
                     break;
                 case UnmarkStitches command:
-                    await persistence.PersistEventAsync(new StitchesUnmarked
-                    {
-                        SourceId = command.PatternId,
-                        Stitches = {command.Stitches}
-                    });
+                    var stitchesUnmarked = pattern.UnmarkStitches(command.Stitches);
+                    await persistence.PersistEventAsync(stitchesUnmarked);
+                    context.Sender.Tell(stitchesUnmarked);
                     break;
                 case MarkBackstitches command:
-                    await persistence.PersistEventAsync(new BackstitchesMarked
-                    {
-                        SourceId = command.PatternId,
-                        Backstitches = {command.Backstitches}
-                    });
+                    var backstitchesMarked = pattern.MarkBackstitches(command.Backstitches);
+                    await persistence.PersistEventAsync(backstitchesMarked);
+                    context.Sender.Tell(backstitchesMarked);
                     break;
                 case UnmarkBackstitches command:
-                    await persistence.PersistEventAsync(new BackstitchesUnmarked
-                    {
-                        SourceId = command.PatternId,
-                        Backstitches = {command.Backstitches}
-                    });
+                    var backstitchesUnmarked = pattern.UnmarkBackstitches(command.Backstitches);
+                    await persistence.PersistEventAsync(backstitchesUnmarked);
+                    context.Sender.Tell(backstitchesUnmarked);
                     break;
             }
         }
 
-        private Task Deleted(IContext context) => Actor.Done;
+        private static Task Deleted(IContext context) => Actor.Done;
 
         private void ApplyEvent(Event @event)
         {
             switch (@event.Data)
             {
                 case PatternCreated e:
-                    pattern = e.Pattern;
+                    pattern.Apply(e);
                     behavior.Become(Created);
                     break;
                 case PatternDeleted _:
                     behavior.Become(Deleted);
                     break;
-                case BackstitchesMarked command:
-                    MarkBackstitches(command.Backstitches, true);
+                case BackstitchesMarked e:
+                    pattern.Apply(e);
                     break;
-                case BackstitchesUnmarked command:
-                    MarkBackstitches(command.Backstitches, false);
+                case BackstitchesUnmarked e:
+                    pattern.Apply(e);
                     break;
-                case StitchesMarked command:
-                    MarkStitches(command.Stitches, true);
+                case StitchesMarked e:
+                    pattern.Apply(e);
                     break;
-                case StitchesUnmarked command:
-                    MarkStitches(command.Stitches, false);
+                case StitchesUnmarked e:
+                    pattern.Apply(e);
                     break;
-            }
-        }
-
-        private void MarkStitches(IEnumerable<StitchCoordinates> stitches, bool marked)
-        {
-            foreach (var stitch in stitches)
-            {
-                var patternStitch = pattern.Stitches
-                    .SingleOrDefault(item => item.X == stitch.X && item.Y == stitch.Y);
-                if (patternStitch != null) patternStitch.Marked = marked;
-            }
-        }
-
-        private void MarkBackstitches(IEnumerable<BackstitchCoordinates> backstitches, bool marked)
-        {
-            foreach (var backstitch in backstitches)
-            {
-                var patternBackstitch = pattern.Backstitches
-                    .SingleOrDefault(item =>
-                        item.X1 == backstitch.X1 &&
-                        item.Y1 == backstitch.Y1 &&
-                        item.X2 == backstitch.X2 &&
-                        item.Y2 == backstitch.Y2);
-                if (patternBackstitch != null) patternBackstitch.Marked = marked;
             }
         }
     }
