@@ -12,7 +12,7 @@ namespace SM.Service.Patterns
         private readonly Behavior behavior = new Behavior();
         private readonly IEventStore eventStore;
         private readonly MemoryCache senders = new MemoryCache(new MemoryCacheOptions());
-        private PatternAggregate pattern;
+        private PatternAggregate pattern = new PatternAggregate();
         private Persistence persistence;
 
         public PatternActor(IEventStore eventStore) => this.eventStore = eventStore;
@@ -23,11 +23,9 @@ namespace SM.Service.Patterns
             {
                 case Started _:
                     context.SetReceiveTimeout(5.Minutes());
+                    behavior.Become(Started);
                     persistence = Persistence.WithEventSourcing(eventStore, context.Self.Id, ApplyEvent);
                     await persistence.RecoverStateAsync();
-                    behavior.Become(Started);
-                    if (pattern != null)
-                        behavior.Become(Active);
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
