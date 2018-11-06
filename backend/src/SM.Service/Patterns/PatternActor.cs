@@ -128,7 +128,7 @@ namespace SM.Service.Patterns
         private async Task PersistAndReply(IContext context, IEvent @event)
         {
             await persistence.PersistEventAsync(@event);
-            context.Sender.Tell(@event);
+            context.Sender.Tell(true);
         }
     }
 }

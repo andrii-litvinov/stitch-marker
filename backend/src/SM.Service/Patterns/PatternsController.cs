@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Proto.Cluster;
+using SM.Service.Command;
 
 namespace SM.Service.Patterns
 {
@@ -15,16 +16,16 @@ namespace SM.Service.Patterns
     public class PatternsController : ControllerBase
     {
         [Route("{patternId}/mark-backstitches"), HttpPost]
-        public async Task<IActionResult> MarkBackstitches(Command.MarkBackstitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> MarkBackstitches(MarkBackstitches request) => await HandleCommand(request);
 
         [Route("{patternId}/unmark-backstitches"), HttpPost]
-        public async Task<IActionResult> UnmarkBackstitches(Command.UnmarkBackstitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> UnmarkBackstitches(UnmarkBackstitches request) => await HandleCommand(request);
 
         [Route("{patternId}/mark-stitches"), HttpPost]
-        public async Task<IActionResult> MarkStitches(Command.MarkStitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> MarkStitches(MarkStitches request) => await HandleCommand(request);
 
         [Route("{patternId}/unmark-stitches"), HttpPost]
-        public async Task<IActionResult> UnmarkStitches(Command.UnmarkStitches request) => await HandleOrThrow(request);
+        public async Task<IActionResult> UnmarkStitches(UnmarkStitches request) => await HandleCommand(request);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
@@ -34,7 +35,7 @@ namespace SM.Service.Patterns
         }
 
         [HttpGet, Route("{patternId}")]
-        public async Task<ActionResult<Service.Pattern>> Get(string patternId)
+        public async Task<ActionResult<Pattern>> Get(string patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
@@ -42,7 +43,7 @@ namespace SM.Service.Patterns
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            return await pattern.RequestAsync<Service.Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
+            return await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
         }
 
         [HttpDelete, Route("{patternId}")]
@@ -128,7 +129,7 @@ namespace SM.Service.Patterns
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
         }
 
-        private async Task<IActionResult> HandleOrThrow<T>(T request) where T : Command.ICommand
+        private async Task<IActionResult> HandleCommand<T>(T request) where T : ICommand
         {
             try
             {
@@ -138,7 +139,7 @@ namespace SM.Service.Patterns
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return NotFound(ex);
             }
         }
 
