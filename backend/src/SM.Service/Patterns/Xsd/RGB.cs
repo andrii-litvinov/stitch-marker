@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Patterns
+﻿namespace SM.Service.Patterns.Xsd
 {
     public struct Rgb
     {

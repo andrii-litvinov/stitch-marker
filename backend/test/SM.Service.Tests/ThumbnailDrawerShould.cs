@@ -5,6 +5,7 @@ using FluentAssertions;
 using AutoFixture.Xunit2;
 using Proto;
 using SM.Service.Patterns;
+using SM.Service.Patterns.Xsd;
 using Xunit;
 using Pattern = SM.Service.Pattern;
 

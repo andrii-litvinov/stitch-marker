@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Patterns
+﻿namespace SM.Service.Patterns.Xsd
 {
     public class Stitch
     {
@@ -50,11 +50,11 @@
             }
         }
 
-        public Pattern.ItemType ItemType
+        public ItemType ItemType
         {
             get
             {
-                Pattern.ItemType result;
+                ItemType result;
                 if (Type <= StitchType.QuarterTL)
                 {
                     if (Type <= StitchType.ThreeQuarterTR)
@@ -62,11 +62,11 @@
                         switch (Type)
                         {
                             case StitchType.Full:
-                                result = Pattern.ItemType.Full;
+                                result = ItemType.Full;
                                 return result;
                             case StitchType.HalfTop:
                             case StitchType.HalfBottom:
-                                result = Pattern.ItemType.Half;
+                                result = ItemType.Half;
                                 return result;
                             case (StitchType) 3:
                                 goto NONE;
@@ -82,7 +82,7 @@
                             goto NONE;
                         goto QUARTER;
                     }
-                    result = Pattern.ItemType.ThreeQuarter;
+                    result = ItemType.ThreeQuarter;
                     return result;
                 }
                 if (Type > StitchType.QuarterBL)
@@ -96,16 +96,16 @@
                     {
                         goto NONE;
                     }
-                    result = Pattern.ItemType.Petit;
+                    result = ItemType.Petit;
                     return result;
                 }
                 if (Type != StitchType.QuarterTR && Type != StitchType.QuarterBR && Type != StitchType.QuarterBL)
                     goto NONE;
                 QUARTER:
-                result = Pattern.ItemType.Quarter;
+                result = ItemType.Quarter;
                 return result;
                 NONE:
-                result = Pattern.ItemType.None;
+                result = ItemType.None;
                 return result;
             }
         }
@@ -122,7 +122,7 @@
                     {
                         case StitchType.HalfTop:
                         case StitchType.HalfBottom:
-                            Color.HasItems |= Pattern.ItemType.Half;
+                            Color.HasItems |= ItemType.Half;
                             return;
                         case (StitchType) 3:
                             goto FULL;
@@ -138,7 +138,7 @@
                         goto FULL;
                     goto QUARTER;
                 }
-                Color.HasItems |= Pattern.ItemType.ThreeQuarter;
+                Color.HasItems |= ItemType.ThreeQuarter;
                 return;
             }
             if (Type > StitchType.QuarterBL)
@@ -152,16 +152,16 @@
                 {
                     goto FULL;
                 }
-                Color.HasItems |= Pattern.ItemType.Petit;
+                Color.HasItems |= ItemType.Petit;
                 return;
             }
             if (Type != StitchType.QuarterTR && Type != StitchType.QuarterBR && Type != StitchType.QuarterBL)
                 goto FULL;
             QUARTER:
-            Color.HasItems |= Pattern.ItemType.Quarter;
+            Color.HasItems |= ItemType.Quarter;
             return;
             FULL:
-            Color.HasItems |= Pattern.ItemType.Full;
+            Color.HasItems |= ItemType.Full;
         }
     }
 }

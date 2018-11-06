@@ -1,26 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SM.Service.Patterns
+namespace SM.Service.Patterns.Xsd
 {
     public class Pattern
     {
-        [Flags]
-        public enum ItemType
-        {
-            None,
-            Full,
-            Half,
-            Quarter = 4,
-            ThreeQuarter = 8,
-            Petit = 16,
-            FrenchKnot = 32,
-            BackStitch = 64,
-            Bead = 128
-        }
-
         public List<Backstitch> Backstitches = new List<Backstitch>();
-        public Canvas Canvas = new Canvas();
+        public readonly Canvas Canvas = new Canvas();
         public readonly List<Color> Colors = new List<Color>();
         public ushort Height;
         public Info Info = default;
@@ -31,6 +17,20 @@ namespace SM.Service.Patterns
 
         public ushort ThreadCountX { get; set; }
         public ushort ThreadCountY { get; set; }
+    }
+
+    [Flags]
+    public enum ItemType
+    {
+        None,
+        Full,
+        Half,
+        Quarter = 4,
+        ThreeQuarter = 8,
+        Petit = 16,
+        FrenchKnot = 32,
+        BackStitch = 64,
+        Bead = 128
     }
 
     public struct Strands
