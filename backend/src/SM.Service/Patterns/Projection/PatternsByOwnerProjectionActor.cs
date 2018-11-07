@@ -39,18 +39,6 @@ namespace SM.Service.Patterns
                         case PatternCreated created:
                             CreateChild(context, created.OwnerId, created.SourceId);
                             break;
-                        case StitchesMarked marked:
-                            childBySource[marked.SourceId].Tell(marked);
-                            break;
-                        case StitchesUnmarked marked:
-                            childBySource[marked.SourceId].Tell(marked);
-                            break;
-                        case BackstitchesMarked marked:
-                            childBySource[marked.SourceId].Tell(marked);
-                            break;
-                        case BackstitchesUnmarked marked:
-                            childBySource[marked.SourceId].Tell(marked);
-                            break;
                     }
                     childBySource[@event.SourceId].Tell(@event);
 
