@@ -16,16 +16,16 @@ namespace SM.Service.Patterns
     public class PatternsController : ControllerBase
     {
         [Route("{patternId}/mark-backstitches"), HttpPost]
-        public async Task<IActionResult> MarkBackstitches(MarkBackstitches request) => await HandleCommand(request);
+        public async Task<IActionResult> MarkBackstitches(MarkBackstitches request) => await HandleCommand(request.PatternId, request);
 
         [Route("{patternId}/unmark-backstitches"), HttpPost]
-        public async Task<IActionResult> UnmarkBackstitches(UnmarkBackstitches request) => await HandleCommand(request);
+        public async Task<IActionResult> UnmarkBackstitches(UnmarkBackstitches request) => await HandleCommand(request.PatternId, request);
 
         [Route("{patternId}/mark-stitches"), HttpPost]
-        public async Task<IActionResult> MarkStitches(MarkStitches request) => await HandleCommand(request);
+        public async Task<IActionResult> MarkStitches(MarkStitches request) => await HandleCommand(request.PatternId, request);
 
         [Route("{patternId}/unmark-stitches"), HttpPost]
-        public async Task<IActionResult> UnmarkStitches(UnmarkStitches request) => await HandleCommand(request);
+        public async Task<IActionResult> UnmarkStitches(UnmarkStitches request) => await HandleCommand(request.PatternId, request);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
@@ -129,17 +129,19 @@ namespace SM.Service.Patterns
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
         }
 
-        private async Task<IActionResult> HandleCommand<T>(T request) where T : ICommand
+        private async Task<IActionResult> HandleCommand<T>(string patternId, T request)
         {
-            try
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var response = await pattern.RequestAsync<object>(request, 10.Seconds());
+            switch (response)
             {
-                var (pattern, _) = await Cluster.GetAsync($"pattern-{request.PatternId}", ActorKind.Pattern);
-                await pattern.RequestAsync<bool>(request, 10.Seconds());
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return NotFound(ex);
+                case BackstitchesMarked _:
+                case StitchesMarked _:
+                case BackstitchesUnmarked _:
+                case StitchesUnmarked _:
+                    return Ok();
+                default:
+                    throw new Exception($"Unexpected Response of type {response.GetType().Name} received.");
             }
         }
 
