@@ -10,12 +10,12 @@ namespace SM.Service.Patterns
         private readonly List<Element> elements = new List<Element>();
         private readonly Dictionary<(uint, uint), Stitch> stitches = new Dictionary<(uint, uint), Stitch>();
         private Canvas canvas;
+        private uint height;
         private string id;
         private Info info;
         private string ownerId;
         private Strands strands;
         private uint width;
-        private uint height;
 
         public void Apply(PatternCreated @event)
         {
@@ -65,8 +65,8 @@ namespace SM.Service.Patterns
                 backstitches.Add((backstitch.X1, backstitch.Y1, backstitch.X2, backstitch.Y2), new Backstitch
                 {
                     X1 = backstitch.X1,
-                    X2 = backstitch.X2,
                     Y1 = backstitch.Y1,
+                    X2 = backstitch.X2,
                     Y2 = backstitch.Y2,
                     ConfigurationIndex = backstitch.ConfigurationIndex
                 });
@@ -83,38 +83,30 @@ namespace SM.Service.Patterns
 
         public void Apply(BackstitchesMarked @event)
         {
-            foreach (var eventBackstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
-            {
-                backstitches.TryGetValue((eventBackstitch.X1, eventBackstitch.Y1, eventBackstitch.X2, eventBackstitch.Y2), out var backstitch);
-                if (backstitch != null) backstitch.Marked = true;
-            }
+            foreach (var bs in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+                if (backstitches.TryGetValue((bs.X1, bs.Y1, bs.X2, bs.Y2), out var backstitch))
+                    backstitch.Marked = true;
         }
 
         public void Apply(BackstitchesUnmarked @event)
         {
-            foreach (var eventBackstitch in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
-            {
-                backstitches.TryGetValue((eventBackstitch.X1, eventBackstitch.Y1, eventBackstitch.X2, eventBackstitch.Y2), out var backstitch);
-                if (backstitch != null) backstitch.Marked = false;
-            }
+            foreach (var bs in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+                if (backstitches.TryGetValue((bs.X1, bs.Y1, bs.X2, bs.Y2), out var backstitch))
+                    backstitch.Marked = false;
         }
 
         public void Apply(StitchesMarked @event)
         {
-            foreach (var eventStitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
-            {
-                stitches.TryGetValue((eventStitch.X, eventStitch.Y), out var stitch);
-                if (stitch != null) stitch.Marked = true;
-            }
+            foreach (var s in @event.Stitches)
+                if (stitches.TryGetValue((s.X, s.Y), out var stitch))
+                    stitch.Marked = true;
         }
 
         public void Apply(StitchesUnmarked @event)
         {
-            foreach (var eventStitch in (IEnumerable<StitchCoordinates>) @event.Stitches)
-            {
-                stitches.TryGetValue((eventStitch.X, eventStitch.Y), out var stitch);
-                if (stitch != null) stitch.Marked = false;
-            }
+            foreach (var s in @event.Stitches)
+                if (stitches.TryGetValue((s.X, s.Y), out var stitch))
+                    stitch.Marked = false;
         }
 
         public Pattern GetPattern()
@@ -153,25 +145,25 @@ namespace SM.Service.Patterns
                     Strands = config.Strands
                 });
 
-            foreach (var stitch in stitches)
+            foreach (var ((x, y), stitch) in stitches)
                 result.Stitches.Add(new Stitch
                 {
-                    X = stitch.Value.X,
-                    Y = stitch.Value.Y,
-                    Marked = stitch.Value.Marked,
-                    Type = stitch.Value.Type,
-                    ConfigurationIndex = stitch.Value.ConfigurationIndex
+                    X = x,
+                    Y = y,
+                    Marked = stitch.Marked,
+                    Type = stitch.Type,
+                    ConfigurationIndex = stitch.ConfigurationIndex
                 });
 
-            foreach (var backstitch in backstitches)
+            foreach (var ((x1, y1, x2, y2), backstitch) in backstitches)
                 result.Backstitches.Add(new Backstitch
                 {
-                    X1 = backstitch.Value.X1,
-                    X2 = backstitch.Value.X2,
-                    Y1 = backstitch.Value.Y1,
-                    Y2 = backstitch.Value.Y2,
-                    Marked = backstitch.Value.Marked,
-                    ConfigurationIndex = backstitch.Value.ConfigurationIndex
+                    X1 = x1,
+                    Y1 = y1,
+                    X2 = x2,
+                    Y2 = y2,
+                    Marked = backstitch.Marked,
+                    ConfigurationIndex = backstitch.ConfigurationIndex
                 });
 
             foreach (var element in elements)
@@ -187,11 +179,10 @@ namespace SM.Service.Patterns
         }
 
         public PatternOwner GetPatternOwner() => new PatternOwner {OwnerId = ownerId};
-
-        public StitchesMarked MarkStitches(IList<StitchCoordinates> items) => new StitchesMarked {SourceId = id, Stitches = {items}};
-        public StitchesUnmarked UnmarkStitches(IList<StitchCoordinates> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
-        public BackstitchesMarked MarkBackstitches(IList<BackstitchCoordinates> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
-        public BackstitchesUnmarked UnmarkBackstitches(IList<BackstitchCoordinates> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
+        public StitchesMarked MarkStitches(IEnumerable<StitchCoordinates> items) => new StitchesMarked {SourceId = id, Stitches = {items}};
+        public StitchesUnmarked UnmarkStitches(IEnumerable<StitchCoordinates> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
+        public BackstitchesMarked MarkBackstitches(IEnumerable<BackstitchCoordinates> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
+        public BackstitchesUnmarked UnmarkBackstitches(IEnumerable<BackstitchCoordinates> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
         public PatternDeleted Delete() => new PatternDeleted {SourceId = id};
     }
 }
