@@ -25,7 +25,7 @@ namespace Service {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJCYWNrc3RpdGNoSWQucHJvdG8SB3BhdHRlcm4iPgoMQmFja3N0aXRjaElk",
-            "EgoKAlgxGAEgASgNEgoKAlkxGAIgASgNEgoKAlgyGAMgASgNEgoKAlkyGAQg",
+            "EgoKAngxGAEgASgNEgoKAnkxGAIgASgNEgoKAngyGAMgASgNEgoKAnkyGAQg",
             "ASgNQgqqAgdTZXJ2aWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
@@ -74,7 +74,7 @@ namespace Service {
       return new BackstitchId(this);
     }
 
-    /// <summary>Field number for the "X1" field.</summary>
+    /// <summary>Field number for the "x1" field.</summary>
     public const int X1FieldNumber = 1;
     private uint x1_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -85,7 +85,7 @@ namespace Service {
       }
     }
 
-    /// <summary>Field number for the "Y1" field.</summary>
+    /// <summary>Field number for the "y1" field.</summary>
     public const int Y1FieldNumber = 2;
     private uint y1_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -96,7 +96,7 @@ namespace Service {
       }
     }
 
-    /// <summary>Field number for the "X2" field.</summary>
+    /// <summary>Field number for the "x2" field.</summary>
     public const int X2FieldNumber = 3;
     private uint x2_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -107,7 +107,7 @@ namespace Service {
       }
     }
 
-    /// <summary>Field number for the "Y2" field.</summary>
+    /// <summary>Field number for the "y2" field.</summary>
     public const int Y2FieldNumber = 4;
     private uint y2_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
