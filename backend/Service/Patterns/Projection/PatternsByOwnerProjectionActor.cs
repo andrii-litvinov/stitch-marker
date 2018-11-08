@@ -36,6 +36,7 @@ namespace Service.Patterns
                             CreateChild(context, created.OwnerId, created.SourceId);
                             break;
                     }
+
                     childBySource[@event.SourceId].Tell(@event);
 
                     if (@event is PatternDeleted deleted) childBySource.Remove(deleted.SourceId);
@@ -54,13 +55,20 @@ namespace Service.Patterns
             switch (context.Message)
             {
                 case GetPatternItems query:
-                    senders.Set(query.RequestId, context.Sender, 30.Seconds());
-                    childByOwner[query.OwnerId].Tell(query);
+                    if (childByOwner.TryGetValue(query.OwnerId, out var pid))
+                    {
+                        pid.Tell(query);
+                        senders.Set(query.RequestId, context.Sender, 30.Seconds());
+                    }
+                    else
+                    {
+                        context.Sender.Tell(new PatternItems {RequestId = query.RequestId});
+                    }
+
                     break;
                 case PatternItems items:
                     senders.Get<PID>(items.RequestId)?.Tell(items);
                     break;
-                
             }
         }
 
