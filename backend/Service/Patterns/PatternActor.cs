@@ -78,7 +78,7 @@ namespace Service.Patterns
                     senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
                     break;
                 case DeletePattern _:
-                    await persistence.PersistEventAsync(pattern.Delete());
+                    await PersistAndReply(context, pattern.Delete());
                     break;
                 case MarkStitches command:
                     await PersistAndReply(context, pattern.MarkStitches(command.Stitches));

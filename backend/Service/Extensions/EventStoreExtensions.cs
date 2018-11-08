@@ -29,7 +29,7 @@ namespace Service
                     }
             }
 
-            var eventType = Type.GetType($"SM.Service.{recordedEvent.EventType}");
+            var eventType = Type.GetType($"Service.{recordedEvent.EventType}");
             if (eventType != null)
             {
                 var instance = Activator.CreateInstance(eventType);
