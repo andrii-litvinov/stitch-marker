@@ -2,11 +2,11 @@ FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY src/Service/*.csproj ./
+COPY Service/*.csproj ./
 RUN dotnet restore -r linux-x64
 
 # Copy everything else and build
-COPY src/Service ./
+COPY Service ./
 RUN dotnet publish -r linux-x64 -c Release -o out
 
 FROM microsoft/dotnet:2.1-runtime AS runtime

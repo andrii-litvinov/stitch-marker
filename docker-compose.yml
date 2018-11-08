@@ -19,7 +19,7 @@ services:
     ports:
       - "8081:8081"
     volumes:
-      - ./web-app/src:/home/polymer/app
+      - ./web-app:/home/polymer/app
 
   backend:
     image: backend
