@@ -1,12 +1,11 @@
-﻿using System;
+﻿using AutoFixture.Xunit2;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using AutoFixture.Xunit2;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SM.Service.Tests
+namespace Service.Tests
 {
     public class ResourceJsonConverterShould
     {

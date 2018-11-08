@@ -2,10 +2,9 @@
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
 using Proto.Persistence;
-using SM.Service.Command;
-using SM.Service.Patterns.Xsd;
+using Service.Patterns.Xsd;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     public class PatternActor : IActor
     {

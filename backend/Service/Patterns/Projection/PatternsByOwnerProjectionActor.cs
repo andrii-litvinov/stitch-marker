@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Google.Protobuf.Collections;
 using Microsoft.Extensions.Caching.Memory;
 using Proto;
-using Proto.Cluster;
-using SM.Service.Command;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     public class PatternsByOwnerProjectionActor : IActor
     {

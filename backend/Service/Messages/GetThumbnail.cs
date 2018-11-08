@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from GetThumbnail.proto</summary>
   public static partial class GetThumbnailReflection {
@@ -27,11 +27,11 @@ namespace SM.Service {
             "ChJHZXRUaHVtYm5haWwucHJvdG8SB3BhdHRlcm4aDVBhdHRlcm4ucHJvdG8i",
             "XAoMR2V0VGh1bWJuYWlsEgoKAmlkGAEgASgJEg0KBXdpZHRoGAIgASgFEg4K",
             "BmhlaWdodBgDIAEoBRIhCgdwYXR0ZXJuGAQgASgLMhAucGF0dGVybi5QYXR0",
-            "ZXJuQg2qAgpTTS5TZXJ2aWNlUABiBnByb3RvMw=="));
+            "ZXJuQgqqAgdTZXJ2aWNlUABiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.PatternReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Service.PatternReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.GetThumbnail), global::SM.Service.GetThumbnail.Parser, new[]{ "Id", "Width", "Height", "Pattern" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.GetThumbnail), global::Service.GetThumbnail.Parser, new[]{ "Id", "Width", "Height", "Pattern" }, null, null, null)
           }));
     }
     #endregion
@@ -46,7 +46,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.GetThumbnailReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.GetThumbnailReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -110,9 +110,9 @@ namespace SM.Service {
 
     /// <summary>Field number for the "pattern" field.</summary>
     public const int PatternFieldNumber = 4;
-    private global::SM.Service.Pattern pattern_;
+    private global::Service.Pattern pattern_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::SM.Service.Pattern Pattern {
+    public global::Service.Pattern Pattern {
       get { return pattern_; }
       set {
         pattern_ = value;
@@ -217,7 +217,7 @@ namespace SM.Service {
       }
       if (other.pattern_ != null) {
         if (pattern_ == null) {
-          pattern_ = new global::SM.Service.Pattern();
+          pattern_ = new global::Service.Pattern();
         }
         Pattern.MergeFrom(other.Pattern);
       }
@@ -246,7 +246,7 @@ namespace SM.Service {
           }
           case 34: {
             if (pattern_ == null) {
-              pattern_ = new global::SM.Service.Pattern();
+              pattern_ = new global::Service.Pattern();
             }
             input.ReadMessage(pattern_);
             break;

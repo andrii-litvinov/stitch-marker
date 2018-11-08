@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 
-namespace SM.Service
+namespace Service
 {
     public interface IReadWriteEventStoreConnection : IDisposable
     {

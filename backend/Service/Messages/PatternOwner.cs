@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from PatternOwner.proto</summary>
   public static partial class PatternOwnerReflection {
@@ -25,12 +25,12 @@ namespace SM.Service {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChJQYXR0ZXJuT3duZXIucHJvdG8SB3BhdHRlcm4iNAoMUGF0dGVybk93bmVy",
-            "EhIKCnJlcXVlc3RfaWQYASABKAkSEAoIb3duZXJfaWQYAiABKAlCDaoCClNN",
-            "LlNlcnZpY2ViBnByb3RvMw=="));
+            "EhIKCnJlcXVlc3RfaWQYASABKAkSEAoIb3duZXJfaWQYAiABKAlCCqoCB1Nl",
+            "cnZpY2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.PatternOwner), global::SM.Service.PatternOwner.Parser, new[]{ "RequestId", "OwnerId" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.PatternOwner), global::Service.PatternOwner.Parser, new[]{ "RequestId", "OwnerId" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +45,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.PatternOwnerReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.PatternOwnerReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

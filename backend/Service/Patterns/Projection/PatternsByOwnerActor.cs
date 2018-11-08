@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Proto;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     public class PatternsByOwnerActor : IActor
     {

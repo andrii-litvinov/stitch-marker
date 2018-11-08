@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace SM.Service.Patterns.Xsd
+namespace Service.Patterns.Xsd
 {
     public class XsdPatternReader
     {

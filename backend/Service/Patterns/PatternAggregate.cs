@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     public class PatternAggregate
     {

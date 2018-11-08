@@ -7,7 +7,7 @@ using FluentAssertions;
 using Google.Protobuf;
 using Xunit;
 
-namespace SM.Service.Tests.EventStore
+namespace Service.Tests.EventStore
 {
     public class EventStoreShould
     {

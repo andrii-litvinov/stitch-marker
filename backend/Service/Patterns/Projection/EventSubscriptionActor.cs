@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using Proto;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     public class EventSubscriptionActor : IActor
     {

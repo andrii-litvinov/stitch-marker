@@ -1,4 +1,4 @@
-﻿namespace SM.Service.Patterns.Xsd
+﻿namespace Service.Patterns.Xsd
 {
     public class Backstitch
     {

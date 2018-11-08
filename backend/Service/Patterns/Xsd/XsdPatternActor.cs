@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Proto;
 
-namespace SM.Service.Patterns.Xsd
+namespace Service.Patterns.Xsd
 {
     public class XsdPatternActor : IActor
     {

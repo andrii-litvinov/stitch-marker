@@ -7,9 +7,9 @@ using Proto;
 using Proto.Cluster;
 using Proto.Cluster.Consul;
 using Proto.Remote;
-using SM.Service.Patterns;
+using Service.Patterns;
 
-namespace SM.Service
+namespace Service
 {
     public class ActorCluster : IHostedService
     {

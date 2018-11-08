@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from BackstitchCoordinates.proto</summary>
   public static partial class BackstitchCoordinatesReflection {
@@ -26,11 +26,11 @@ namespace SM.Service {
           string.Concat(
             "ChtCYWNrc3RpdGNoQ29vcmRpbmF0ZXMucHJvdG8SB3BhdHRlcm4iRwoVQmFj",
             "a3N0aXRjaENvb3JkaW5hdGVzEgoKAlgxGAEgASgNEgoKAlkxGAIgASgNEgoK",
-            "AlgyGAMgASgNEgoKAlkyGAQgASgNQg2qAgpTTS5TZXJ2aWNlYgZwcm90bzM="));
+            "AlgyGAMgASgNEgoKAlkyGAQgASgNQgqqAgdTZXJ2aWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.BackstitchCoordinates), global::SM.Service.BackstitchCoordinates.Parser, new[]{ "X1", "Y1", "X2", "Y2" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.BackstitchCoordinates), global::Service.BackstitchCoordinates.Parser, new[]{ "X1", "Y1", "X2", "Y2" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +45,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.BackstitchCoordinatesReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.BackstitchCoordinatesReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
