@@ -16,22 +16,6 @@ namespace SM.Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
-        [Route("{patternId}/mark-backstitches"), HttpPost]
-        public async Task<IActionResult> MarkBackstitches(MarkBackstitches command) =>
-            await Forward<MarkBackstitches, BackstitchesMarked>(command.PatternId, command);
-
-        [Route("{patternId}/unmark-backstitches"), HttpPost]
-        public async Task<IActionResult> UnmarkBackstitches(UnmarkBackstitches command) =>
-            await Forward<UnmarkBackstitches, BackstitchesUnmarked>(command.PatternId, command);
-
-        [Route("{patternId}/mark-stitches"), HttpPost]
-        public async Task<IActionResult> MarkStitches(MarkStitches command) =>
-            await Forward<MarkStitches, StitchesMarked>(command.PatternId, command);
-
-        [Route("{patternId}/unmark-stitches"), HttpPost]
-        public async Task<IActionResult> UnmarkStitches(UnmarkStitches command) =>
-            await Forward<UnmarkStitches, StitchesUnmarked>(command.PatternId, command);
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
         {
@@ -85,16 +69,15 @@ namespace SM.Service.Patterns
             var userId = User.GetUserId();
             if (userId == null) return BadRequest();
 
-            var patternId = Guid.NewGuid();
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId.ToString()}", ActorKind.Pattern);
             var content = await file.ReadAllBytes();
             var command = new CreatePattern
             {
                 FileName = file.FileName,
-                Id = patternId.ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Content = ByteString.CopyFrom(content),
                 OwnerId = userId
             };
+            var pattern = await GetPattern(command.Id);
             var @event = await pattern.Request<PatternCreated>(command);
             var item = new PatternItem
             {
@@ -107,7 +90,35 @@ namespace SM.Service.Patterns
                 Copyright = @event.Pattern.Info.Copyright
             };
 
-            return Created(patternId.ToString(), CreatePatternResource(item));
+            return Created(@event.SourceId, CreatePatternResource(item));
+        }
+
+        [Route("{patternId}/mark-backstitches"), HttpPost]
+        public async Task<ActionResult<BackstitchesMarked>> MarkBackstitches(MarkBackstitches command)
+        {
+            var pattern = await GetPattern(command.PatternId);
+            return await pattern.Request<BackstitchesMarked>(command);
+        }
+
+        [Route("{patternId}/unmark-backstitches"), HttpPost]
+        public async Task<ActionResult<BackstitchesUnmarked>> UnmarkBackstitches(UnmarkBackstitches command)
+        {
+            var pattern = await GetPattern(command.PatternId);
+            return await pattern.Request<BackstitchesUnmarked>(command);
+        }
+
+        [Route("{patternId}/mark-stitches"), HttpPost]
+        public async Task<ActionResult<StitchesMarked>> MarkStitches(MarkStitches command)
+        {
+            var pattern = await GetPattern(command.PatternId);
+            return await pattern.Request<StitchesMarked>(command);
+        }
+
+        [Route("{patternId}/unmark-stitches"), HttpPost]
+        public async Task<ActionResult<StitchesUnmarked>> UnmarkStitches(UnmarkStitches command)
+        {
+            var pattern = await GetPattern(command.PatternId);
+            return await pattern.Request<StitchesUnmarked>(command);
         }
 
         private static async Task<PatternItems> GetUserPatternItems(string userId, int skip, int take)
@@ -132,13 +143,6 @@ namespace SM.Service.Patterns
             }
 
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
-        }
-
-        private async Task<IActionResult> Forward<TCommand, TEvent>(string patternId, TCommand request)
-        {
-            var pattern = await GetPattern(patternId);
-            await pattern.Request<TEvent>(request);
-            return Ok();
         }
 
         private static async Task<PID> GetPattern(string patternId)
