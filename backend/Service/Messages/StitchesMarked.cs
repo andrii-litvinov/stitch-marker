@@ -24,12 +24,12 @@ namespace Service {
     static StitchesMarkedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChRTdGl0Y2hlc01hcmtlZC5wcm90bxIHcGF0dGVybhoXU3RpdGNoQ29vcmRp",
-            "bmF0ZXMucHJvdG8iUQoOU3RpdGNoZXNNYXJrZWQSEQoJc291cmNlX2lkGAEg",
-            "ASgJEiwKCHN0aXRjaGVzGAIgAygLMhoucGF0dGVybi5TdGl0Y2hDb29yZGlu",
-            "YXRlc0IKqgIHU2VydmljZVAAYgZwcm90bzM="));
+            "ChRTdGl0Y2hlc01hcmtlZC5wcm90bxIHcGF0dGVybhoOU3RpdGNoSWQucHJv",
+            "dG8iSAoOU3RpdGNoZXNNYXJrZWQSEQoJc291cmNlX2lkGAEgASgJEiMKCHN0",
+            "aXRjaGVzGAIgAygLMhEucGF0dGVybi5TdGl0Y2hJZEIKqgIHU2VydmljZVAA",
+            "YgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Service.StitchCoordinatesReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Service.StitchIdReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Service.StitchesMarked), global::Service.StitchesMarked.Parser, new[]{ "SourceId", "Stitches" }, null, null, null)
           }));
@@ -86,11 +86,11 @@ namespace Service {
 
     /// <summary>Field number for the "stitches" field.</summary>
     public const int StitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::Service.StitchCoordinates> _repeated_stitches_codec
-        = pb::FieldCodec.ForMessage(18, global::Service.StitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::Service.StitchCoordinates> stitches_ = new pbc::RepeatedField<global::Service.StitchCoordinates>();
+    private static readonly pb::FieldCodec<global::Service.StitchId> _repeated_stitches_codec
+        = pb::FieldCodec.ForMessage(18, global::Service.StitchId.Parser);
+    private readonly pbc::RepeatedField<global::Service.StitchId> stitches_ = new pbc::RepeatedField<global::Service.StitchId>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Service.StitchCoordinates> Stitches {
+    public pbc::RepeatedField<global::Service.StitchId> Stitches {
       get { return stitches_; }
     }
 

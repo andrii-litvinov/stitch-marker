@@ -2,9 +2,9 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "Service";
-import public "StitchCoordinates.proto";
+import public "StitchId.proto";
 
 message StitchesMarked {
     string source_id = 1;
-    repeated StitchCoordinates stitches = 2;
+    repeated StitchId stitches = 2;
 }
