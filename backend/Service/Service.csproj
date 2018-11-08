@@ -4,6 +4,7 @@
     <LangVersion>latest</LangVersion>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
     <NoWarn>1701;1702;1998</NoWarn>
+    <RootNamespace>SM.Service</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />

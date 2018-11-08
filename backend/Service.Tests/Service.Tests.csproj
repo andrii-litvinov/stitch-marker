@@ -2,10 +2,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <RootNamespace>SM.Service.Tests</RootNamespace>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\SM.Service\SM.Service.csproj" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoFixture.Xunit2" Version="4.2.0" />
     <PackageReference Include="FluentAssertions" Version="5.2.0" />
@@ -22,5 +20,8 @@
     <None Update="Resources\M198_Seaside beauty.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 </Project>
