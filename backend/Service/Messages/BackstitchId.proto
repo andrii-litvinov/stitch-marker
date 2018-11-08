@@ -3,7 +3,7 @@ package pattern;
 
 option csharp_namespace = "Service";
 
-message BackstitchCoordinates {
+message BackstitchId {
     uint32 X1 = 1;
     uint32 Y1 = 2;
     uint32 X2 = 3;
