@@ -179,8 +179,8 @@ namespace Service.Patterns
         }
 
         public PatternOwner GetPatternOwner() => new PatternOwner {OwnerId = ownerId};
-        public StitchesMarked MarkStitches(IEnumerable<StitchCoordinates> items) => new StitchesMarked {SourceId = id, Stitches = {items}};
-        public StitchesUnmarked UnmarkStitches(IEnumerable<StitchCoordinates> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
+        public StitchesMarked MarkStitches(IEnumerable<StitchId> items) => new StitchesMarked {SourceId = id, Stitches = {items}};
+        public StitchesUnmarked UnmarkStitches(IEnumerable<StitchId> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
         public BackstitchesMarked MarkBackstitches(IEnumerable<BackstitchId> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
         public BackstitchesUnmarked UnmarkBackstitches(IEnumerable<BackstitchId> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
         public PatternDeleted Delete() => new PatternDeleted {SourceId = id};
