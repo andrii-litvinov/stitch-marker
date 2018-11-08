@@ -7,6 +7,7 @@ using Google.Protobuf;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Proto;
 using Proto.Cluster;
 using SM.Service.Command;
 
@@ -16,16 +17,20 @@ namespace SM.Service.Patterns
     public class PatternsController : ControllerBase
     {
         [Route("{patternId}/mark-backstitches"), HttpPost]
-        public async Task<IActionResult> MarkBackstitches(MarkBackstitches request) => await HandleCommand(request.PatternId, request);
+        public async Task<IActionResult> MarkBackstitches(MarkBackstitches command) =>
+            await Forward<MarkBackstitches, BackstitchesMarked>(command.PatternId, command);
 
         [Route("{patternId}/unmark-backstitches"), HttpPost]
-        public async Task<IActionResult> UnmarkBackstitches(UnmarkBackstitches request) => await HandleCommand(request.PatternId, request);
+        public async Task<IActionResult> UnmarkBackstitches(UnmarkBackstitches command) =>
+            await Forward<UnmarkBackstitches, BackstitchesUnmarked>(command.PatternId, command);
 
         [Route("{patternId}/mark-stitches"), HttpPost]
-        public async Task<IActionResult> MarkStitches(MarkStitches request) => await HandleCommand(request.PatternId, request);
+        public async Task<IActionResult> MarkStitches(MarkStitches command) =>
+            await Forward<MarkStitches, StitchesMarked>(command.PatternId, command);
 
         [Route("{patternId}/unmark-stitches"), HttpPost]
-        public async Task<IActionResult> UnmarkStitches(UnmarkStitches request) => await HandleCommand(request.PatternId, request);
+        public async Task<IActionResult> UnmarkStitches(UnmarkStitches command) =>
+            await Forward<UnmarkStitches, StitchesUnmarked>(command.PatternId, command);
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
@@ -37,40 +42,40 @@ namespace SM.Service.Patterns
         [HttpGet, Route("{patternId}")]
         public async Task<ActionResult<Pattern>> Get(string patternId)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var pattern = await GetPattern(patternId);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
-            var owner = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
+            var owner = await pattern.Request<PatternOwner>(query);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            return await pattern.RequestAsync<Pattern>(new GetPattern {Id = patternId}, 10.Seconds());
+            return await pattern.Request<Pattern>(new GetPattern {Id = patternId});
         }
 
         [HttpDelete, Route("{patternId}")]
-        public async Task<IActionResult> Delete(Guid patternId)
+        public async Task<IActionResult> Delete(string patternId)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
-            var owner = await pattern.RequestAsync<PatternOwner>(query, 10.Seconds());
+            var pattern = await GetPattern(patternId);
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
+            var owner = await pattern.Request<PatternOwner>(query);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            await pattern.RequestAsync<PatternDeleted>(new DeletePattern {Id = patternId.ToString()}, 10.Seconds());
+            await pattern.Request<PatternDeleted>(new DeletePattern {Id = patternId});
 
             return Ok();
         }
 
         [HttpGet, Route("{patternId}/thumbnail")]
-        public async Task<IActionResult> GetThumbnail(Guid patternId, int width = 300, int height = 200)
+        public async Task<IActionResult> GetThumbnail(string patternId, int width = 300, int height = 200)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId.ToString()};
-            var owner = await pattern.RequestAsync<PatternOwner>(queryOwner, 10.Seconds());
+            var pattern = await GetPattern(patternId);
+            var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
+            var owner = await pattern.Request<PatternOwner>(queryOwner);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
             var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
-            var thumbnail = await pattern.RequestAsync<Thumbnail>(query, 10.Seconds());
+            var thumbnail = await pattern.Request<Thumbnail>(query);
             return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
@@ -90,7 +95,7 @@ namespace SM.Service.Patterns
                 Content = ByteString.CopyFrom(content),
                 OwnerId = userId
             };
-            var @event = await pattern.RequestAsync<PatternCreated>(command, 10.Seconds());
+            var @event = await pattern.Request<PatternCreated>(command);
             var item = new PatternItem
             {
                 Id = @event.SourceId,
@@ -113,7 +118,7 @@ namespace SM.Service.Patterns
 
             while (!cts.IsCancellationRequested)
             {
-                var response = await patternsByOwnerProjection.RequestAsync<object>(query, 10.Seconds());
+                var response = await patternsByOwnerProjection.Request<object>(query);
                 switch (response)
                 {
                     case PatternItems items:
@@ -129,20 +134,17 @@ namespace SM.Service.Patterns
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
         }
 
-        private async Task<IActionResult> HandleCommand<T>(string patternId, T request)
+        private async Task<IActionResult> Forward<TCommand, TEvent>(string patternId, TCommand request)
+        {
+            var pattern = await GetPattern(patternId);
+            await pattern.Request<TEvent>(request);
+            return Ok();
+        }
+
+        private static async Task<PID> GetPattern(string patternId)
         {
             var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
-            var response = await pattern.RequestAsync<object>(request, 10.Seconds());
-            switch (response)
-            {
-                case BackstitchesMarked _:
-                case StitchesMarked _:
-                case BackstitchesUnmarked _:
-                case StitchesUnmarked _:
-                    return Ok();
-                default:
-                    throw new Exception($"Unexpected Response of type {response.GetType().Name} received.");
-            }
+            return pattern;
         }
 
         private Resource<PatternItem> CreatePatternResource(PatternItem item) => new Resource<PatternItem>(item)
@@ -157,5 +159,11 @@ namespace SM.Service.Patterns
                 new Link {Rel = "unmark-backstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
             }
         };
+    }
+
+    public static class PidExtensions
+    {
+        public static async Task<TResponse> Request<TResponse>(this PID pid, object message) =>
+            await pid.RequestAsync<TResponse>(message, 10.Seconds());
     }
 }
