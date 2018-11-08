@@ -24,8 +24,8 @@ namespace Service {
     static StitchIdReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5TdGl0Y2hJZC5wcm90bxIHcGF0dGVybiIgCghTdGl0Y2hJZBIJCgFYGAEg",
-            "ASgNEgkKAVkYAiABKA1CCqoCB1NlcnZpY2ViBnByb3RvMw=="));
+            "Cg5TdGl0Y2hJZC5wcm90bxIHcGF0dGVybiIgCghTdGl0Y2hJZBIJCgF4GAEg",
+            "ASgNEgkKAXkYAiABKA1CCqoCB1NlcnZpY2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -71,7 +71,7 @@ namespace Service {
       return new StitchId(this);
     }
 
-    /// <summary>Field number for the "X" field.</summary>
+    /// <summary>Field number for the "x" field.</summary>
     public const int XFieldNumber = 1;
     private uint x_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -82,7 +82,7 @@ namespace Service {
       }
     }
 
-    /// <summary>Field number for the "Y" field.</summary>
+    /// <summary>Field number for the "y" field.</summary>
     public const int YFieldNumber = 2;
     private uint y_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

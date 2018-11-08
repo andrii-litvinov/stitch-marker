@@ -4,10 +4,10 @@ package pattern;
 option csharp_namespace = "Service";
 
 message BackstitchId {
-    uint32 X1 = 1;
-    uint32 Y1 = 2;
-    uint32 X2 = 3;
-    uint32 Y2 = 4;
+    uint32 x1 = 1;
+    uint32 y1 = 2;
+    uint32 x2 = 3;
+    uint32 y2 = 4;
 }
 
 
