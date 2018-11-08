@@ -83,14 +83,14 @@ namespace Service.Patterns
 
         public void Apply(BackstitchesMarked @event)
         {
-            foreach (var bs in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+            foreach (var bs in (IEnumerable<BackstitchId>) @event.Backstitches)
                 if (backstitches.TryGetValue((bs.X1, bs.Y1, bs.X2, bs.Y2), out var backstitch))
                     backstitch.Marked = true;
         }
 
         public void Apply(BackstitchesUnmarked @event)
         {
-            foreach (var bs in (IEnumerable<BackstitchCoordinates>) @event.Backstitches)
+            foreach (var bs in (IEnumerable<BackstitchId>) @event.Backstitches)
                 if (backstitches.TryGetValue((bs.X1, bs.Y1, bs.X2, bs.Y2), out var backstitch))
                     backstitch.Marked = false;
         }
@@ -181,8 +181,8 @@ namespace Service.Patterns
         public PatternOwner GetPatternOwner() => new PatternOwner {OwnerId = ownerId};
         public StitchesMarked MarkStitches(IEnumerable<StitchCoordinates> items) => new StitchesMarked {SourceId = id, Stitches = {items}};
         public StitchesUnmarked UnmarkStitches(IEnumerable<StitchCoordinates> items) => new StitchesUnmarked {SourceId = id, Stitches = {items}};
-        public BackstitchesMarked MarkBackstitches(IEnumerable<BackstitchCoordinates> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
-        public BackstitchesUnmarked UnmarkBackstitches(IEnumerable<BackstitchCoordinates> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
+        public BackstitchesMarked MarkBackstitches(IEnumerable<BackstitchId> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
+        public BackstitchesUnmarked UnmarkBackstitches(IEnumerable<BackstitchId> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
         public PatternDeleted Delete() => new PatternDeleted {SourceId = id};
     }
 }

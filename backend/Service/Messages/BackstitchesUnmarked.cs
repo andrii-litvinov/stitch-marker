@@ -24,13 +24,12 @@ namespace Service {
     static BackstitchesUnmarkedReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChpCYWNrc3RpdGNoZXNVbm1hcmtlZC5wcm90bxIHcGF0dGVybhobQmFja3N0",
-            "aXRjaENvb3JkaW5hdGVzLnByb3RvIl8KFEJhY2tzdGl0Y2hlc1VubWFya2Vk",
-            "EhEKCXNvdXJjZV9pZBgBIAEoCRI0CgxiYWNrc3RpdGNoZXMYAiADKAsyHi5w",
-            "YXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlc0IKqgIHU2VydmljZVAAYgZw",
-            "cm90bzM="));
+            "ChpCYWNrc3RpdGNoZXNVbm1hcmtlZC5wcm90bxIHcGF0dGVybhoSQmFja3N0",
+            "aXRjaElkLnByb3RvIlYKFEJhY2tzdGl0Y2hlc1VubWFya2VkEhEKCXNvdXJj",
+            "ZV9pZBgBIAEoCRIrCgxiYWNrc3RpdGNoZXMYAiADKAsyFS5wYXR0ZXJuLkJh",
+            "Y2tzdGl0Y2hJZEIKqgIHU2VydmljZVAAYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Service.BackstitchCoordinatesReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Service.BackstitchIdReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Service.BackstitchesUnmarked), global::Service.BackstitchesUnmarked.Parser, new[]{ "SourceId", "Backstitches" }, null, null, null)
           }));
@@ -87,11 +86,11 @@ namespace Service {
 
     /// <summary>Field number for the "backstitches" field.</summary>
     public const int BackstitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::Service.BackstitchCoordinates> _repeated_backstitches_codec
-        = pb::FieldCodec.ForMessage(18, global::Service.BackstitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::Service.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::Service.BackstitchCoordinates>();
+    private static readonly pb::FieldCodec<global::Service.BackstitchId> _repeated_backstitches_codec
+        = pb::FieldCodec.ForMessage(18, global::Service.BackstitchId.Parser);
+    private readonly pbc::RepeatedField<global::Service.BackstitchId> backstitches_ = new pbc::RepeatedField<global::Service.BackstitchId>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::Service.BackstitchCoordinates> Backstitches {
+    public pbc::RepeatedField<global::Service.BackstitchId> Backstitches {
       get { return backstitches_; }
     }
 
