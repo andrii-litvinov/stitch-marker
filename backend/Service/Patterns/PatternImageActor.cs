@@ -4,7 +4,7 @@ using Google.Protobuf;
 using Proto;
 using SkiaSharp;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     public class PatternImageActor : IActor
     {

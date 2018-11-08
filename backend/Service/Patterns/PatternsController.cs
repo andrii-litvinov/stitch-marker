@@ -9,9 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Proto;
 using Proto.Cluster;
-using SM.Service.Command;
 
-namespace SM.Service.Patterns
+namespace Service.Patterns
 {
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase

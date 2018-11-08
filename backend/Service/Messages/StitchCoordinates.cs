@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from StitchCoordinates.proto</summary>
   public static partial class StitchCoordinatesReflection {
@@ -25,12 +25,12 @@ namespace SM.Service {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChdTdGl0Y2hDb29yZGluYXRlcy5wcm90bxIHcGF0dGVybiIpChFTdGl0Y2hD",
-            "b29yZGluYXRlcxIJCgFYGAEgASgNEgkKAVkYAiABKA1CDaoCClNNLlNlcnZp",
-            "Y2ViBnByb3RvMw=="));
+            "b29yZGluYXRlcxIJCgFYGAEgASgNEgkKAVkYAiABKA1CCqoCB1NlcnZpY2Vi",
+            "BnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.StitchCoordinates), global::SM.Service.StitchCoordinates.Parser, new[]{ "X", "Y" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.StitchCoordinates), global::Service.StitchCoordinates.Parser, new[]{ "X", "Y" }, null, null, null)
           }));
     }
     #endregion
@@ -45,7 +45,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.StitchCoordinatesReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.StitchCoordinatesReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

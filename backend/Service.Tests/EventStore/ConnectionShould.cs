@@ -3,7 +3,7 @@ using EventStore.ClientAPI;
 using FluentAssertions;
 using Xunit;
 
-namespace SM.Service.Tests.EventStore
+namespace Service.Tests.EventStore
 {
     public class ConnectionShould : IDisposable
     {

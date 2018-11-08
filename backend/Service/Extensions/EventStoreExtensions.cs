@@ -6,7 +6,7 @@ using EventStore.ClientAPI;
 using Google.Protobuf;
 using Newtonsoft.Json.Linq;
 
-namespace SM.Service
+namespace Service
 {
     public static class EventStoreExtensions
     {

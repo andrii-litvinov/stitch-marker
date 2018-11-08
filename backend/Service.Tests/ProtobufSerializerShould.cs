@@ -5,14 +5,11 @@ using System.Text;
 using AutoFixture.Xunit2;
 using Google.Protobuf;
 using Newtonsoft.Json;
-using SM.Service.Patterns;
-using SM.Service.Patterns.Xsd;
+using Service.Patterns.Xsd;
 using Xunit;
 using Xunit.Abstractions;
-using Stitch = SM.Service.Stitch;
-using Pattern = SM.Service.Pattern;
 
-namespace SM.Service.Tests
+namespace Service.Tests
 {
     public class ProtobufSerializerShould
     {

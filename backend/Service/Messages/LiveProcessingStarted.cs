@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from LiveProcessingStarted.proto</summary>
   public static partial class LiveProcessingStartedReflection {
@@ -25,11 +25,11 @@ namespace SM.Service {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChtMaXZlUHJvY2Vzc2luZ1N0YXJ0ZWQucHJvdG8SB3BhdHRlcm4iFwoVTGl2",
-            "ZVByb2Nlc3NpbmdTdGFydGVkQg2qAgpTTS5TZXJ2aWNlYgZwcm90bzM="));
+            "ZVByb2Nlc3NpbmdTdGFydGVkQgqqAgdTZXJ2aWNlYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.LiveProcessingStarted), global::SM.Service.LiveProcessingStarted.Parser, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.LiveProcessingStarted), global::Service.LiveProcessingStarted.Parser, null, null, null, null)
           }));
     }
     #endregion
@@ -44,7 +44,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.LiveProcessingStartedReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.LiveProcessingStartedReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

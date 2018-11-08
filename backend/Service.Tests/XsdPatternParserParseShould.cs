@@ -1,10 +1,9 @@
 using System.IO;
 using FluentAssertions;
-using SM.Service.Patterns;
-using SM.Service.Patterns.Xsd;
+using Service.Patterns.Xsd;
 using Xunit;
 
-namespace SM.Service.Tests
+namespace Service.Tests
 {
     public class XsdPatternParserShould
     {

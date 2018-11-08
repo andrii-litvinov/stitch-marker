@@ -4,7 +4,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Xunit;
 
-namespace SM.Service.Tests.Patterns
+namespace Service.Tests.Patterns
 {
     public partial class PatterResourceTests
     {

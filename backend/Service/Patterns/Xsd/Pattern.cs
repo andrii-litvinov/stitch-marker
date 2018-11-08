@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SM.Service.Patterns.Xsd
+namespace Service.Patterns.Xsd
 {
     public class Pattern
     {

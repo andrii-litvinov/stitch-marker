@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SM.Service
+namespace Service
 {
     [JsonConverter(typeof(ResourceJsonConverter))]
     public abstract class Resource

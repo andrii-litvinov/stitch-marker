@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace SM.Service.Tests.Patterns
+namespace Service.Tests.Patterns
 {
     public partial class PatterResourceTests
     {

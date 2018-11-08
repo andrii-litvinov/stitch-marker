@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Proto.Persistence;
 
-namespace SM.Service
+namespace Service
 {
     public class EventStore : IEventStore
     {

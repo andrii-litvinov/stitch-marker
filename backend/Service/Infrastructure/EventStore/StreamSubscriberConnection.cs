@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.SystemData;
 
-namespace SM.Service
+namespace Service
 {
     public class StreamSubscriberConnection : ISubscriptionEventStoreConnection
     {

@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from BackstitchesUnmarked.proto</summary>
   public static partial class BackstitchesUnmarkedReflection {
@@ -27,12 +27,12 @@ namespace SM.Service {
             "ChpCYWNrc3RpdGNoZXNVbm1hcmtlZC5wcm90bxIHcGF0dGVybhobQmFja3N0",
             "aXRjaENvb3JkaW5hdGVzLnByb3RvIl8KFEJhY2tzdGl0Y2hlc1VubWFya2Vk",
             "EhEKCXNvdXJjZV9pZBgBIAEoCRI0CgxiYWNrc3RpdGNoZXMYAiADKAsyHi5w",
-            "YXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlc0INqgIKU00uU2VydmljZVAA",
-            "YgZwcm90bzM="));
+            "YXR0ZXJuLkJhY2tzdGl0Y2hDb29yZGluYXRlc0IKqgIHU2VydmljZVAAYgZw",
+            "cm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::SM.Service.BackstitchCoordinatesReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Service.BackstitchCoordinatesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.BackstitchesUnmarked), global::SM.Service.BackstitchesUnmarked.Parser, new[]{ "SourceId", "Backstitches" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.BackstitchesUnmarked), global::Service.BackstitchesUnmarked.Parser, new[]{ "SourceId", "Backstitches" }, null, null, null)
           }));
     }
     #endregion
@@ -47,7 +47,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.BackstitchesUnmarkedReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.BackstitchesUnmarkedReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -87,11 +87,11 @@ namespace SM.Service {
 
     /// <summary>Field number for the "backstitches" field.</summary>
     public const int BackstitchesFieldNumber = 2;
-    private static readonly pb::FieldCodec<global::SM.Service.BackstitchCoordinates> _repeated_backstitches_codec
-        = pb::FieldCodec.ForMessage(18, global::SM.Service.BackstitchCoordinates.Parser);
-    private readonly pbc::RepeatedField<global::SM.Service.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::SM.Service.BackstitchCoordinates>();
+    private static readonly pb::FieldCodec<global::Service.BackstitchCoordinates> _repeated_backstitches_codec
+        = pb::FieldCodec.ForMessage(18, global::Service.BackstitchCoordinates.Parser);
+    private readonly pbc::RepeatedField<global::Service.BackstitchCoordinates> backstitches_ = new pbc::RepeatedField<global::Service.BackstitchCoordinates>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<global::SM.Service.BackstitchCoordinates> Backstitches {
+    public pbc::RepeatedField<global::Service.BackstitchCoordinates> Backstitches {
       get { return backstitches_; }
     }
 

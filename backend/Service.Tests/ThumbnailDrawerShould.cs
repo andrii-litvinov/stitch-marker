@@ -1,15 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using FluentAssertions;
 using AutoFixture.Xunit2;
+using FluentAssertions;
 using Proto;
-using SM.Service.Patterns;
-using SM.Service.Patterns.Xsd;
+using Service.Patterns;
+using Service.Patterns.Xsd;
 using Xunit;
-using Pattern = SM.Service.Pattern;
 
-namespace SM.Service.Tests
+namespace Service.Tests
 {
     public class ThumbnailDrawerShould
     {

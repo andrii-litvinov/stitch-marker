@@ -9,7 +9,7 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-namespace SM.Service {
+namespace Service {
 
   /// <summary>Holder for reflection information generated from DeletePattern.proto</summary>
   public static partial class DeletePatternReflection {
@@ -25,11 +25,11 @@ namespace SM.Service {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "ChNEZWxldGVQYXR0ZXJuLnByb3RvEgdwYXR0ZXJuIhsKDURlbGV0ZVBhdHRl",
-            "cm4SCgoCaWQYASABKAlCDaoCClNNLlNlcnZpY2ViBnByb3RvMw=="));
+            "cm4SCgoCaWQYASABKAlCCqoCB1NlcnZpY2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::SM.Service.DeletePattern), global::SM.Service.DeletePattern.Parser, new[]{ "Id" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Service.DeletePattern), global::Service.DeletePattern.Parser, new[]{ "Id" }, null, null, null)
           }));
     }
     #endregion
@@ -44,7 +44,7 @@ namespace SM.Service {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::SM.Service.DeletePatternReflection.Descriptor.MessageTypes[0]; }
+      get { return global::Service.DeletePatternReflection.Descriptor.MessageTypes[0]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
