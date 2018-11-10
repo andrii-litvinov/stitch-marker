@@ -56,11 +56,5 @@ namespace Service.Tests
             
             File.WriteAllBytes("json.pattern", Encoding.UTF8.GetBytes(json));
         }
-
-        [Theory]
-        [AutoData]
-        public void SerializeStitches()
-        {
-        }
     }
 }

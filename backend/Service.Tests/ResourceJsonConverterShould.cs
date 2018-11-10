@@ -1,23 +1,13 @@
-﻿using AutoFixture.Xunit2;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Service.Tests
 {
     public class ResourceJsonConverterShould
     {
-        private readonly ITestOutputHelper output;
-
-        public ResourceJsonConverterShould(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
-
-        [Theory]
-        [AutoData]
+        [Fact]
         public void ConvertToJsonInExpectedFormat()
         {
             //Arrange

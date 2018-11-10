@@ -17,20 +17,17 @@ namespace Service.Patterns
                     break;
                 case GetThumbnail command:
                     var thumbnail = CreateThumbnail(command.Pattern, command.Width, command.Height);
-                    context.Parent.Tell(new Thumbnail
-                    {
-                        Id = command.Id,
-                        Image = ByteString.CopyFrom(thumbnail)
-                    });
+                    context.Respond(new Thumbnail {Id = command.Id, Image = ByteString.CopyFrom(thumbnail)});
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();
                     break;
             }
+
             return Actor.Done;
         }
 
-        private static byte[] CreateThumbnail(Service.Pattern pattern, int thumbnailWidth, int thumbnailHeight)
+        private static byte[] CreateThumbnail(Pattern pattern, int thumbnailWidth, int thumbnailHeight)
         {
             var size = GetStitchSize((int) pattern.Width, (int) pattern.Height, thumbnailWidth, thumbnailHeight);
             var width = pattern.Width * size;
