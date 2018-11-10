@@ -14,9 +14,7 @@ namespace Service
     public static class EventExtensions
     {
         private static readonly Lazy<Dictionary<string, Type>> Types = new Lazy<Dictionary<string, Type>>(() =>
-            AppDomain.CurrentDomain
-                .GetAssemblies()
-                .SelectMany(assembly => assembly.GetTypes())
+            typeof(PatternCreated).Assembly.GetTypes() // TODO: [AL] Generalize to load messages from all assemblies that may contain messages. 
                 .Where(type => typeof(IMessage).IsAssignableFrom(type))
                 .ToDictionary(type => type.Name));
 
