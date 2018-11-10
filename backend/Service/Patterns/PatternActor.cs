@@ -47,13 +47,15 @@ namespace Service.Patterns
                         Content = command.Content,
                         OwnerId = command.OwnerId
                     });
-                    var parser = context.GetChild<XsdPatternActor>();
+                    // TODO [AL]: Use request id or trace id from headers to find sender.
                     senders.Set(command.Id, context.Sender, 30.Seconds());
-                    parser.Tell(command);
+                    context.Send(context.GetChild<XsdPatternActor>(), command);
                     break;
                 case PatternCreated @event:
                     await persistence.PersistEventAsync(@event);
-                    senders.Get<PID>(@event.SourceId)?.Tell(@event);
+                    var sender = senders.Get<PID>(@event.SourceId);
+                    if (sender != null)
+                        context.Send(sender, @event);
                     break;
             }
         }
@@ -67,30 +69,31 @@ namespace Service.Patterns
                     break;
                 case GetThumbnail query:
                     query.Pattern = pattern.GetPattern();
-                    var drawer = context.GetChild<PatternImageActor>();
                     senders.Set(query.Id, context.Sender, 30.Seconds());
-                    drawer.Tell(query);
+                    context.Send(context.GetChild<PatternImageActor>(), query);
                     break;
                 case GetPatternOwner _:
-                    context.Sender.Tell(pattern.GetPatternOwner());
+                    context.Respond(pattern.GetPatternOwner());
                     break;
                 case Thumbnail thumbnail:
-                    senders.Get<PID>(thumbnail.Id)?.Tell(thumbnail);
+                    var sender = senders.Get<PID>(thumbnail.Id);
+                    if (sender != null)
+                        context.Send(sender, thumbnail);
                     break;
                 case DeletePattern _:
-                    await PersistAndReply(context, pattern.Delete());
+                    await PersistAndRespond(context, pattern.Delete());
                     break;
                 case MarkStitches command:
-                    await PersistAndReply(context, pattern.MarkStitches(command.Stitches));
+                    await PersistAndRespond(context, pattern.MarkStitches(command.Stitches));
                     break;
                 case UnmarkStitches command:
-                    await PersistAndReply(context, pattern.UnmarkStitches(command.Stitches));
+                    await PersistAndRespond(context, pattern.UnmarkStitches(command.Stitches));
                     break;
                 case MarkBackstitches command:
-                    await PersistAndReply(context, pattern.MarkBackstitches(command.Backstitches));
+                    await PersistAndRespond(context, pattern.MarkBackstitches(command.Backstitches));
                     break;
                 case UnmarkBackstitches command:
-                    await PersistAndReply(context, pattern.UnmarkBackstitches(command.Backstitches));
+                    await PersistAndRespond(context, pattern.UnmarkBackstitches(command.Backstitches));
                     break;
             }
         }
@@ -124,10 +127,10 @@ namespace Service.Patterns
             }
         }
 
-        private async Task PersistAndReply(IContext context, IEvent @event)
+        private async Task PersistAndRespond(IContext context, IEvent @event)
         {
             await persistence.PersistEventAsync(@event);
-            context.Sender.Tell(@event);
+            context.Respond(@event);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Service.Patterns
                             break;
                     }
 
-                    childBySource[@event.SourceId].Tell(@event);
+                    context.Send(childBySource[@event.SourceId], @event);
 
                     if (@event is PatternDeleted deleted) childBySource.Remove(deleted.SourceId);
                     break;
@@ -48,7 +48,7 @@ namespace Service.Patterns
         }
 
         private static async Task CatchingUp(IContext context) =>
-            context.Sender?.Tell(new CatchingUp());
+            context.Respond(new CatchingUp());
 
         private async Task LiveProcessing(IContext context)
         {
@@ -57,17 +57,19 @@ namespace Service.Patterns
                 case GetPatternItems query:
                     if (childByOwner.TryGetValue(query.OwnerId, out var pid))
                     {
-                        pid.Tell(query);
+                        context.Send(pid, query);
                         senders.Set(query.RequestId, context.Sender, 30.Seconds());
                     }
                     else
                     {
-                        context.Sender.Tell(new PatternItems {RequestId = query.RequestId});
+                        context.Respond(new PatternItems {RequestId = query.RequestId});
                     }
 
                     break;
                 case PatternItems items:
-                    senders.Get<PID>(items.RequestId)?.Tell(items);
+                    var sender = senders.Get<PID>(items.RequestId);
+                    if (sender != null)
+                        context.Send(sender, items);
                     break;
             }
         }

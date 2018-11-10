@@ -33,7 +33,7 @@ namespace Service.Patterns
                     patterns.Remove(m.SourceId);
                     break;
                 case GetPatternItems m:
-                    context.Parent.Tell(new PatternItems {RequestId = m.RequestId, Items = {patterns.Values.Skip(m.Skip).Take(m.Take)}});
+                    context.Send(context.Parent, new PatternItems {RequestId = m.RequestId, Items = {patterns.Values.Skip(m.Skip).Take(m.Take)}});
                     break;
             }
         }

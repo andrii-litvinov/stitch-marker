@@ -30,7 +30,7 @@ namespace Service.Tests
 
         private class Superviser : IActor
         {
-            private PID requestor;
+            private PID requester;
 
             public Task ReceiveAsync(IContext context)
             {
@@ -39,17 +39,17 @@ namespace Service.Tests
                     case Pattern pattern:
                         var thumbnailActorProps = Props.FromProducer(() => new PatternImageActor());
                         var thumbnailActorPid = context.Spawn(thumbnailActorProps);
-                        thumbnailActorPid.Tell(new GetThumbnail
+                        context.Send(thumbnailActorPid, new GetThumbnail
                         {
                             Id = Guid.NewGuid().ToString(),
                             Width = 300,
                             Height = 200,
                             Pattern = pattern
                         });
-                        requestor = context.Sender;
+                        requester = context.Sender;
                         break;
                     case Thumbnail thumbnail:
-                        requestor?.Tell(thumbnail);
+                        context.Send(requester, thumbnail);
                         break;
                 }
                 return Actor.Done;

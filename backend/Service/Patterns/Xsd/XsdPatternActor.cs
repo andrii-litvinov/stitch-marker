@@ -20,7 +20,7 @@ namespace Service.Patterns.Xsd
                     pattern.Info.Title = command.FileName;
                     pattern.OwnerId = command.OwnerId;
                     var @event = new PatternCreated {SourceId = pattern.Id, Pattern = pattern, OwnerId = pattern.OwnerId};
-                    context.Parent.Tell(@event);
+                    context.Send(context.Parent, @event);
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();

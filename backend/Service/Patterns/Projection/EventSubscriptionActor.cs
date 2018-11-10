@@ -8,17 +8,17 @@ namespace Service.Patterns
     public class EventSubscriptionActor : IActor
     {
         private readonly ISubscriptionEventStoreConnection connection;
-        private IContext cts;
+        private IContext context;
         private Position? position = Position.Start;
 
         public EventSubscriptionActor(ISubscriptionEventStoreConnection connection) => this.connection = connection;
 
-        public async Task ReceiveAsync(IContext context)
+        public async Task ReceiveAsync(IContext ctx)
         {
-            switch (context.Message)
+            switch (ctx.Message)
             {
                 case Started _:
-                    cts = context;
+                    context = ctx;
                     Subscribe();
                     break;
             }
@@ -33,7 +33,7 @@ namespace Service.Patterns
                 SubscriptionDropped);
 
         private void LiveProcessingStarted(EventStoreCatchUpSubscription subscription) =>
-            cts.Parent.Tell(new LiveProcessingStarted());
+            context.Send(context.Parent, new LiveProcessingStarted());
 
         private void SubscriptionDropped(
             EventStoreCatchUpSubscription eventStoreCatchUpSubscription,
@@ -46,7 +46,7 @@ namespace Service.Patterns
             if (!resolvedEvent.OriginalStreamId.StartsWith("$"))
             {
                 var message = resolvedEvent.Event.ToMessage();
-                if (message != null) cts.Parent.Tell(message);
+                if (message != null) context.Send(context.Parent, message);
             }
 
             position = resolvedEvent.OriginalPosition;
