@@ -42,9 +42,10 @@ namespace Service.Patterns
 
         private async Task EventAppeared(EventStoreCatchUpSubscription eventStoreCatchUpSubscription, ResolvedEvent resolvedEvent)
         {
+            // TODO [AL]: Handle and log exceptions if any.
             if (!resolvedEvent.OriginalStreamId.StartsWith("$"))
             {
-                var message = resolvedEvent.Event.ReadMessage();
+                var message = resolvedEvent.Event.ToMessage();
                 if (message != null) cts.Parent.Tell(message);
             }
 
