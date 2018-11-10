@@ -66,7 +66,7 @@ namespace Service {
       id_ = other.id_;
       width_ = other.width_;
       height_ = other.height_;
-      Pattern = other.pattern_ != null ? other.Pattern.Clone() : null;
+      pattern_ = other.pattern_ != null ? other.pattern_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 

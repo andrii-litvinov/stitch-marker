@@ -64,7 +64,7 @@ namespace Service {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PatternCreated(PatternCreated other) : this() {
       sourceId_ = other.sourceId_;
-      Pattern = other.pattern_ != null ? other.Pattern.Clone() : null;
+      pattern_ = other.pattern_ != null ? other.pattern_.Clone() : null;
       ownerId_ = other.ownerId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
