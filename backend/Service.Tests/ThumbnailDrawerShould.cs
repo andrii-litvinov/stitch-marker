@@ -14,15 +14,15 @@ namespace Service.Tests
     {
         [Theory]
         [AutoData]
-        public async void DrawExpectedImage(XsdPatternReader patternReader)
+        public async void DrawExpectedImage(RootContext context, XsdPatternReader patternReader)
         {
             //Arrange
-            var props = Actor.FromProducer(() => new Superviser());
-            var pid = Actor.Spawn(props);
+            var props = Props.FromProducer(() => new Superviser());
+            var pid = context.Spawn(props);
             var pattern = patternReader.Read(File.ReadAllBytes("Resources/M198_Seaside beauty.xsd"));
 
             //Act
-            var thumbnail = await pid.RequestAsync<Thumbnail>(pattern);
+            var thumbnail = await context.RequestAsync<Thumbnail>(pid, pattern);
 
             //Assert
             thumbnail.Image.ToByteArray().Should().Equal(File.ReadAllBytes("Resources/M198_Seaside beauty.png"));
@@ -37,7 +37,7 @@ namespace Service.Tests
                 switch (context.Message)
                 {
                     case Pattern pattern:
-                        var thumbnailActorProps = Actor.FromProducer(() => new PatternImageActor());
+                        var thumbnailActorProps = Props.FromProducer(() => new PatternImageActor());
                         var thumbnailActorPid = context.Spawn(thumbnailActorProps);
                         thumbnailActorPid.Tell(new GetThumbnail
                         {

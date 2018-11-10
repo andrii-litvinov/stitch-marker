@@ -15,6 +15,10 @@ namespace Service.Patterns
     [ApiController, Authorize, Route("api/patterns")]
     public class PatternsController : ControllerBase
     {
+        private readonly ISenderContext context;
+
+        public PatternsController(ISenderContext context) => this.context = context;
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Resource<PatternItem>>>> Get(int skip = 0, int take = 10)
         {
@@ -27,11 +31,11 @@ namespace Service.Patterns
         {
             var pattern = await GetPattern(patternId);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
-            var owner = await pattern.Request<PatternOwner>(query);
+            var owner = await context.Request<PatternOwner>(pattern, query);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            return await pattern.Request<Pattern>(new GetPattern {Id = patternId});
+            return await context.Request<Pattern>(pattern, new GetPattern {Id = patternId});
         }
 
         [HttpDelete, Route("{patternId}")]
@@ -39,11 +43,11 @@ namespace Service.Patterns
         {
             var pattern = await GetPattern(patternId);
             var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
-            var owner = await pattern.Request<PatternOwner>(query);
+            var owner = await context.Request<PatternOwner>(pattern, query);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            await pattern.Request<PatternDeleted>(new DeletePattern {Id = patternId});
+            await context.Request<PatternDeleted>(pattern, new DeletePattern {Id = patternId});
 
             return Ok();
         }
@@ -53,12 +57,12 @@ namespace Service.Patterns
         {
             var pattern = await GetPattern(patternId);
             var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
-            var owner = await pattern.Request<PatternOwner>(queryOwner);
+            var owner = await context.Request<PatternOwner>(pattern, queryOwner);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
             var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
-            var thumbnail = await pattern.Request<Thumbnail>(query);
+            var thumbnail = await context.Request<Thumbnail>(pattern, query);
             return File(thumbnail.Image.ToByteArray(), "image/png");
         }
 
@@ -77,7 +81,7 @@ namespace Service.Patterns
                 OwnerId = userId
             };
             var pattern = await GetPattern(command.Id);
-            var @event = await pattern.Request<PatternCreated>(command);
+            var @event = await context.Request<PatternCreated>(pattern, command);
             var item = new PatternItem
             {
                 Id = @event.SourceId,
@@ -96,31 +100,31 @@ namespace Service.Patterns
         public async Task<ActionResult<BackstitchesMarked>> MarkBackstitches(MarkBackstitches command)
         {
             var pattern = await GetPattern(command.PatternId);
-            return await pattern.Request<BackstitchesMarked>(command);
+            return await context.Request<BackstitchesMarked>(pattern, command);
         }
 
         [Route("{patternId}/unmark-backstitches"), HttpPost]
         public async Task<ActionResult<BackstitchesUnmarked>> UnmarkBackstitches(UnmarkBackstitches command)
         {
             var pattern = await GetPattern(command.PatternId);
-            return await pattern.Request<BackstitchesUnmarked>(command);
+            return await context.Request<BackstitchesUnmarked>(pattern, command);
         }
 
         [Route("{patternId}/mark-stitches"), HttpPost]
         public async Task<ActionResult<StitchesMarked>> MarkStitches(MarkStitches command)
         {
             var pattern = await GetPattern(command.PatternId);
-            return await pattern.Request<StitchesMarked>(command);
+            return await context.Request<StitchesMarked>(pattern, command);
         }
 
         [Route("{patternId}/unmark-stitches"), HttpPost]
         public async Task<ActionResult<StitchesUnmarked>> UnmarkStitches(UnmarkStitches command)
         {
             var pattern = await GetPattern(command.PatternId);
-            return await pattern.Request<StitchesUnmarked>(command);
+            return await context.Request<StitchesUnmarked>(pattern, command);
         }
 
-        private static async Task<PatternItems> GetUserPatternItems(string userId, int skip, int take)
+        private async Task<PatternItems> GetUserPatternItems(string userId, int skip, int take)
         {
             var (patternsByOwnerProjection, _) = await Cluster.GetAsync(ActorKind.PatternsByOwnerProjection, ActorKind.PatternsByOwnerProjection);
             var query = new GetPatternItems {RequestId = Guid.NewGuid().ToString(), OwnerId = userId, Skip = skip, Take = take};
@@ -128,7 +132,7 @@ namespace Service.Patterns
 
             while (!cts.IsCancellationRequested)
             {
-                var response = await patternsByOwnerProjection.Request<object>(query);
+                var response = await context.Request<object>(patternsByOwnerProjection, query);
                 switch (response)
                 {
                     case PatternItems items:
@@ -166,7 +170,7 @@ namespace Service.Patterns
 
     public static class PidExtensions
     {
-        public static async Task<TResponse> Request<TResponse>(this PID pid, object message) =>
-            await pid.RequestAsync<TResponse>(message, 10.Seconds());
+        public static async Task<TResponse> Request<TResponse>(this ISenderContext context, PID pid, object message) =>
+            await context.RequestAsync<TResponse>(pid, message, 10.Seconds());
     }
 }

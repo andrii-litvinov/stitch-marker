@@ -13,9 +13,9 @@
     <PackageReference Include="Google.Protobuf.Tools" Version="3.6.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Proto.Actor" Version="0.1.16" />
-    <PackageReference Include="Proto.Cluster.Consul" Version="0.1.16" />
-    <PackageReference Include="Proto.Persistence" Version="0.1.16" />
+    <PackageReference Include="Proto.Actor" Version="0.2.0" />
+    <PackageReference Include="Proto.Cluster.Consul" Version="0.2.0" />
+    <PackageReference Include="Proto.Persistence" Version="0.2.0" />
     <PackageReference Include="SkiaSharp" Version="1.60.3" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.0" />
   </ItemGroup>

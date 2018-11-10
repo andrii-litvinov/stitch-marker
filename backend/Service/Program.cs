@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Proto;
 using Proto.Persistence;
 
 namespace Service
@@ -39,6 +40,7 @@ namespace Service
                     options.Authority = context.Configuration["AUTH_AUTHORITY"];
                     options.Audience = context.Configuration["AUTH_AUDIENCE"];
                 });
+                services.AddTransient<ISenderContext, RootContext>();
             });
     }
 }

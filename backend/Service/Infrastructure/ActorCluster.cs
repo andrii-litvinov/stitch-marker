@@ -20,8 +20,8 @@ namespace Service
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            Remote.RegisterKnownKind(ActorKind.Pattern, Actor.FromProducer(factory.Create<PatternActor>));
-            Remote.RegisterKnownKind(ActorKind.PatternsByOwnerProjection, Actor.FromProducer(factory.Create<PatternsByOwnerProjectionActor>));
+            Remote.RegisterKnownKind(ActorKind.Pattern, Props.FromProducer(factory.Create<PatternActor>));
+            Remote.RegisterKnownKind(ActorKind.PatternsByOwnerProjection, Props.FromProducer(factory.Create<PatternsByOwnerProjectionActor>));
 
             var provider = new ConsulProvider(new ConsulProviderOptions(), c => c.Address = new Uri(configuration["CONSUL_URL"]));
             Cluster.Start("PatternCluster", "127.0.0.1", 12001, provider);
