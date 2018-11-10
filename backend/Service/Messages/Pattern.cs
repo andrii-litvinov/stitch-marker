@@ -112,9 +112,9 @@ namespace Service {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Pattern(Pattern other) : this() {
       id_ = other.id_;
-      Info = other.info_ != null ? other.Info.Clone() : null;
-      Canvas = other.canvas_ != null ? other.Canvas.Clone() : null;
-      Strands = other.strands_ != null ? other.Strands.Clone() : null;
+      info_ = other.info_ != null ? other.info_.Clone() : null;
+      canvas_ = other.canvas_ != null ? other.canvas_.Clone() : null;
+      strands_ = other.strands_ != null ? other.strands_.Clone() : null;
       width_ = other.width_;
       height_ = other.height_;
       configurations_ = other.configurations_.Clone();
@@ -1147,7 +1147,7 @@ namespace Service {
     public StitchConfiguration(StitchConfiguration other) : this() {
       symbol_ = other.symbol_;
       hexColor_ = other.hexColor_;
-      Strands = other.strands_ != null ? other.Strands.Clone() : null;
+      strands_ = other.strands_ != null ? other.strands_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 

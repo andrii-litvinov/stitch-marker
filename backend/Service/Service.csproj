@@ -3,20 +3,20 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
-    <NoWarn>1701;1702;1998</NoWarn>
+    <NoWarn>NU1701;1998</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Avalonia.Skia.Linux.Natives" Version="1.57.1.4" />
+    <PackageReference Include="Avalonia.Skia.Linux.Natives" Version="1.60.0.1" />
     <PackageReference Include="EventStore.Client" Version="4.1.1" />
-    <PackageReference Include="Google.Protobuf" Version="3.5.1" />
-    <PackageReference Include="Google.Protobuf.Tools" Version="3.5.1" />
+    <PackageReference Include="Google.Protobuf" Version="3.6.1" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.6.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Proto.Actor" Version="0.1.16" />
     <PackageReference Include="Proto.Cluster.Consul" Version="0.1.16" />
     <PackageReference Include="Proto.Persistence" Version="0.1.16" />
-    <PackageReference Include="SkiaSharp" Version="1.57.1" />
+    <PackageReference Include="SkiaSharp" Version="1.60.3" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="4.5.0" />
   </ItemGroup>
   <ItemGroup>
