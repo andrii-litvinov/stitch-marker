@@ -1,12 +1,7 @@
 ﻿using System;
-using System.IO;
-using System.IO.Compression;
-using System.Text;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using Google.Protobuf;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Proto.Persistence;
 
 namespace Service
@@ -32,10 +27,7 @@ namespace Service
                 slice = await connection.ReadStreamEventsForward(actorName, start, count, false);
 
                 foreach (var resolvedEvent in slice.Events)
-                {
-                    var message = resolvedEvent.Event.ReadMessage();
-                    callback(message);
-                }
+                    callback(resolvedEvent.Event.ToMessage());
 
                 start = slice.NextEventNumber;
             } while (start <= indexEnd && !slice.IsEndOfStream);
@@ -48,25 +40,7 @@ namespace Service
             switch (@event)
             {
                 case IMessage message:
-                    var data = message.ToByteArray();
-                    var metadata = Array.Empty<byte>();
-
-                    if (data.Length > 512 * 1024)
-                        using (var compressedStream = new MemoryStream())
-                        {
-                            using (var originalStream = new MemoryStream(data))
-                            using (var gZipStream = new GZipStream(compressedStream, CompressionMode.Compress))
-                            {
-                                originalStream.CopyTo(gZipStream);
-                            }
-
-                            data = compressedStream.ToArray();
-                            metadata = Encoding.UTF8.GetBytes(
-                                new JObject {["encoding"] = "gzip"}.ToString(Formatting.None));
-                        }
-
-                    var eventData = new EventData(Guid.NewGuid(), @event.GetType().Name, false, data, metadata);
-                    var result = await connection.AppendToStream(actorName, index - 1, eventData);
+                    var result = await connection.AppendToStream(actorName, index - 1, message.ToEventData());
                     return result.NextExpectedVersion;
                 default:
                     throw new Exception($"Expected event of type 'IMessage', but found {@event.GetType().FullName}.");
