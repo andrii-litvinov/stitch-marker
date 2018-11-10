@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using EventStore.ClientAPI;
 using Google.Protobuf;
@@ -11,12 +12,17 @@ using Newtonsoft.Json.Linq;
 
 namespace Service
 {
+    using Cache = Lazy<Dictionary<string, Lazy<Func<IMessage>>>>;
+
     public static class EventExtensions
     {
-        private static readonly Lazy<Dictionary<string, Type>> Types = new Lazy<Dictionary<string, Type>>(() =>
-            typeof(PatternCreated).Assembly.GetTypes() // TODO: [AL] Generalize to load messages from all assemblies that may contain messages. 
-                .Where(type => typeof(IMessage).IsAssignableFrom(type))
-                .ToDictionary(type => type.Name));
+        private static readonly Cache Types = new Cache(() => typeof(PatternCreated).Assembly
+            .GetTypes()
+            .Where(type => typeof(IMessage).IsAssignableFrom(type))
+            .ToDictionary(
+                type => type.Name,
+                type => new Lazy<Func<IMessage>>(
+                    () => Expression.Lambda<Func<IMessage>>(Expression.New(type.GetConstructor(Array.Empty<Type>()))).Compile())));
 
         public static IMessage ToMessage(this RecordedEvent recordedEvent)
         {
@@ -37,10 +43,9 @@ namespace Service
                     }
             }
 
-            if (Types.Value.TryGetValue(recordedEvent.EventType, out var type))
+            if (Types.Value.TryGetValue(recordedEvent.EventType, out var factory))
             {
-                // TODO [AL]: Consider emitting ctor invocation instead.
-                var message = (IMessage) Activator.CreateInstance(type);
+                var message = factory.Value.Invoke();
                 message.MergeFrom(data);
                 return message;
             }
