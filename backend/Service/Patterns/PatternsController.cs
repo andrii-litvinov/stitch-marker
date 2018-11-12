@@ -26,37 +26,37 @@ namespace Service.Patterns
             return patternItems.Items.Select(CreatePatternResource).ToList();
         }
 
-        [HttpGet, Route("{patternId}")]
-        public async Task<ActionResult<Pattern>> Get(string patternId)
+        [HttpGet, Route("{id}")]
+        public async Task<ActionResult<Pattern>> Get(string id)
         {
-            var pattern = await GetPattern(patternId);
-            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
+            var pattern = await GetPattern(id);
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = id};
             var owner = await context.Request<PatternOwner>(pattern, query);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            return await context.Request<Pattern>(pattern, new GetPattern {Id = patternId});
+            return await context.Request<Pattern>(pattern, new GetPattern {Id = id});
         }
 
-        [HttpDelete, Route("{patternId}")]
-        public async Task<IActionResult> Delete(string patternId)
+        [HttpDelete, Route("{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
-            var pattern = await GetPattern(patternId);
-            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
+            var pattern = await GetPattern(id);
+            var query = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = id};
             var owner = await context.Request<PatternOwner>(pattern, query);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
 
-            await context.Request<PatternDeleted>(pattern, new DeletePattern {Id = patternId});
+            await context.Request<PatternDeleted>(pattern, new DeletePattern {Id = id});
 
             return Ok();
         }
 
-        [HttpGet, Route("{patternId}/thumbnail")]
-        public async Task<IActionResult> GetThumbnail(string patternId, int width = 300, int height = 200)
+        [HttpGet, Route("{id}/thumbnail")]
+        public async Task<IActionResult> GetThumbnail(string id, int width = 300, int height = 200)
         {
-            var pattern = await GetPattern(patternId);
-            var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = patternId};
+            var pattern = await GetPattern(id);
+            var queryOwner = new GetPatternOwner {RequestId = Guid.NewGuid().ToString(), PatternId = id};
             var owner = await context.Request<PatternOwner>(pattern, queryOwner);
 
             if (owner.OwnerId != User.GetUserId()) return Forbid();
@@ -96,28 +96,28 @@ namespace Service.Patterns
             return Created(@event.SourceId, CreatePatternResource(item));
         }
 
-        [Route("{patternId}/mark-backstitches"), HttpPut]
+        [Route("{id}/mark-backstitches"), HttpPut]
         public async Task<ActionResult<BackstitchesMarked>> MarkBackstitches(MarkBackstitches command)
         {
             var pattern = await GetPattern(command.Id);
             return await context.Request<BackstitchesMarked>(pattern, command);
         }
 
-        [Route("{patternId}/unmark-backstitches"), HttpPut]
+        [Route("{id}/unmark-backstitches"), HttpPut]
         public async Task<ActionResult<BackstitchesUnmarked>> UnmarkBackstitches(UnmarkBackstitches command)
         {
             var pattern = await GetPattern(command.Id);
             return await context.Request<BackstitchesUnmarked>(pattern, command);
         }
 
-        [Route("{patternId}/mark-stitches"), HttpPut]
+        [Route("{id}/mark-stitches"), HttpPut]
         public async Task<ActionResult<StitchesMarked>> MarkStitches(MarkStitches command)
         {
             var pattern = await GetPattern(command.Id);
             return await context.Request<StitchesMarked>(pattern, command);
         }
 
-        [Route("{patternId}/unmark-stitches"), HttpPut]
+        [Route("{id}/unmark-stitches"), HttpPut]
         public async Task<ActionResult<StitchesUnmarked>> UnmarkStitches(UnmarkStitches command)
         {
             var pattern = await GetPattern(command.Id);
@@ -148,9 +148,9 @@ namespace Service.Patterns
             throw new TimeoutException("Request didn't receive expected Response within the expected time.");
         }
 
-        private static async Task<PID> GetPattern(string patternId)
+        private static async Task<PID> GetPattern(string id)
         {
-            var (pattern, _) = await Cluster.GetAsync($"pattern-{patternId}", ActorKind.Pattern);
+            var (pattern, _) = await Cluster.GetAsync($"pattern-{id}", ActorKind.Pattern);
             return pattern;
         }
 
@@ -158,19 +158,13 @@ namespace Service.Patterns
         {
             Links =
             {
-                new Link {Rel = "self", Href = Url.Action("Get", new {patternId = new Guid(item.Id)})},
-                new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {patternId = new Guid(item.Id)})},
-                new Link {Rel = "mark-stitches", Href = Url.Action("MarkStitches", new {patternId = new Guid(item.Id)})},
-                new Link {Rel = "unmark-stitches", Href = Url.Action("UnmarkStitches", new {patternId = new Guid(item.Id)})},
-                new Link {Rel = "mark-backstitches", Href = Url.Action("MarkBackstitches", new {patternId = new Guid(item.Id)})},
-                new Link {Rel = "unmark-backstitches", Href = Url.Action("UnmarkBackstitches", new {patternId = new Guid(item.Id)})}
+                new Link {Rel = "self", Href = Url.Action("Get", new {id = new Guid(item.Id)})},
+                new Link {Rel = "thumbnail", Href = Url.Action("GetThumbnail", new {id = new Guid(item.Id)})},
+                new Link {Rel = "mark-stitches", Href = Url.Action("MarkStitches", new {id = new Guid(item.Id)})},
+                new Link {Rel = "unmark-stitches", Href = Url.Action("UnmarkStitches", new {id = new Guid(item.Id)})},
+                new Link {Rel = "mark-backstitches", Href = Url.Action("MarkBackstitches", new {id = new Guid(item.Id)})},
+                new Link {Rel = "unmark-backstitches", Href = Url.Action("UnmarkBackstitches", new {id = new Guid(item.Id)})}
             }
         };
-    }
-
-    public static class PidExtensions
-    {
-        public static async Task<TResponse> Request<TResponse>(this ISenderContext context, PID pid, object message) =>
-            await context.RequestAsync<TResponse>(pid, message, 10.Seconds());
     }
 }
