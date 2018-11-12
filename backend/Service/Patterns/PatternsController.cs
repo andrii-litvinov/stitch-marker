@@ -96,31 +96,31 @@ namespace Service.Patterns
             return Created(@event.SourceId, CreatePatternResource(item));
         }
 
-        [Route("{patternId}/mark-backstitches"), HttpPost]
+        [Route("{patternId}/mark-backstitches"), HttpPut]
         public async Task<ActionResult<BackstitchesMarked>> MarkBackstitches(MarkBackstitches command)
         {
-            var pattern = await GetPattern(command.PatternId);
+            var pattern = await GetPattern(command.Id);
             return await context.Request<BackstitchesMarked>(pattern, command);
         }
 
-        [Route("{patternId}/unmark-backstitches"), HttpPost]
+        [Route("{patternId}/unmark-backstitches"), HttpPut]
         public async Task<ActionResult<BackstitchesUnmarked>> UnmarkBackstitches(UnmarkBackstitches command)
         {
-            var pattern = await GetPattern(command.PatternId);
+            var pattern = await GetPattern(command.Id);
             return await context.Request<BackstitchesUnmarked>(pattern, command);
         }
 
-        [Route("{patternId}/mark-stitches"), HttpPost]
+        [Route("{patternId}/mark-stitches"), HttpPut]
         public async Task<ActionResult<StitchesMarked>> MarkStitches(MarkStitches command)
         {
-            var pattern = await GetPattern(command.PatternId);
+            var pattern = await GetPattern(command.Id);
             return await context.Request<StitchesMarked>(pattern, command);
         }
 
-        [Route("{patternId}/unmark-stitches"), HttpPost]
+        [Route("{patternId}/unmark-stitches"), HttpPut]
         public async Task<ActionResult<StitchesUnmarked>> UnmarkStitches(UnmarkStitches command)
         {
-            var pattern = await GetPattern(command.PatternId);
+            var pattern = await GetPattern(command.Id);
             return await context.Request<StitchesUnmarked>(pattern, command);
         }
 

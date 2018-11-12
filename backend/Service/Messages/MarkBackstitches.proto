@@ -1,0 +1,10 @@
+syntax = "proto3";
+package pattern;
+
+option csharp_namespace = "Service";
+import public "BackstitchId.proto";
+
+message MarkBackstitches {
+    string id = 1;
+    repeated BackstitchId backstitches = 2;
+}

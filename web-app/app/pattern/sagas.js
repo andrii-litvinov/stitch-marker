@@ -13,7 +13,7 @@ function* watchUnmarkBackstitch() {
 function* markBackstitch(action) {
   yield call(async () => {
     try {
-      await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
+      await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
         .links.find(link => link.rel === 'mark-backstitches').href, getBackstitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
@@ -23,7 +23,7 @@ function* markBackstitch(action) {
 function* unmarkBackstitch(action) {
   yield call(async () => {
     try {
-      await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
+      await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
         .links.find(link => link.rel === 'unmark-backstitches').href, getBackstitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
@@ -32,7 +32,7 @@ function* unmarkBackstitch(action) {
 
 function getBackstitchRequestData(action) {
   return JSON.stringify({
-    patternId: patternStore.getState().pattern.id,
+    id: patternStore.getState().pattern.id,
     backstitches: getBackstitchCoordinates(action.backstitches)
   });
 }
@@ -55,7 +55,7 @@ function* watchMarkStitch() {
 function* markStitches(action) {
   yield call(async () => {
     try {
-      await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
+      await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
         .links.find(link => link.rel === 'mark-stitches').href, getStitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
@@ -65,7 +65,7 @@ function* markStitches(action) {
 function* unmarkStitches(action) {
   yield call(async () => {
     try {
-      await http.post(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
+      await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
         .links.find(link => link.rel === 'unmark-stitches').href, getStitchRequestData(action));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
@@ -74,7 +74,7 @@ function* unmarkStitches(action) {
 
 function getStitchRequestData(action) {
   return JSON.stringify({
-    patternId: patternStore.getState().pattern.id,
+    id: patternStore.getState().pattern.id,
     stitches: getStitchCoordinates(action.stitches)
   });
 }
