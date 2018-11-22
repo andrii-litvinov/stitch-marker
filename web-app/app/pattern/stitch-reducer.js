@@ -1,38 +1,57 @@
-import { MARK_STITCHES, UNMARK_STITCHES, INIT_STORE, TAP_STITCHES, unmarkStitches, markStitches } from './actions';
+import { MARK_STITCHES, UNMARK_STITCHES, TAP_STITCHES, unmarkStitches, markStitches, REARRANGE_TILES, RENDER, INIT_STITCHES } from './actions';
 import Stitch from '../stitch-canvas/stitch.js';
 import Tile from '../stitch-canvas/tile.js';
-import { patternStore } from '../pattern/store.js';
 
 const stitches = (state = {}, action) => {
     switch (action.type) {
-        case INIT_STORE:
+        case INIT_STITCHES:
             let stitches = [];
-            let tiles = [];
 
-            action.pattern.stitches.forEach(s => {
-                const stitch = new Stitch(action.pattern.configurations[s.configurationIndex], s);
-                stitches[stitch.x * action.pattern.height + stitch.y] = stitch;
+            action.pattern.reducer.pattern.stitches.forEach(s => {
+                const stitch = new Stitch(action.pattern.reducer.pattern.configurations[s.configurationIndex], s);
+                stitches[stitch.x * action.pattern.reducer.pattern.height + stitch.y] = stitch;
             });
-            action.pattern.stitches = stitches;
 
-            // state.tiles.forEach(tile => tile.dispose());
-            return { ...state, stitches: stitches, tiles: rearrangeTiles(state, action).tiles};
+            action.pattern.stitches = stitches;
+            return { ...state, stitches: stitches, tiles: {} };
+
+        case REARRANGE_TILES:
+            let tiles = [];
+            let stitchesPerTile = Tile.size / action.scene.stitchSize;
+
+            state.stitches.forEach(stitch => {
+                let column = Math.floor(stitch.x / stitchesPerTile);
+                let row = Math.floor(stitch.y / stitchesPerTile);
+                const spanMultipleTilesX = (stitch.x + 1) * action.scene.stitchSize > (column + 1) * Tile.size;
+                const spanMultipleTilesY = (stitch.y + 1) * action.scene.stitchSize > (row + 1) * Tile.size;
+
+                tiles = addStitchToTile(row, column, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
+                if (spanMultipleTilesX) tiles = addStitchToTile(row, column + 1, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
+                if (spanMultipleTilesY) tiles = addStitchToTile(row + 1, column, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
+                if (spanMultipleTilesY && spanMultipleTilesX) tiles = addStitchToTile(row + 1, column + 1, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
+            });
+            return { ...state, tiles: tiles };
+
+        case RENDER:
+            const startRow = action.bounds.row;
+            const startColumn = action.bounds.column;
+            const rowCount = action.bounds.row + action.bounds.rowCount;
+            const columnCount = action.bounds.column + action.bounds.columnCount;
+            const patternHeight = action.scene.pattern.height;
+
+            for (let row = startRow; row < rowCount; row++) {
+                for (let column = startColumn; column < columnCount; column++) {
+                    let tile = state.tiles[row * patternHeight + column];
+                    tile && tile.render();
+                }
+            }
+            return { ...state };
 
         case TAP_STITCHES:
             action.stitches.forEach(index => {
-                patternStore.dispatch(state.stitches[index].marked ? unmarkStitches([index]) : markStitches([index]));
-            });
-            return { ...state };
-
-        case UNMARK_STITCHES:
-            action.stitches.forEach(index => {
-                state.stitches[index].marked = false;
-            });
-            return { ...state };
-
-        case MARK_STITCHES:
-            action.stitches.forEach(index => {
-                state.stitches[index].marked = true;
+                let stitch = state.stitches[index];
+                updateStitch(state, stitch.marked ? unmarkStitches([index]) : markStitches([index]));
+                stitch.tap();
             });
             return { ...state };
 
@@ -41,33 +60,30 @@ const stitches = (state = {}, action) => {
     }
 };
 
-function rearrangeTiles(state = {}, action) {
-    // state.tiles.length = 0;
+const updateStitch = (state, action) => {
+    switch (action.type) {
+        case UNMARK_STITCHES:
+            action.stitches.forEach(actionStitch => {
+                state.stitches[actionStitch].marked = false;
+            });
+            return { ...state };
 
-    let stitchesPerTile = Tile.size / action.pattern.stitchSize;
+        case MARK_STITCHES:
+            action.stitches.forEach(actionStitch => {
+                state.stitches[actionStitch].marked = true;
+            });
+            return { ...state };
+    }
+}
 
-    action.pattern.stitches.forEach(stitch => {
-        let column = Math.floor(stitch.x / stitchesPerTile);
-        let row = Math.floor(stitch.y / stitchesPerTile);
-        const spanMultipleTilesX = (stitch.x + 1) * action.pattern.stitchSize > (column + 1) * Tile.size;
-        const spanMultipleTilesY = (stitch.y + 1) * action.pattern.stitchSize > (row + 1) * Tile.size;
-
-        addStitchToTile(row, column, stitch, action.pattern);
-        if (spanMultipleTilesX) this.addStitchToTile(row, column + 1, stitch, action.pattern);
-        if (spanMultipleTilesY) this.addStitchToTile(row + 1, column, stitch, action.pattern);
-        if (spanMultipleTilesY && spanMultipleTilesX) this.addStitchToTile(row + 1, column + 1, stitch, action.pattern);
-    });
-
-    return state;
-  }
-
-function addStitchToTile(row, column, stitch , state) {
-    let tile = state.tiles[row * state.height + column];
+function addStitchToTile(row, column, stitch, tiles, height, stitchesLayer) {
+    let tile = tiles[row * height + column];
     if (!tile) {
-        tile = new Tile(this, row, column);
-        state.tiles[row * state.height + column] = tile;
+        tile = new Tile(stitchesLayer, row, column);
+        tiles[row * height + column] = tile;
     }
     tile.add(stitch);
+    return tiles;
 }
 
 export default stitches;

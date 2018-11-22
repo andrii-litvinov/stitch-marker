@@ -8,8 +8,8 @@ export default class BackstitchesLayer extends BaseLayer {
     super(scene)
 
     this.scene = scene;
-    this.backstitchesMap = patternStore.getState().pattern.backstitchesMap;
-    this.backstitches = patternStore.getState().pattern.backstitches;
+    this.backstitchesMap = patternStore.getState().reducer.pattern.backstitchesMap;
+    this.backstitches = patternStore.getState().reducer.pattern.backstitches;
     this.ctx = this.createContext();
     this.markers = [];
 

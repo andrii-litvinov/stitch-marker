@@ -1,6 +1,7 @@
 import { call, takeEvery, all } from 'redux-saga/effects'
 import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES } from '../pattern/actions';
 import { patternStore } from '../pattern/store';
+import StitchesLayer from '../stitch-canvas/layers/stitches-layer';
 
 function* watchMarkBackstitch() {
   yield takeEvery(MARK_BACKSTITCHES, markBackstitch);

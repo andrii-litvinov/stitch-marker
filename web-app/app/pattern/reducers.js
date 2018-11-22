@@ -1,14 +1,12 @@
-import { INIT_STORE, MARK_STITCHES, UNMARK_STITCHES, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, TAP_STITCHES, unmarkStitches, markStitches } from './actions';
+import { INIT_STORE, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES} from './actions';
 import { combineReducers } from 'redux'
 import Backstitch from '../stitch-canvas/backstitch.js';
-import Stitch from '../stitch-canvas/stitch.js';
 import stitches from '../pattern/stitch-reducer'
 
 const reducer = (state = {}, action) => {
   switch (action.type) {
     case INIT_STORE:
       let backstitches = [];
-      let stitches = [];
       let backstitchesMap = [];
 
       const height = action.pattern.height;
@@ -27,14 +25,8 @@ const reducer = (state = {}, action) => {
         });
       });
 
-      action.pattern.stitches.forEach(s => {
-        const stitch = new Stitch(action.pattern.configurations[s.configurationIndex], s);
-        stitches[stitch.x * action.pattern.height + stitch.y] = stitch;
-      });
-
       action.pattern.backstitches = backstitches;
       action.pattern.backstitchesMap = backstitchesMap;
-      action.pattern.stitches = stitches;
       return { ...state, pattern: action.pattern };
 
     case UNMARK_BACKSTITCHES:
@@ -49,39 +41,14 @@ const reducer = (state = {}, action) => {
       });
       return { ...state };
 
-
-    case TAP_STITCHES:
-      action.stitches.forEach(index => {
-        let stitch = state.pattern.stitches[index];
-        state = updateStitch(state, stitch.marked ? unmarkStitches([index]) : markStitches([index]));
-      });
-      return { ...state };
-
     default:
       return state;
   }
 };
 
-const updateStitch = (state, action) => {
-  switch (action.type) {
-    case UNMARK_STITCHES:
-      action.stitches.forEach(actionStitch => {
-        state.pattern.stitches[actionStitch].marked = false;
-      });
-      return { ...state };
+const rootReducer = combineReducers({
+  reducer,
+  stitches
+})
 
-    case MARK_STITCHES:
-      action.stitches.forEach(actionStitch => {
-        state.pattern.stitches[actionStitch].marked = true;
-      });
-      return { ...state };
-  }
-}
-
-// const rootReducer = combineReducers({
-//   reducer,
-//   stitches
-// })
-
-// export default rootReducer;
-export default reducer;
+export default rootReducer;
