@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 import Backstitch from '../stitch-canvas/backstitch.js';
 import stitches from '../pattern/stitch-reducer'
 
-const reducer = (state = {}, action) => {
+const pattern = (state = {}, action) => {
   switch (action.type) {
     case INIT_STORE:
       let backstitches = [];
@@ -27,7 +27,7 @@ const reducer = (state = {}, action) => {
 
       action.pattern.backstitches = backstitches;
       action.pattern.backstitchesMap = backstitchesMap;
-      return { ...state, pattern: action.pattern };
+      return { ...state, ...action.pattern };
 
     case UNMARK_BACKSTITCHES:
       action.backstitches.forEach(actionBackstitch => {
@@ -47,7 +47,7 @@ const reducer = (state = {}, action) => {
 };
 
 const rootReducer = combineReducers({
-  reducer,
+  pattern,
   stitches
 })
 

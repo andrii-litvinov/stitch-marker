@@ -1,7 +1,6 @@
-import { call, takeEvery, all } from 'redux-saga/effects'
-import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES } from '../pattern/actions';
+import { call, takeEvery, all, put } from 'redux-saga/effects'
+import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, TAP_STITCHES } from '../pattern/actions';
 import { patternStore } from '../pattern/store';
-import StitchesLayer from '../stitch-canvas/layers/stitches-layer';
 
 function* watchMarkBackstitch() {
   yield takeEvery(MARK_BACKSTITCHES, markBackstitch);
@@ -57,7 +56,10 @@ function* markStitches(action) {
   yield call(async () => {
     try {
       await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'mark-stitches').href, getStitchRequestData(action));
+        .links.find(link => link.rel === 'mark-stitches').href, JSON.stringify({
+          id: patternStore.getState().pattern.id,
+          stitches: action.toMark
+        }));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
@@ -67,31 +69,39 @@ function* unmarkStitches(action) {
   yield call(async () => {
     try {
       await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'unmark-stitches').href, getStitchRequestData(action));
+        .links.find(link => link.rel === 'unmark-stitches').href, JSON.stringify({
+          id: patternStore.getState().pattern.id,
+          stitches: action.toUnmark
+        }));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function getStitchRequestData(action) {
-  return JSON.stringify({
-    id: patternStore.getState().pattern.id,
-    stitches: getStitchCoordinates(action.stitches)
-  });
+function* watchTapStitches() {
+  yield takeEvery(TAP_STITCHES, tapStitches);
 }
 
-function getStitchCoordinates(indexes) {
-  return indexes.map(index => {
-    let stitch = patternStore.getState().pattern.stitches[index];
-    return { x: stitch.x, y: stitch.y }
+function* tapStitches(action) {
+  let toMark = [];
+  let toUnmark = [];
+
+  action.stitches.forEach(index => {
+    const stitch = patternStore.getState().pattern.stitches[index];
+    stitch.marked ? toMark.push({ x: stitch.x, y: stitch.y }) : toUnmark.push({ x: stitch.x, y: stitch.y });
+    stitch.tap();
   });
+
+  if (toUnmark.length > 0) yield put({ type: "UNMARK_STITCHES", toUnmark });
+  if (toMark.length > 0) yield put({ type: "MARK_STITCHES", toMark });
 }
 
 export function* rootSaga() {
   yield all([
-    watchMarkStitch(),
-    watchUnmarkStitch(),
+    watchTapStitches(),
     watchUnmarkBackstitch(),
-    watchMarkBackstitch()
+    watchMarkBackstitch(),
+    watchMarkStitch(),
+    watchUnmarkStitch()
   ])
 }

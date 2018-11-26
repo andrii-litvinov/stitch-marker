@@ -7,13 +7,13 @@ const stitches = (state = {}, action) => {
         case INIT_STITCHES:
             let stitches = [];
 
-            action.pattern.reducer.pattern.stitches.forEach(s => {
-                const stitch = new Stitch(action.pattern.reducer.pattern.configurations[s.configurationIndex], s);
-                stitches[stitch.x * action.pattern.reducer.pattern.height + stitch.y] = stitch;
+            action.pattern.stitches.forEach(s => {
+                const stitch = new Stitch(action.pattern.configurations[s.configurationIndex], s);
+                stitches[stitch.x * action.pattern.height + stitch.y] = stitch;
             });
 
             action.pattern.stitches = stitches;
-            return { ...state, stitches: stitches, tiles: {} };
+            return { ...state, stitches };
 
         case REARRANGE_TILES:
             let tiles = [];
@@ -25,12 +25,12 @@ const stitches = (state = {}, action) => {
                 const spanMultipleTilesX = (stitch.x + 1) * action.scene.stitchSize > (column + 1) * Tile.size;
                 const spanMultipleTilesY = (stitch.y + 1) * action.scene.stitchSize > (row + 1) * Tile.size;
 
-                tiles = addStitchToTile(row, column, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
-                if (spanMultipleTilesX) tiles = addStitchToTile(row, column + 1, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
-                if (spanMultipleTilesY) tiles = addStitchToTile(row + 1, column, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
-                if (spanMultipleTilesY && spanMultipleTilesX) tiles = addStitchToTile(row + 1, column + 1, stitch, state.tiles, action.scene.pattern.height, action.stitchesLayer);
+                tiles = addStitchToTile(row, column, stitch, tiles, action.scene.pattern.height, action.stitchesLayer);
+                if (spanMultipleTilesX) tiles = addStitchToTile(row, column + 1, stitch, tiles, action.scene.pattern.height, action.stitchesLayer);
+                if (spanMultipleTilesY) tiles = addStitchToTile(row + 1, column, stitch, tiles, action.scene.pattern.height, action.stitchesLayer);
+                if (spanMultipleTilesY && spanMultipleTilesX) tiles = addStitchToTile(row + 1, column + 1, stitch, tiles, action.scene.pattern.height, action.stitchesLayer);
             });
-            return { ...state, tiles: tiles };
+            return { ...state, tiles };
 
         case RENDER:
             const startRow = action.bounds.row;
@@ -50,8 +50,7 @@ const stitches = (state = {}, action) => {
         case TAP_STITCHES:
             action.stitches.forEach(index => {
                 let stitch = state.stitches[index];
-                updateStitch(state, stitch.marked ? unmarkStitches([index]) : markStitches([index]));
-                stitch.tap();
+                stitch.marked = !stitch.marked;
             });
             return { ...state };
 
@@ -59,22 +58,6 @@ const stitches = (state = {}, action) => {
             return state;
     }
 };
-
-const updateStitch = (state, action) => {
-    switch (action.type) {
-        case UNMARK_STITCHES:
-            action.stitches.forEach(actionStitch => {
-                state.stitches[actionStitch].marked = false;
-            });
-            return { ...state };
-
-        case MARK_STITCHES:
-            action.stitches.forEach(actionStitch => {
-                state.stitches[actionStitch].marked = true;
-            });
-            return { ...state };
-    }
-}
 
 function addStitchToTile(row, column, stitch, tiles, height, stitchesLayer) {
     let tile = tiles[row * height + column];

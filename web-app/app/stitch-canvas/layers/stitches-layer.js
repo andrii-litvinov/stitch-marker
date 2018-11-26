@@ -6,7 +6,7 @@ export default class StitchesLayer extends BaseLayer {
   constructor(scene) {
     super(scene);
 
-    patternStore.dispatch(initStitches(patternStore.getState()));
+    patternStore.dispatch(initStitches(patternStore.getState().pattern));
     patternStore.dispatch(rearrangeTiles(scene, this));
 
     const sceneEventListeners = {
