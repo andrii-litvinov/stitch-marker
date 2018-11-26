@@ -1,9 +1,9 @@
-import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_STORE } from './actions';
+import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_BACKSTITCHES } from './actions';
 import Backstitch from '../stitch-canvas/backstitch.js';
 
 const backstitches = (state = {}, action) => {
     switch (action.type) {
-        case INIT_STORE:
+        case INIT_BACKSTITCHES:
             let backstitches = [];
             let backstitchesMap = [];
 
@@ -22,7 +22,7 @@ const backstitches = (state = {}, action) => {
                     backstitches.push(backstitch);
                 });
             });
-            return { ...state, backstitches: backstitches, backstitchesMap: backstitchesMap };
+            return { ...state, items: backstitches, maps: backstitchesMap };
 
         case UNMARK_BACKSTITCHES:
             action.backstitches.forEach(actionBackstitch => {

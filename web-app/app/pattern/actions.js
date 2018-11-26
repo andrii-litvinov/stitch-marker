@@ -7,6 +7,7 @@ export const UNMARK_BACKSTITCHES = 'UNMARK_BACKSTITCHES';
 export const REARRANGE_TILES = 'REARRANGE_TILES';
 export const RENDER = 'RENDER';
 export const INIT_STITCHES = 'INIT_STITCHES';
+export const INIT_BACKSTITCHES = 'INIT_BACKSTITCHES';
 
 export const initStore = (pattern) => {
   return {
@@ -18,6 +19,13 @@ export const initStore = (pattern) => {
 export const initStitches = (pattern) => {
   return {
     type: INIT_STITCHES,
+    pattern
+  };
+};
+
+export const initBackstitches = (pattern) => {
+  return {
+    type: INIT_BACKSTITCHES,
     pattern
   };
 };

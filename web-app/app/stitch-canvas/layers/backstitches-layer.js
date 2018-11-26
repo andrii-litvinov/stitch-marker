@@ -1,15 +1,16 @@
 import BaseLayer from './base-layer.js';
 import BackstitchMarker from '../backstitch-marker.js';
 import { patternStore } from '../../pattern/store.js';
-import { markBackstitches, unmarkBackstitches } from '../../pattern/actions.js';
+import { markBackstitches, unmarkBackstitches, initBackstitches } from '../../pattern/actions.js';
 
 export default class BackstitchesLayer extends BaseLayer {
   constructor(scene) {
     super(scene)
 
     this.scene = scene;
-    this.backstitchesMap = patternStore.getState().pattern.backstitchesMap;
-    this.backstitches = patternStore.getState().pattern.backstitches;
+    patternStore.dispatch(initBackstitches(patternStore.getState().pattern));
+    this.backstitchesMap = patternStore.getState().backstitches.maps;
+    this.backstitches = patternStore.getState().backstitches.items;
     this.ctx = this.createContext();
     this.markers = [];
 
