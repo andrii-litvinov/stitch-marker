@@ -1,4 +1,4 @@
-import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_BACKSTITCHES } from './actions';
+import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_BACKSTITCHES, RENDER_BACKSTITCH } from './actions';
 import Backstitch from '../stitch-canvas/backstitch.js';
 
 const backstitches = (state = {}, action) => {
@@ -22,7 +22,11 @@ const backstitches = (state = {}, action) => {
                     backstitches.push(backstitch);
                 });
             });
-            return { ...state, items: backstitches, maps: backstitchesMap };
+            return { ...state, items: backstitches, maps: backstitchesMap, activeBackstitch: {} };
+
+        case RENDER_BACKSTITCH:
+            render(action.context, action.scene, state);
+            return { ...state };
 
         case UNMARK_BACKSTITCHES:
             action.backstitches.forEach(actionBackstitch => {
@@ -40,5 +44,45 @@ const backstitches = (state = {}, action) => {
             return state;
     }
 };
+
+function backstitchComplete(e) {
+    let index = this.backstitches.indexOf(this.activeBackstitch);
+    const backstitch = this.backstitches[index];
+
+    patternStore.dispatch(backstitch.marked
+        ? unmarkBackstitches([index])
+        : markBackstitches([index]));
+
+    this.disposeMarkers();
+    this.activeBackstitch = null;
+    render();
+
+    let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
+    if (point) {
+        createBackstitchMarkers(point, e.detail.x, e.detail.y);
+    };
+}
+
+function createBackstitchMarkers(point, touchX, touchY) {
+    point.forEach(backstitch => {
+        this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, touchX, touchY));
+    });
+    for (const type in this.markerEventListeners) {
+        this.markers.forEach(marker => {
+            marker.addEventListener(type, this.markerEventListeners[type]);
+        });
+    }
+}
+
+function render(context, scene, state) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.translate(scene.x + 0.5, scene.y + 0.5);
+    state.items.forEach(backstitch => {
+        if (state.activeBackstitch != backstitch) {
+            backstitch.draw(context, scene.stitchSize, scene.scale);
+        }
+    });
+    context.setTransform(1, 0, 0, 1, 0, 0);
+}
 
 export default backstitches;

@@ -1,7 +1,7 @@
 import BaseLayer from './base-layer.js';
 import BackstitchMarker from '../backstitch-marker.js';
 import { patternStore } from '../../pattern/store.js';
-import { markBackstitches, unmarkBackstitches, initBackstitches } from '../../pattern/actions.js';
+import { markBackstitches, unmarkBackstitches, initBackstitches, renderBackstitch } from '../../pattern/actions.js';
 
 export default class BackstitchesLayer extends BaseLayer {
   constructor(scene) {
@@ -15,16 +15,16 @@ export default class BackstitchesLayer extends BaseLayer {
     this.markers = [];
 
     const sceneEventListeners = {
-      render: this.render.bind(this),
+      render: patternStore.dispatch(renderBackstitch(this.ctx, this.scene)),
       resize: this.resize.bind(this),
-      zoom: this.render.bind(this),
+      zoom: patternStore.dispatch(renderBackstitch(this.ctx, this.scene)),
       touchstart: this.touchStart.bind(this)
     };
 
     this.markerEventListeners = {
-      progress: this.progress.bind(this),
-      complete: this.backstitchComplete.bind(this),
-      abort: this.abort.bind(this)
+      // progress: this.progress.bind(this),
+      // complete: this.backstitchComplete.bind(this),
+      // abort: this.abort.bind(this)
     };
 
     for (const type in sceneEventListeners) {
@@ -49,23 +49,23 @@ export default class BackstitchesLayer extends BaseLayer {
     this.disposeMarkers();
   }
 
-  backstitchComplete(e) {
-    let index = this.backstitches.indexOf(this.activeBackstitch);
-    const backstitch = this.backstitches[index];
+  // backstitchComplete(e) {
+  //   let index = this.backstitches.indexOf(this.activeBackstitch);
+  //   const backstitch = this.backstitches[index];
 
-    patternStore.dispatch(backstitch.marked
-      ? unmarkBackstitches([index])
-      : markBackstitches([index]));
+  //   patternStore.dispatch(backstitch.marked
+  //     ? unmarkBackstitches([index])
+  //     : markBackstitches([index]));
 
-    this.disposeMarkers();
-    this.activeBackstitch = null;
-    this.render();
+  //   this.disposeMarkers();
+  //   this.activeBackstitch = null;
+  //   this.render();
 
-    let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
-    if (point) {
-      this.createBackstitchMarkers(point, e.detail.x, e.detail.y);
-    };
-  }
+  //   let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
+  //   if (point) {
+  //     this.createBackstitchMarkers(point, e.detail.x, e.detail.y);
+  //   };
+  // }
 
   progress(e) {
     if (this.activeBackstitch != e.detail.backstitch) {
@@ -94,16 +94,16 @@ export default class BackstitchesLayer extends BaseLayer {
       };
   }
 
-  createBackstitchMarkers(point, touchX, touchY) {
-    point.forEach(backstitch => {
-      this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, touchX, touchY));
-    });
-    for (const type in this.markerEventListeners) {
-      this.markers.forEach(marker => {
-        marker.addEventListener(type, this.markerEventListeners[type]);
-      });
-    }
-  }
+  // createBackstitchMarkers(point, touchX, touchY) {
+  //   point.forEach(backstitch => {
+  //     this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, touchX, touchY));
+  //   });
+  //   for (const type in this.markerEventListeners) {
+  //     this.markers.forEach(marker => {
+  //       marker.addEventListener(type, this.markerEventListeners[type]);
+  //     });
+  //   }
+  // }
 
   render() {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);

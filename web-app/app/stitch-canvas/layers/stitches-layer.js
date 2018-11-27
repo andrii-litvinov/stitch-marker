@@ -1,6 +1,6 @@
 import BaseLayer from './base-layer.js';
 import { patternStore } from '../../pattern/store.js';
-import { tapStitches, render, initStitches, rearrangeTiles } from '../../pattern/actions.js';
+import { tapStitches, renderStitch, initStitches, rearrangeTiles } from '../../pattern/actions.js';
 
 export default class StitchesLayer extends BaseLayer {
   constructor(scene) {
@@ -35,6 +35,6 @@ export default class StitchesLayer extends BaseLayer {
 
   render(bounds) {
     this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    patternStore.dispatch(render(bounds, this.scene));
+    patternStore.dispatch(renderStitch(bounds, this.scene));
   }
 }

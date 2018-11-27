@@ -1,4 +1,4 @@
-import { INIT_STORE, MARK_BACKSTITCHES, UNMARK_BACKSTITCHES} from './actions';
+import { INIT_STORE } from './actions';
 import { combineReducers } from 'redux'
 import backstitches from '../pattern/backstitch-reducer';
 import stitches from '../pattern/stitch-reducer'

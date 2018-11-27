@@ -5,9 +5,10 @@ export const TAP_STITCHES = 'TAP_STITCHES';
 export const MARK_BACKSTITCHES = 'MARK_BACKSTITCHES';
 export const UNMARK_BACKSTITCHES = 'UNMARK_BACKSTITCHES';
 export const REARRANGE_TILES = 'REARRANGE_TILES';
-export const RENDER = 'RENDER';
+export const RENDER_STITCH = 'RENDER';
 export const INIT_STITCHES = 'INIT_STITCHES';
 export const INIT_BACKSTITCHES = 'INIT_BACKSTITCHES';
+export const RENDER_BACKSTITCH = 'RENDER_BACKSTITCH';
 
 export const initStore = (pattern) => {
   return {
@@ -30,10 +31,17 @@ export const initBackstitches = (pattern) => {
   };
 };
 
-export const render = (bounds, scene) => {
+export const renderStitch = (bounds, scene) => {
   return {
-    type: RENDER,
+    type: RENDER_STITCH,
     bounds, scene
+  };
+};
+
+export const renderBackstitch = (context, scene) => {
+  return {
+    type: RENDER_BACKSTITCH,
+    context, scene
   };
 };
 

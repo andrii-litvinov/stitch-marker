@@ -1,4 +1,4 @@
-import { MARK_STITCHES, UNMARK_STITCHES, TAP_STITCHES, unmarkStitches, markStitches, REARRANGE_TILES, RENDER, INIT_STITCHES } from './actions';
+import { MARK_STITCHES, UNMARK_STITCHES, TAP_STITCHES, unmarkStitches, markStitches, REARRANGE_TILES, RENDER_STITCH, INIT_STITCHES } from './actions';
 import Stitch from '../stitch-canvas/stitch.js';
 import Tile from '../stitch-canvas/tile.js';
 
@@ -32,7 +32,7 @@ const stitches = (state = {}, action) => {
             });
             return { ...state, tiles };
 
-        case RENDER:
+        case RENDER_STITCH:
             const startRow = action.bounds.row;
             const startColumn = action.bounds.column;
             const rowCount = action.bounds.row + action.bounds.rowCount;
