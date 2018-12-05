@@ -1,5 +1,5 @@
 import { call, takeEvery, all, put } from 'redux-saga/effects'
-import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, TAP_STITCHES } from '../pattern/actions';
+import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, TAP_STITCHES, RENDER_BACKSTITCH, BACKSTITCH_PROCESS, BACKSTITCH_COMPLETE } from '../pattern/actions';
 import { patternStore } from '../pattern/store';
 
 function* watchMarkBackstitch() {
@@ -96,12 +96,78 @@ function* tapStitches(action) {
   if (toMark.length > 0) yield put({ type: "MARK_STITCHES", toMark });
 }
 
+function* watchBackstitchRender() {
+  yield takeEvery(RENDER_BACKSTITCH, BackstitchRender);
+}
+
+function BackstitchRender() {
+  const context = patternStore.getState().backstitches.ctx;
+  const scene = patternStore.getState().backstitches.scene;
+  const items = patternStore.getState().backstitches.items;
+  const activeBackstitch = patternStore.getState().backstitches.activeBackstitch;
+
+  context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  context.translate(scene.x + 0.5, scene.y + 0.5);
+  items.forEach(backstitch => {
+    if (activeBackstitch != backstitch) {
+      backstitch.draw(context, scene.stitchSize, scene.scale);
+    }
+  });
+  context.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+function* watchBackstitchProgress() {
+  yield takeEvery(BACKSTITCH_PROCESS, BackstitchProgress);
+}
+
+function BackstitchProgress(action) {
+  const activeBackstitch = patternStore.getState().backstitches.activeBackstitch;
+  if (activeBackstitch != action.e.detail.backstitch) {
+    patternStore.getState().backstitches.activeBackstitch = action.e.detail.backstitch;
+  }
+  BackstitchRender();
+}
+
+function* watchBackstitchComplete() {
+  yield takeEvery(BACKSTITCH_COMPLETE, BackstitchComplete);
+}
+
+function BackstitchComplete(action) {
+  let backstitches = patternStore.getState().backstitches;
+  let index = backstitches.items.indexOf(backstitches.activeBackstitch);
+  const backstitch = backstitches.items[index];
+
+  backstitch.marked = !backstitch.marked;
+  // patternStore.dispatch(backstitch.marked
+  //     ? unmarkBackstitches([index])
+  //     : markBackstitches([index]));
+
+  disposeMarkers(backstitches);
+  backstitches.activeBackstitch = null;
+  BackstitchRender();
+
+  let point = backstitches.maps[action.e.detail.x * backstitches.scene.pattern.height + action.e.detail.y];
+  if (point) {
+    // createBackstitchMarkers(point, e.detail.x, e.detail.y);
+  };
+}
+
+function disposeMarkers(backstitches) {
+  backstitches.markers.forEach(marker => {
+    marker.dispose();
+  });
+  backstitches.markers.length = 0;
+}
+
 export function* rootSaga() {
   yield all([
     watchTapStitches(),
     watchUnmarkBackstitch(),
     watchMarkBackstitch(),
     watchMarkStitch(),
-    watchUnmarkStitch()
+    watchUnmarkStitch(),
+    watchBackstitchRender(),
+    watchBackstitchProgress(),
+    watchBackstitchComplete()
   ])
 }

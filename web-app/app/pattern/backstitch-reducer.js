@@ -1,5 +1,7 @@
-import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_BACKSTITCHES, RENDER_BACKSTITCH } from './actions';
+import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_BACKSTITCHES, completeBackstitch, BACKSTITCH_TOUCHSTART, processBackstitch, renderBackstitch } from './actions';
 import Backstitch from '../stitch-canvas/backstitch.js';
+import BackstitchMarker from '../stitch-canvas/backstitch-marker';
+import { patternStore } from '../pattern/store.js';
 
 const backstitches = (state = {}, action) => {
     switch (action.type) {
@@ -22,10 +24,26 @@ const backstitches = (state = {}, action) => {
                     backstitches.push(backstitch);
                 });
             });
-            return { ...state, items: backstitches, maps: backstitchesMap, activeBackstitch: {} };
+            return { ...state, items: backstitches, maps: backstitchesMap, activeBackstitch: {}, markers: [], ctx: action.ctx, scene: action.scene };
 
-        case RENDER_BACKSTITCH:
-            render(action.context, action.scene, state);
+        case BACKSTITCH_TOUCHSTART:
+            const x = Math.floor((action.e.detail.x - action.scene.x) / action.scene.stitchSize * 2);
+            const y = Math.floor((action.e.detail.y - action.scene.y) / action.scene.stitchSize * 2);
+
+            // check 4 points, near user tap, for available backstitches
+            for (let i = 0; i <= 1; i++)
+                for (let j = 0; j <= 1; j++) {
+                    let xCoord = x + i;
+                    let yCoord = y + j;
+
+                    let point = state.maps[xCoord * action.scene.pattern.height + yCoord];
+                    if (point) {
+                        let distToPoint = Math.sqrt(Math.pow((xCoord * action.scene.stitchSize / 2) - (action.e.detail.x - action.scene.x), 2) + Math.pow((yCoord * action.scene.stitchSize / 2) - (action.e.detail.y - action.scene.y), 2));
+                        if (distToPoint < action.scene.stitchSize / 2 - 1) {
+                            createBackstitchMarkers(point, xCoord, yCoord, state);
+                        }
+                    };
+                };
             return { ...state };
 
         case UNMARK_BACKSTITCHES:
@@ -45,44 +63,29 @@ const backstitches = (state = {}, action) => {
     }
 };
 
-function backstitchComplete(e) {
-    let index = this.backstitches.indexOf(this.activeBackstitch);
-    const backstitch = this.backstitches[index];
-
-    patternStore.dispatch(backstitch.marked
-        ? unmarkBackstitches([index])
-        : markBackstitches([index]));
-
-    this.disposeMarkers();
-    this.activeBackstitch = null;
-    render();
-
-    let point = this.backstitchesMap[e.detail.x * this.scene.pattern.height + e.detail.y];
-    if (point) {
-        createBackstitchMarkers(point, e.detail.x, e.detail.y);
+function createBackstitchMarkers(point, touchX, touchY, state) {
+    const markerEventListeners = {
+        progress: progress.bind(this),
+        complete: backstitchComplete.bind(this),
+        // abort: abort.bind(this)
     };
-}
 
-function createBackstitchMarkers(point, touchX, touchY) {
     point.forEach(backstitch => {
-        this.markers.push(new BackstitchMarker(this.ctx, this.scene, backstitch, touchX, touchY));
+        state.markers.push(new BackstitchMarker(state.ctx, state.scene, backstitch, touchX, touchY));
     });
-    for (const type in this.markerEventListeners) {
-        this.markers.forEach(marker => {
-            marker.addEventListener(type, this.markerEventListeners[type]);
+    for (const type in markerEventListeners) {
+        state.markers.forEach(marker => {
+            marker.addEventListener(type, markerEventListeners[type]);
         });
     }
 }
 
-function render(context, scene, state) {
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-    context.translate(scene.x + 0.5, scene.y + 0.5);
-    state.items.forEach(backstitch => {
-        if (state.activeBackstitch != backstitch) {
-            backstitch.draw(context, scene.stitchSize, scene.scale);
-        }
-    });
-    context.setTransform(1, 0, 0, 1, 0, 0);
+function backstitchComplete(e) {
+    patternStore.dispatch(completeBackstitch(e));
+}
+
+function progress(e) {
+    patternStore.dispatch(processBackstitch(e));
 }
 
 export default backstitches;

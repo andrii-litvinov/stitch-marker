@@ -1,4 +1,4 @@
-import { MARK_STITCHES, UNMARK_STITCHES, TAP_STITCHES, unmarkStitches, markStitches, REARRANGE_TILES, RENDER_STITCH, INIT_STITCHES } from './actions';
+import { TAP_STITCHES, REARRANGE_TILES, RENDER_STITCH, INIT_STITCHES } from './actions';
 import Stitch from '../stitch-canvas/stitch.js';
 import Tile from '../stitch-canvas/tile.js';
 

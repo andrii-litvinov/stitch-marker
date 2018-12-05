@@ -9,6 +9,9 @@ export const RENDER_STITCH = 'RENDER';
 export const INIT_STITCHES = 'INIT_STITCHES';
 export const INIT_BACKSTITCHES = 'INIT_BACKSTITCHES';
 export const RENDER_BACKSTITCH = 'RENDER_BACKSTITCH';
+export const BACKSTITCH_TOUCHSTART = 'BACKSTITCH_TOUCHSTART';
+export const BACKSTITCH_PROCESS = 'BACKSTITCH_PROCESS';
+export const BACKSTITCH_COMPLETE = 'BACKSTITCH_COMPLETE';
 
 export const initStore = (pattern) => {
   return {
@@ -24,10 +27,31 @@ export const initStitches = (pattern) => {
   };
 };
 
-export const initBackstitches = (pattern) => {
+export const initBackstitches = (pattern, ctx, scene) => {
   return {
     type: INIT_BACKSTITCHES,
-    pattern
+    pattern, ctx, scene
+  };
+};
+
+export const processBackstitch = (e) => {
+  return {
+    type: BACKSTITCH_PROCESS,
+    e
+  };
+};
+
+export const completeBackstitch = (e) => {
+  return {
+    type: BACKSTITCH_COMPLETE,
+    e
+  };
+};
+
+export const backstitchTouchStart = (e, context, scene) => {
+  return {
+    type: BACKSTITCH_TOUCHSTART,
+    e, context, scene
   };
 };
 
