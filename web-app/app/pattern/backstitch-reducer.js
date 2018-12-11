@@ -1,4 +1,4 @@
-import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, INIT_BACKSTITCHES, completeBackstitch, BACKSTITCH_TOUCHSTART, processBackstitch, renderBackstitch } from './actions';
+import { MARK_BACKSTITCHES, UNMARK_BACKSTITCHES, abortBackstitch, BACKSTITCH_CREATEMARKER, INIT_BACKSTITCHES, completeBackstitch, BACKSTITCH_TOUCHSTART, processBackstitch, renderBackstitch } from './actions';
 import Backstitch from '../stitch-canvas/backstitch.js';
 import BackstitchMarker from '../stitch-canvas/backstitch-marker';
 import { patternStore } from '../pattern/store.js';
@@ -46,6 +46,10 @@ const backstitches = (state = {}, action) => {
                 };
             return { ...state };
 
+        case BACKSTITCH_CREATEMARKER:
+            createBackstitchMarkers(action.point, action.touchX, action.touchY, state);
+            return { ...state };
+
         default:
             return state;
     }
@@ -55,7 +59,7 @@ function createBackstitchMarkers(point, touchX, touchY, state) {
     const markerEventListeners = {
         progress: progress.bind(this),
         complete: backstitchComplete.bind(this),
-        // abort: abort.bind(this)
+        abort: abort.bind(this)
     };
 
     point.forEach(backstitch => {
@@ -74,6 +78,10 @@ function backstitchComplete(e) {
 
 function progress(e) {
     patternStore.dispatch(processBackstitch(e));
+}
+
+function abort(e) {
+    patternStore.dispatch(abortBackstitch(e));
 }
 
 export default backstitches;

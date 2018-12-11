@@ -26,19 +26,6 @@ export default class BackstitchesLayer extends BaseLayer {
     this.scene.component.shadowRoot.removeChild(this.ctx.canvas);
   }
 
-  // disposeMarkers() {
-  //   this.markers.forEach(marker => {
-  //     marker.dispose();
-  //   });
-  //   this.markers.length = 0;
-  // }
-
-  abort() {
-    this.activeBackstitch = null;
-    this.render();
-    this.disposeMarkers();
-  }
-
   touchStart(e) {
     patternStore.dispatch(backstitchTouchStart(e, this.ctx, this.scene))
   }

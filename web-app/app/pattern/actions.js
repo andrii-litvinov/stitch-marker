@@ -12,6 +12,8 @@ export const RENDER_BACKSTITCH = 'RENDER_BACKSTITCH';
 export const BACKSTITCH_TOUCHSTART = 'BACKSTITCH_TOUCHSTART';
 export const BACKSTITCH_PROCESS = 'BACKSTITCH_PROCESS';
 export const BACKSTITCH_COMPLETE = 'BACKSTITCH_COMPLETE';
+export const BACKSTITCH_CREATEMARKER = 'BACKSTITCH_CREATEMARKER';
+export const BACKSTITCH_ABORT = 'BACKSTITCH_ABORT';
 
 export const initStore = (pattern) => {
   return {
@@ -111,3 +113,16 @@ export const unmarkBackstitches = (backstitches) => {
   };
 };
 
+export const backstitchCreateMarker = (point, touchX, touchY) => {
+  return {
+    type: BACKSTITCH_CREATEMARKER,
+    point, touchX, touchY
+  };
+};
+
+export const abortBackstitch = (e) => {
+  return {
+    type: BACKSTITCH_ABORT,
+    e
+  };
+};

@@ -1,5 +1,5 @@
 import { call, takeEvery, all, put } from 'redux-saga/effects'
-import { MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, TAP_STITCHES, RENDER_BACKSTITCH, BACKSTITCH_PROCESS, BACKSTITCH_COMPLETE } from '../pattern/actions';
+import { backstitchCreateMarker, MARK_BACKSTITCHES, UNMARK_STITCHES, MARK_STITCHES, UNMARK_BACKSTITCHES, TAP_STITCHES, RENDER_BACKSTITCH, BACKSTITCH_PROCESS, BACKSTITCH_COMPLETE, BACKSTITCH_ABORT } from '../pattern/actions';
 import { patternStore } from '../pattern/store';
 
 function* watchMarkBackstitch() {
@@ -128,6 +128,16 @@ function BackstitchProgress(action) {
   BackstitchRender();
 }
 
+function* watchBackstitchAbort() {
+  yield takeEvery(BACKSTITCH_ABORT, BackstitchAbort);
+}
+
+function* BackstitchAbort(action) {
+    patternStore.getState().backstitches.activeBackstitch = null;
+    BackstitchRender();
+    disposeMarkers(patternStore.getState().backstitches);
+}
+
 function* watchBackstitchComplete() {
   yield takeEvery(BACKSTITCH_COMPLETE, BackstitchComplete);
 }
@@ -138,6 +148,7 @@ function* BackstitchComplete(action) {
   const backstitch = backstitches.items[index];
 
   backstitch.marked = !backstitch.marked;
+  patternStore.getState().backstitches.items[index] = backstitch;
   backstitch.marked
       ? yield markBackstitch([index])
       : yield unmarkBackstitch([index]);
@@ -148,7 +159,7 @@ function* BackstitchComplete(action) {
 
   let point = backstitches.maps[action.e.detail.x * backstitches.scene.pattern.height + action.e.detail.y];
   if (point) {
-    // createBackstitchMarkers(point, e.detail.x, e.detail.y);
+    patternStore.dispatch(backstitchCreateMarker(point, action.e.detail.x, action.e.detail.y));
   };
 }
 
@@ -168,6 +179,7 @@ export function* rootSaga() {
     watchUnmarkStitch(),
     watchBackstitchRender(),
     watchBackstitchProgress(),
-    watchBackstitchComplete()
+    watchBackstitchComplete(),
+    watchBackstitchAbort()
   ])
 }
