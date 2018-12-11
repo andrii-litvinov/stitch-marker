@@ -10,36 +10,36 @@ function* watchUnmarkBackstitch() {
   yield takeEvery(UNMARK_BACKSTITCHES, unmarkBackstitch);
 }
 
-function* markBackstitch(action) {
+function* markBackstitch(indexes) {
   yield call(async () => {
     try {
       await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'mark-backstitches').href, getBackstitchRequestData(action));
+        .links.find(link => link.rel === 'mark-backstitches').href, getBackstitchRequestData(indexes));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function* unmarkBackstitch(action) {
+function* unmarkBackstitch(indexes) {
   yield call(async () => {
     try {
       await http.put(SM.apiUrl + JSON.parse(localStorage.getItem('patternInfo'))
-        .links.find(link => link.rel === 'unmark-backstitches').href, getBackstitchRequestData(action));
+        .links.find(link => link.rel === 'unmark-backstitches').href, getBackstitchRequestData(indexes));
     }
     catch (e) { console.log(`Error in fetch: ${e}`); }
   });
 }
 
-function getBackstitchRequestData(action) {
+function getBackstitchRequestData(indexes) {
   return JSON.stringify({
     id: patternStore.getState().pattern.id,
-    backstitches: getBackstitchCoordinates(action.backstitches)
+    backstitches: getBackstitchCoordinates(indexes)
   });
 }
 
 function getBackstitchCoordinates(indexes) {
   return indexes.map(index => {
-    let backstitch = patternStore.getState().pattern.backstitches[index];
+    let backstitch = patternStore.getState().backstitches.items[index];
     return { x1: backstitch.x1, y1: backstitch.y1, x2: backstitch.x2, y2: backstitch.y2 }
   });
 }
@@ -132,15 +132,15 @@ function* watchBackstitchComplete() {
   yield takeEvery(BACKSTITCH_COMPLETE, BackstitchComplete);
 }
 
-function BackstitchComplete(action) {
+function* BackstitchComplete(action) {
   let backstitches = patternStore.getState().backstitches;
   let index = backstitches.items.indexOf(backstitches.activeBackstitch);
   const backstitch = backstitches.items[index];
 
   backstitch.marked = !backstitch.marked;
-  // patternStore.dispatch(backstitch.marked
-  //     ? unmarkBackstitches([index])
-  //     : markBackstitches([index]));
+  backstitch.marked
+      ? yield markBackstitch([index])
+      : yield unmarkBackstitch([index]);
 
   disposeMarkers(backstitches);
   backstitches.activeBackstitch = null;

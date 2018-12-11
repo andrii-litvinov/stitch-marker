@@ -46,18 +46,6 @@ const backstitches = (state = {}, action) => {
                 };
             return { ...state };
 
-        case UNMARK_BACKSTITCHES:
-            action.backstitches.forEach(actionBackstitch => {
-                state.backstitches[actionBackstitch].marked = false;
-            });
-            return { ...state };
-
-        case MARK_BACKSTITCHES:
-            action.backstitches.forEach(actionBackstitch => {
-                state.backstitches[actionBackstitch].marked = true;
-            });
-            return { ...state };
-
         default:
             return state;
     }
