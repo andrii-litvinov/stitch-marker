@@ -11,9 +11,9 @@ export default class BackstitchesLayer extends BaseLayer {
     patternStore.dispatch(initBackstitches(patternStore.getState().pattern, this.ctx, this.scene));
 
     const sceneEventListeners = {
-      render: patternStore.dispatch(renderBackstitch(this.ctx, this.scene)),
+      // render: patternStore.dispatch(renderBackstitch(this.ctx, this.scene)),
       resize: this.resize.bind(this),
-      zoom: patternStore.dispatch(renderBackstitch(this.ctx, this.scene)),
+      // zoom: patternStore.dispatch(renderBackstitch(this.ctx, this.scene)),
       touchstart: this.touchStart.bind(this)
     };
 

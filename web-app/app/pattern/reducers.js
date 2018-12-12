@@ -1,7 +1,8 @@
 import { INIT_STORE } from './actions';
 import { combineReducers } from 'redux'
 import backstitches from '../pattern/backstitch-reducer';
-import stitches from '../pattern/stitch-reducer'
+import stitches from '../pattern/stitch-reducer';
+import grid from '../pattern/grid-reducer';
 
 const pattern = (state = {}, action) => {
   switch (action.type) {
@@ -16,7 +17,8 @@ const pattern = (state = {}, action) => {
 const rootReducer = combineReducers({
   pattern,
   stitches,
-  backstitches
+  backstitches,
+  grid
 })
 
 export default rootReducer;

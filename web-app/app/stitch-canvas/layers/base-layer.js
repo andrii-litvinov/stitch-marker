@@ -1,5 +1,5 @@
 import { patternStore } from '../../pattern/store.js';
-import { renderBackstitch, renderStitch } from '../../pattern/actions.js';
+import { renderBackstitch, renderStitch, renderGrid } from '../../pattern/actions.js';
 
 export default class BaseLayer {
   constructor(scene) {
@@ -12,7 +12,7 @@ export default class BaseLayer {
 
     patternStore.dispatch(renderBackstitch(this.ctx, this.scene));
     patternStore.dispatch(renderStitch(event.detail.bounds, this.scene));
-    // this.render(event.detail.bounds);
+    patternStore.dispatch(renderGrid(event.detail.bounds, this.ctx, this.scene));
   }
   createContext() {
     let canvas = document.createElement("canvas");

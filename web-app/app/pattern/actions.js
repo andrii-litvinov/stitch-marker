@@ -14,10 +14,19 @@ export const BACKSTITCH_PROCESS = 'BACKSTITCH_PROCESS';
 export const BACKSTITCH_COMPLETE = 'BACKSTITCH_COMPLETE';
 export const BACKSTITCH_CREATEMARKER = 'BACKSTITCH_CREATEMARKER';
 export const BACKSTITCH_ABORT = 'BACKSTITCH_ABORT';
+export const INIT_GRID = 'INIT_GRID'; 
+export const RENDER_GRID = 'RENDER_GRID';
 
 export const initStore = (pattern) => {
   return {
     type: INIT_STORE,
+    pattern
+  };
+};
+
+export const initGrid = (pattern) => {
+  return {
+    type: INIT_GRID,
     pattern
   };
 };
@@ -64,10 +73,17 @@ export const renderStitch = (bounds, scene) => {
   };
 };
 
-export const renderBackstitch = (context, scene) => {
+export const renderGrid = (bounds, ctx, scene) => {
+  return {
+    type: RENDER_GRID,
+    bounds, ctx, scene
+  };
+};
+
+export const renderBackstitch = (ctx, scene) => {
   return {
     type: RENDER_BACKSTITCH,
-    context, scene
+    ctx, scene
   };
 };
 
