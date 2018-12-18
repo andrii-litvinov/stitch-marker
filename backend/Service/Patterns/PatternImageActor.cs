@@ -17,7 +17,7 @@ namespace Service.Patterns
                     break;
                 case GetThumbnail command:
                     var thumbnail = CreateThumbnail(command.Pattern, command.Width, command.Height);
-                    context.Send(context.Parent, new Thumbnail {Id = command.Id, Image = ByteString.CopyFrom(thumbnail)});
+                    context.Send(context.Parent, new Thumbnail {Id = command.Id, Image = thumbnail});
                     break;
                 case ReceiveTimeout _:
                     context.Self.Stop();

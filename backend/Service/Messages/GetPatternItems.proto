@@ -2,7 +2,6 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "Service";
-import public "Pattern.proto";
 
 message GetPatternItems {
     string request_id = 1;

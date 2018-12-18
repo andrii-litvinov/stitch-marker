@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Service.Patterns
 {
@@ -184,5 +185,10 @@ namespace Service.Patterns
         public BackstitchesMarked MarkBackstitches(IEnumerable<BackstitchId> items) => new BackstitchesMarked {SourceId = id, Backstitches = {items}};
         public BackstitchesUnmarked UnmarkBackstitches(IEnumerable<BackstitchId> items) => new BackstitchesUnmarked {SourceId = id, Backstitches = {items}};
         public PatternDeleted Delete() => new PatternDeleted {SourceId = id};
+    }
+
+    public static class ListExtensions
+    {
+        public static void Add<T>(this List<T> list, IEnumerable<T> items) => list.AddRange(items);
     }
 }

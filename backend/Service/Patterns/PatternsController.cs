@@ -63,7 +63,7 @@ namespace Service.Patterns
 
             var query = new GetThumbnail {Id = Guid.NewGuid().ToString(), Height = height, Width = width};
             var thumbnail = await context.Request<Thumbnail>(pattern, query);
-            return File(thumbnail.Image.ToByteArray(), "image/png");
+            return File(thumbnail.Image, "image/png");
         }
 
         [HttpPost]
@@ -77,7 +77,7 @@ namespace Service.Patterns
             {
                 FileName = file.FileName,
                 Id = Guid.NewGuid().ToString(),
-                Content = ByteString.CopyFrom(content),
+                Content = content,
                 OwnerId = userId
             };
             var pattern = await GetPattern(command.Id);

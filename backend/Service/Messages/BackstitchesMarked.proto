@@ -2,7 +2,7 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "Service";
-import public "BackstitchId.proto";
+import public "Messages/BackstitchId.proto";
 
 message BackstitchesMarked {
     string source_id = 1;

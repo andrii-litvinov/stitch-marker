@@ -15,7 +15,7 @@ namespace Service.Patterns.Xsd
                     context.SetReceiveTimeout(5.Minutes());
                     break;
                 case CreatePattern command:
-                    var pattern = patternReader.Read(command.Content.ToByteArray());
+                    var pattern = patternReader.Read(command.Content);
                     pattern.Id = command.Id;
                     pattern.Info.Title = command.FileName;
                     pattern.OwnerId = command.OwnerId;

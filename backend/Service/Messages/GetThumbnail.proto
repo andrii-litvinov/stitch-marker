@@ -2,7 +2,7 @@ syntax = "proto3";
 package pattern;
 
 option csharp_namespace = "Service";
-import public "Pattern.proto";
+import public "Messages/Pattern.proto";
 
 message GetThumbnail {
     string id = 1;
